@@ -33,6 +33,14 @@ namespace :admin do
     end
   end
 
+  resources :activity_logs, only: [:index, :show], path: "activity-log"
+
+  resources :team_members, only: [:index, :show], path: "team" do
+    member do
+      post :revoke
+    end
+  end
+
   constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
     mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
     mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui

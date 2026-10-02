@@ -38,7 +38,7 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
   let activeUrl = currentPath;
   try {
     const page = usePage();
-    if (!activeUrl && page?.url) {
+    if (!activeUrl && page.url) {
       activeUrl = page.url;
     }
   } catch {
@@ -59,8 +59,8 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
   ];
 
   const systemNavItems: NavItem[] = [
-    { label: "Activity Log", icon: <History className="size-5 shrink-0" />, disabled: true },
-    { label: "Team", icon: <Shield className="size-5 shrink-0" />, disabled: true },
+    { label: "Activity Log", href: "/admin/activity-log", icon: <History className="size-5 shrink-0" /> },
+    { label: "Team", href: "/admin/team", icon: <Shield className="size-5 shrink-0" /> },
     { label: "Jobs", href: "/admin/sidekiq", icon: <Server className="size-5 shrink-0" />, isExternal: true },
     { label: "Feature Flags", href: "/admin/features", icon: <Flag className="size-5 shrink-0" />, isExternal: true },
   ];
