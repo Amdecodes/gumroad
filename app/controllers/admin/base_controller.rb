@@ -9,7 +9,7 @@ class Admin::BaseController < ApplicationController
   before_action :require_admin!
 
   def impersonate
-    user = find_user(params[:user_identifier])
+    user = find_user(params[:user_identifier].presence || params[:user_id])
 
     if user
       impersonate_user(user)

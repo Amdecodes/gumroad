@@ -48,7 +48,7 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
 
   const mainNavItems: NavItem[] = [
     { label: "Overview", href: "/admin", icon: <HomeAlt2 className="size-5 shrink-0" /> },
-    { label: "Creators", icon: <User className="size-5 shrink-0" />, disabled: true },
+    { label: "Creators", href: "/admin/creators", icon: <User className="size-5 shrink-0" /> },
     { label: "Products", icon: <Store className="size-5 shrink-0" />, disabled: true },
     { label: "Orders", href: "/admin/orders", icon: <Cart className="size-5 shrink-0" /> },
     { label: "Subscriptions", icon: <Repeat className="size-5 shrink-0" />, disabled: true },

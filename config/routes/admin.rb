@@ -19,6 +19,13 @@ namespace :admin do
     end
   end
 
+  resources :creators, only: [:index, :show] do
+    member do
+      post :suspend
+      post :unsuspend
+    end
+  end
+
   constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
     mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
     mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui
