@@ -26,6 +26,13 @@ namespace :admin do
     end
   end
 
+  resources :payouts, only: [:index, :show] do
+    member do
+      post :mark_paid
+      post :cancel
+    end
+  end
+
   constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
     mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
     mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui
