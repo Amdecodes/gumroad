@@ -28,6 +28,7 @@ describe "Impersonate", type: :request do
 
   before do
     host! DOMAIN
+    Rails.application.reload_routes!
     sign_in admin
   end
 

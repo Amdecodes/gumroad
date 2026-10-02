@@ -74,6 +74,7 @@ test-branch-creation.log
 .claude/worktrees/
 autoresearch.*
 .codex/
+graphify-out/*
 
 # Baked CI test-database dump (created inside the test image at build time;
 # never committed — see docker/ci/dump_test_db.sh)

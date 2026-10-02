@@ -5,9 +5,19 @@
 # remains here: GET impersonate (Helper/CLI links), the Stripe dashboard
 # redirect, and the team-member-gated Sidekiq/Flipper mounts.
 namespace :admin do
+  root to: "overview#index"
+
   get :impersonate, to: "base#impersonate"
   delete :unimpersonate, to: "base#unimpersonate"
   get :redirect_to_stripe_dashboard, to: "base#redirect_to_stripe_dashboard", as: :redirect_to_stripe_dashboard
+
+  resources :orders, only: [:index, :show] do
+    member do
+      post :resend_receipt
+      post :refund
+      post :cancel_subscription
+    end
+  end
 
   constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
     mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
