@@ -1691,6 +1691,41 @@ class Purchase < ApplicationRecord
     stripe_transaction_id.present? || processor_payment_intent_id.present? || charge&.stripe_payment_intent_id.present?
   end
 
+  def processor
+    charge_processor_id
+  end
+
+  def processor=(val)
+    self.charge_processor_id = val
+  end
+
+  def processor_transaction_id
+    processor_payment_intent_id.presence || stripe_transaction_id
+  end
+
+  def processor_transaction_id=(val)
+    self.processor_payment_intent_id = val
+    self.stripe_transaction_id = val
+  end
+
+  def chapa?
+    charge_processor_id == "chapa"
+  end
+
+  def price_in_currency_cents
+    displayed_price_cents.presence || price_cents
+  end
+
+  def self.find_by_processor_transaction_id(id)
+    return nil if id.blank?
+
+    where(stripe_transaction_id: id).or(where(processor_payment_intent_id: id)).first
+  end
+
+  def self.find_by_processor_transaction_id!(id)
+    find_by_processor_transaction_id(id) || raise(ActiveRecord::RecordNotFound, "Couldn't find Purchase with processor_transaction_id #{id}")
+  end
+
   def pending_buyer_presentment_settlement?
     pending_processor_settlement?
   end
@@ -5365,6 +5400,8 @@ class Purchase < ApplicationRecord
 
     # Private: validator that guarantees that the right transaction information is present for paid purchases.
     def financial_transaction_validation
+      return if chapa? && stripe_transaction_id.present?
+
       return if self.price_cents.to_i > 0 &&
                 stripe_transaction_id.present? &&
                 merchant_account.present? &&

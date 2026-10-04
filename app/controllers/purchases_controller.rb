@@ -19,7 +19,7 @@ class PurchasesController < ApplicationController
 
   PUBLIC_ACTIONS = %i[
     confirm subscribe unsubscribe receipt resend_receipt
-    update_subscription charge_preorder confirm_receipt_email
+    update_subscription charge_preorder confirm_receipt_email chapa_callback
   ].freeze
   before_action :authenticate_mobile_export!, only: :export
   before_action :authenticate_user!, except: PUBLIC_ACTIONS
@@ -37,7 +37,7 @@ class PurchasesController < ApplicationController
   before_action :set_noindex_header, only: [:receipt, :confirm_receipt_email]
 
   # #confirm reads back the purchase the buyer's own checkout request just created.
-  around_action :use_primary_database, only: :confirm
+  around_action :use_primary_database, only: %i[confirm chapa_callback]
 
   def confirm
     @purchase = Purchase.find_by_secure_external_id(params[:id], scope: "confirm")
@@ -52,6 +52,68 @@ class PurchasesController < ApplicationController
       handle_recommended_purchase(@purchase) if @purchase.was_product_recommended
 
       render_create_success(@purchase)
+    end
+  end
+
+  def chapa_callback
+    @purchase = Purchase.find_by_external_id(params[:id]) ||
+                Purchase.find_by_secure_external_id(params[:id], scope: "confirm") ||
+                Purchase.find_by(id: params[:id])
+    return e404 unless @purchase
+
+    if @purchase.successful?
+      return redirect_to receipt_purchase_path(@purchase.external_id, email: @purchase.email)
+    end
+
+    tx_ref = @purchase.processor_transaction_id.presence || params[:tx_ref]
+    if tx_ref.present?
+      verification = Chapa::Client.new.verify_transaction(tx_ref)
+      if verification[:success]
+        verified_currency = verification[:currency].to_s.upcase
+        verified_amount_santims = (verification[:amount].to_f * 100).round
+
+        expected_santims = @purchase.respond_to?(:price_in_currency_cents) ? @purchase.price_in_currency_cents : @purchase.price_cents
+        if verified_currency == "ETB" && verified_amount_santims == expected_santims
+          ActiveRecord::Base.transaction do
+            @purchase.lock!
+            unless @purchase.successful?
+              reference = verification[:reference].presence || tx_ref
+              purchases_to_finalize = if @purchase.order.present?
+                @purchase.order.purchases.select(&:in_progress?)
+              else
+                [@purchase]
+              end
+
+              purchases_to_finalize.each do |p|
+                p.stripe_transaction_id = reference
+                p.charge_processor_id = "chapa"
+                if (charge = p.charge)
+                  charge.processor = "chapa"
+                  charge.processor_transaction_id = reference
+                  charge.save!
+                end
+                Purchase::MarkSuccessfulService.new(p).perform
+              end
+
+              if @purchase.order.present?
+                @purchase.order.send_charge_receipts
+              else
+                SendPurchaseReceiptJob.perform_async(@purchase.id)
+              end
+            end
+          end
+
+          return redirect_to receipt_purchase_path(@purchase.external_id, email: @purchase.email)
+        end
+      end
+    end
+
+    if @purchase.in_progress?
+      flash[:notice] = "Your payment is currently being processed. Please refresh in a moment."
+      redirect_to confirm_receipt_email_purchase_path(@purchase.external_id)
+    else
+      flash[:alert] = "Payment verification could not be completed. Please contact support."
+      redirect_to root_path
     end
   end
 

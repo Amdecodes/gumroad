@@ -801,6 +801,7 @@ Rails.application.routes.draw do
     resources :purchases, only: [:update] do
       member do
         get :receipt
+        get :chapa_callback
         get :confirm_receipt_email
         get :subscribe
         post :subscribe
@@ -1321,6 +1322,7 @@ Rails.application.routes.draw do
     post "/sns-aws-config-webhook", to: "foreign_webhooks#sns_aws_config"
     post "/grmc-webhook", to: "foreign_webhooks#grmc"
     post "/resend-webhook", to: "foreign_webhooks#resend"
+    post "/webhooks/chapa", to: "webhooks/chapa#create", as: :chapa_webhook
 
     # secure redirect
     get "/secure_url_redirect", to: "secure_redirect#new", as: :secure_url_redirect

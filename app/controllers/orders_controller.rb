@@ -24,6 +24,69 @@ class OrdersController < ApplicationController
       params: order_params
     ).perform
 
+    is_chapa_order = (order.purchases.any? { _1.displayed_price_currency_type.to_s.downcase == "etb" } && params[:processor] != "stripe") ||
+                     params[:processor] == "chapa" ||
+                     params[:payment_method] == "chapa"
+
+    if is_chapa_order && order.purchases.any?(&:in_progress?)
+      primary_purchase = order.purchases.detect { _1.in_progress? && _1.price_cents > 0 } || order.purchases.first
+      if primary_purchase.free_purchase?
+        order.purchases.each do |p|
+          Purchase::MarkSuccessfulService.new(p).perform
+        end
+        order.send_charge_receipts
+        return render json: { success: true, line_items: purchase_responses, offer_codes:, can_buyer_sign_up: }
+      end
+
+      callback_url = chapa_webhook_url
+      return_url = chapa_callback_purchase_url(primary_purchase.external_id)
+
+      client = Chapa::Client.new
+      init_result = client.initialize_transaction(
+        purchase: primary_purchase,
+        return_url:,
+        callback_url:
+      )
+
+      if init_result[:success]
+        tx_ref = init_result[:tx_ref]
+        charge = order.charges.create!(
+          seller_id: primary_purchase.seller_id,
+          processor: "chapa",
+          processor_transaction_id: tx_ref,
+          amount_cents: order.purchases.sum(&:price_cents)
+        )
+        order.purchases.each do |p|
+          p.charge_processor_id = "chapa"
+          p.processor_transaction_id = tx_ref
+          p.charge = charge
+          p.save!
+        end
+
+        attribute_utm_link_sale(order, order_params[:browser_guid])
+        order.purchases.each { create_purchase_event_and_recommendation_info(_1) }
+
+        if request.format.json? || request.headers["X-Inertia"].present?
+          return render json: {
+            success: true,
+            checkout_url: init_result[:checkout_url],
+            tx_ref:,
+            order_id: order.external_id,
+            line_items: purchase_responses,
+            offer_codes:,
+            can_buyer_sign_up:
+          }
+        else
+          return redirect_to init_result[:checkout_url], allow_other_host: true
+        end
+      else
+        return render json: {
+          success: false,
+          error_message: init_result[:error] || "Payment initialization failed. Please try again."
+        }, status: :unprocessable_entity
+      end
+    end
+
     charge_responses = Order::ChargeService.new(order:, params: order_params).perform
 
     attribute_utm_link_sale(order, order_params[:browser_guid])
