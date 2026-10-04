@@ -308,8 +308,14 @@ class Link < ApplicationRecord
     super(:buy_only)
   end
 
+  attribute :price_currency_type, :string, default: "etb"
+
+  def price_currency_type
+    super.presence || (user&.currency_type.presence || "etb")
+  end
+
   def price_currency_type=(value)
-    super(value.present? ? value.to_s.downcase : value)
+    super(value.present? ? value.to_s.downcase : (user&.currency_type.presence || "etb"))
   end
 
   enum :free_trial_duration_unit, %i[week month]

@@ -57,7 +57,7 @@ class Admin::CreatorsController < Admin::BaseController
         avatar_url: creator.avatar_url,
         product_count: product_counts[creator.id] || 0,
         total_sales_count: sales_aggregates[creator.id]&.fetch(:count, 0) || 0,
-        formatted_lifetime_volume: formatted_dollar_amount(sales_aggregates[creator.id]&.fetch(:volume_cents, 0) || 0),
+        formatted_lifetime_volume: formatted_etb_amount(sales_aggregates[creator.id]&.fetch(:volume_cents, 0) || 0),
         status: creator_status(creator),
         joined_at: creator.created_at.as_json
       }
@@ -98,7 +98,7 @@ class Admin::CreatorsController < Admin::BaseController
       },
       metrics: {
         lifetime_revenue_cents: revenue_cents,
-        formatted_lifetime_revenue: formatted_dollar_amount(revenue_cents),
+        formatted_lifetime_revenue: formatted_etb_amount(revenue_cents),
         sales_count: @creator.sales.paid.count,
         active_products_count: @creator.products.alive.not_archived.count,
         customer_count: @creator.sales.paid.distinct.count(:email)
@@ -107,7 +107,7 @@ class Admin::CreatorsController < Admin::BaseController
         {
           id: product.external_id,
           title: product.name,
-          price_formatted: formatted_dollar_amount(product.price_cents),
+          price_formatted: product.price_formatted,
           sales_count: product.sales.paid.count,
           status: product.published? ? "published" : "draft",
           published_date: product.created_at.as_json

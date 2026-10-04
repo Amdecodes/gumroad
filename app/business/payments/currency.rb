@@ -57,7 +57,6 @@ module Currency
   KWD = "kwd"
   QAR = "qar"
   BSD = "bsd"
-  ETB = "etb"
   BND = "bnd"
   GYD = "gyd"
   GTQ = "gtq"

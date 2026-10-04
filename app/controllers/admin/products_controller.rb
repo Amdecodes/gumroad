@@ -51,7 +51,7 @@ class Admin::ProductsController < Admin::BaseController
       creator: serialize_creator_detail(@product.user),
       metrics: {
         gross_sales_cents: gross_cents,
-        gross_sales_formatted: formatted_dollar_amount(gross_cents),
+        gross_sales_formatted: formatted_etb_amount(gross_cents),
         units_sold: sales_count,
         refund_count:,
         refund_rate:,
@@ -195,9 +195,9 @@ class Admin::ProductsController < Admin::BaseController
         name: product.name,
         thumbnail_url: product.preview_url.presence,
         price_cents: product.price_cents,
-        price_formatted: formatted_dollar_amount(product.price_cents),
+        price_formatted: product.price_formatted,
         sales_count:,
-        lifetime_revenue_formatted: formatted_dollar_amount(revenue_cents),
+        lifetime_revenue_formatted: formatted_etb_amount(revenue_cents),
         status: product_status(product),
         created_at: product.created_at.as_json,
         creator: product.user ? {
@@ -211,7 +211,7 @@ class Admin::ProductsController < Admin::BaseController
     end
 
     def serialize_product_detail(product)
-      currency = product.price_currency_type.presence || "USD"
+      currency = (product.price_currency_type.presence || "etb").upcase
 
       {
         id: product.external_id,
@@ -221,7 +221,7 @@ class Admin::ProductsController < Admin::BaseController
         status: product_status(product),
         is_published: product.published?,
         price_cents: product.price_cents,
-        price_formatted: formatted_dollar_amount(product.price_cents),
+        price_formatted: product.price_formatted,
         currency:,
         preview_url: product.preview_url.presence,
         store_url: product.long_url,

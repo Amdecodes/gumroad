@@ -45,10 +45,10 @@ class Admin::ReportsController < Admin::BaseController
 
       {
         gross_volume_cents: total_volume_cents,
-        formatted_gross_volume: formatted_dollar_amount(total_volume_cents),
+        formatted_gross_volume: formatted_etb_amount(total_volume_cents),
         total_orders: total_orders_count,
         average_order_value_cents: aov_cents,
-        formatted_average_order_value: formatted_dollar_amount(aov_cents),
+        formatted_average_order_value: formatted_etb_amount(aov_cents),
         refund_rate:,
         refunded_count:,
         dispute_rate:,
@@ -79,7 +79,7 @@ class Admin::ReportsController < Admin::BaseController
           date: date_str,
           label: date.strftime("%b %-d"),
           revenue_cents: cents,
-          formatted_revenue: formatted_dollar_amount(cents),
+          formatted_revenue: formatted_etb_amount(cents),
           orders_count: day_data[:count]
         }
       end
@@ -110,7 +110,7 @@ class Admin::ReportsController < Admin::BaseController
           permalink: product.unique_permalink,
           name: product.name,
           volume_cents: cents.to_i,
-          formatted_volume: formatted_dollar_amount(cents.to_i),
+          formatted_volume: formatted_etb_amount(cents.to_i),
           sales_count: count.to_i,
           creator_name: product.user&.name.presence || product.user&.username.presence || product.user&.email || "Unknown"
         }
@@ -137,7 +137,7 @@ class Admin::ReportsController < Admin::BaseController
           name: seller.name.presence || seller.username.presence || seller.email,
           username: seller.username,
           volume_cents: cents.to_i,
-          formatted_volume: formatted_dollar_amount(cents.to_i),
+          formatted_volume: formatted_etb_amount(cents.to_i),
           sales_count: count.to_i,
           admin_path: "/admin/creators/#{seller.username.presence || seller.external_id}"
         }
@@ -165,7 +165,7 @@ class Admin::ReportsController < Admin::BaseController
           name: processor.to_s.titleize,
           orders_count: count_int,
           volume_cents: cents.to_i,
-          formatted_volume: formatted_dollar_amount(cents.to_i),
+          formatted_volume: formatted_etb_amount(cents.to_i),
           percentage: pct
         }
       end

@@ -201,10 +201,10 @@ class Admin::PayoutsController < Admin::BaseController
       {
         pending_count:,
         pending_amount_cents: pending_total_cents,
-        formatted_pending_amount: Money.new(pending_total_cents, "USD").format,
+        formatted_pending_amount: MoneyFormatter.format(pending_total_cents, :etb),
         completed_count_30d: completed_count,
         completed_amount_cents_30d: completed_total_cents,
-        formatted_completed_amount_30d: Money.new(completed_total_cents, "USD").format
+        formatted_completed_amount_30d: MoneyFormatter.format(completed_total_cents, :etb)
       }
     end
 
@@ -229,14 +229,14 @@ class Admin::PayoutsController < Admin::BaseController
         destination_method = destination_label(bank_account, payout.payment_address, processor)
       end
 
-      currency = (payout.respond_to?(:currency) && payout.currency.presence) || "usd"
+      currency = (payout.respond_to?(:currency) && payout.currency.presence) || "etb"
 
       {
         id: payout.external_id,
         external_id: payout.external_id,
         reference:,
         amount_cents:,
-        formatted_amount: Money.new(amount_cents || 0, currency).format,
+        formatted_amount: MoneyFormatter.format(amount_cents || 0, currency),
         currency:,
         status:,
         destination_method:,
@@ -258,7 +258,7 @@ class Admin::PayoutsController < Admin::BaseController
         bank_account = user&.active_bank_account
         reference = payout.external_id
         amount_cents = payout.payout_amount_cents
-        currency = "usd"
+        currency = (payout.respond_to?(:currency) && payout.currency.presence) || "etb"
         status = map_scheduled_status(payout.status)
         processor = payout.processor
         date_requested = payout.created_at
@@ -275,7 +275,7 @@ class Admin::PayoutsController < Admin::BaseController
         bank_account = payout.bank_account
         reference = payout.txn_id.presence || payout.stripe_transfer_id.presence || payout.external_id
         amount_cents = payout.amount_cents
-        currency = payout.currency.presence || "usd"
+        currency = payout.currency.presence || "etb"
         status = map_payment_status(payout.state)
         processor = payout.processor
         date_requested = payout.created_at
@@ -300,7 +300,7 @@ class Admin::PayoutsController < Admin::BaseController
           external_id: payout.external_id,
           reference:,
           amount_cents:,
-          formatted_amount: Money.new(amount_cents || 0, currency).format,
+          formatted_amount: MoneyFormatter.format(amount_cents || 0, currency),
           currency:,
           status:,
           date_requested: date_requested.as_json,
@@ -329,15 +329,15 @@ class Admin::PayoutsController < Admin::BaseController
         },
         breakdown: {
           sales_volume_cents:,
-          formatted_sales_volume: Money.new(sales_volume_cents || 0, currency).format,
+          formatted_sales_volume: MoneyFormatter.format(sales_volume_cents || 0, currency),
           platform_fee_cents:,
-          formatted_platform_fee: Money.new(platform_fee_cents || 0, currency).format,
+          formatted_platform_fee: MoneyFormatter.format(platform_fee_cents || 0, currency),
           processor_fee_cents:,
-          formatted_processor_fee: Money.new(processor_fee_cents || 0, currency).format,
+          formatted_processor_fee: MoneyFormatter.format(processor_fee_cents || 0, currency),
           adjustments_cents:,
-          formatted_adjustments: Money.new(adjustments_cents || 0, currency).format,
+          formatted_adjustments: MoneyFormatter.format(adjustments_cents || 0, currency),
           net_amount_cents: amount_cents,
-          formatted_net_amount: Money.new(amount_cents || 0, currency).format
+          formatted_net_amount: MoneyFormatter.format(amount_cents || 0, currency)
         },
         audit_history: audit_logs.map do |log|
           {

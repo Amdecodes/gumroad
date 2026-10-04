@@ -1,5 +1,10 @@
 {
   "currencies": {
+    "etb": {
+      "symbol": "ETB",
+      "display_format": "ETB (Ethiopian Birr)",
+      "min_price": 100
+    },
     "usd": {
       "symbol": "$",
       "display_format": "$ (US Dollars)",

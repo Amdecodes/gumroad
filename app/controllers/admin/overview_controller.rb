@@ -34,7 +34,7 @@ class Admin::OverviewController < Admin::BaseController
       {
         revenue: {
           cents: revenue_cents,
-          formatted: formatted_dollar_amount(revenue_cents)
+          formatted: formatted_etb_amount(revenue_cents)
         },
         orders_count: Purchase.paid.count,
         creators_count: User.not_suspended.joins(:links).merge(Link.alive).distinct.count,
@@ -75,7 +75,7 @@ class Admin::OverviewController < Admin::BaseController
           date: date_str,
           label: date.strftime("%b %-d"),
           revenue_cents: cents,
-          revenue_formatted: formatted_dollar_amount(cents),
+          revenue_formatted: formatted_etb_amount(cents),
           orders_count: day_data[:count]
         }
       end

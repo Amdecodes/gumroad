@@ -1,14 +1,28 @@
 import { describe, it, expect } from "vitest";
 
 import {
+  DEFAULT_PLATFORM_CURRENCY,
   currencyCodeList,
   findCurrencyByCode,
+  formatCents,
+  formatCurrency,
   formatMinorUnitPriceWithIntl,
+  formatMoney,
   getIsSingleUnitCurrency,
   getMinPriceCents,
 } from "$app/utils/currency";
 
 describe("findCurrencyByCode", () => {
+  it("returns the ETB spec as the platform currency with ETB symbol and 100 santims min price", () => {
+    const etb = findCurrencyByCode("etb");
+    expect(etb.code).toBe("etb");
+    expect(etb.longSymbol).toBe("ETB");
+    expect(etb.shortSymbol).toBe("ETB");
+    expect(etb.displayFormat).toBe("ETB (Ethiopian Birr)");
+    expect(etb.isSingleUnit).toBe(false);
+    expect(etb.minPriceCents).toBe(100);
+  });
+
   it("returns the USD spec with a dollar symbol and two-decimal (non-single-unit) handling", () => {
     const usd = findCurrencyByCode("usd");
     expect(usd.code).toBe("usd");
@@ -112,5 +126,41 @@ describe("formatMinorUnitPriceWithIntl", () => {
 
   it("keeps a zero-decimal currency whole even when the caller asks for cents", () => {
     expect(formatMinorUnitPriceWithIntl("krw", 1_000_000, 100, { noCentsIfWhole: false })).toBe("₩10,000");
+  });
+
+  it("formats ETB amounts with Intl correctly", () => {
+    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100)).toBe("ETB\u00A0150");
+    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100, { noCentsIfWhole: false })).toBe("ETB\u00A0150.00");
+    expect(formatMinorUnitPriceWithIntl("etb", 25_050, 100)).toBe("ETB\u00A0250.50");
+  });
+});
+
+describe("central money formatting helpers", () => {
+  it("defines DEFAULT_PLATFORM_CURRENCY as etb", () => {
+    expect(DEFAULT_PLATFORM_CURRENCY).toBe("etb");
+    expect(currencyCodeList[0]).toBe("etb");
+    expect(getMinPriceCents("etb")).toBe(100);
+  });
+
+  it("formatMoney formats ETB by default with two decimals", () => {
+    expect(formatMoney(15_000)).toBe("ETB 150.00");
+    expect(formatMoney(25_050)).toBe("ETB 250.50");
+    expect(formatMoney(15_000, "etb", { noCentsIfWhole: true })).toBe("ETB 150");
+  });
+
+  it("formatMoney supports other currencies when specified", () => {
+    expect(formatMoney(15_000, "usd")).toBe("$150.00");
+    expect(formatMoney(15_000, "usd", { noCentsIfWhole: true })).toBe("$150");
+  });
+
+  it("formatCents is an alias of formatMoney", () => {
+    expect(formatCents(15_000)).toBe("ETB 150.00");
+    expect(formatCents(15_000, "etb", { noCentsIfWhole: true })).toBe("ETB 150");
+  });
+
+  it("formatCurrency parses string codes and defaults to ETB for invalid ones", () => {
+    expect(formatCurrency(15_000, "ETB")).toBe("ETB 150.00");
+    expect(formatCurrency(15_000, "usd")).toBe("$150.00");
+    expect(formatCurrency(15_000, "invalid_code")).toBe("ETB 150.00");
   });
 });

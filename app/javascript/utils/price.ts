@@ -7,8 +7,10 @@ export function formatPrice(
   { noCentsIfWhole }: { noCentsIfWhole: boolean },
 ): string {
   precision = noCentsIfWhole && price % 1 === 0 ? 0 : precision;
+  const separator = currencySymbol && /^[A-Z]{3}$/u.test(currencySymbol) ? " " : "";
   return (
     currencySymbol +
+    separator +
     price.toLocaleString(undefined, {
       minimumFractionDigits: precision,
       maximumFractionDigits: precision,

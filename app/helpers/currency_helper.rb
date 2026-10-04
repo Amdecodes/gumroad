@@ -57,12 +57,12 @@ module CurrencyHelper
     Redis::Namespace.new(:currencies, redis: $redis)
   end
 
-  def symbol_for(type = :usd)
+  def symbol_for(type = :etb)
     MoneyFormatter.symbol_for(type)
   end
 
-  def min_price_for(type = :usd)
-    currency = CURRENCY_CHOICES[type.to_sym] || CURRENCY_CHOICES[:usd]
+  def min_price_for(type = :etb)
+    currency = CURRENCY_CHOICES[type.to_sym] || CURRENCY_CHOICES[:usd] || CURRENCY_CHOICES[:etb]
     currency[:min_price]
   end
 
@@ -411,6 +411,14 @@ module CurrencyHelper
 
   def formatted_dollar_amount(amount_cents, with_currency: false, no_cents_if_whole: true)
     Money.new(amount_cents, "USD").format(with_currency:, no_cents_if_whole:)
+  end
+
+  def formatted_etb_amount(amount_cents, no_cents_if_whole: false, with_symbol: true)
+    MoneyFormatter.format(amount_cents, :etb, no_cents_if_whole:, symbol: with_symbol)
+  end
+
+  def display_amount(amount_cents, currency = :etb, no_cents_if_whole: false)
+    MoneyFormatter.format(amount_cents, currency.to_s.downcase.to_sym, no_cents_if_whole:, symbol: true)
   end
 
   def formatted_amount_in_currency(amount_cents, currency, no_cents_if_whole: true)

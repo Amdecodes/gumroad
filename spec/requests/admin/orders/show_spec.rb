@@ -70,7 +70,7 @@ describe "Admin::Orders GET /admin/orders/:id", type: :request, inertia: true do
       expect(order_props["seller"]["name"]).to eq("Top Creator")
       expect(order_props["status"]).to eq("successful")
       expect(order_props["price_cents"]).to eq(9900)
-      expect(order_props["currency"]).to eq("USD")
+      expect(order_props["currency"]).to eq("ETB")
       expect(order_props["access"]["receipt_url"]).to be_present
     end
 

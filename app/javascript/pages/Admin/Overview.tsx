@@ -282,7 +282,7 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
           {...events}
         >
           <XAxis dataKey="label" {...xAxisProps} />
-          <YAxis tickFormatter={(val: number) => `$${val.toLocaleString()}`} {...yAxisProps} />
+          <YAxis tickFormatter={(val: number) => `${val.toLocaleString()} ETB`} {...yAxisProps} />
           <Line dataKey="revenue_dollars" {...lineProps(dotRef, chartData.length)} />
         </Chart>
       </section>

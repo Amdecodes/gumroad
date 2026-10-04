@@ -253,7 +253,7 @@ class Admin::OrdersController < Admin::BaseController
         amount_formatted: order.formatted_total_price,
         price_cents: order.price_cents,
         currency: order.displayed_price_currency_type.to_s.upcase,
-        refunded_amount_formatted: (order.refunded? || order.amount_refunded_cents.to_i > 0) ? formatted_dollar_amount(order.amount_refunded_cents.to_i) : nil,
+        refunded_amount_formatted: (order.refunded? || order.amount_refunded_cents.to_i > 0) ? MoneyFormatter.format(order.amount_refunded_cents.to_i, order.displayed_price_currency_type) : nil,
         status: order.purchase_state,
         refund_status: order.refunded? ? "refunded" : (order.stripe_partially_refunded ? "partially_refunded" : nil),
         is_chargeback: order.chargeback_date.present?,
@@ -264,7 +264,7 @@ class Admin::OrdersController < Admin::BaseController
         refunds: order.refunds.map do |refund|
           {
             id: refund.id,
-            amount_formatted: formatted_dollar_amount(refund.amount_cents),
+            amount_formatted: MoneyFormatter.format(refund.amount_cents, order.displayed_price_currency_type),
             reason: refund.reason,
             created_at: refund.created_at.as_json
           }
@@ -289,7 +289,7 @@ class Admin::OrdersController < Admin::BaseController
         affiliate: affiliate_credit ? {
           affiliate_user_email: affiliate_credit.affiliate_user&.email,
           affiliate_user_name: affiliate_credit.affiliate_user&.name,
-          amount_formatted: formatted_dollar_amount(affiliate_credit.amount_cents)
+          amount_formatted: MoneyFormatter.format(affiliate_credit.amount_cents, order.displayed_price_currency_type)
         } : nil,
         access: {
           has_download: order.url_redirect.present?,

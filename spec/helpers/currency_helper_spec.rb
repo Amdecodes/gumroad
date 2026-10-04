@@ -97,6 +97,8 @@ describe CurrencyHelper do
       expect(symbol_for(:mxn)).to eq "MX$"
       expect(symbol_for(:thb)).to eq "฿"
       expect(symbol_for(:sar)).to eq "SAR"
+      expect(symbol_for(:etb)).to eq "ETB"
+      expect(symbol_for).to eq "ETB"
     end
 
     it "soft-fails invalid currencies with the ISO code instead of relabeling them as USD" do
@@ -129,6 +131,8 @@ describe CurrencyHelper do
       expect(min_price_for(:thb)).to eq 3270
       expect(min_price_for(:idr)).to eq 1_743_007
       expect(min_price_for(:vnd)).to eq 25_618
+      expect(min_price_for(:etb)).to eq 100
+      expect(min_price_for).to eq 100
     end
 
     it "falls back to USD for unknown currency types" do
@@ -167,6 +171,7 @@ describe CurrencyHelper do
       expect(unit_scaling_factor("jpy")).to eq(1)
       expect(unit_scaling_factor("usd")).to eq(100)
       expect(unit_scaling_factor("gbp")).to eq(100)
+      expect(unit_scaling_factor("etb")).to eq(100)
     end
   end
 
@@ -193,6 +198,28 @@ describe CurrencyHelper do
       expect(format_just_price_in_cents(1250, "dkk")).to eq("12.50 kr")
       expect(format_just_price_in_cents(1699, "mxn")).to eq("MX$16.99")
       expect(format_just_price_in_cents(3270, "thb")).to eq("฿32.70")
+      expect(format_just_price_in_cents(15000, "etb")).to eq("150 ETB")
+      expect(format_just_price_in_cents(15050, "etb")).to eq("150.50 ETB")
+    end
+  end
+
+  describe "#formatted_etb_amount" do
+    it "formats minor units as ETB with two decimal places by default" do
+      expect(formatted_etb_amount(25000)).to eq("250.00 ETB")
+      expect(formatted_etb_amount(0)).to eq("0.00 ETB")
+      expect(formatted_etb_amount(15050)).to eq("150.50 ETB")
+    end
+
+    it "supports no_cents_if_whole option" do
+      expect(formatted_etb_amount(25000, no_cents_if_whole: true)).to eq("250 ETB")
+      expect(formatted_etb_amount(15050, no_cents_if_whole: true)).to eq("150.50 ETB")
+    end
+  end
+
+  describe "#display_amount" do
+    it "formats amount in ETB by default" do
+      expect(display_amount(15000)).to eq("150.00 ETB")
+      expect(display_amount(15000, :etb, no_cents_if_whole: true)).to eq("150 ETB")
     end
   end
 

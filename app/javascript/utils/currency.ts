@@ -23,7 +23,35 @@ type Currency = {
   minPriceCents: number;
 };
 
+export const DEFAULT_PLATFORM_CURRENCY: CurrencyCode = "etb";
+
 export const currencyCodeList: CurrencyCode[] = Object.keys(currenciesMap);
+
+export const formatMoney = (
+  amountCents: number,
+  currencyCode: CurrencyCode = DEFAULT_PLATFORM_CURRENCY,
+  options: { noCentsIfWhole?: boolean; symbolFormat?: "long" | "short" } = {},
+): string =>
+  formatPriceCentsWithCurrencySymbol(currencyCode, amountCents, {
+    symbolFormat: options.symbolFormat ?? "short",
+    noCentsIfWhole: options.noCentsIfWhole ?? false,
+  });
+
+export const formatCents = (
+  amountCents: number,
+  currencyCode: CurrencyCode = DEFAULT_PLATFORM_CURRENCY,
+  options: { noCentsIfWhole?: boolean } = {},
+): string => formatMoney(amountCents, currencyCode, options);
+
+export const formatCurrency = (
+  amountCents: number,
+  currencyCode: string = DEFAULT_PLATFORM_CURRENCY,
+  options: { noCentsIfWhole?: boolean } = {},
+): string => {
+  const lower = currencyCode.toLowerCase();
+  const code: CurrencyCode = isCurrencyCode(lower) ? lower : DEFAULT_PLATFORM_CURRENCY;
+  return formatMoney(amountCents, code, options);
+};
 
 // Narrows a currency code that came from outside the app (a cookie, a query parameter, a server
 // response) before it is used to index the currency table.

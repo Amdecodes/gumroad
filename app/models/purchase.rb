@@ -2195,8 +2195,10 @@ class Purchase < ApplicationRecord
     !displayed_price_currency_type.to_s.casecmp("usd").zero?
   end
 
+  attribute :displayed_price_currency_type, :string, default: "etb"
+
   def displayed_price_currency_type
-    self[:displayed_price_currency_type].to_sym
+    (self[:displayed_price_currency_type].presence || link&.price_currency_type.presence || "etb").to_sym
   end
 
   def shipping_information

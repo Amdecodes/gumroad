@@ -8,10 +8,20 @@ describe "config/currencies.json" do
     Rails.root.join("app/views/help_center/articles/contents/_46-what-currency-does-gumroad-use.html.erb").read
   end
 
-  it "keeps one 32-currency pricing list including EUR, KRW, TWD and the eight new buyer currencies" do
+  it "keeps one 33-currency pricing list including ETB, EUR, KRW, TWD and the eight new buyer currencies" do
     expect(CURRENCY_CHOICES.keys.map(&:to_s)).to eq(
-      %w[usd gbp eur jpy inr aud cad hkd sgd twd nzd brl zar chf ils php krw pln czk sek nok dkk mxn sar aed try cop ron thb myr vnd idr]
+      %w[etb usd gbp eur jpy inr aud cad hkd sgd twd nzd brl zar chf ils php krw pln czk sek nok dkk mxn sar aed try cop ron thb myr vnd idr]
     )
+  end
+
+  it "defines ETB with 100 santims and platform floor" do
+    expect(CURRENCY_CHOICES[:etb]).to eq(
+      "symbol" => "ETB",
+      "display_format" => "ETB (Ethiopian Birr)",
+      "min_price" => 100
+    )
+    expect(Currency::ETB).to eq("etb")
+    expect(Money::Currency.new("etb").subunit_to_unit).to eq(100)
   end
 
   it "defines VND in whole dong for pricing and Stripe charges" do

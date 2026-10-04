@@ -353,6 +353,15 @@ class User < ApplicationRecord
   validates :recommendation_type, inclusion: { in: User::RecommendationType::TYPES }
 
   validates :currency_type, inclusion: { in: CURRENCY_CHOICES.keys, message: "%{value} is not a supported currency." }
+  attribute :currency_type, :string, default: "etb"
+
+  def currency_type
+    super.presence || "etb"
+  end
+
+  def currency_type=(val)
+    super(val.present? ? val.to_s.downcase : "etb")
+  end
   validates :custom_fee_per_thousand, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1000 }
 
   validate :json_data, :json_data_must_be_hash
