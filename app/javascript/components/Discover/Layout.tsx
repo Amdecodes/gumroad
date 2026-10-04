@@ -10,6 +10,7 @@ import { useCurrentSeller } from "$app/components/CurrentSeller";
 import { Nav } from "$app/components/Discover/Nav";
 import { Search } from "$app/components/Discover/Search";
 import { useDomains } from "$app/components/DomainSettings";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Logo } from "$app/components/Logo";
 import { Avatar } from "$app/components/ui/Avatar";
 import { useIsAboveBreakpoint } from "$app/components/useIsAboveBreakpoint";
@@ -67,6 +68,7 @@ const DesktopHeaderRows: React.FC<HeaderRowElementsProps> = ({
       {logoLink}
       {searchBar}
       <div className="flex shrink-0 items-center space-x-4">
+        <LanguageToggle />
         {userActionButtons}
         {cartButton}
       </div>
@@ -89,6 +91,7 @@ const MobileHeaderRows: React.FC<HeaderRowElementsProps> = ({
     <div className="flex w-full items-center justify-between">
       {logoLink}
       <div className="flex items-center gap-4">
+        <LanguageToggle variant="compact" />
         {avatarElement}
         {cartButton}
       </div>

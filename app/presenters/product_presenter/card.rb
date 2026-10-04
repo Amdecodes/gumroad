@@ -45,7 +45,7 @@ class ProductPresenter::Card
       quantity_remaining: compute_inventory ? product.remaining_for_sale_count : nil,
       is_sales_limited: compute_inventory ? product.max_purchase_count? : false,
       price_cents:,
-      currency_code: product.price_currency_type.downcase,
+      currency_code: (product.price_currency_type.presence || Currency::ETB).downcase,
       **(buyer_currency_display.present? ? { buyer_currency_display: } : {}),
       **buyer_local_price_props(product:, original_price_cents:, buyer_currency_display:),
       is_pay_what_you_want: product.has_customizable_price_option?,

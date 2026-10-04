@@ -35,7 +35,7 @@ class Checkout::DiscountsPresenter
       products: offer_code.universal ? nil : offer_code.products.map { product_props_for(_1) },
       excluded_products: offer_code.universal ? offer_code.excluded_products.map { product_props_for(_1) } : [],
       limit: offer_code.max_purchase_count,
-      currency_type: offer_code.currency_type || Currency::USD,
+      currency_type: offer_code.currency_type || Currency::ETB,
       valid_at: offer_code.valid_at,
       expires_at: offer_code.expires_at,
       minimum_quantity: offer_code.minimum_quantity,

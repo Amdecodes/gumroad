@@ -29,6 +29,7 @@ import {
   getMinPriceCents,
 } from "$app/utils/currency";
 import { formatCallDate } from "$app/utils/date";
+import { t } from "$app/utils/i18n";
 import { applyOfferCodeToCents, discountAppliesToOption } from "$app/utils/offer-code";
 import { formatInstallmentPaymentSchedule } from "$app/utils/price";
 import { isSingleChargeDuration, recurrenceNames, recurrenceLabels, RecurrenceId } from "$app/utils/recurringPricing";
@@ -97,7 +98,7 @@ const PWYWInput = React.forwardRef<
     <div className="flex flex-col gap-2">
       {!hideLabel ? (
         <Label htmlFor={uid} className="text-base leading-snug font-bold">
-          Name a fair price:
+          {t("storefront.name_fair_price", undefined, "Name a fair price:")}
         </Label>
       ) : null}
       <Fieldset state={hasError ? "danger" : undefined} style={{ display: "block" }}>
@@ -114,7 +115,7 @@ const PWYWInput = React.forwardRef<
             onBlur();
           }}
           ref={ref}
-          {...(hideLabel ? { ariaLabel: "Name a fair price" } : {})}
+          {...(hideLabel ? { ariaLabel: t("storefront.name_fair_price", undefined, "Name a fair price") } : {})}
         />
       </Fieldset>
     </div>

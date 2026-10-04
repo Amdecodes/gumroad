@@ -32,7 +32,7 @@ class ProfileSectionsPresenter
     sections = query.to_a
 
     props = {
-      currency_code: pundit_user.user&.currency_type || Currency::USD,
+      currency_code: pundit_user.user&.currency_type || Currency::ETB,
       # Use the flag scope + `exists?` so this runs as `SELECT 1 ... LIMIT 1` in SQL.
       # The previous `.any?(&:display_product_reviews?)` loaded the seller's entire
       # alive catalog (full rows) into Ruby just to compute this one boolean, which

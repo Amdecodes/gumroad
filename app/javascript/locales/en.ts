@@ -59,6 +59,8 @@ export const en = {
     content: "Content",
     posts: "Posts",
     free: "Free",
+    name_fair_price: "Name a fair price:",
+    search_products: "Search products...",
   },
   admin: {
     title: "Admin Portal",

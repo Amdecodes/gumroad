@@ -58,6 +58,8 @@ export const am = {
     content: "ይዘት",
     posts: "ልጥፎች",
     free: "ነፃ",
+    name_fair_price: "ተመጣጣኝ ዋጋ ይጥቀሱ:",
+    search_products: "ምርቶችን ይፈልጉ...",
   },
   admin: {
     title: "የአስተዳዳሪ ፖርታል",

@@ -19,7 +19,7 @@ export const getCookieLocale = (): SupportedLocale => {
   if (typeof document === "undefined") return "en";
   const match = /(?:^|;\s*)locale=([^;]+)/u.exec(document.cookie);
   if (match) {
-    const val = match[1];
+    const val = match[1] ?? "";
     if (isSupportedLocale(val)) {
       return val;
     }

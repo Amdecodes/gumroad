@@ -5,6 +5,7 @@ import { classNames } from "$app/utils/classNames";
 
 import { useDomains } from "$app/components/DomainSettings";
 import { FooterCurrencySelector } from "$app/components/FooterCurrencySelector";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Logo } from "$app/components/Logo";
 
 // `currencySelector` defaults off because this footer is shared by pages that show no price at all
@@ -39,7 +40,10 @@ export const PoweredByFooter = ({
         </a>
       </div>
       {currencySelector ? (
-        <FooterCurrencySelector detectedCurrency={detectedCurrency ?? null} shownCurrency={shownCurrency} />
+        <div className="flex items-center gap-3">
+          <LanguageToggle variant="compact" />
+          <FooterCurrencySelector detectedCurrency={detectedCurrency ?? null} shownCurrency={shownCurrency} />
+        </div>
       ) : null}
       {/* The product page's buy bar is fixed over the end of the page on mobile; this reserves its
           height (0 anywhere else, and on desktop, where the bar is at the top). */}
