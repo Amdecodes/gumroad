@@ -51,6 +51,14 @@ generate_large_sellers_analytics_cache_worker:
 find_subscriptions_with_missing_charge_worker:
   cron: "0 */6 * * *" # Every 6 hours
   class: FindSubscriptionsWithMissingChargeWorker
+subscription_renewal_notifier_worker:
+  cron: "0 */6 * * *" # Every 6 hours
+  class: SubscriptionRenewalNotifierWorker
+  description: Scans subscriptions approaching expiration and issues renewal reminders
+subscription_grace_period_worker:
+  cron: "0 */6 * * *" # Every 6 hours
+  class: SubscriptionGracePeriodWorker
+  description: Scans subscriptions past their grace period and suspends access
 verify_custom_domains:
   cron: "0 */6 * * *" # Every 6 hours
   class: CustomDomainsVerificationWorker

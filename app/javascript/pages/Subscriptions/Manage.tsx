@@ -16,6 +16,7 @@ import { Discount } from "$app/parsers/checkout";
 import { CustomFieldDescriptor, ProductNativeType } from "$app/parsers/product";
 import {
   CurrencyCode,
+  formatCurrency,
   formatPriceCentsWithCurrencySymbol,
   formatUSDCentsWithExpandedCurrencySymbol,
   getMinPriceCents,
@@ -89,6 +90,11 @@ type Props = {
     is_gift: boolean;
     is_installment_plan: boolean;
     current_recurrence_available: boolean;
+    in_grace_period?: boolean;
+    grace_period_days_left?: number;
+    renewal_due?: boolean;
+    display_status_label?: string;
+    currency_code?: string;
   };
   contact_info: {
     email: string;
@@ -432,6 +438,32 @@ export default function SubscriptionsManage() {
     });
   };
 
+  const [isRenewing, setIsRenewing] = React.useState(false);
+
+  const handleRenew = async () => {
+    setIsRenewing(true);
+    try {
+      const response = await fetch(`/subscriptions/${subscription.id}/renew`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "",
+        },
+      });
+      const data = await response.json();
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        showAlert(data.error || "Unable to initiate renewal. Please try again.", "error");
+        setIsRenewing(false);
+      }
+    } catch {
+      showAlert("Network error while starting renewal.", "error");
+      setIsRenewing(false);
+    }
+  };
+
   const hasSavedCard = state.savedCreditCard != null;
   const isPendingFirstGifteePayment = subscription.is_gift && subscription.successful_purchases_count === 1;
   const formattedSubscriptionEndDate = parseISO(subscription.end_time_of_subscription).toLocaleDateString(undefined, {
@@ -451,8 +483,50 @@ export default function SubscriptionsManage() {
         <header>
           {`Manage ${subscriptionEntity}`}
           <h2 className="grow">{product.name}</h2>
+          {subscription.display_status_label ? (
+            <span
+              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                subscription.in_grace_period
+                  ? "bg-amber-100 text-amber-800"
+                  : subscription.renewal_due
+                    ? "bg-blue-100 text-blue-800"
+                    : subscription.alive
+                      ? "bg-green-100 text-green-800"
+                      : "bg-gray-100 text-gray-800"
+              }`}
+            >
+              {subscription.display_status_label}
+            </span>
+          ) : null}
         </header>
       </CardContent>
+
+      {subscription.renewal_due || subscription.in_grace_period ? (
+        <CardContent>
+          <Alert variant={subscription.in_grace_period ? "warning" : "info"} className="flex grow flex-col gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium">
+                  {subscription.in_grace_period
+                    ? `Your ${subscriptionEntity} is in a grace period (${subscription.grace_period_days_left ?? 0} days left) until ${formattedSubscriptionEndDate}.`
+                    : `Your ${subscriptionEntity} renewal is due on ${formattedSubscriptionEndDate}.`}
+                </p>
+                <p className="text-muted-foreground mt-0.5 text-xs">Renew now to ensure uninterrupted access.</p>
+              </div>
+              <Button
+                color="primary"
+                onClick={handleRenew}
+                disabled={isRenewing}
+                className="shrink-0 whitespace-nowrap"
+              >
+                {isRenewing
+                  ? "Redirecting..."
+                  : `Renew for ${formatCurrency(subscription.price, subscription.currency_code ?? "etb")}`}
+              </Button>
+            </div>
+          </Alert>
+        </CardContent>
+      ) : null}
 
       {!hasSavedCard && subscription.is_gift ? (
         <CardContent>

@@ -53,7 +53,10 @@ class MerchantAccount < ApplicationRecord
   scope :stripe_connect, -> { stripe.where("json_data->>'$.meta.stripe_connect' = 'true'").where.not(user_id: nil) } # Logic should match method `#is_a_stripe_connect_account?`
 
   def self.gumroad(charge_processor_id)
-    where(user_id: nil, charge_processor_id:).first
+    return nil if charge_processor_id.blank?
+
+    where(user_id: nil, charge_processor_id:).first ||
+      (find_or_create_by(user_id: nil, charge_processor_id: "chapa") if charge_processor_id.to_s == "chapa")
   end
 
   def is_managed_by_gumroad?

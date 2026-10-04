@@ -35,8 +35,8 @@ module Chapa
     # Initializes a Chapa transaction for a purchase.
     # Formats amount from integer santims (minor units) to decimal string (e.g. 25000 santims -> "250.00").
     # Generates collision-resistant tx_ref.
-    def initialize_transaction(purchase:, return_url:, callback_url:)
-      tx_ref = generate_tx_ref(purchase)
+    def initialize_transaction(purchase:, return_url:, callback_url:, tx_ref: nil, title: nil, description: nil)
+      tx_ref ||= generate_tx_ref(purchase)
       amount_cents = purchase.respond_to?(:price_in_currency_cents) ? purchase.price_in_currency_cents : (purchase.displayed_price_cents.presence || purchase.price_cents)
       amount_decimal = sprintf("%.2f", amount_cents / 100.0)
 
@@ -53,8 +53,8 @@ module Chapa
         tx_ref:,
         callback_url:,
         return_url:,
-        "customization[title]" => (purchase.link&.name.presence || "Product Purchase").truncate(50),
-        "customization[description]" => "Order #{purchase.external_id}"
+        "customization[title]" => (title.presence || purchase.link&.name.presence || "Product Purchase").truncate(50),
+        "customization[description]" => (description.presence || "Order #{purchase.external_id}")
       }
 
       response = http_client.post("transaction/initialize") do |req|

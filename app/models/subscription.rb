@@ -23,6 +23,8 @@ class Subscription < ApplicationRecord
 
   # time allowed after card declined for buyer to have a successful charge before ending the subscription
   ALLOWED_TIME_BEFORE_FAIL_AND_UNSUBSCRIBE = 5.days
+  GRACE_PERIOD = ALLOWED_TIME_BEFORE_FAIL_AND_UNSUBSCRIBE
+  RENEWAL_REMINDER_WINDOW = 3.days
   # time before subscription fails to send reminder about card declined
   CHARGE_DECLINED_REMINDER_EMAIL = 2.days
   # time before free trial expires to send reminder email
@@ -1225,17 +1227,98 @@ class Subscription < ApplicationRecord
 
   def end_time_of_subscription
     return free_trial_ends_at if free_trial_ends_at.present? && last_purchase&.is_free_trial_purchase?
-    return end_time_of_last_paid_period if end_time_of_last_paid_period.present? && end_time_of_last_paid_period > Time.current
-    return Time.current if purchases.last.chargedback_not_reversed_or_refunded? || last_purchase_at.nil?
+    return end_time_of_last_paid_period if end_time_of_last_paid_period.present?
+    return Time.current if purchases.last&.chargedback_not_reversed_or_refunded? || last_purchase_at.nil?
 
     last_purchase_at + period
   end
 
   def end_time_of_last_paid_period
-    if last_successful_not_reversed_or_refunded_charge_at.present?
-      last_successful_not_reversed_or_refunded_charge_at + period
+    charges = successful_purchases.not_fully_refunded.not_chargedback_or_chargedback_reversed.order(:created_at).to_a
+    return free_trial_ends_at if charges.empty?
+
+    current_end = nil
+    charges.each do |charge|
+      charge_period = charge.price.present? ? BasePrice::Recurrence.seconds_in_recurrence(charge.price.recurrence) : period
+      charge_anchor = charge.succeeded_at || charge.created_at
+
+      if current_end.nil?
+        current_end = charge_anchor + charge_period
+      elsif charge_anchor <= current_end + GRACE_PERIOD
+        current_end += charge_period
+      else
+        current_end = charge_anchor + charge_period
+      end
+    end
+
+    current_end
+  end
+
+  def current_period_ends_at
+    end_time_of_subscription
+  end
+
+  def valid_until
+    end_time_of_subscription
+  end
+
+  def in_grace_period?
+    return false if charges_completed? || in_free_trial?
+    return false unless alive?(include_pending_cancellation: false) || (overdue_for_charge? && deactivated_at.blank?)
+
+    overdue_for_charge? && (Time.current <= end_time_of_subscription + GRACE_PERIOD)
+  end
+
+  def renewal_due?
+    return false if charges_completed? || in_free_trial?
+    return true if in_grace_period?
+
+    alive?(include_pending_cancellation: false) && (end_time_of_subscription <= RENEWAL_REMINDER_WINDOW.from_now)
+  end
+
+  def grace_period_days_left
+    return 0 unless in_grace_period?
+
+    remaining_seconds = (end_time_of_subscription + GRACE_PERIOD) - Time.current
+    [((remaining_seconds / 1.day.to_f).ceil), 0].max
+  end
+
+  def display_status_label
+    if in_grace_period?
+      "Grace Period (#{grace_period_days_left} #{'day'.pluralize(grace_period_days_left)} left)"
+    elsif renewal_due?
+      "Renewal Due"
+    elsif alive?
+      "Active"
+    elsif failed_at.present? || deactivated_at.present?
+      "Past Due"
     else
-      free_trial_ends_at
+      status.humanize
+    end
+  end
+
+  def advance_renewal_period!(renewal_purchase)
+    with_lock do
+      return if renewal_purchase.successful?
+
+      self.failed_at = nil
+      self.deactivated_at = nil
+      self.ended_at = nil
+      self.cancelled_at = nil if cancelled_at.present? && cancelled_at <= Time.current
+      save!
+
+      Purchase::MarkSuccessfulService.new(renewal_purchase).perform
+    end
+  end
+
+  def expire_past_grace_period!
+    with_lock do
+      return unless alive?
+      return unless overdue_for_charge?
+      return if in_grace_period?
+
+      self.failed_at = Time.current
+      deactivate!
     end
   end
 

@@ -110,8 +110,9 @@ class User
       def gumroad_merchant_account_ids
         @_gumroad_merchant_account_ids ||= [
           MerchantAccount.gumroad(StripeChargeProcessor.charge_processor_id),
-          MerchantAccount.gumroad(BraintreeChargeProcessor.charge_processor_id)
-        ]
+          MerchantAccount.gumroad(BraintreeChargeProcessor.charge_processor_id),
+          MerchantAccount.gumroad("chapa")
+        ].compact.map(&:id)
       end
   end
 

@@ -1268,7 +1268,8 @@ class Purchase < ApplicationRecord
 
   def charged_using_gumroad_merchant_account?
     (merchant_account&.is_managed_by_gumroad?) ||
-        (stripe_charge_processor? && !charged_using_stripe_connect_account?)
+      chapa? ||
+      (stripe_charge_processor? && !charged_using_stripe_connect_account?)
   end
 
   def charged_using_stripe_connect_account?
@@ -1712,6 +1713,10 @@ class Purchase < ApplicationRecord
     charge_processor_id == "chapa"
   end
 
+  def merchant_account
+    super || (MerchantAccount.gumroad("chapa") if chapa?)
+  end
+
   def price_in_currency_cents
     displayed_price_cents.presence || price_cents
   end
@@ -2091,6 +2096,15 @@ class Purchase < ApplicationRecord
       self.purchase_success_balance = seller_balance_transaction.balance
       save! if purchase_success_balance_id != seller_balance_transaction.balance_id
       return
+    end
+
+    if chapa?
+      self.merchant_account ||= MerchantAccount.gumroad("chapa")
+      if flow_of_funds.nil?
+        currency = displayed_price_currency_type.to_s.upcase.presence || "ETB"
+        amount = respond_to?(:price_in_currency_cents) ? price_in_currency_cents : (displayed_price_cents.presence || price_cents)
+        self.flow_of_funds = FlowOfFunds.build_simple_flow_of_funds(currency, amount)
+      end
     end
 
     seller_issued_amount = BalanceTransaction::Amount.create_issued_amount_for_seller(

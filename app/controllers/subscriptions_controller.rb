@@ -3,13 +3,13 @@
 class SubscriptionsController < ApplicationController
   include PageMeta::Product
 
-  PUBLIC_ACTIONS = %i[manage unsubscribe_by_user].freeze
+  PUBLIC_ACTIONS = %i[manage unsubscribe_by_user renew].freeze
   before_action :authenticate_user!, except: PUBLIC_ACTIONS
   after_action :verify_authorized, except: PUBLIC_ACTIONS
 
   before_action :fetch_subscription, only: %i[unsubscribe_by_seller unsubscribe_by_user]
   before_action :set_noindex_header, only: [:manage]
-  before_action :check_can_manage, only: [:manage, :unsubscribe_by_user]
+  before_action :check_can_manage, only: [:manage, :unsubscribe_by_user, :renew]
 
   layout "inertia", only: [:manage]
 
@@ -28,6 +28,62 @@ class SubscriptionsController < ApplicationController
     redirect_to manage_subscription_path(@subscription.external_id), notice: "Your #{subscription_entity} has been cancelled."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to manage_subscription_path(@subscription.external_id), alert: e.message
+  end
+
+  def renew
+    unless @subscription.alive_or_restartable?
+      return render json: { error: "Subscription cannot be renewed" }, status: :unprocessable_entity
+    end
+
+    if @subscription.seller.suspended?
+      return render json: { error: "Seller account is suspended" }, status: :unprocessable_entity
+    end
+
+    price_santims = @subscription.current_subscription_price_cents
+    if price_santims <= 0
+      return render json: { error: "Invalid renewal price" }, status: :unprocessable_entity
+    end
+
+    tx_ref = "arifdrop-sub-renew-#{@subscription.id}-#{SecureRandom.hex(4)}"
+
+    purchase = @subscription.build_purchase(
+      override_params: {
+        processor: "chapa",
+        charge_processor_id: "chapa",
+        processor_transaction_id: tx_ref,
+        displayed_price_currency_type: "etb",
+        price_cents: price_santims,
+        displayed_price_cents: price_santims,
+        is_original_subscription_purchase: false
+      }
+    )
+    purchase.save!(validate: false)
+
+    callback_url = chapa_webhook_url
+    return_url = chapa_callback_purchase_url(purchase.id)
+
+    client = Chapa::Client.new
+    init_result = client.initialize_transaction(
+      purchase:,
+      return_url:,
+      callback_url:,
+      tx_ref:,
+      title: "Renewal: #{@subscription.link.name}".truncate(50),
+      description: "Subscription renewal for #{@subscription.external_id}"
+    )
+
+    if init_result[:success]
+      checkout_url = init_result[:checkout_url]
+      respond_to do |format|
+        format.html { redirect_to checkout_url, allow_other_host: true }
+        format.json { render json: { success: true, checkout_url:, tx_ref: } }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to manage_subscription_path(@subscription.external_id), alert: "Unable to initiate payment: #{init_result[:error]}" }
+        format.json { render json: { success: false, error: init_result[:error] }, status: :unprocessable_entity }
+      end
+    end
   end
 
   def manage

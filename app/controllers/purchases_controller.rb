@@ -92,14 +92,16 @@ class PurchasesController < ApplicationController
                   charge.processor_transaction_id = reference
                   charge.save!
                 end
-                Purchase::MarkSuccessfulService.new(p).perform
+
+                if p.subscription.present?
+                  p.subscription.lock!
+                  p.subscription.advance_renewal_period!(p)
+                else
+                  Purchase::MarkSuccessfulService.new(p).perform
+                end
               end
 
-              if @purchase.order.present?
-                @purchase.order.send_charge_receipts
-              else
-                SendPurchaseReceiptJob.perform_async(@purchase.id)
-              end
+              @purchase.order.send_charge_receipts if @purchase.order.present?
             end
           end
 

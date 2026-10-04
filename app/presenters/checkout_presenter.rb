@@ -310,6 +310,11 @@ class CheckoutPresenter
         payment_method_update_required: subscription.status == "payment_method_update_required",
         is_gift: subscription.gift?,
         is_installment_plan: subscription.is_installment_plan,
+        in_grace_period: subscription.in_grace_period?,
+        grace_period_days_left: subscription.grace_period_days_left,
+        renewal_due: subscription.renewal_due?,
+        display_status_label: subscription.display_status_label,
+        currency_code: (subscription.original_purchase&.displayed_price_currency_type.presence || product.currency_code).to_s.upcase,
         # False when the seller has retired the recurrence this buyer is on; the row is still
         # offered above only because it is theirs.
         current_recurrence_available: current_recurrence_alive,

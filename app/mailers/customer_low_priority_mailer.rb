@@ -170,6 +170,7 @@ class CustomerLowPriorityMailer < ApplicationMailer
     @date = @subscription.end_time_of_subscription.strftime("%B %e, %Y")
     original_purchase = @subscription.original_purchase
     @price = original_purchase.format_price_in_currency(@subscription.current_subscription_price_cents)
+    @edit_card_url = manage_subscription_url(@subscription.external_id, token: @subscription.token)
     @delivery_options = { reply_to: @subscription.seller.support_or_form_email }
   end
 
