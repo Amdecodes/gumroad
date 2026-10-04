@@ -3,9 +3,12 @@ import { router } from "@inertiajs/react";
 import * as React from "react";
 import { Line, XAxis, YAxis } from "recharts";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { AdminLayout } from "$app/components/Admin/AdminLayout";
 import useChartTooltip from "$app/components/Analytics/useChartTooltip";
 import { Chart, lineProps, xAxisProps, yAxisProps } from "$app/components/Chart";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Stats } from "$app/components/Stats";
 import { Card, CardContent } from "$app/components/ui/Card";
 import { PageHeader } from "$app/components/ui/PageHeader";
@@ -126,6 +129,7 @@ const TrendTooltip = ({ point }: { point: TrendPoint }) => (
 );
 
 export default function Overview({ metrics, needs_attention, sales_trend, recent_orders }: OverviewProps) {
+  const { t } = useTranslation();
   const selectedRange = sales_trend.selected_range;
 
   const handleRangeChange = (range: number) => {
@@ -159,8 +163,11 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Overview" showTitleOnMobile className="px-0 pt-0 pb-6">
-        <p className="text-sm text-muted">Platform health, key metrics, and operational overview</p>
+      <PageHeader title={t("admin.overview", undefined, "Overview")} showTitleOnMobile className="px-0 pt-0 pb-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">Platform health, key metrics, and operational overview</p>
+          <LanguageToggle />
+        </div>
       </PageHeader>
 
       {/* KPI Cards */}

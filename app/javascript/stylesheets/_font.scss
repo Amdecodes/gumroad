@@ -21,3 +21,9 @@
   font-weight: 700;
   font-style: italic;
 }
+
+/* Ethiopic Script Typography (Fidel Unicode U+1200-U+137F) */
+:lang(am), [lang="am"], .lang-am, .font-ethiopic {
+  font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", sans-serif;
+  line-height: 1.5; /* Prevents Fidel ascender/descender clipping */
+}

@@ -21,6 +21,7 @@ import {
   formatUSDCentsWithExpandedCurrencySymbol,
   getMinPriceCents,
 } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 import { recurrenceLabels, numberOfMonthsInRecurrence, RecurrenceId } from "$app/utils/recurringPricing";
 
 import { Button } from "$app/components/Button";
@@ -32,6 +33,7 @@ import {
   getTotalPrice,
 } from "$app/components/Checkout/payment";
 import { PaymentForm } from "$app/components/Checkout/PaymentForm";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import {
   Option,
   PriceSelection,
@@ -129,8 +131,11 @@ export default function SubscriptionsManage() {
   } = typia.assert<Props>(usePage().props);
 
   const url = new URL(useOriginalLocation());
+  const { t } = useTranslation();
 
-  const subscriptionEntity = subscription.is_installment_plan ? "installment plan" : "membership";
+  const subscriptionEntity = subscription.is_installment_plan
+    ? t("actions.manage_installment_plan", undefined, "installment plan")
+    : t("actions.manage_membership", undefined, "membership");
   const restartable = !subscription.alive || subscription.pending_cancellation;
   const isResubscribing =
     !subscription.alive && !subscription.pending_cancellation && !subscription.is_installment_plan;
@@ -451,11 +456,20 @@ export default function SubscriptionsManage() {
           "X-CSRF-Token": document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "",
         },
       });
-      const data = await response.json();
-      if (data.checkout_url) {
+      const data: unknown = await response.json();
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        "checkout_url" in data &&
+        typeof data.checkout_url === "string"
+      ) {
         window.location.href = data.checkout_url;
       } else {
-        showAlert(data.error || "Unable to initiate renewal. Please try again.", "error");
+        const errorMsg =
+          typeof data === "object" && data !== null && "error" in data && typeof data.error === "string"
+            ? data.error
+            : "Unable to initiate renewal. Please try again.";
+        showAlert(errorMsg, "error");
         setIsRenewing(false);
       }
     } catch {
@@ -480,24 +494,37 @@ export default function SubscriptionsManage() {
   return (
     <Card className="input-group mx-auto my-8 max-w-2xl">
       <CardContent asChild>
-        <header>
-          {`Manage ${subscriptionEntity}`}
-          <h2 className="grow">{product.name}</h2>
-          {subscription.display_status_label ? (
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                subscription.in_grace_period
-                  ? "bg-amber-100 text-amber-800"
-                  : subscription.renewal_due
-                    ? "bg-blue-100 text-blue-800"
-                    : subscription.alive
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              {subscription.display_status_label}
+        <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500">
+              {subscription.is_installment_plan
+                ? t("actions.manage_installment_plan", undefined, "Manage installment plan")
+                : t("actions.manage_membership", undefined, "Manage membership")}
             </span>
-          ) : null}
+            <LanguageToggle />
+          </div>
+          <div className="flex items-center gap-3">
+            <h2 className="grow">{product.name}</h2>
+            {subscription.display_status_label ? (
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  subscription.in_grace_period
+                    ? "bg-amber-100 text-amber-800"
+                    : subscription.renewal_due
+                      ? "bg-blue-100 text-blue-800"
+                      : subscription.alive
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {t(
+                  `subscriptions.statuses.${subscription.display_status_label}`,
+                  undefined,
+                  subscription.display_status_label,
+                )}
+              </span>
+            ) : null}
+          </div>
         </header>
       </CardContent>
 
@@ -508,20 +535,34 @@ export default function SubscriptionsManage() {
               <div>
                 <p className="text-sm font-medium">
                   {subscription.in_grace_period
-                    ? `Your ${subscriptionEntity} is in a grace period (${subscription.grace_period_days_left ?? 0} days left) until ${formattedSubscriptionEndDate}.`
+                    ? t(
+                        "subscriptions.grace_period_warning",
+                        { days: subscription.grace_period_days_left ?? 0 },
+                        `Your ${subscriptionEntity} is in a grace period (${subscription.grace_period_days_left ?? 0} days left) until ${formattedSubscriptionEndDate}.`,
+                      )
                     : `Your ${subscriptionEntity} renewal is due on ${formattedSubscriptionEndDate}.`}
                 </p>
-                <p className="text-muted-foreground mt-0.5 text-xs">Renew now to ensure uninterrupted access.</p>
+                <p className="text-muted-foreground mt-0.5 text-xs">
+                  {t("subscriptions.renewal_banner_title", undefined, "Renew now to ensure uninterrupted access.")}
+                </p>
               </div>
               <Button
                 color="primary"
-                onClick={handleRenew}
+                onClick={() => {
+                  void handleRenew();
+                }}
                 disabled={isRenewing}
-                className="shrink-0 whitespace-nowrap"
+                className="shrink-0 font-medium whitespace-nowrap"
               >
                 {isRenewing
-                  ? "Redirecting..."
-                  : `Renew for ${formatCurrency(subscription.price, subscription.currency_code ?? "etb")}`}
+                  ? t("checkout.redirecting", undefined, "Redirecting...")
+                  : t(
+                      "subscriptions.renew_now_for",
+                      {
+                        price: formatCurrency(subscription.price, subscription.currency_code ?? "etb"),
+                      },
+                      `Renew for ${formatCurrency(subscription.price, subscription.currency_code ?? "etb")}`,
+                    )}
               </Button>
             </div>
           </Alert>

@@ -19,6 +19,9 @@ import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
+import { useTranslation } from "$app/utils/i18n";
+
+import { LanguageToggle } from "$app/components/LanguageToggle";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -35,6 +38,7 @@ type NavItem = {
 };
 
 export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps) => {
+  const { t } = useTranslation();
   let activeUrl = currentPath;
   try {
     const page = usePage();
@@ -47,15 +51,39 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
   const activePath = (activeUrl || (typeof window !== "undefined" ? window.location.pathname : "/admin")).split("?")[0];
 
   const mainNavItems: NavItem[] = [
-    { label: "Overview", href: "/admin", icon: <HomeAlt2 className="size-5 shrink-0" /> },
-    { label: "Creators", href: "/admin/creators", icon: <User className="size-5 shrink-0" /> },
-    { label: "Products", href: "/admin/products", icon: <Store className="size-5 shrink-0" /> },
-    { label: "Orders", href: "/admin/orders", icon: <Cart className="size-5 shrink-0" /> },
+    {
+      label: t("admin.overview", undefined, "Overview"),
+      href: "/admin",
+      icon: <HomeAlt2 className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.creators", undefined, "Creators"),
+      href: "/admin/creators",
+      icon: <User className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.products", undefined, "Products"),
+      href: "/admin/products",
+      icon: <Store className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.orders", undefined, "Orders"),
+      href: "/admin/orders",
+      icon: <Cart className="size-5 shrink-0" />,
+    },
     { label: "Subscriptions", icon: <Repeat className="size-5 shrink-0" />, disabled: true },
-    { label: "Payouts", href: "/admin/payouts", icon: <DollarCircle className="size-5 shrink-0" /> },
+    {
+      label: t("admin.payouts", undefined, "Payouts"),
+      href: "/admin/payouts",
+      icon: <DollarCircle className="size-5 shrink-0" />,
+    },
     { label: "Customers", icon: <Group className="size-5 shrink-0" />, disabled: true },
     { label: "Marketing", icon: <Megaphone className="size-5 shrink-0" />, disabled: true },
-    { label: "Reports", href: "/admin/reports", icon: <BarChartBig className="size-5 shrink-0" /> },
+    {
+      label: t("admin.reports", undefined, "Reports"),
+      href: "/admin/reports",
+      icon: <BarChartBig className="size-5 shrink-0" />,
+    },
   ];
 
   const systemNavItems: NavItem[] = [
@@ -169,13 +197,17 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-white/15 p-4 dark:border-border">
+        <div className="shrink-0 space-y-3 border-t border-white/15 p-4 dark:border-border">
+          <div className="flex items-center justify-between px-3">
+            <span className="text-xs text-white/50">{t("actions.switch_language", undefined, "Language")}</span>
+            <LanguageToggle variant="dark" />
+          </div>
           <a
             href="/"
             className="flex items-center gap-2.5 rounded px-3 py-2 text-sm text-white/70 no-underline transition-colors hover:bg-white/10 hover:text-white"
           >
             <ArrowLeft className="size-4 shrink-0" />
-            <span>Back to store</span>
+            <span>{t("admin.exit_to_storefront", undefined, "Back to store")}</span>
           </a>
         </div>
       </aside>

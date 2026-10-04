@@ -234,7 +234,7 @@ $border-color: rgb(var(--parent-color) / var(--border-alpha));
 $backdrop-bg: rgba(0, 0, 0, 0.8);
 $border: solid $border-width $border-color;
 $outline: size(0.125) solid full-color(accent);
-$font-family: "ABC Favorit", Avenir, Montserrat, Corbel, "URW Gothic", source-sans-pro, sans-serif;
+$font-family: "ABC Favorit", "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", Avenir, Montserrat, Corbel, "URW Gothic", source-sans-pro, sans-serif;
 $form-element-padding-x: spacer(4);
 $form-element-padding-y: spacer(3);
 $form-element-font-size: 2;

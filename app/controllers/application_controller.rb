@@ -23,6 +23,8 @@ class ApplicationController < ActionController::Base
   MINTED_GUMROAD_GUID_ENV_KEY = "gumroad.minted_gumroad_guid"
 
   before_action :set_default_page_title
+  before_action :set_locale
+  helper_method :current_locale
   before_action :set_csrf_meta_tags
   before_action :set_default_meta_tags
   helper_method :erb_meta_tags, :page_title
@@ -458,5 +460,36 @@ class ApplicationController < ActionController::Base
 
     def set_recommender_model_name
       session[:recommender_model_name] = RecommendedProductsService::MODELS.sample unless RecommendedProductsService::MODELS.include?(session[:recommender_model_name])
+    end
+
+    def set_locale
+      resolved_locale = resolve_locale
+      I18n.locale = resolved_locale
+
+      if cookies[:locale] != resolved_locale.to_s
+        cookies[:locale] = {
+          value: resolved_locale.to_s,
+          expires: 1.year.from_now,
+          httponly: false
+        }
+      end
+
+      if logged_in_user.present? && logged_in_user.locale != resolved_locale.to_s && params[:locale].present?
+        logged_in_user.update_column(:locale, resolved_locale.to_s)
+      end
+    end
+
+    def resolve_locale
+      candidate = params[:locale].presence ||
+                  cookies[:locale].presence ||
+                  logged_in_user&.locale.presence ||
+                  I18n.default_locale
+
+      candidate_sym = candidate.to_s.downcase.to_sym
+      I18n.available_locales.include?(candidate_sym) ? candidate_sym : I18n.default_locale
+    end
+
+    def current_locale
+      I18n.locale.to_s
     end
 end

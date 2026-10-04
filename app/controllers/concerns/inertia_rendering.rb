@@ -15,7 +15,9 @@ module InertiaRendering
       RenderingExtension.custom_context(view_context).merge(
         authenticity_token: form_authenticity_token,
         flash: inertia_flash_props,
-        title: page_title
+        title: page_title,
+        locale: I18n.locale.to_s,
+        supported_locales: I18n.available_locales.map(&:to_s)
       )
     end
 

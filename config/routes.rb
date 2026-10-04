@@ -1324,6 +1324,8 @@ Rails.application.routes.draw do
     post "/grmc-webhook", to: "foreign_webhooks#grmc"
     post "/resend-webhook", to: "foreign_webhooks#resend"
     post "/webhooks/chapa", to: "webhooks/chapa#create", as: :chapa_webhook
+    match "/locale/:locale", to: "locales#update", via: %i[get post put], as: :switch_locale
+    post "/locale", to: "locales#update", as: :set_locale
 
     # secure redirect
     get "/secure_url_redirect", to: "secure_redirect#new", as: :secure_url_redirect

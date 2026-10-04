@@ -161,17 +161,20 @@ class CustomerLowPriorityMailer < ApplicationMailer
 
   def subscription_renewal_reminder(subscription_id)
     @subscription = Subscription.find(subscription_id)
-    @subject =
-      if @subscription.is_installment_plan?
-        "Upcoming installment payment reminder"
-      else
-        "Upcoming automatic membership renewal"
-      end
-    @date = @subscription.end_time_of_subscription.strftime("%B %e, %Y")
-    original_purchase = @subscription.original_purchase
-    @price = original_purchase.format_price_in_currency(@subscription.current_subscription_price_cents)
-    @edit_card_url = manage_subscription_url(@subscription.external_id, token: @subscription.token)
-    @delivery_options = { reply_to: @subscription.seller.support_or_form_email }
+    @recipient_locale = @subscription.user&.locale.presence || "en"
+    I18n.with_locale(@recipient_locale) do
+      @subject =
+        if @subscription.is_installment_plan?
+          I18n.t("mailers.subscription_renewal_reminder.installment_subject", default: "Upcoming installment payment reminder")
+        else
+          I18n.t("mailers.subscription_renewal_reminder.membership_subject", default: "Upcoming automatic membership renewal")
+        end
+      @date = @subscription.end_time_of_subscription.strftime("%B %e, %Y")
+      original_purchase = @subscription.original_purchase
+      @price = original_purchase.format_price_in_currency(@subscription.current_subscription_price_cents)
+      @edit_card_url = manage_subscription_url(@subscription.external_id, token: @subscription.token)
+      @delivery_options = { reply_to: @subscription.seller.support_or_form_email }
+    end
   end
 
   def subscription_price_change_notification(subscription_id:, email: nil, new_price:)
@@ -515,6 +518,9 @@ class CustomerLowPriorityMailer < ApplicationMailer
         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @subscription.original_purchase.seller, to: @subscription.email)
       }.merge(@delivery_options || {})
 
-      mail options
+      locale = @recipient_locale || @subscription&.user&.locale.presence || I18n.default_locale
+      I18n.with_locale(locale) do
+        mail options
+      end
     end
 end

@@ -11,6 +11,7 @@ import { assert } from "$app/utils/assert";
 import { readBuyerCurrencyPreference, writeBuyerCurrencyPreference } from "$app/utils/buyerCurrencyPreference";
 import { GST_ONLY_FALLBACK_PROVINCE, provinceForCanadianPostalCode } from "$app/utils/canadianPostalCodes";
 import { isValidEmail } from "$app/utils/email";
+import { t } from "$app/utils/i18n";
 import { calculateFirstInstallmentPaymentPriceCents } from "$app/utils/price";
 import { asyncVoid } from "$app/utils/promise";
 import { RecurrenceId } from "$app/utils/recurringPricing";
@@ -535,8 +536,13 @@ type Action =
 export function getPayLabel(state: State) {
   // A confirmation the buyer owes keeps the submit in `finished` so its retry can resubmit, but no
   // charge is in flight while they decide — "Processing..." there reads as a hung payment.
-  if (isProcessing(state) && !state.awaitingBuyerConfirmation) return "Processing...";
-  return state.payLabel ?? (requiresPayment(state) ? "Pay" : "Get");
+  if (isProcessing(state) && !state.awaitingBuyerConfirmation) {
+    return t("checkout.processing", undefined, "Processing...");
+  }
+  return (
+    state.payLabel ??
+    (requiresPayment(state) ? t("actions.pay", undefined, "Pay") : t("actions.get_access", undefined, "Get"))
+  );
 }
 
 export function usePayLabel() {

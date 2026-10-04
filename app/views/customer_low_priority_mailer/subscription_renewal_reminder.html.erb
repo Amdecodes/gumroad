@@ -1,20 +1,20 @@
 <% detail_style = "flex-grow:unset;flex:1;font-size:16px;" %>
 <div>
   <% if @subscription.is_installment_plan %>
-    <p>This is a reminder that your next installment payment of <%= @price %> for <%= @subscription.link.name %> will be charged on <%= @date %>.</p>
+    <p><%= t("mailers.subscription_renewal_reminder.installment_body", price: @price, product: @subscription.link.name, date: @date, default: "This is a reminder that your next installment payment of %{price} for %{product} will be charged on %{date}.") %></p>
   <% else %>
-    <p>This is a reminder that your membership to "<%= @subscription.link.name %>" will automatically renew on <%= @date %>.</p>
-    <p>You're paying <%= @price %>.</p>
+    <p><%= t("mailers.subscription_renewal_reminder.membership_body", product: @subscription.link.name, date: @date, default: "This is a reminder that your membership to \"%{product}\" will automatically renew on %{date}.") %></p>
+    <p><%= t("mailers.subscription_renewal_reminder.paying", price: @price, default: "You're paying %{price}.") %></p>
   <% end %>
 </div>
 <div>
   <% if @subscription.is_installment_plan %>
-    <%= link_to "Manage installment plan", @edit_card_url, class: "button primary" %>
+    <%= link_to t("actions.manage_installment_plan", default: "Manage installment plan"), @edit_card_url, class: "button primary" %>
   <% else %>
-    <%= link_to "Manage membership", @edit_card_url, class: "button primary" %>
+    <%= link_to t("actions.manage_membership", default: "Manage membership"), @edit_card_url, class: "button primary" %>
   <% end %>
 </div>
 <div>
-  <p>Questions about your product?</p>
-  <p>Contact <%= @subscription.link.user.display_name %> by replying to this email</p>
+  <p><%= t("mailers.subscription_renewal_reminder.questions", default: "Questions about your product?") %></p>
+  <p><%= t("mailers.subscription_renewal_reminder.contact_seller", seller: @subscription.link.user.display_name, default: "Contact %{seller} by replying to this email") %></p>
 </div>
