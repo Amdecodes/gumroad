@@ -169,8 +169,8 @@ class CustomersController < Sellers::BaseController
         search_options[:exclude_unreversed_chargedback] = true
       end
 
-      search_options[:price_greater_than] = get_usd_cents(current_seller.currency_type, minimum_amount_cents) if minimum_amount_cents.present?
-      search_options[:price_less_than] = get_usd_cents(current_seller.currency_type, maximum_amount_cents) if maximum_amount_cents.present?
+      search_options[:price_greater_than] = minimum_amount_cents.to_i if minimum_amount_cents.present?
+      search_options[:price_less_than] = maximum_amount_cents.to_i if maximum_amount_cents.present?
 
       search_options[:license_uses_greater_than_or_equal_to] = minimum_license_uses.to_i if minimum_license_uses.present?
 

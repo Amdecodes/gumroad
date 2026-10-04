@@ -321,8 +321,8 @@ class Purchase::HandleFailedRefundService
     def failed_affiliate_partial_refund_fee_cents(affiliate_credit)
       return 0 if affiliate_credit.fee_cents.to_i.zero?
 
-      affiliate_cut = affiliate_credit.basis_points / 10_000.0
-      (affiliate_cut * refund.fee_cents.to_i).floor
+      basis_points = affiliate_credit.basis_points
+      (refund.fee_cents.to_i * basis_points) / 10_000
     end
 
     # Recompute the purchase's refunded flags as if the failed refund never counted.

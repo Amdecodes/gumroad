@@ -46,6 +46,9 @@ type OrderSuccessResponse = {
   line_items: Record<LineItemUid, LineItemResponse>;
   can_buyer_sign_up: boolean;
   offer_codes: OfferCodes;
+  checkout_url?: string;
+  tx_ref?: string;
+  order_id?: string;
 };
 // #confirm may return `processing` for India e-mandate debits that stay processing for hours —
 // include it in the union or typia.assert misreports a scheduled debit as failure.
@@ -183,6 +186,10 @@ export const startOrderCreation = async (
     const response = await createOrder(requestData);
     if (!response.success) {
       return translateOrderFailureResponseIntoLineItemFailures(requestData, response, activeOfferCodes);
+    }
+    if (response.checkout_url) {
+      window.location.href = response.checkout_url;
+      return translateOrderSuccessIntoLineItemSuccess(response);
     }
     // A line that failed at creation has no purchase, so the confirm response cannot mention
     // it; keep its create-time failure or it becomes indistinguishable from a processing line.

@@ -2765,11 +2765,10 @@ class Purchase < ApplicationRecord
         affiliate_refund_cents = 0
         affiliate_refund_fee_cents = 0
       else
-        # We use decrement_amount_cents instead of seller_refund_cents here. This is because
-        # determine_affiliate_balance_cents makes use of displayed_price_cents and not payment_cents
-        affiliate_cut = affiliate_credit.basis_points / 10_000.0
-        affiliate_refund_fee_cents = affiliate_credit.fee_cents == 0 ? 0 : (affiliate_cut * refunded_fee_cents).floor
-        affiliate_refund_cents = (affiliate_cut * decrement_amount_cents).ceil - affiliate_refund_fee_cents
+        # Integer division in santims using basis points (10000 bp = 100%)
+        basis_points = affiliate_credit.basis_points
+        affiliate_refund_fee_cents = affiliate_credit.fee_cents == 0 ? 0 : (refunded_fee_cents * basis_points) / 10_000
+        affiliate_refund_cents = (decrement_amount_cents * basis_points) / 10_000 - affiliate_refund_fee_cents
         seller_refund_cents = seller_refund_cents - affiliate_refund_cents - affiliate_refund_fee_cents
       end
     end
@@ -4924,9 +4923,9 @@ class Purchase < ApplicationRecord
       return 0 if affiliate.nil?
       return 0 if affiliate.affiliate_user_id == seller_id
 
-      affiliate_cents = affiliate_cut * displayed_price_usd_cents
-      affiliate_cents -= determine_affiliate_fee_cents
-      affiliate_cents.floor
+      net_cents = displayed_price_cents - determine_affiliate_fee_cents
+      basis_points = affiliate.basis_points(product_id: link_id)
+      (net_cents * basis_points) / 10_000
     end
 
     def affiliate_cut
@@ -4935,7 +4934,9 @@ class Purchase < ApplicationRecord
 
     def determine_affiliate_fee_cents
       return 0 if fee_cents.blank? || (!affiliate.collaborator? && (seller.bears_affiliate_fee? || Feature.active?(:sellers_bear_affiliate_fees)))
-      affiliate_cut * fee_cents
+
+      basis_points = affiliate.basis_points(product_id: link_id)
+      (fee_cents * basis_points) / 10_000
     end
 
     # Private: truncate the referrer so that they fit in our mysql string column.
