@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SignedUrlHelper
-  SIGNED_S3_URL_VALID_FOR_MINIMUM = 10.minutes
+  SIGNED_S3_URL_VALID_FOR_MINIMUM = 30.minutes
   SIGNED_S3_URL_VALID_FOR_MAXIMUM = 3.hours
   SIGNED_VIDEO_URL_VALID_FOR = 12.hours
 

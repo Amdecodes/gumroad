@@ -525,6 +525,44 @@ class Rack::Attack
     end
   end
 
+  # ArifDrop launch rate limits
+  throttle("orders/ip", limit: 20, period: 60.seconds) do |req|
+    req.remote_ip if req.path == "/orders" && req.post?
+  end
+
+  throttle("orders/email", limit: 20, period: 60.seconds) do |req|
+    if req.path == "/orders" && req.post?
+      body_params = req.media_type&.include?("json") ? req.json_params : req.POST
+      request_params = body_params.is_a?(Hash) ? body_params.merge(req.GET) : req.GET
+      email = request_params["email"] || request_params.dig("order", "email")
+      email.to_s.strip.downcase.presence
+    end
+  rescue Rack::QueryParser::InvalidParameterError, TypeError, Rack::Multipart::EmptyContentError
+    nil
+  end
+
+  throttle("subscription_renew/ip", limit: 20, period: 60.seconds) do |req|
+    req.remote_ip if req.path.match?(%r{\A/subscriptions/[^/]+/renew\z}) && req.post?
+  end
+
+  throttle("webhooks_chapa/ip", limit: 120, period: 60.seconds) do |req|
+    req.remote_ip if req.path == "/webhooks/chapa" && req.post?
+  end
+
+  Rack::Attack.throttled_responder = lambda do |req|
+    match_data = req.env["rack.attack.match_data"]
+    now = match_data ? match_data[:epoch_time] : Time.now.to_i
+    period = match_data ? match_data[:period] : 60
+    retry_after = (period - (now % period)).to_s
+
+    headers = {
+      "Content-Type" => "application/json",
+      "Retry-After" => retry_after
+    }
+
+    [429, headers, [{ error: "Too Many Requests", message: "Rate limit exceeded. Please try again later." }.to_json]]
+  end
+
   # Do not throttle for health check requests
   safelist("allow from localhost", &:localhost?)
 end

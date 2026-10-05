@@ -524,12 +524,16 @@ class UrlRedirectsController < ApplicationController
 
       purchase = @url_redirect.purchase
 
-      if purchase && (purchase.stripe_refunded || (purchase.chargeback_date.present? && !purchase.chargeback_reversed))
-        # Every other way access ends here (rental expiry, revoked access, an inactive
-        # membership, a mismatched purchaser) answers with a redirect, and the buyer content
-        # page's background polls follow redirects. A refund or chargeback answered with a 404
-        # is the one case that does not move the buyer anywhere, so polls get the expired page.
-        return withdrawn_content_response
+      if purchase
+        if purchase.stripe_refunded || purchase.refunded? || (purchase.chargeback_date.present? && !purchase.chargeback_reversed)
+          return head :forbidden if action_name == "download_product_files"
+
+          return withdrawn_content_response
+        end
+
+        if purchase.purchase_state.in?(%w[pending failed]) || (!purchase.is_test_purchase? && purchase.paid? && !purchase.successful_and_not_reversed?(include_gift: true))
+          return head :forbidden
+        end
       end
 
       viewer_owns_subscription = viewer_owns_subscription?(purchase)

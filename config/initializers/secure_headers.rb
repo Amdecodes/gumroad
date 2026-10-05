@@ -115,6 +115,10 @@ SecureHeaders::Configuration.default do |config|
 
       # lottie - homepage (pinned version; no @latest)
       "unpkg.com/@lottiefiles/lottie-player@2.0.12/",
+
+      # chapa gateway
+      "api.chapa.co",
+      "checkout.chapa.co",
     ],
     script_src: [
       "'self'",

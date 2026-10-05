@@ -464,6 +464,9 @@ class OrdersController < ApplicationController
         return render_error("You cannot add more than #{Cart::MAX_ALLOWED_CART_PRODUCTS} products to the cart.")
       end
 
+      tamper_error = detect_parameter_tampering
+      return render json: { success: false, error_message: tamper_error }, status: :unprocessable_entity if tamper_error.present?
+
       # Don't allow the order to go through if cookies are disabled and it's a paid order
       contains_paid_purchase = if params[:line_items].present?
         params[:line_items].any? { |product_params| product_params[:perceived_price_cents] != "0" }
@@ -477,6 +480,44 @@ class OrdersController < ApplicationController
       if !skip_recaptcha? && !valid_checkout_recaptcha?
         render_error(recaptcha_failure_message, recaptcha_challenge_available: offer_recaptcha_challenge_fallback?)
       end
+    end
+
+    def detect_parameter_tampering
+      items = if params[:line_items].is_a?(Array)
+        params[:line_items]
+      elsif params[:line_items].is_a?(Hash) || params[:line_items].is_a?(ActionController::Parameters)
+        params[:line_items].values
+      elsif params[:permalink].present?
+        [params]
+      else
+        []
+      end
+
+      top_currency = params[:currency]
+      if top_currency.present? && top_currency.to_s.downcase != "etb" && Feature.inactive?(:stripe_payments)
+        return "Currency '#{top_currency}' is not supported. Please use ETB."
+      end
+
+      items.each do |item|
+        next unless item.is_a?(ActionController::Parameters) || item.is_a?(Hash)
+
+        price_val = item[:price_cents] || item[:price]
+        if price_val.present? && price_val.to_f.negative?
+          return "Invalid price: negative prices are not allowed."
+        end
+
+        currency = item[:currency]
+        if currency.present? && currency.to_s.downcase != "etb" && Feature.inactive?(:stripe_payments)
+          return "Currency '#{currency}' is not supported. Please use ETB."
+        end
+
+        product = Link.find_by(unique_permalink: item[:permalink]) if item[:permalink].present?
+        if product && product.price_cents.to_i.positive? && price_val.present? && price_val.to_f.zero? && item[:discount_code].blank? && !item[:is_gift]
+          return "Invalid price: product is not free."
+        end
+      end
+
+      nil
     end
 
     def valid_checkout_recaptcha?
