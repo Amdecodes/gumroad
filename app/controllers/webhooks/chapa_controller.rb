@@ -64,6 +64,8 @@ module Webhooks
         purchases_to_finalize.each do |p|
           p.stripe_transaction_id = reference
           p.charge_processor_id = "chapa"
+          p.calculate_fees if p.fee_cents.nil?
+          p.fee_cents ||= 0
           if (charge = p.charge)
             charge.processor = "chapa"
             charge.processor_transaction_id = reference

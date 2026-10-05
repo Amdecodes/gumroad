@@ -54,9 +54,12 @@ class SubscriptionsController < ApplicationController
         displayed_price_currency_type: "etb",
         price_cents: price_santims,
         displayed_price_cents: price_santims,
+        total_transaction_cents: price_santims,
         is_original_subscription_purchase: false
       }
     )
+    purchase.calculate_fees
+    purchase.fee_cents ||= 0
     purchase.save!(validate: false)
 
     callback_url = chapa_webhook_url

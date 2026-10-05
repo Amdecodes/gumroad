@@ -5499,6 +5499,7 @@ class Purchase < ApplicationRecord
       self.fee_cents = variable_fee_cents + fixed_fee_cents
       self.affiliate_credit_cents = determine_affiliate_balance_cents
     end
+    public :calculate_fees
 
     def calculate_additional_discover_fee_per_thousand
       if is_recurring_subscription_charge || is_updated_original_subscription_purchase
