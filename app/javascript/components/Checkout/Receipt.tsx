@@ -331,7 +331,8 @@ export const Receipt = ({
                 // cardParamsResult — reading it crashes the whole receipt view (#5784).
                 state.status.paymentMethod.type === "not-applicable" ||
                 state.status.paymentMethod.type === "saved" ||
-                state.status.paymentMethod.type === "payment-element-client-confirm"
+                state.status.paymentMethod.type === "payment-element-client-confirm" ||
+                state.status.paymentMethod.type === "chapa"
                   ? null
                   : state.status.paymentMethod.cardParamsResult.cardParams,
             }}

@@ -12,6 +12,12 @@ class Api::Internal::AiProductDetailsGenerationsController < Api::Internal::Base
   private_constant :AI_REQUESTS_PER_PERIOD, :AI_REQUESTS_PERIOD_WINDOW
 
   def create
+    unless Feature.active?(:ai_features, current_seller)
+      skip_authorization
+      render json: { success: false, error: "AI features are disabled." }, status: :not_found
+      return
+    end
+
     authorize current_seller, :generate_product_details_with_ai?
 
     prompt = sanitize_prompt(params[:prompt].to_s)

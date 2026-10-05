@@ -119,6 +119,9 @@ class Checkout::StripePaymentPresenter
         # switched Link off in checkout settings.
         stripe_link_enabled: !link_disabled_for_cart?,
         elements_options: nil,
+        stripe_payments_enabled: Feature.active?(:stripe_payments),
+        paypal_payments_enabled: Feature.active?(:paypal_payments),
+        chapa_payments_enabled: Feature.active?(:chapa_payments),
       }
     end
 
@@ -135,6 +138,9 @@ class Checkout::StripePaymentPresenter
         # rollout flag, so the client never has to reconcile the two fields.
         payment_element_wallets: payment_element_wallets? && !disable_wallets,
         flat_payment_methods: flat_payment_methods?(disable_wallets),
+        stripe_payments_enabled: Feature.active?(:stripe_payments),
+        paypal_payments_enabled: Feature.active?(:paypal_payments),
+        chapa_payments_enabled: Feature.active?(:chapa_payments),
         elements_options: {
           stripe_elements_mode:,
           currency: "usd",
@@ -334,6 +340,9 @@ class Checkout::StripePaymentPresenter
         # off no matter what the rollout flag says — the client never has to reconcile the two.
         payment_element_wallets: payment_element_wallets? && !disable_wallets,
         flat_payment_methods: flat_payment_methods?(disable_wallets),
+        stripe_payments_enabled: Feature.active?(:stripe_payments),
+        paypal_payments_enabled: Feature.active?(:paypal_payments),
+        chapa_payments_enabled: Feature.active?(:chapa_payments),
         elements_options:,
       }
     end

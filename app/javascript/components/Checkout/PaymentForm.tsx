@@ -35,6 +35,7 @@ import { PurchasePaymentMethod } from "$app/data/purchase";
 import { assert, assertDefined } from "$app/utils/assert";
 import { classNames } from "$app/utils/classNames";
 import { checkEmailForTypos as checkEmailForTyposUtil } from "$app/utils/email";
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 
 import { Button } from "$app/components/Button";
@@ -1783,6 +1784,11 @@ const FlatPayPalRow = () => {
   );
 };
 
+const getIsChapaOnly = (state: ReturnType<typeof useState>[0]) =>
+  state.checkoutPayment?.chapa_payments_enabled !== false &&
+  (state.checkoutPayment?.stripe_payments_enabled === false ||
+    state.products.some((p) => p.currencyCode?.toLowerCase() === "etb"));
+
 const PaymentMethodsSection = ({
   isPayPalAvailable,
   isTestPurchase,
@@ -1790,7 +1796,27 @@ const PaymentMethodsSection = ({
   isPayPalAvailable: boolean;
   isTestPurchase: boolean;
 }) => {
-  const [state] = useState();
+  const [state, dispatch] = useState();
+  const isChapaOnly = getIsChapaOnly(state);
+
+  if (isChapaOnly) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3 rounded border border-border bg-body p-4">
+          <span className="font-medium">{t("checkout.pay_with_chapa", undefined, "Pay with Chapa")}</span>
+        </div>
+        <Button
+          color="primary"
+          onClick={() => dispatch({ type: "offer" })}
+          disabled={isSubmitDisabled(state)}
+          className="w-full"
+        >
+          {t("checkout.pay_with_chapa", undefined, "Pay with Chapa")}
+        </Button>
+      </div>
+    );
+  }
+
   const suppressClientConfirmWallets = shouldSuppressClientConfirmWallets(state);
   // The Payment Request Button is disabled when the Payment Element renders wallets itself
   // (payment_element_wallets — see antiwork/gumroad#5768): showing both would give the buyer two
@@ -1966,9 +1992,15 @@ export const PaymentForm = ({
     invalidInput.focus({ preventScroll: true });
   }, [state.status.type, state.validationFailedCount]);
 
+  const isChapaOnly = getIsChapaOnly(state);
+
   React.useEffect(() => {
-    if (state.status.type === "starting" && isFreePurchase) {
-      dispatch({ type: "set-payment-method", paymentMethod: { type: "not-applicable" } });
+    if (state.status.type === "starting") {
+      if (isFreePurchase) {
+        dispatch({ type: "set-payment-method", paymentMethod: { type: "not-applicable" } });
+      } else if (isChapaOnly) {
+        dispatch({ type: "set-payment-method", paymentMethod: { type: "chapa" } });
+      }
     }
 
     if (state.status.type === "captcha") {
@@ -1992,7 +2024,7 @@ export const PaymentForm = ({
           });
       }
     }
-  }, [state.status.type]);
+  }, [state.status.type, isFreePurchase, isChapaOnly]);
 
   const isPayPalAvailable = useIsPayPalAvailable();
 
@@ -2009,9 +2041,13 @@ export const PaymentForm = ({
             <div className="flex grow flex-col gap-4">
               <SharedInputs />
               <h4 className="text-base sm:text-lg">Pay with</h4>
-              <StripeElementsProvider>
-                <PaymentMethodsSection isPayPalAvailable={isPayPalAvailable} isTestPurchase={!!isTestPurchase} />
-              </StripeElementsProvider>
+              {isChapaOnly ? (
+                <PaymentMethodsSection isPayPalAvailable={false} isTestPurchase={!!isTestPurchase} />
+              ) : (
+                <StripeElementsProvider>
+                  <PaymentMethodsSection isPayPalAvailable={isPayPalAvailable} isTestPurchase={!!isTestPurchase} />
+                </StripeElementsProvider>
+              )}
             </div>
           </CardContent>
           {notice ? (

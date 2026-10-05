@@ -3,6 +3,14 @@
 module Feature
   extend self
 
+  DEFAULT_FLAGS = {
+    chapa_payments: true,
+    stripe_payments: false,
+    paypal_payments: false,
+    ai_features: false,
+    advanced_us_tax: false,
+  }.freeze
+
   def activate(feature_name)
     Flipper.enable(feature_name)
   end
@@ -38,7 +46,11 @@ module Feature
   def active?(feature_name, actor = nil)
     return Marketing::Eligibility.enabled_for?(actor) if feature_name.to_sym == :auto_marketing && actor
 
-    Flipper.enabled?(feature_name, actor)
+    sym = feature_name.to_sym
+    return Flipper.enabled?(sym, actor) if Flipper.exist?(sym)
+    return DEFAULT_FLAGS[sym] if DEFAULT_FLAGS.key?(sym)
+
+    Flipper.enabled?(sym, actor)
   end
 
   def inactive?(feature_name, actor = nil)

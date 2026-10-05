@@ -612,7 +612,7 @@ class SettingsPresenter
     def user_details(user_compliance_info)
       # Memoize: evaluated for both need_full_ssn and has_outstanding_full_ssn_requirement below,
       # and each call re-queries — a second query could see a request marked provided in between.
-      outstanding_full_ssn_requirement = has_outstanding_full_ssn_requirement?
+      outstanding_full_ssn_requirement = Feature.active?(:advanced_us_tax) && has_outstanding_full_ssn_requirement?
       {
         country_supports_native_payouts: seller.native_payouts_supported?,
         no_payout_rail_in_country: seller.no_payout_rail_in_compliance_country?,
@@ -621,26 +621,26 @@ class SettingsPresenter
         country_code: user_compliance_info.legal_entity_country_code,
         payout_currency: Country.new(user_compliance_info.legal_entity_country_code).payout_currency,
         is_from_europe: seller.signed_up_from_europe?,
-        individual_tax_id_needed_countries: [Compliance::Countries::USA.alpha2,
-                                             Compliance::Countries::CAN.alpha2,
-                                             Compliance::Countries::HKG.alpha2,
-                                             Compliance::Countries::SGP.alpha2,
-                                             Compliance::Countries::ARE.alpha2,
-                                             Compliance::Countries::MEX.alpha2,
-                                             Compliance::Countries::BGD.alpha2,
-                                             Compliance::Countries::MOZ.alpha2,
-                                             Compliance::Countries::URY.alpha2,
-                                             Compliance::Countries::ARG.alpha2,
-                                             Compliance::Countries::PER.alpha2,
-                                             Compliance::Countries::CRI.alpha2,
-                                             Compliance::Countries::CHL.alpha2,
-                                             Compliance::Countries::COL.alpha2,
-                                             Compliance::Countries::GTM.alpha2,
-                                             Compliance::Countries::DOM.alpha2,
-                                             Compliance::Countries::BOL.alpha2,
-                                             Compliance::Countries::KAZ.alpha2,
-                                             Compliance::Countries::PRY.alpha2,
-                                             Compliance::Countries::PAK.alpha2],
+        individual_tax_id_needed_countries: Feature.active?(:advanced_us_tax) ? [Compliance::Countries::USA.alpha2,
+                                                                                 Compliance::Countries::CAN.alpha2,
+                                                                                 Compliance::Countries::HKG.alpha2,
+                                                                                 Compliance::Countries::SGP.alpha2,
+                                                                                 Compliance::Countries::ARE.alpha2,
+                                                                                 Compliance::Countries::MEX.alpha2,
+                                                                                 Compliance::Countries::BGD.alpha2,
+                                                                                 Compliance::Countries::MOZ.alpha2,
+                                                                                 Compliance::Countries::URY.alpha2,
+                                                                                 Compliance::Countries::ARG.alpha2,
+                                                                                 Compliance::Countries::PER.alpha2,
+                                                                                 Compliance::Countries::CRI.alpha2,
+                                                                                 Compliance::Countries::CHL.alpha2,
+                                                                                 Compliance::Countries::COL.alpha2,
+                                                                                 Compliance::Countries::GTM.alpha2,
+                                                                                 Compliance::Countries::DOM.alpha2,
+                                                                                 Compliance::Countries::BOL.alpha2,
+                                                                                 Compliance::Countries::KAZ.alpha2,
+                                                                                 Compliance::Countries::PRY.alpha2,
+                                                                                 Compliance::Countries::PAK.alpha2] : [],
         individual_tax_id_entered: user_compliance_info.individual_tax_id.present?,
         individual_tax_id_last_four: tax_id_last_four(user_compliance_info.individual_tax_id),
         individual_tax_id_is_last_four: tax_id_is_last_four_only?(user_compliance_info.individual_tax_id),
@@ -743,7 +743,7 @@ class SettingsPresenter
 
       {
         show_bank_account: seller.can_setup_bank_payouts?,
-        show_paypal: seller.can_setup_paypal_payouts?,
+        show_paypal: Feature.active?(:paypal_payments) && seller.can_setup_paypal_payouts?,
         card_data_handling_mode: CardDataHandlingMode.get_card_data_handling_mode(seller),
         is_a_card: bank_account.is_a?(CardBankAccount),
         card: bank_account.is_a?(CardBankAccount) ? {
@@ -777,7 +777,7 @@ class SettingsPresenter
 
     def stripe_connect
       {
-        has_connected_stripe: seller.stripe_connect_account.present?,
+        has_connected_stripe: Feature.active?(:stripe_payments) && seller.stripe_connect_account.present?,
         stripe_connect_account_id: seller.stripe_connect_account&.charge_processor_merchant_id,
         stripe_disconnect_allowed: seller.stripe_disconnect_allowed?,
         supported_countries_help_text: "This feature is available in <a href='https://stripe.com/en-in/global'>all countries where Stripe operates</a>, except India, Indonesia, Malaysia, Mexico, Philippines, and Thailand.",

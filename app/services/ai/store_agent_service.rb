@@ -752,6 +752,8 @@ class Ai::StoreAgentService
   # @param messages [Array<Hash>] prior conversation, each { role: "user"|"assistant", content: String }
   # @return [Hash] { reply: String, proposed_action: Hash|nil, objects: Array<Hash> }
   def respond(messages:)
+    raise Error, "AI features are disabled" unless Feature.active?(:ai_features, @seller)
+
     conversation = build_conversation(messages)
     proposed_action = nil
     # Display objects collected from the read calls this turn, rendered inline as cards in the chat.

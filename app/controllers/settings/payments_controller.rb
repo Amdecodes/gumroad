@@ -77,7 +77,7 @@ class Settings::PaymentsController < Settings::BaseController
       end
     end
 
-    if Compliance::Countries::USA.common_name == compliance_info.legal_entity_country
+    if Feature.active?(:advanced_us_tax) && Compliance::Countries::USA.common_name == compliance_info.legal_entity_country
       zip_code = params.dig(:user, params.dig(:user, :is_business) ? :business_zip_code : :zip_code).presence
       if zip_code
         unless UsZipCodes.identify_state_code(zip_code).present?
@@ -86,7 +86,7 @@ class Settings::PaymentsController < Settings::BaseController
       end
     end
 
-    military_zip_field = military_zip_fields(compliance_info).first
+    military_zip_field = Feature.active?(:advanced_us_tax) ? military_zip_fields(compliance_info).first : nil
     if military_zip_field
       # Stripe rejects military ZIP codes in the background, after the save has already looked successful.
       return redirect_with_error(MILITARY_ZIP_MESSAGE, field: military_zip_field)
@@ -118,7 +118,7 @@ class Settings::PaymentsController < Settings::BaseController
     # would create the account from that ZIP, it rolls back. Later saves send updates to Stripe and must not roll back.
     create_stripe_account = false
     military_zip_field = nil
-    with_transaction_if(current_seller.stripe_account.blank? && current_seller.stripe_connect_account.blank? && stored_military_zip_field(compliance_info).present?) do
+    with_transaction_if(Feature.active?(:stripe_payments) && current_seller.stripe_account.blank? && current_seller.stripe_connect_account.blank? && stored_military_zip_field(compliance_info).present?) do
       current_seller.tos_agreements.create!(ip: request.remote_ip)
 
       return unless update_payout_method
@@ -149,7 +149,7 @@ class Settings::PaymentsController < Settings::BaseController
       # record a false audit entry.
       log_payout_settings_update_by_non_owner if payout_preference_params.to_h.any?
 
-      create_stripe_account = current_seller.active_bank_account && current_seller.native_payouts_supported? && current_seller.stripe_connect_account.blank? && !StripeMerchantAccountManager.blocks_new_managed_account?(current_seller)
+      create_stripe_account = Feature.active?(:stripe_payments) && current_seller.active_bank_account && current_seller.native_payouts_supported? && current_seller.stripe_connect_account.blank? && !StripeMerchantAccountManager.blocks_new_managed_account?(current_seller)
       if create_stripe_account
         military_zip_field = stored_military_zip_field(current_seller.fetch_or_build_user_compliance_info)
         raise ActiveRecord::Rollback if military_zip_field

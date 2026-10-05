@@ -471,6 +471,7 @@ class CheckoutPresenter
     # bundle withholds the quote token. Charge::CreateService also ignores quote tokens after
     # resolving a non-Stripe charge so an older bundle cannot strand a PayPal checkout.
     def supports_paypal(product)
+      return false unless Feature.active?(:paypal_payments)
       return if Feature.active?(:disable_paypal_sales)
       return if Feature.active?(:disable_nsfw_paypal_connect_sales) && product.rated_as_adult?
 

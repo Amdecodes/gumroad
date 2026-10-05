@@ -256,7 +256,7 @@ describe("pay label while a confirmation holds the submit open", () => {
   const charging = state({ status: { type: "finished", paymentMethod: { type: "saved" } } as const });
 
   it("reads as a charge in progress while the request is in flight", () => {
-    expect(getPayLabel(charging)).toBe("Processing...");
+    expect(getPayLabel(charging)).toBe("Processing payment with Chapa...");
   });
 
   it("reads as Pay again while the checkout waits on the buyer's own confirmation", () => {

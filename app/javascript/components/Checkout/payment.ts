@@ -152,6 +152,9 @@ export type CheckoutPaymentConfig =
       // unless the seller switched Link off in checkout settings.
       stripe_link_enabled: boolean;
       elements_options: null;
+      stripe_payments_enabled?: boolean;
+      paypal_payments_enabled?: boolean;
+      chapa_payments_enabled?: boolean;
     }
   | {
       integration: "payment_element";
@@ -162,6 +165,9 @@ export type CheckoutPaymentConfig =
       payment_element_wallets: boolean;
       flat_payment_methods: boolean;
       elements_options: PaymentElementConfig;
+      stripe_payments_enabled?: boolean;
+      paypal_payments_enabled?: boolean;
+      chapa_payments_enabled?: boolean;
     }
   | {
       integration: "payment_element_client_confirm";
@@ -173,6 +179,9 @@ export type CheckoutPaymentConfig =
       payment_element_wallets: boolean;
       flat_payment_methods: boolean;
       elements_options: PaymentElementClientConfirmConfig;
+      stripe_payments_enabled?: boolean;
+      paypal_payments_enabled?: boolean;
+      chapa_payments_enabled?: boolean;
     };
 
 export type Product = {
@@ -182,6 +191,7 @@ export type Product = {
   creator: Creator;
   quantity: number;
   price: number;
+  currencyCode?: string | undefined;
   // The selected pre-discount subtotal in the product's listed currency. Recurring UPI uses it
   // to detect price or quantity edits that no longer match the server-rendered INR Element
   // amount while allowing a limited discount to change only today's charge.

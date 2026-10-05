@@ -24,9 +24,30 @@ class OrdersController < ApplicationController
       params: order_params
     ).perform
 
-    is_chapa_order = (order.purchases.any? { _1.displayed_price_currency_type.to_s.downcase == "etb" } && params[:processor] != "stripe") ||
-                     params[:processor] == "chapa" ||
-                     params[:payment_method] == "chapa"
+    stripe_active = Feature.active?(:stripe_payments)
+    paypal_active = Feature.active?(:paypal_payments)
+    chapa_active = Feature.active?(:chapa_payments)
+
+    if !stripe_active && (params[:processor] == "stripe" || params[:payment_method] == "stripe" || params[:payment_method] == "card" || params[:stripe_payment_method_id].present?)
+      return render json: {
+        success: false,
+        error_message: "Card payments via Stripe are currently disabled. Please checkout using Chapa."
+      }, status: :unprocessable_entity
+    end
+
+    if !paypal_active && (params[:processor] == "paypal" || params[:payment_method] == "paypal")
+      return render json: {
+        success: false,
+        error_message: "PayPal payments are currently disabled. Please checkout using Chapa."
+      }, status: :unprocessable_entity
+    end
+
+    is_chapa_order = chapa_active && (
+      order.purchases.any? { _1.displayed_price_currency_type.to_s.downcase == "etb" } ||
+      params[:processor] == "chapa" ||
+      params[:payment_method] == "chapa" ||
+      !stripe_active
+    )
 
     if is_chapa_order && order.purchases.any?(&:in_progress?)
       primary_purchase = order.purchases.detect { _1.in_progress? && _1.price_cents > 0 } || order.purchases.first
@@ -119,6 +140,13 @@ class OrdersController < ApplicationController
 
   # Starts client-confirm Payment Element checkout by returning an unconfirmed PaymentIntent.
   def prepare
+    unless Feature.active?(:stripe_payments)
+      return render json: {
+        success: false,
+        error_message: "Stripe payments are currently disabled. Please checkout using Chapa."
+      }, status: :unprocessable_entity
+    end
+
     # The ConfirmationToken is deliberately absent from permitted_order_params: only this endpoint
     # accepts it, so #create requests can never carry one. It is merged here so purchase creation
     # can record the client-confirm lane in the purchase's payment-flow analytics row.

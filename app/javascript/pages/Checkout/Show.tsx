@@ -447,6 +447,7 @@ const CheckoutIndexPage = () => {
         uid: getCartItemUid(item),
         name: item.product.name,
         creator: item.product.creator,
+        currencyCode: item.product.currency_code,
         requireShipping: item.product.require_shipping,
         supportsPaypal: item.product.supports_paypal,
         paypalCardFundingDisabled: item.product.paypal_card_funding_disabled,

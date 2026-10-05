@@ -5566,6 +5566,7 @@ class Purchase < ApplicationRecord
     def calculate_taxes
       return unless self.price_cents
       return if price_cents == 0
+      return if Feature.inactive?(:advanced_us_tax) || displayed_price_currency_type.to_s.downcase == "etb"
       return unless tax_location_valid?
       return if seller.has_brazilian_stripe_connect_account?
 

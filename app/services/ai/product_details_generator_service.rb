@@ -21,6 +21,8 @@ class Ai::ProductDetailsGeneratorService
   MAX_PROMPT_LENGTH = 500
 
   def initialize(current_seller:)
+    raise StandardError, "AI features are disabled" unless Feature.active?(:ai_features, current_seller)
+
     @current_seller = current_seller
   end
 

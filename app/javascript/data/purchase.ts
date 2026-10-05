@@ -12,6 +12,7 @@ import { ProductToAdd } from "$app/components/Checkout/cartState";
 export type PurchasePaymentMethod =
   | AnyPaymentMethodResult
   | { type: "not-applicable" }
+  | { type: "chapa" }
   // Client-confirm cards live in the ConfirmationToken sent to #prepare. walletType is set when
   // a wallet (Apple Pay / Google Pay) paid through the Payment Element, for server analytics.
   //
@@ -141,7 +142,7 @@ export const getPaymentDetailsSource = (
   usedStripePaymentElement: boolean,
 ): PaymentDetailsSource | null => {
   if (paymentMethod.type === "saved") return "saved_payment_method";
-  if (paymentMethod.type === "not-applicable") return null;
+  if (paymentMethod.type === "not-applicable" || paymentMethod.type === "chapa") return null;
   // Client-confirm always collects card details through the Payment Element.
   if (paymentMethod.type === "payment-element-client-confirm") return "payment_element";
   switch (paymentMethod.cardParamsResult.type) {
@@ -358,9 +359,15 @@ export const createPurchasesRequestData = (
     data.wallet_type = payload.paymentMethod.walletType;
   }
 
+  if (payload.paymentMethod.type === "chapa") {
+    data.payment_method = "chapa";
+    data.processor = "chapa";
+  }
+
   if (
     payload.paymentMethod.type !== "saved" &&
     payload.paymentMethod.type !== "not-applicable" &&
+    payload.paymentMethod.type !== "chapa" &&
     payload.paymentMethod.type !== "payment-element-client-confirm"
   ) {
     const { cardParamsResult } = payload.paymentMethod;

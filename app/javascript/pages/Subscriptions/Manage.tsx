@@ -367,7 +367,8 @@ export default function SubscriptionsManage() {
         state.status.paymentMethod.type === "saved" ||
         // Client-confirm never occurs here: UPI registration is an acquisition-only checkout
         // lane, so subscription management only sees server-confirm methods.
-        state.status.paymentMethod.type === "payment-element-client-confirm"
+        state.status.paymentMethod.type === "payment-element-client-confirm" ||
+        state.status.paymentMethod.type === "chapa"
           ? null
           : state.status.paymentMethod.cardParamsResult.cardParams,
       recaptchaResponse: state.status.recaptchaResponse ?? null,

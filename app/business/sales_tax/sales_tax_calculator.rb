@@ -34,6 +34,8 @@ class SalesTaxCalculator
   def calculate
     return SalesTaxCalculation.zero_tax(price_cents) if price_cents == 0
 
+    return SalesTaxCalculation.zero_tax(price_cents) if Feature.inactive?(:advanced_us_tax) || product&.price_currency_type.to_s.downcase == "etb"
+
     return SalesTaxCalculation.zero_tax(price_cents) if product.user.has_brazilian_stripe_connect_account?
 
     return SalesTaxCalculation.zero_business_vat(price_cents) if is_vat_id_valid?
