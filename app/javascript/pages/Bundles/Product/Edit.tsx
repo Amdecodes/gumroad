@@ -10,7 +10,7 @@ import {
   CUSTOM_BUTTON_TEXT_OPTIONS,
   RatingsWithPercentages,
 } from "$app/parsers/product";
-import { CurrencyCode, currencyCodeList, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
 
 import { BundleEditLayout, useProductUrl } from "$app/components/BundleEdit/Layout";
 import { ProductPreview } from "$app/components/BundleEdit/ProductPreview";
@@ -399,14 +399,6 @@ export default function BundlesProductEdit() {
             setSuggestedPriceCents={(suggestedPriceCents) => form.setData("suggested_price_cents", suggestedPriceCents)}
             setIsPWYW={(isPWYW) => form.setData("customizable_price", isPWYW)}
             currencyType={form.data.price_currency_type}
-            currencyCodeSelector={{
-              options: currencyCodeList,
-              onChange: (currencyCode) => {
-                // The discount was computed from totals in the previous currency.
-                setDiscountPercent(null);
-                form.setData("price_currency_type", currencyCode);
-              },
-            }}
             eligibleForInstallmentPlans={bundle.eligible_for_installment_plans}
             allowInstallmentPlan={form.data.allow_installment_plan}
             numberOfInstallments={form.data.installment_plan?.number_of_installments ?? null}

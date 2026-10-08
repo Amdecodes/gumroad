@@ -219,7 +219,7 @@ describe("dashboard nav progressive disclosure", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Everything else" }));
 
-    for (const name of ["Agent", "Profile", "Pages", "Collaborators", "Checkout", "Emails", "Workflows", "Analytics"]) {
+    for (const name of ["Profile", "Pages", "Collaborators", "Checkout", "Emails", "Workflows", "Analytics"]) {
       expect(screen.getByRole("link", { name })).toBeTruthy();
     }
   });

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Settings::AdvancedController < Settings::BaseController
+  before_action :ensure_enabled
   before_action :authorize
 
   def show
@@ -82,5 +83,9 @@ class Settings::AdvancedController < Settings::BaseController
 
     def authorize
       super([:settings, :advanced, current_seller])
+    end
+
+    def ensure_enabled
+      redirect_to settings_main_path unless Flipper.enabled?(:advanced_settings)
     end
 end

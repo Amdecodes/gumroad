@@ -164,6 +164,15 @@ export const formatMinorUnitPriceWithIntl = (
   const currencyFractionDigits = new Intl.NumberFormat("en-US", { style: "currency", currency }).resolvedOptions()
     .maximumFractionDigits;
   const fractionDigits = Number.isInteger(units) && noCentsIfWhole ? 0 : currencyFractionDigits;
+
+  if (currency === "ETB") {
+    const formatted = units.toLocaleString("en-US", {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    });
+    return `${formatted} ETB`;
+  }
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

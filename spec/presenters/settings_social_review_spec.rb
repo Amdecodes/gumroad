@@ -12,6 +12,7 @@ describe SettingsPresenter, "optional social connections for account review" do
   end
 
   before do
+    Flipper.enable(:social_connections)
     create(:user_compliance_info, user: seller, country: "United States")
     Feature.deactivate(:youtube_connect)
     Feature.deactivate(:instagram_connect)

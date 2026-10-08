@@ -7,15 +7,17 @@ export function formatPrice(
   { noCentsIfWhole }: { noCentsIfWhole: boolean },
 ): string {
   precision = noCentsIfWhole && price % 1 === 0 ? 0 : precision;
+  const formattedNumber = price.toLocaleString("en-US", {
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+  });
+
+  if (currencySymbol === "ETB" || currencySymbol === "etb") {
+    return `${formattedNumber} ETB`;
+  }
+
   const separator = currencySymbol && /^[A-Z]{3}$/u.test(currencySymbol) ? " " : "";
-  return (
-    currencySymbol +
-    separator +
-    price.toLocaleString(undefined, {
-      minimumFractionDigits: precision,
-      maximumFractionDigits: precision,
-    })
-  );
+  return currencySymbol + separator + formattedNumber;
 }
 
 export function priceCentsToUnit(cents: number, isSingleUnit: boolean): number {

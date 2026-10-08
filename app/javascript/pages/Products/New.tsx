@@ -7,7 +7,7 @@ import typia from "typia";
 import { RecurringProductType } from "$app/data/products";
 import { ProductNativeType, ProductServiceType } from "$app/parsers/product";
 import { classNames } from "$app/utils/classNames";
-import { CurrencyCode, currencyCodeList, findCurrencyByCode } from "$app/utils/currency";
+import { CurrencyCode, findCurrencyByCode } from "$app/utils/currency";
 import {
   RecurrenceId,
   durationInMonthsToRecurrenceId,
@@ -108,7 +108,7 @@ const NewProductPage = () => {
     link: {
       name: "",
       price_range: "",
-      price_currency_type: current_seller_currency_code,
+      price_currency_type: current_seller_currency_code || "etb",
       native_type: "digital",
       is_physical: false,
       is_recurring_billing: false,
@@ -415,26 +415,8 @@ const NewProductPage = () => {
                 </FieldsetTitle>
 
                 <InputGroup>
-                  <Pill asChild className="relative -ml-2 shrink-0 cursor-pointer">
-                    <Label>
-                      <span>{selectedCurrency.longSymbol}</span>
-                      <TypeSafeOptionSelect
-                        onChange={(newCurrencyCode) => {
-                          form.setData("link.price_currency_type", newCurrencyCode);
-                        }}
-                        value={form.data.link.price_currency_type}
-                        aria-label="Currency"
-                        options={currencyCodeList.map((code) => {
-                          const { displayFormat } = findCurrencyByCode(code);
-                          return {
-                            id: code,
-                            label: displayFormat,
-                          };
-                        })}
-                        className="absolute inset-0 z-1 m-0! cursor-pointer opacity-0"
-                      />
-                      <ChevronDown className="ml-auto size-5" />
-                    </Label>
+                  <Pill className="relative -ml-2 shrink-0">
+                    <span>{selectedCurrency.longSymbol}</span>
                   </Pill>
 
                   <Input

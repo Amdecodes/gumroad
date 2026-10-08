@@ -19,10 +19,30 @@ class OrdersController < ApplicationController
   def create
     order_params = build_order_params
 
+    # Enforce ETB single currency: reject non-ETB checkouts before creating records
+    line_items = order_params[:line_items] || []
+    if line_items.any?
+      product_permalinks = line_items.map { _1[:permalink] }.compact
+      foreign_products = Link.where(unique_permalink: product_permalinks).where.not(price_currency_type: "etb")
+      if foreign_products.exists?
+        return render json: {
+          success: false,
+          error_message: "Only ETB currency is supported for checkout."
+        }, status: :unprocessable_entity
+      end
+    end
+
     order, purchase_responses, offer_codes = Order::CreateService.new(
       buyer: logged_in_user,
       params: order_params
     ).perform
+
+    if order.purchases.any? { _1.displayed_price_currency_type.to_s.downcase != "etb" }
+      return render json: {
+        success: false,
+        error_message: "Only ETB currency is supported for checkout."
+      }, status: :unprocessable_entity
+    end
 
     stripe_active = Feature.active?(:stripe_payments)
     paypal_active = Feature.active?(:paypal_payments)

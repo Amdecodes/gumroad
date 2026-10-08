@@ -129,9 +129,9 @@ describe("formatMinorUnitPriceWithIntl", () => {
   });
 
   it("formats ETB amounts with Intl correctly", () => {
-    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100)).toBe("ETB\u00A0150");
-    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100, { noCentsIfWhole: false })).toBe("ETB\u00A0150.00");
-    expect(formatMinorUnitPriceWithIntl("etb", 25_050, 100)).toBe("ETB\u00A0250.50");
+    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100)).toBe("150 ETB");
+    expect(formatMinorUnitPriceWithIntl("etb", 15_000, 100, { noCentsIfWhole: false })).toBe("150.00 ETB");
+    expect(formatMinorUnitPriceWithIntl("etb", 25_050, 100)).toBe("250.50 ETB");
   });
 });
 
@@ -143,9 +143,9 @@ describe("central money formatting helpers", () => {
   });
 
   it("formatMoney formats ETB by default with two decimals", () => {
-    expect(formatMoney(15_000)).toBe("ETB 150.00");
-    expect(formatMoney(25_050)).toBe("ETB 250.50");
-    expect(formatMoney(15_000, "etb", { noCentsIfWhole: true })).toBe("ETB 150");
+    expect(formatMoney(15_000)).toBe("150.00 ETB");
+    expect(formatMoney(25_050)).toBe("250.50 ETB");
+    expect(formatMoney(15_000, "etb", { noCentsIfWhole: true })).toBe("150 ETB");
   });
 
   it("formatMoney supports other currencies when specified", () => {
@@ -154,13 +154,13 @@ describe("central money formatting helpers", () => {
   });
 
   it("formatCents is an alias of formatMoney", () => {
-    expect(formatCents(15_000)).toBe("ETB 150.00");
-    expect(formatCents(15_000, "etb", { noCentsIfWhole: true })).toBe("ETB 150");
+    expect(formatCents(15_000)).toBe("150.00 ETB");
+    expect(formatCents(15_000, "etb", { noCentsIfWhole: true })).toBe("150 ETB");
   });
 
   it("formatCurrency parses string codes and defaults to ETB for invalid ones", () => {
-    expect(formatCurrency(15_000, "ETB")).toBe("ETB 150.00");
+    expect(formatCurrency(15_000, "ETB")).toBe("150.00 ETB");
     expect(formatCurrency(15_000, "usd")).toBe("$150.00");
-    expect(formatCurrency(15_000, "invalid_code")).toBe("ETB 150.00");
+    expect(formatCurrency(15_000, "invalid_code")).toBe("150.00 ETB");
   });
 });

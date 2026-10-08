@@ -37,7 +37,7 @@ FactoryBot.define do
         stripe_transaction_id ? StripeChargeProcessor.charge_processor_id : nil
       end
     end
-    merchant_account { stripe_transaction_id ? MerchantAccount.gumroad(charge_processor_id) : nil }
+    merchant_account { stripe_transaction_id ? (MerchantAccount.gumroad(charge_processor_id) || MerchantAccount.find_or_create_by!(user_id: nil, charge_processor_id:)) : nil }
     purchase_state { "successful" }
     succeeded_at { Time.current }
     flow_of_funds { FlowOfFunds.build_simple_flow_of_funds(Currency::USD, total_transaction_cents) }

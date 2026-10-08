@@ -1,0 +1,129 @@
+# Docker Compose configuration for ArifDrop production deployment
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      - RAILS_ENV=production
+      - RACK_ENV=production
+      - PORT=3000
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - arifdrop_network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      - RAILS_ENV=production
+      - RACK_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+    networks:
+      - arifdrop_network
+
+  db:
+    image: mysql:8.4.11
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME:-arifdrop_production}
+      MYSQL_USER: ${DATABASE_USERNAME:-arifdrop}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-arifdrop_password}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-arifdrop_root_password}
+    command:
+      - "mysqld"
+      - "--mysql-native-password=ON"
+      - "--authentication-policy=*:mysql_native_password"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--character-set-server=utf8mb4"
+    volumes:
+      - mysql_production_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - arifdrop_network
+
+  redis:
+    image: redis:7.0.7
+    restart: always
+    command: ["redis-server", "--appendonly", "yes", "--databases", "16"]
+    volumes:
+      - redis_production_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - arifdrop_network
+
+  minio:
+    image: minio/minio:latest
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_production_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - arifdrop_network
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/production.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/app/public:ro
+      - nginx_ssl_certs:/etc/nginx/ssl:ro
+    depends_on:
+      web:
+        condition: service_healthy
+    networks:
+      - arifdrop_network
+
+networks:
+  arifdrop_network:
+    driver: bridge
+
+volumes:
+  mysql_production_data:
+  redis_production_data:
+  minio_production_data:
+  nginx_ssl_certs:

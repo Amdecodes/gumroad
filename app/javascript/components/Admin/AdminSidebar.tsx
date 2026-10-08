@@ -71,14 +71,26 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
       href: "/admin/orders",
       icon: <Cart className="size-5 shrink-0" />,
     },
-    { label: "Subscriptions", icon: <Repeat className="size-5 shrink-0" />, disabled: true },
+    {
+      label: t("admin.subscriptions", undefined, "Subscriptions"),
+      href: "/admin/subscriptions",
+      icon: <Repeat className="size-5 shrink-0" />,
+    },
     {
       label: t("admin.payouts", undefined, "Payouts"),
       href: "/admin/payouts",
       icon: <DollarCircle className="size-5 shrink-0" />,
     },
-    { label: "Customers", icon: <Group className="size-5 shrink-0" />, disabled: true },
-    { label: "Marketing", icon: <Megaphone className="size-5 shrink-0" />, disabled: true },
+    {
+      label: t("admin.customers", undefined, "Customers"),
+      href: "/admin/customers",
+      icon: <Group className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.marketing", undefined, "Marketing"),
+      href: "/admin/marketing",
+      icon: <Megaphone className="size-5 shrink-0" />,
+    },
     {
       label: t("admin.reports", undefined, "Reports"),
       href: "/admin/reports",

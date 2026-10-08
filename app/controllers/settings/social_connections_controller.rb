@@ -3,6 +3,7 @@
 class Settings::SocialConnectionsController < Settings::BaseController
   include SocialConnectReturn
 
+  before_action :ensure_enabled
   before_action :authorize
 
   def show
@@ -14,5 +15,9 @@ class Settings::SocialConnectionsController < Settings::BaseController
   private
     def authorize
       super([:settings, :social_connections])
+    end
+
+    def ensure_enabled
+      redirect_to settings_main_path unless Flipper.enabled?(:social_connections)
     end
 end

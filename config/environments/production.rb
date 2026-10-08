@@ -22,8 +22,8 @@ Rails.application.configure do
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
 
-  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
-  config.public_file_server.enabled = false
+  # Serve static files when RAILS_SERVE_STATIC_FILES is set, otherwise delegate to NGINX.
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present? || false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   config.asset_host = "#{PROTOCOL}://#{ASSET_DOMAIN}"
@@ -91,6 +91,6 @@ Rails.application.configure do
   #   "example.com",     # Allow requests from example.com
   #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   # ]
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Skip DNS rebinding protection for the health check endpoints.
+  config.host_authorization = { exclude: ->(request) { request.path.in?(["/up", "/health"]) } }
 end

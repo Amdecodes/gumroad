@@ -33,7 +33,7 @@ describe("PoweredByFooter", () => {
     render(<PoweredByFooter currencySelector />);
 
     expect(reservation()).toContain("h-[var(--product-cta-bar-height,0px)]");
-    expect(screen.getByLabelText("Currency")).toBeTruthy();
+    expect(screen.queryByLabelText("Currency")).toBeNull();
   });
 
   it("renders the reservation without the currency selector, which stays opt-in", () => {

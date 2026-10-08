@@ -1316,14 +1316,6 @@ const Form = ({
                 discount={discount}
                 setDiscount={setDiscount}
                 currencyCode={currencyCode}
-                currencyCodeSelector={
-                  universal
-                    ? {
-                        options: [...new Set(products.map(({ currency_type }) => currency_type))],
-                        onChange: setCurrencyCode,
-                      }
-                    : undefined
-                }
                 disableFixedAmount={
                   discount.type === "percent" &&
                   !universal &&

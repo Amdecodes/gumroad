@@ -48,6 +48,15 @@ namespace :admin do
     end
   end
 
+  resources :subscriptions, only: [:index, :show] do
+    member do
+      post :cancel
+    end
+  end
+
+  resources :customers, only: [:index, :show]
+
+  get "marketing", to: "marketing#index"
   get "reports", to: "reports#index"
 
   constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do

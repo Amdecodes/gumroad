@@ -13,7 +13,17 @@ describe SettingsPresenter do
 
   describe "#pages" do
     context "with owner as logged in user" do
-      it "returns correct pages" do
+      it "returns correct pages for ArifDrop launch" do
+        expect(presenter.pages).to eq(
+          %w(main team payments billing password)
+        )
+      end
+
+      it "includes advanced, analytics, and social pages when feature flags are enabled" do
+        Flipper.enable(:social_connections)
+        Flipper.enable(:third_party_analytics)
+        Flipper.enable(:advanced_settings)
+
         expect(presenter.pages).to eq(
           %w(main team payments billing password social_connections third_party_analytics advanced)
         )
@@ -37,7 +47,16 @@ describe SettingsPresenter do
         create(:team_membership, user:, seller:, role: TeamMembership::ROLE_ADMIN)
       end
 
-      it "returns correct pages" do
+      it "returns correct pages for ArifDrop launch" do
+        expect(presenter.pages).to eq(
+          %w(main team payments)
+        )
+      end
+
+      it "includes analytics and advanced pages when feature flags are enabled" do
+        Flipper.enable(:third_party_analytics)
+        Flipper.enable(:advanced_settings)
+
         expect(presenter.pages).to eq(
           %w(main team payments third_party_analytics advanced)
         )
@@ -390,7 +409,7 @@ describe SettingsPresenter do
   end
 
   describe "#password_props" do
-    let(:settings_pages) { %w(main team payments billing password social_connections third_party_analytics advanced) }
+    let(:settings_pages) { presenter.pages }
 
     context "when seller is registered using a social provider" do
       before do
@@ -502,7 +521,7 @@ describe SettingsPresenter do
                                                                   scopes: oauth_application1.scopes,
                                                                   id: oauth_application1.external_id,
                                                                 }],
-                                                                settings_pages: %w(main team payments billing authorized_applications password social_connections third_party_analytics advanced),
+                                                                settings_pages: presenter.pages,
                                                               })
       end
     end
@@ -525,7 +544,7 @@ describe SettingsPresenter do
                                                                   scopes: oauth_application1.scopes,
                                                                   id: oauth_application1.external_id,
                                                                 }],
-                                                                settings_pages: %w(main team payments billing authorized_applications password social_connections third_party_analytics advanced),
+                                                                settings_pages: presenter.pages,
                                                               })
       end
     end
@@ -561,7 +580,7 @@ describe SettingsPresenter do
                                                                 scopes: oauth_application1.scopes,
                                                                 id: oauth_application1.external_id,
                                                               }],
-                                                              settings_pages: %w(main team payments billing authorized_applications password social_connections third_party_analytics advanced),
+                                                              settings_pages: presenter.pages,
                                                             })
     end
 
@@ -700,7 +719,7 @@ describe SettingsPresenter do
         ip_country_code: nil,
         bank_account_details: {
           show_bank_account: false,
-          show_paypal: true,
+          show_paypal: false,
           card_data_handling_mode: "stripejs.0",
           is_a_card: false,
           card: nil,
@@ -722,26 +741,26 @@ describe SettingsPresenter do
           payout_currency: nil,
           is_from_europe: false,
           need_full_ssn: false,
-          individual_tax_id_needed_countries: [Compliance::Countries::USA.alpha2,
-                                               Compliance::Countries::CAN.alpha2,
-                                               Compliance::Countries::HKG.alpha2,
-                                               Compliance::Countries::SGP.alpha2,
-                                               Compliance::Countries::ARE.alpha2,
-                                               Compliance::Countries::MEX.alpha2,
-                                               Compliance::Countries::BGD.alpha2,
-                                               Compliance::Countries::MOZ.alpha2,
-                                               Compliance::Countries::URY.alpha2,
-                                               Compliance::Countries::ARG.alpha2,
-                                               Compliance::Countries::PER.alpha2,
-                                               Compliance::Countries::CRI.alpha2,
-                                               Compliance::Countries::CHL.alpha2,
-                                               Compliance::Countries::COL.alpha2,
-                                               Compliance::Countries::GTM.alpha2,
-                                               Compliance::Countries::DOM.alpha2,
-                                               Compliance::Countries::BOL.alpha2,
-                                               Compliance::Countries::KAZ.alpha2,
-                                               Compliance::Countries::PRY.alpha2,
-                                               Compliance::Countries::PAK.alpha2],
+          individual_tax_id_needed_countries: (Feature.active?(:advanced_us_tax) ? [Compliance::Countries::USA.alpha2,
+                                                                                    Compliance::Countries::CAN.alpha2,
+                                                                                    Compliance::Countries::HKG.alpha2,
+                                                                                    Compliance::Countries::SGP.alpha2,
+                                                                                    Compliance::Countries::ARE.alpha2,
+                                                                                    Compliance::Countries::MEX.alpha2,
+                                                                                    Compliance::Countries::BGD.alpha2,
+                                                                                    Compliance::Countries::MOZ.alpha2,
+                                                                                    Compliance::Countries::URY.alpha2,
+                                                                                    Compliance::Countries::ARG.alpha2,
+                                                                                    Compliance::Countries::PER.alpha2,
+                                                                                    Compliance::Countries::CRI.alpha2,
+                                                                                    Compliance::Countries::CHL.alpha2,
+                                                                                    Compliance::Countries::COL.alpha2,
+                                                                                    Compliance::Countries::GTM.alpha2,
+                                                                                    Compliance::Countries::DOM.alpha2,
+                                                                                    Compliance::Countries::BOL.alpha2,
+                                                                                    Compliance::Countries::KAZ.alpha2,
+                                                                                    Compliance::Countries::PRY.alpha2,
+                                                                                    Compliance::Countries::PAK.alpha2] : []),
           individual_tax_id_entered: false,
           individual_tax_id_last_four: nil,
           individual_tax_id_is_last_four: false,
@@ -888,35 +907,40 @@ describe SettingsPresenter do
 
     context "when seller is from the US" do
       before do
+        Flipper.enable(:stripe_payments)
+        Flipper.enable(:advanced_us_tax)
+        Flipper.enable(:social_connections)
         @user_compliance_info = create(:user_compliance_info, user: seller)
 
         @user_details = @base_props[:user].merge({
                                                    country_supports_native_payouts: true,
                                                    country_code: "US",
                                                    payout_currency: "usd",
-                                                   individual_tax_id_needed_countries: [Compliance::Countries::USA.alpha2,
-                                                                                        Compliance::Countries::CAN.alpha2,
-                                                                                        Compliance::Countries::HKG.alpha2,
-                                                                                        Compliance::Countries::SGP.alpha2,
-                                                                                        Compliance::Countries::ARE.alpha2,
-                                                                                        Compliance::Countries::MEX.alpha2,
-                                                                                        Compliance::Countries::BGD.alpha2,
-                                                                                        Compliance::Countries::MOZ.alpha2,
-                                                                                        Compliance::Countries::URY.alpha2,
-                                                                                        Compliance::Countries::ARG.alpha2,
-                                                                                        Compliance::Countries::PER.alpha2,
-                                                                                        Compliance::Countries::CRI.alpha2,
-                                                                                        Compliance::Countries::CHL.alpha2,
-                                                                                        Compliance::Countries::COL.alpha2,
-                                                                                        Compliance::Countries::GTM.alpha2,
-                                                                                        Compliance::Countries::DOM.alpha2,
-                                                                                        Compliance::Countries::BOL.alpha2,
-                                                                                        Compliance::Countries::KAZ.alpha2,
-                                                                                        Compliance::Countries::PRY.alpha2,
-                                                                                        Compliance::Countries::PAK.alpha2],
                                                    individual_tax_id_entered: true,
                                                    individual_tax_id_last_four: "0000",
                                                    individual_tax_id_is_last_four: false,
+                                                   individual_tax_id_needed_countries: [
+                                                     Compliance::Countries::USA.alpha2,
+                                                     Compliance::Countries::CAN.alpha2,
+                                                     Compliance::Countries::HKG.alpha2,
+                                                     Compliance::Countries::SGP.alpha2,
+                                                     Compliance::Countries::ARE.alpha2,
+                                                     Compliance::Countries::MEX.alpha2,
+                                                     Compliance::Countries::BGD.alpha2,
+                                                     Compliance::Countries::MOZ.alpha2,
+                                                     Compliance::Countries::URY.alpha2,
+                                                     Compliance::Countries::ARG.alpha2,
+                                                     Compliance::Countries::PER.alpha2,
+                                                     Compliance::Countries::CRI.alpha2,
+                                                     Compliance::Countries::CHL.alpha2,
+                                                     Compliance::Countries::COL.alpha2,
+                                                     Compliance::Countries::GTM.alpha2,
+                                                     Compliance::Countries::DOM.alpha2,
+                                                     Compliance::Countries::BOL.alpha2,
+                                                     Compliance::Countries::KAZ.alpha2,
+                                                     Compliance::Countries::PRY.alpha2,
+                                                     Compliance::Countries::PAK.alpha2
+                                                   ],
                                                  })
 
         @compliance_info_details = @base_props[:compliance_info].merge({
@@ -1598,7 +1622,10 @@ describe SettingsPresenter do
     end
 
     describe "has_outstanding_full_ssn_requirement" do
-      before { create(:user_compliance_info, user: seller, individual_tax_id: "1234") }
+      before do
+        Flipper.enable(:advanced_us_tax)
+        create(:user_compliance_info, user: seller, individual_tax_id: "1234")
+      end
 
       it "is true when a full TAX_ID request is outstanding" do
         create(:user_compliance_info_request, user: seller, field_needed: UserComplianceInfoFields::Individual::TAX_ID)
@@ -1762,6 +1789,10 @@ describe SettingsPresenter do
     end
 
     context "when the seller can receive PayPal payouts" do
+      before do
+        Flipper.enable(:paypal_payments)
+      end
+
       it "returns true for show_paypal if country does not support bank payouts" do
         create(:user_compliance_info, user: seller, country: "Brazil")
         seller.update!(payment_address: nil)

@@ -16,6 +16,8 @@ else
 end
 
 Rails.application.routes.draw do
+  get "/up" => "health#show", as: :rails_health_check
+  get "/health" => "health#show"
   get "/healthcheck" => "healthcheck#index"
   get "/healthcheck/sidekiq" => "healthcheck#sidekiq"
   get "/healthcheck/payouts" => "healthcheck#payouts"

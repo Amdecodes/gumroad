@@ -29,10 +29,16 @@ class SettingsPresenter
   def pages
     @_pages ||= ALL_PAGES.select do |page|
       case page
-      when "main", "payments", "password", "third_party_analytics", "advanced"
+      when "main", "payments", "password"
         Pundit.policy!(pundit_user, [:settings, page.to_sym, seller]).show?
-      when "billing", "social_connections"
+      when "billing"
         Pundit.policy!(pundit_user, [:settings, page.to_sym]).show?
+      when "social_connections"
+        Flipper.enabled?(:social_connections) && Pundit.policy!(pundit_user, [:settings, page.to_sym]).show?
+      when "third_party_analytics"
+        Flipper.enabled?(:third_party_analytics) && Pundit.policy!(pundit_user, [:settings, page.to_sym, seller]).show?
+      when "advanced"
+        Flipper.enabled?(:advanced_settings) && Pundit.policy!(pundit_user, [:settings, page.to_sym, seller]).show?
       when "team"
         Pundit.policy!(pundit_user, [:settings, :team, seller]).show?
       when "authorized_applications"
@@ -600,6 +606,7 @@ class SettingsPresenter
     end
 
     def social_connections_for_review
+      return unless Flipper.enabled?(:social_connections)
       return unless Pundit.policy!(pundit_user, [:settings, :profile]).manage_social_connections?
 
       connections = [{ provider: "twitter", connected: seller.twitter_user_id.present? }]

@@ -5,7 +5,7 @@ import * as React from "react";
 
 import { sendSamplePriceChangeEmail } from "$app/data/membership_tiers";
 import { confirmRemovedVariantPageDeletions, reorderPreservingMembership } from "$app/data/product_save_contract";
-import { CurrencyCode, currencyCodeList, getIsSingleUnitCurrency } from "$app/utils/currency";
+import { getIsSingleUnitCurrency } from "$app/utils/currency";
 import { priceCentsToUnit } from "$app/utils/price";
 import {
   numberOfMonthsInRecurrence,
@@ -173,7 +173,7 @@ const TierEditor = ({
   onDelete: () => void;
 }) => {
   const uid = React.useId();
-  const { product, currencyType, setCurrencyType } = useProductEditContext();
+  const { product, currencyType } = useProductEditContext();
 
   const [isOpen, setIsOpen] = React.useState(true);
 
@@ -321,10 +321,6 @@ const TierEditor = ({
                     suffix={perRecurrenceLabels[recurrence]}
                     disabled={!value.enabled}
                     ariaLabel={`Amount ${perRecurrenceLabels[recurrence]}`}
-                    currencyCodeSelector={{
-                      options: currencyCodeList,
-                      onChange: (currencyCode: CurrencyCode) => setCurrencyType(currencyCode),
-                    }}
                   />
                 </div>
               ))}

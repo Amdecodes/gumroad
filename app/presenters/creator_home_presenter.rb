@@ -124,6 +124,7 @@ class CreatorHomePresenter
 
   private
     def social_connection_props
+      return {} unless Flipper.enabled?(:social_connections)
       return {} if seller.has_dismissed_getting_started_checklist?
       return {} unless Pundit.policy!(pundit_user, [:settings, :profile]).manage_social_connections?
 

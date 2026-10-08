@@ -45,7 +45,7 @@ function NavbarFooter() {
           {loggedInUser?.canCreateBrandAccount ? (
             <>
               <NavLinkDropdownItem
-                text="New Gumroad"
+                text="New account"
                 icon={<Plus pack="filled" className="mx-1 size-5 shrink-0" />}
                 href="#"
                 onClick={(ev) => {

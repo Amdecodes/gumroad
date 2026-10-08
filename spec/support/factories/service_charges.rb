@@ -18,7 +18,7 @@ FactoryBot.define do
         charge_processor_transaction_id ? StripeChargeProcessor.charge_processor_id : nil
       end
     end
-    merchant_account { charge_processor_transaction_id ? MerchantAccount.gumroad(charge_processor_id) : nil }
+    merchant_account { charge_processor_transaction_id ? (MerchantAccount.gumroad(charge_processor_id) || MerchantAccount.find_or_create_by!(user_id: nil, charge_processor_id:)) : nil }
     state { "successful" }
     succeeded_at { Time.current }
 

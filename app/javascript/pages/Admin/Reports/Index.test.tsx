@@ -32,10 +32,10 @@ vi.mock("@inertiajs/react", async () => {
 const defaultProps: ReportsIndexProps = {
   metrics: {
     gross_volume_cents: 12500000,
-    formatted_gross_volume: "$125,000.00",
+    formatted_gross_volume: "125,000.00 ETB",
     total_orders: 2500,
     average_order_value_cents: 5000,
-    formatted_average_order_value: "$50.00",
+    formatted_average_order_value: "50.00 ETB",
     refund_rate: 1.8,
     refunded_count: 45,
     dispute_rate: 0.2,
@@ -47,14 +47,14 @@ const defaultProps: ReportsIndexProps = {
         date: "2026-09-01",
         label: "Sep 1",
         revenue_cents: 50000,
-        formatted_revenue: "$500.00",
+        formatted_revenue: "500.00 ETB",
         orders_count: 10,
       },
       {
         date: "2026-09-02",
         label: "Sep 2",
         revenue_cents: 75000,
-        formatted_revenue: "$750.00",
+        formatted_revenue: "750.00 ETB",
         orders_count: 15,
       },
     ],
@@ -66,7 +66,7 @@ const defaultProps: ReportsIndexProps = {
       permalink: "flagship-guide",
       name: "Flagship Guide",
       volume_cents: 4500000,
-      formatted_volume: "$45,000.00",
+      formatted_volume: "45,000.00 ETB",
       sales_count: 900,
       creator_name: "Alice Designer",
     },
@@ -77,24 +77,24 @@ const defaultProps: ReportsIndexProps = {
       name: "Alice Designer",
       username: "alice",
       volume_cents: 6000000,
-      formatted_volume: "$60,000.00",
+      formatted_volume: "60,000.00 ETB",
       sales_count: 1200,
       admin_path: "/admin/creators/alice",
     },
   ],
   payment_methods: [
     {
-      name: "Stripe",
+      name: "Chapa",
       orders_count: 2000,
       volume_cents: 10000000,
-      formatted_volume: "$100,000.00",
+      formatted_volume: "100,000.00 ETB",
       percentage: 80.0,
     },
     {
-      name: "Paypal",
+      name: "Telebirr",
       orders_count: 500,
       volume_cents: 2500000,
-      formatted_volume: "$25,000.00",
+      formatted_volume: "25,000.00 ETB",
       percentage: 20.0,
     },
   ],
@@ -106,17 +106,17 @@ describe("Admin Reports Index Page", () => {
     render(<Index {...defaultProps} />);
 
     expect(screen.getByRole("heading", { name: /Reports & Platform Health/iu })).toBeDefined();
-    expect(screen.getByText("$125,000.00")).toBeDefined();
+    expect(screen.getByText("125,000.00 ETB")).toBeDefined();
     expect(screen.getByText("2500")).toBeDefined();
-    expect(screen.getByText("$50.00")).toBeDefined();
+    expect(screen.getByText("50.00 ETB")).toBeDefined();
     expect(screen.getByText("1.8%")).toBeDefined();
 
     expect(screen.getByText("Flagship Guide")).toBeDefined();
-    expect(screen.getByText("$45,000.00")).toBeDefined();
+    expect(screen.getByText("45,000.00 ETB")).toBeDefined();
     expect(screen.getByText("Alice Designer")).toBeDefined();
 
-    expect(screen.getByText("Stripe")).toBeDefined();
-    expect(screen.getByText("Paypal")).toBeDefined();
+    expect(screen.getByText("Chapa")).toBeDefined();
+    expect(screen.getByText("Telebirr")).toBeDefined();
   });
 
   it("handles time range selection changes", () => {

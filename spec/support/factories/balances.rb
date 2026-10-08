@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :balance do
     user
-    merchant_account { MerchantAccount.gumroad(StripeChargeProcessor.charge_processor_id) }
+    merchant_account { MerchantAccount.gumroad(StripeChargeProcessor.charge_processor_id) || MerchantAccount.find_or_create_by!(user_id: nil, charge_processor_id: StripeChargeProcessor.charge_processor_id) }
     date { Date.today }
     currency { Currency::USD }
     amount_cents { 10_00 }

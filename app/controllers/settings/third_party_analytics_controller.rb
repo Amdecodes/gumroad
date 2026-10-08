@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Settings::ThirdPartyAnalyticsController < Settings::BaseController
+  before_action :ensure_enabled
   before_action :authorize
 
   def show
@@ -44,5 +45,9 @@ class Settings::ThirdPartyAnalyticsController < Settings::BaseController
 
     def authorize
       super([:settings, :third_party_analytics, current_seller])
+    end
+
+    def ensure_enabled
+      redirect_to settings_main_path unless Flipper.enabled?(:third_party_analytics)
     end
 end

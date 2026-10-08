@@ -10,21 +10,16 @@ import { Button } from "$app/components/Button";
 import { useDomains } from "$app/components/DomainSettings";
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { Modal } from "$app/components/Modal";
-import { NumberInput } from "$app/components/NumberInput";
 import { showAlert } from "$app/components/server-components/Alert";
 import { ToggleSettingRow } from "$app/components/SettingRow";
 import { ProductLevelSupportEmailsForm } from "$app/components/Settings/AdvancedPage/ProductLevelSupportEmailsForm";
 import { Layout } from "$app/components/Settings/Layout";
-import { TagInput } from "$app/components/TagInput";
 import { Alert } from "$app/components/ui/Alert";
-import { Checkbox } from "$app/components/ui/Checkbox";
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
 import { FormSection } from "$app/components/ui/FormSection";
 import { Input } from "$app/components/ui/Input";
-import { InputGroup } from "$app/components/ui/InputGroup";
 import { Label } from "$app/components/ui/Label";
 import { LinkButton } from "$app/components/ui/LinkButton";
-import { Pill } from "$app/components/ui/Pill";
 import { Select } from "$app/components/ui/Select";
 import { Switch } from "$app/components/ui/Switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
@@ -458,110 +453,11 @@ export default function MainPage() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-local-currency`}>Sell in...</Label>
+              <Label>Currency</Label>
             </FieldsetTitle>
-            <Select
-              id={`${uid}-local-currency`}
-              disabled={isFormDisabled}
-              value={form.data.user.currency_type}
-              onChange={(e) => updateUserSettings({ currency_type: e.target.value })}
-            >
-              {props.currencies.map((currency) => (
-                <option key={currency.code} value={currency.code}>
-                  {currency.name}
-                </option>
-              ))}
-            </Select>
-            <FieldsetDescription>Applies only to new products.</FieldsetDescription>
+            <Input value="ETB (Ethiopian Birr)" disabled />
             <FieldsetDescription>
-              Charges will happen in USD, using an up-to-date exchange rate. Customers may incur an additional foreign
-              transaction fee according to their cardmember agreement.
-            </FieldsetDescription>
-          </Fieldset>
-          <Fieldset>
-            <ToggleSettingRow
-              value={form.data.user.purchasing_power_parity_enabled}
-              onChange={(value) => updateUserSettings({ purchasing_power_parity_enabled: value })}
-              disabled={isFormDisabled}
-              label="Enable purchasing power parity"
-              dropdown={
-                <div className="flex flex-col gap-4">
-                  <Fieldset>
-                    <FieldsetTitle>
-                      <Label htmlFor={`${uid}-ppp-discount-percentage`}>Maximum PPP discount</Label>
-                    </FieldsetTitle>
-                    <InputGroup disabled={props.is_form_disabled}>
-                      <NumberInput
-                        value={form.data.user.purchasing_power_parity_limit}
-                        onChange={(value) => {
-                          if (value === null || (value > 0 && value <= 100)) {
-                            updateUserSettings({ purchasing_power_parity_limit: value });
-                          }
-                        }}
-                      >
-                        {(inputProps) => (
-                          <Input
-                            id={`${uid}-ppp-discount-percentage`}
-                            type="text"
-                            placeholder="60"
-                            disabled={isFormDisabled}
-                            aria-label="Percentage"
-                            {...inputProps}
-                          />
-                        )}
-                      </NumberInput>
-                      <Pill className="-mr-2 shrink-0">%</Pill>
-                    </InputGroup>
-                  </Fieldset>
-                  <Switch
-                    checked={!form.data.user.purchasing_power_parity_payment_verification_disabled}
-                    disabled={isFormDisabled}
-                    onChange={(e) =>
-                      updateUserSettings({ purchasing_power_parity_payment_verification_disabled: !e.target.checked })
-                    }
-                    label="Apply only if the customer is currently located in the country of their payment method"
-                  />
-                  <Fieldset>
-                    <FieldsetTitle>
-                      <Label htmlFor={`${uid}-ppp-exclude-products`}>Products to exclude</Label>
-                    </FieldsetTitle>
-
-                    <TagInput
-                      inputId={`${uid}-ppp-exclude-products`}
-                      tagIds={form.data.user.purchasing_power_parity_excluded_product_ids}
-                      tagList={props.user.products.map(({ id, name }) => ({ id, label: name }))}
-                      isDisabled={isFormDisabled}
-                      onChangeTagIds={(productIds) =>
-                        updateUserSettings({ purchasing_power_parity_excluded_product_ids: productIds })
-                      }
-                    />
-
-                    <Label>
-                      <Checkbox
-                        disabled={isFormDisabled}
-                        checked={
-                          form.data.user.purchasing_power_parity_excluded_product_ids.length ===
-                          props.user.products.length
-                        }
-                        onChange={(evt) =>
-                          updateUserSettings({
-                            purchasing_power_parity_excluded_product_ids: evt.target.checked
-                              ? props.user.products.map(({ id }) => id)
-                              : [],
-                          })
-                        }
-                      />
-                      All products
-                    </Label>
-                  </Fieldset>
-                </div>
-              }
-            />
-            <FieldsetDescription>
-              Charge customers different amounts depending on the cost of living in their country.{" "}
-              <a href="/help/article/327-purchasing-power-parity" target="_blank" rel="noreferrer">
-                Learn more
-              </a>
+              All products, purchases, and creator payouts are processed in ETB.
             </FieldsetDescription>
           </Fieldset>
         </FormSection>

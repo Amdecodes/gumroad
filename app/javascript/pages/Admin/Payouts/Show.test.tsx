@@ -28,12 +28,12 @@ const mockPayoutDetail: PayoutDetailProps = {
     external_id: "sp_101",
     reference: "sp_101",
     amount_cents: 25000,
-    formatted_amount: "$250.00",
-    currency: "USD",
+    formatted_amount: "250.00 ETB",
+    currency: "ETB",
     status: "pending",
     date_requested: "2026-09-28T12:00:00Z",
     date_processed: null,
-    processor: "Stripe",
+    processor: "Chapa",
     can_mark_paid: true,
     can_cancel: true,
   },
@@ -47,8 +47,8 @@ const mockPayoutDetail: PayoutDetailProps = {
   },
   destination: {
     method_type: "bank",
-    processor: "Stripe",
-    bank_name: "Silicon Valley Bank",
+    processor: "Chapa",
+    bank_name: "Commercial Bank of Ethiopia",
     account_number_visual: "******4321",
     routing_number: "121000358",
     account_holder_name: "Carol Artisan LLC",
@@ -56,15 +56,15 @@ const mockPayoutDetail: PayoutDetailProps = {
   },
   breakdown: {
     sales_volume_cents: 28000,
-    formatted_sales_volume: "$280.00",
+    formatted_sales_volume: "280.00 ETB",
     platform_fee_cents: 2500,
-    formatted_platform_fee: "$25.00",
+    formatted_platform_fee: "25.00 ETB",
     processor_fee_cents: 500,
-    formatted_processor_fee: "$5.00",
+    formatted_processor_fee: "5.00 ETB",
     adjustments_cents: 0,
-    formatted_adjustments: "$0.00",
+    formatted_adjustments: "0.00 ETB",
     net_amount_cents: 25000,
-    formatted_net_amount: "$250.00",
+    formatted_net_amount: "250.00 ETB",
   },
   audit_history: [
     {
@@ -89,13 +89,13 @@ describe("Admin Payouts Show Page", () => {
     expect(screen.getAllByText("Pending").length).toBeGreaterThanOrEqual(1);
 
     // Financial Breakdown
-    expect(screen.getAllByText("$250.00").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("$280.00")).toBeDefined();
-    expect(screen.getByText("-$25.00")).toBeDefined();
-    expect(screen.getByText("-$5.00")).toBeDefined();
+    expect(screen.getAllByText("250.00 ETB").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("280.00 ETB")).toBeDefined();
+    expect(screen.getByText("-25.00 ETB")).toBeDefined();
+    expect(screen.getByText("-5.00 ETB")).toBeDefined();
 
     // Destination Info
-    expect(screen.getByText("Silicon Valley Bank")).toBeDefined();
+    expect(screen.getByText("Commercial Bank of Ethiopia")).toBeDefined();
     expect(screen.getByText("******4321")).toBeDefined();
     expect(screen.getByText("121000358")).toBeDefined();
     expect(screen.getByText("Carol Artisan LLC")).toBeDefined();

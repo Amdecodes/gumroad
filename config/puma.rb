@@ -36,9 +36,7 @@ if env != "development"
   # the concurrency of the application would be max `threads` * `workers`.
   # Workers do not work on JRuby or Windows (both of which do not support
   # processes).
-  #
-  # workers ENV.fetch("WEB_CONCURRENCY") { 2 }
-  workers ENV.fetch("PUMA_WORKER_PROCESSES") { 1 }
+  workers ENV.fetch("PUMA_WORKER_PROCESSES") { ENV.fetch("WEB_CONCURRENCY", 2) }
 
   # Use the `preload_app!` method when specifying a `workers` number.
   # This directive tells Puma to first boot the application and load code
@@ -71,5 +69,6 @@ root_config = {
   staging: "/app/",
   production: "/app/"
 }
-root_dir = ENV["PUMA_ROOT"] || root_config[env.to_sym]
+configured_dir = root_config[env.to_sym]
+root_dir = ENV["PUMA_ROOT"] || (configured_dir && File.directory?(configured_dir) ? configured_dir : File.expand_path("."))
 directory root_dir

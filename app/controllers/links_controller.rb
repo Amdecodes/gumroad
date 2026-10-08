@@ -93,12 +93,17 @@ class LinksController < ApplicationController
       params[:link][:quantity_enabled] = true
     end
 
+    if params[:link][:price_currency_type].present? && params[:link][:price_currency_type].to_s.downcase != "etb"
+      return redirect_to new_product_path, alert: "Only ETB currency is supported for ArifDrop products."
+    end
+
     begin
       # Building the product and setting the price range both assign price_cents,
       # which raises Link::LinkInvalid when the price exceeds the maximum allowed.
       # Keep these inside the rescue below so an oversized price shows the user an
       # error message instead of a 500.
       @product = current_seller.links.build(link_params)
+      @product.price_currency_type = "etb"
       @product.price_range = params[:link][:price_range]
     rescue Link::LinkInvalid => e
       return redirect_to new_product_path, alert: e.message, inertia: { errors: { "link.base" => e.message } }

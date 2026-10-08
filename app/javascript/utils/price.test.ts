@@ -35,6 +35,13 @@ describe("formatPrice", () => {
   it("keeps the cents on a whole amount when noCentsIfWhole is false", () => {
     expect(formatPrice("$", 5, 2, { noCentsIfWhole: false })).toBe("$5.00");
   });
+
+  it("formats ETB with amount first and comma thousands separators", () => {
+    expect(formatPrice("ETB", 500, 2, { noCentsIfWhole: false })).toBe("500.00 ETB");
+    expect(formatPrice("ETB", 1250, 2, { noCentsIfWhole: false })).toBe("1,250.00 ETB");
+    expect(formatPrice("ETB", 49999, 2, { noCentsIfWhole: false })).toBe("49,999.00 ETB");
+    expect(formatPrice("ETB", 500, 2, { noCentsIfWhole: true })).toBe("500 ETB");
+  });
 });
 
 describe("parseUnitStringToPriceCents", () => {

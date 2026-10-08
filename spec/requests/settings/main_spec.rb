@@ -11,13 +11,13 @@ describe("Main Settings Scenario", type: :system, js: true) do
   end
 
   describe "sub navigation" do
-    it "displays main, payments, password, and advanced sections" do
+    it "displays main, payments, and password sections without advanced" do
       visit settings_main_path
 
       expect(page).to have_tab_button "Settings"
       expect(page).to have_tab_button "Payments"
       expect(page).to have_tab_button "Password and authentication"
-      expect(page).to have_tab_button "Advanced"
+      expect(page).not_to have_tab_button "Advanced"
     end
   end
 
@@ -127,107 +127,12 @@ describe("Main Settings Scenario", type: :system, js: true) do
     end
   end
 
-  describe "purchasing power parity" do
-    it "allows the user to update the settings" do
+  describe "single currency ETB setting" do
+    it "shows ETB single currency notice and hides PPP" do
       visit settings_main_path
 
-      expect(page).to have_unchecked_field("Enable purchasing power parity")
-      check "Enable purchasing power parity"
-      fill_in "Maximum PPP discount", with: "50"
-      check "Apply only if the customer is currently located in the country of their payment method"
-      click_on "Update settings"
-      expect(page).to have_alert(text: "Your account has been updated!")
-      user.reload
-      expect(user.purchasing_power_parity_enabled).to eq(true)
-      expect(user.purchasing_power_parity_limit).to eq(50)
-      expect(user.purchasing_power_parity_payment_verification_disabled).to eq(false)
-
-
-      visit settings_main_path
-      expect(page).to have_checked_field("Enable purchasing power parity")
-      fill_in "Maximum PPP discount", with: ""
-      uncheck "Apply only if the customer is currently located in the country of their payment method"
-      uncheck "Enable purchasing power parity"
-      expect(page).to_not have_field("Maximum PPP discount")
-      expect(page).to_not have_field("Apply only if the customer is currently located in the country of their payment method")
-      click_on "Update settings"
-      expect(page).to have_alert(text: "Your account has been updated!")
-      user.reload
-      expect(user.purchasing_power_parity_enabled).to eq(false)
-      expect(user.purchasing_power_parity_limit).to eq(nil)
-      expect(user.purchasing_power_parity_payment_verification_disabled).to eq(true)
-
-      visit settings_main_path
-      expect(page).to have_unchecked_field("Enable purchasing power parity")
-    end
-
-    describe "excluding products" do
-      before do
-        @product_1 = create(:product, user:, name: "Product 1")
-        @product_2 = create(:product, user:, name: "Product 2")
-
-        user.update(purchasing_power_parity_enabled: true)
-      end
-
-      it "allows the user to exclude certain products" do
-        visit settings_main_path
-
-        select_combo_box_option "Product 2", from: "Products to exclude"
-
-        within_fieldset "Products to exclude" do
-          expect(page).to have_button("Product 2")
-        end
-
-        click_on "Update settings"
-
-        expect(page).to have_alert(text: "Your account has been updated!")
-        user.reload
-
-        expect(user.purchasing_power_parity_excluded_product_external_ids).to eq([@product_2.external_id])
-        expect(@product_1.reload.purchasing_power_parity_enabled?).to eq(true)
-        expect(@product_2.reload.purchasing_power_parity_enabled?).to eq(false)
-      end
-
-      it "allows the user to exclude all products" do
-        visit settings_main_path
-
-        check "All products", unchecked: true
-
-        within_fieldset "Products to exclude" do
-          expect(page).to have_button("Product 1")
-          expect(page).to have_button("Product 2")
-        end
-
-        click_on "Update settings"
-        expect(page).to have_alert(text: "Your account has been updated!")
-        user.reload
-
-        expect(user.purchasing_power_parity_excluded_product_external_ids).to eq([@product_1.external_id, @product_2.external_id])
-        expect(@product_1.reload.purchasing_power_parity_enabled?).to eq(false)
-        expect(@product_2.reload.purchasing_power_parity_enabled?).to eq(false)
-      end
-
-      it "allows the user to remove all excluded products" do
-        @product_1.update(purchasing_power_parity_disabled: true)
-        @product_2.update(purchasing_power_parity_disabled: true)
-
-        visit settings_main_path
-
-        uncheck "All products", checked: true
-
-        within_fieldset "Products to exclude" do
-          expect(page).to_not have_button("Product 1")
-          expect(page).to_not have_button("Product 2")
-        end
-
-        click_on "Update settings"
-        expect(page).to have_alert(text: "Your account has been updated!")
-        user.reload
-
-        expect(user.purchasing_power_parity_excluded_product_external_ids).to eq([])
-        expect(@product_1.reload.purchasing_power_parity_enabled?).to eq(true)
-        expect(@product_2.reload.purchasing_power_parity_enabled?).to eq(true)
-      end
+      expect(page).to have_text("All products, purchases, and creator payouts are processed in ETB.")
+      expect(page).not_to have_text("Enable purchasing power parity")
     end
   end
 

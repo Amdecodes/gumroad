@@ -38,9 +38,9 @@ const defaultProps: ProductsIndexProps = {
       name: "Mastering TypeScript",
       thumbnail_url: null,
       price_cents: 4900,
-      price_formatted: "$49.00",
+      price_formatted: "49.00 ETB",
       sales_count: 120,
-      lifetime_revenue_formatted: "$5,880.00",
+      lifetime_revenue_formatted: "5,880.00 ETB",
       status: "published",
       created_at: "2026-09-01T12:00:00Z",
       creator: {
@@ -57,9 +57,9 @@ const defaultProps: ProductsIndexProps = {
       name: "Unreleased Book",
       thumbnail_url: null,
       price_cents: 1500,
-      price_formatted: "$15.00",
+      price_formatted: "15.00 ETB",
       sales_count: 0,
-      lifetime_revenue_formatted: "$0.00",
+      lifetime_revenue_formatted: "0.00 ETB",
       status: "draft",
       created_at: "2026-09-15T12:00:00Z",
       creator: {
@@ -90,7 +90,7 @@ describe("Admin Products Index Page", () => {
     expect(screen.getByText("Mastering TypeScript")).toBeDefined();
     expect(screen.getByText("/mastering-ts")).toBeDefined();
     expect(screen.getByText("Alice Designer")).toBeDefined();
-    expect(screen.getByText("$49.00")).toBeDefined();
+    expect(screen.getByText("49.00 ETB")).toBeDefined();
     expect(screen.getAllByText("Published").length).toBeGreaterThanOrEqual(1);
 
     expect(screen.getByText("Unreleased Book")).toBeDefined();
