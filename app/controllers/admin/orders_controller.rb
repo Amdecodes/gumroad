@@ -4,8 +4,6 @@ class Admin::OrdersController < Admin::BaseController
   include Pagy::Backend
   include CurrencyHelper
 
-  layout "inertia"
-
   ORDERS_PER_PAGE = 25
   ORDER_DETAIL_INCLUDES = [
     :link,

@@ -4,8 +4,6 @@ class Admin::CreatorsController < Admin::BaseController
   include Pagy::Backend
   include CurrencyHelper
 
-  layout "inertia"
-
   CREATORS_PER_PAGE = 25
 
   before_action :fetch_creator, only: [:show, :suspend, :unsuspend]

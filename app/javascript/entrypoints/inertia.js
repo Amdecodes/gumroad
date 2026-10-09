@@ -126,7 +126,11 @@ router.on("exception", (event) => {
   }
 });
 
-function assignLayout(page) {
+function assignLayout(page, name) {
+  if (name?.startsWith("Admin/")) {
+    page.layout ||= (page) => page;
+    return page;
+  }
   if (page.publicLayout) {
     page.layout ||= (page) => createElement(PublicLayout, { children: page });
   } else if (page.loggedInUserLayout) {
@@ -147,12 +151,12 @@ async function resolvePageComponent(name) {
 
   if (pages[tsxPath]) {
     const module = await pages[tsxPath]();
-    return assignLayout(module.default);
+    return assignLayout(module.default, name);
   }
 
   if (jsxPages[jsxPath]) {
     const module = await jsxPages[jsxPath]();
-    return assignLayout(module.default);
+    return assignLayout(module.default, name);
   }
 
   throw new Error(`Page component not found: ${name}`);

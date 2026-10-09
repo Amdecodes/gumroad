@@ -3,8 +3,6 @@
 class Admin::ReportsController < Admin::BaseController
   include CurrencyHelper
 
-  layout "inertia"
-
   SUPPORTED_RANGES = [7, 30, 90].freeze
   DEFAULT_RANGE = 30
 

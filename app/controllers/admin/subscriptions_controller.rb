@@ -4,8 +4,6 @@ class Admin::SubscriptionsController < Admin::BaseController
   include Pagy::Backend
   include CurrencyHelper
 
-  layout "inertia"
-
   SUBSCRIPTIONS_PER_PAGE = 25
   SUBSCRIPTION_INCLUDES = [:link, :seller, :user, :last_successful_purchase, :original_purchase].freeze
 

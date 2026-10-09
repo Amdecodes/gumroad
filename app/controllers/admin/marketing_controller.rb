@@ -3,8 +3,6 @@
 class Admin::MarketingController < Admin::BaseController
   include CurrencyHelper
 
-  layout "inertia"
-
   def index
     active_tab = params[:tab].presence || "overview"
 

@@ -3,8 +3,6 @@
 class Admin::TeamMembersController < Admin::BaseController
   include Pagy::Backend
 
-  layout "inertia"
-
   MEMBERS_PER_PAGE = 25
 
   before_action :fetch_member, only: [:show, :revoke]

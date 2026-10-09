@@ -4,8 +4,6 @@ class Admin::ProductsController < Admin::BaseController
   include Pagy::Backend
   include CurrencyHelper
 
-  layout "inertia"
-
   before_action :set_product, only: %i[show unpublish publish]
 
   def index

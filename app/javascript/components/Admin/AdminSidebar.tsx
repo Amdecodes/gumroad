@@ -26,7 +26,7 @@ import { LanguageToggle } from "$app/components/LanguageToggle";
 type AdminSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
-  currentPath?: string;
+  currentPath?: string | undefined;
 };
 
 type NavItem = {

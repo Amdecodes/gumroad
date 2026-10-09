@@ -3,8 +3,6 @@
 class Admin::CustomersController < Admin::BaseController
   include CurrencyHelper
 
-  layout "inertia"
-
   CUSTOMERS_PER_PAGE = 25
 
   before_action :fetch_customer, only: [:show]

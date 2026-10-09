@@ -6,6 +6,14 @@
 class Admin::BaseController < ApplicationController
   include Impersonate
 
+  layout "admin"
+
+  inertia_share do
+    {
+      current_admin: -> { current_admin_props }
+    }
+  end
+
   before_action :require_admin!
 
   def impersonate
@@ -70,5 +78,15 @@ class Admin::BaseController < ApplicationController
 
     def xhr_or_json_request?
       request.xhr? || request.format.json?
+    end
+
+    def current_admin_props
+      return nil unless current_user
+
+      {
+        name: current_user.name.presence || current_user.email,
+        email: current_user.email,
+        avatar_url: current_user.avatar_url
+      }
     end
 end

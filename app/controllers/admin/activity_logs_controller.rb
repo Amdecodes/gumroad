@@ -3,8 +3,6 @@
 class Admin::ActivityLogsController < Admin::BaseController
   include Pagy::Backend
 
-  layout "inertia"
-
   LOGS_PER_PAGE = 25
 
   def index
