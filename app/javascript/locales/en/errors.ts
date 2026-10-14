@@ -1,0 +1,16 @@
+export const errors = {
+  amount_mismatch: "Amount mismatch detected",
+  currency_mismatch: "Currency must be ETB",
+  seller_suspended: "Seller account is suspended",
+  renewal_failed: "Subscription renewal failed",
+  card_declined: "Your card was declined. Please try another card or payment method.",
+  card_declined_chapa: "Your card was declined. Please try another card or checkout with Chapa.",
+  invalid_email: "Please enter a valid email address.",
+  invalid_phone: "Please enter a valid phone number.",
+  insufficient_funds: "Your card has insufficient funds. Please use a different card or payment method.",
+  expired_card: "Your card has expired. Please use a valid card.",
+  incorrect_cvc: "The security code (CVC) is incorrect. Please check and try again.",
+  chapa_failure: "Chapa payment failed. Please try again or use another payment method.",
+  chapa_cancel: "Chapa payment was cancelled. Please try again to complete your purchase.",
+  generic_payment_error: "Payment failed. Please try again.",
+} as const;

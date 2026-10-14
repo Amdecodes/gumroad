@@ -8,7 +8,7 @@ export function readBuyerCurrencyPreference(): CurrencyCode | null {
   const raw = fromUrl
     ? fromUrl.toLowerCase()
     : (() => {
-        const match = document.cookie.match(/(?:^|; )gumroad_buyer_currency=([^;]*)/u);
+        const match = /(?:^|; )gumroad_buyer_currency=([^;]*)/u.exec(document.cookie);
         const value = match?.[1];
         if (!value) return null;
         try {

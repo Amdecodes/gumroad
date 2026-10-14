@@ -1,0 +1,126 @@
+export const storefront = {
+  products: "Products",
+  license_key: "License key",
+  content: "Content",
+  posts: "Posts",
+  free: "Free",
+  name_fair_price: "Name a fair price:",
+  search_products: "Search products...",
+  select_date: "Select a date",
+  select_time: "Select a time",
+  you_selected: "You selected",
+  payment_option: "Payment option",
+  pay_in_full: "Pay in full",
+  one_time_payment: "One-time payment",
+  pay_in_installments: "Pay in installments",
+  pay_in_count_installments: "Pay in {count} installments",
+  pay_in_n_installments: "Pay in {count} installments of {amount}",
+  recurrence: "Recurrence",
+  quantity_left: {
+    one: "{count} left",
+    other: "{count} left",
+  },
+  no_available_times_option: "There are no available times for this option.",
+  no_available_times: "There are no available times.",
+  rent: "Rent",
+  rent_description:
+    "Your rental will be available for 30 days. Once started, you’ll have 72 hours to watch it as much as you’d like!",
+  buy: "Buy",
+  buy_description: "Watch as many times as you want, forever.",
+  seats: "Seats",
+  quantity: "Quantity",
+  add_to_cart: "Add to cart",
+
+  // CTA labels
+  choose_an_option: "Choose an option",
+  i_want_this: "I want this!",
+  buy_this: "Buy this",
+  pay: "Pay",
+  donate: "Donate",
+  support: "Support",
+  tip: "Tip",
+  purchase_again: "Purchase again",
+  subscribe: "Subscribe",
+  you_already_own_this: "You already own this",
+
+  // Alerts & validation
+  must_input_amount: "You must input an amount",
+  minimum_price_is: "Minimum price for this product is {price}.",
+  must_select_call_date_time: "You must select a date and time for the call",
+
+  // Availability & compliance
+  not_available_location: "Sorry, this item is not available in your location.",
+  sold_out_pick_another: "Sold out, please go back and pick another option.",
+  not_currently_for_sale: "This product is not currently for sale.",
+
+  // Discount code errors
+  discount_code_limit_reached: "Sorry, the discount code you wish to use has reached its usage limit.",
+  discount_code_invalid: "Sorry, the discount code you wish to use is invalid.",
+  discount_code_existing_customers_only: "Sorry, this discount code is only for existing customers.",
+  discount_code_inactive: "Sorry, the discount code you wish to use is inactive.",
+  discount_expires_in: "This discount expires in {time}",
+
+  // Existing purchase states
+  received_bundle_gift: "You've received this bundle as a gift",
+  purchased_bundle: "You've purchased this bundle",
+  already_own_bundle: "You already own this bundle",
+  received_product_gift: "You've received this product as a gift",
+  purchased_product: "You've purchased this product",
+  already_own_product: "You already own this product",
+  view_content: "View content",
+  restart_membership: "Restart membership",
+  manage_membership: "Manage membership",
+  copy: "Copy",
+  already_bought_this: "Already bought this?",
+  view_your_information: "View your information",
+  get_download_link: "Get your download link",
+  resend_receipt: "Resend your receipt",
+
+  // Ratings & reviews
+  rating: "Rating",
+  ratings: "Ratings",
+  ratings_count: {
+    one: "{count} rating",
+    other: "{count} ratings",
+  },
+  star_count: {
+    one: "{count} star",
+    other: "{count} stars",
+  },
+  load_more: "Load more",
+  no_reviews_yet: "This product has no reviews yet.",
+  creator_rating_from: "Creator rating: {average} from {count_reviews} across {products_count} other products.",
+  creator_rating_from_profile: "Creator rating: {average} from {count_reviews} across {products_count} other products.",
+  verified_reviews_count: {
+    one: "{count} verified review",
+    other: "{count} verified reviews",
+  },
+  ratings_histogram: "Ratings histogram",
+  last_updated: "Last updated {date}",
+
+  // Subscription choice modal
+  resume_subscription_title: "Resume your previous subscription?",
+  resume_subscription_desc:
+    "You've previously subscribed to this product. Would you like to pick up where you left off, or start fresh with a new subscription?",
+  start_new_subscription: "Start a new subscription",
+  resume_subscription: "Resume subscription",
+  already_subscribed_title: "You already have an active subscription",
+  already_subscribed_desc:
+    "You currently have an active subscription to this product. Would you like to start a new subscription?",
+
+  // Wishlist & Share
+  add_to_wishlist: "Add to wishlist",
+  adding_to_wishlist: "Adding to wishlist...",
+  added_to_wishlist: "Added to wishlist!",
+  please_enter_wishlist_name: "Please enter a wishlist name",
+  wishlist_name: "Wishlist name",
+  create_wishlist: "Create wishlist",
+  new_wishlist: "New wishlist",
+  wishlist_created: "Wishlist created!",
+  edit_it_here: "Edit it here.",
+  share: "Share",
+  copy_link: "Copy link",
+  copy_product_url: "Copy product URL",
+  product_info_bar: "Product information bar",
+  edit_product: "Edit product",
+} as const;

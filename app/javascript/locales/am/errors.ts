@@ -1,0 +1,16 @@
+export const errors = {
+  amount_mismatch: "የተከፈለው መጠን ከተገመተው ጋር አይዛመድም",
+  currency_mismatch: "የገንዘብ ምንዛሬው ብር (ETB) መሆን አለበት",
+  seller_suspended: "የሻጩ መለያ ታግዷል",
+  renewal_failed: "የምዝገባ ዕድሳት አልተሳካም",
+  card_declined: "ካርድዎ ተቀባይነት አላገኘም። እባክዎ ሌላ ካርድ ወይም የክፍያ አማራጭ ይሞክሩ።",
+  card_declined_chapa: "ካርድዎ ተቀባይነት አላገኘም። እባክዎ ሌላ ካርድ ይጠቀሙ ወይም በ Chapa ይክፈሉ።",
+  invalid_email: "እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።",
+  invalid_phone: "እባክዎ ትክክለኛ ስልክ ቁጥር ያስገቡ።",
+  insufficient_funds: "በካርድዎ ውስጥ በቂ ገንዘብ የለም። እባክዎ ሌላ ካርድ ወይም የክፍያ አማራጭ ይጠቀሙ።",
+  expired_card: "ካርድዎ ጊዜው አልፎበታል። እባክዎ ትክክለኛ ካርድ ይጠቀሙ።",
+  incorrect_cvc: "የካርዱ የደህንነት ኮድ (CVC) የተሳሳተ ነው። እባክዎ አረጋግጠው እንደገና ይሞክሩ።",
+  chapa_failure: "የ Chapa ክፍያ አልተሳካም። እባክዎ እንደገና ይሞክሩ ወይም ሌላ የክፍያ ዘዴ ይጠቀሙ።",
+  chapa_cancel: "የ Chapa ክፍያው ተሰርዟል። ግዢዎን ለማጠናቀቅ እባክዎ እንደገና ይሞክሩ።",
+  generic_payment_error: "ክፍያው አልተሳካም። እባክዎ እንደገና ይሞክሩ።",
+} as const;

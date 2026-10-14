@@ -42,6 +42,12 @@ describe("formatPrice", () => {
     expect(formatPrice("ETB", 49999, 2, { noCentsIfWhole: false })).toBe("49,999.00 ETB");
     expect(formatPrice("ETB", 500, 2, { noCentsIfWhole: true })).toBe("500 ETB");
   });
+
+  it("formats ETB with ብር symbol when locale is am", () => {
+    expect(formatPrice("ETB", 500, 2, { noCentsIfWhole: false }, "am")).toBe("500.00 ብር");
+    expect(formatPrice("ETB", 1250, 2, { noCentsIfWhole: false }, "am")).toBe("1,250.00 ብር");
+    expect(formatPrice("ETB", 500, 2, { noCentsIfWhole: true }, "am")).toBe("500 ብር");
+  });
 });
 
 describe("parseUnitStringToPriceCents", () => {

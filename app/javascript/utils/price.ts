@@ -1,19 +1,24 @@
 import { BuyerLocalCurrencyContext, formatBuyerLocalOrSetPrice } from "$app/utils/currency";
+import { isSupportedLocale, resolveCurrentLocale } from "$app/utils/i18n";
 
 export function formatPrice(
   currencySymbol: string,
   price: number,
   precision: number,
   { noCentsIfWhole }: { noCentsIfWhole: boolean },
+  locale?: string,
 ): string {
+  const resolvedLocale = locale && isSupportedLocale(locale) ? locale : resolveCurrentLocale();
   precision = noCentsIfWhole && price % 1 === 0 ? 0 : precision;
-  const formattedNumber = price.toLocaleString("en-US", {
+  const intlLocale = resolvedLocale === "am" ? "am-ET" : "en-US";
+  const formattedNumber = price.toLocaleString(intlLocale, {
     minimumFractionDigits: precision,
     maximumFractionDigits: precision,
   });
 
-  if (currencySymbol === "ETB" || currencySymbol === "etb") {
-    return `${formattedNumber} ETB`;
+  if (currencySymbol === "ETB" || currencySymbol === "etb" || currencySymbol === "ብር") {
+    const symbol = resolvedLocale === "am" ? "ብር" : "ETB";
+    return `${formattedNumber} ${symbol}`;
   }
 
   const separator = currencySymbol && /^[A-Z]{3}$/u.test(currencySymbol) ? " " : "";

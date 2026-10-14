@@ -1,9 +1,16 @@
 import { parseISO } from "date-fns";
 
+import { isSupportedLocale, resolveCurrentLocale } from "$app/utils/i18n";
+
 export const formatDate = (
   date: Date,
   options: Intl.DateTimeFormatOptions = { dateStyle: "long", timeStyle: "short" },
-) => date.toLocaleString([], options);
+  locale?: string,
+) => {
+  const resolved = locale && isSupportedLocale(locale) ? locale : resolveCurrentLocale();
+  const intlLocale = resolved === "am" ? "am-ET" : "en-US";
+  return date.toLocaleString(intlLocale, options);
+};
 
 const postDateFormatOptions: Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
 export const formatPostDate = (date: string | null, locale: string): string =>
@@ -16,7 +23,10 @@ export const formatCallDate = (
     time?: { hidden?: boolean };
     timeZone?: { hidden?: boolean; userTimeZone?: string | undefined };
   } = {},
+  locale?: string,
 ) => {
+  const resolved = locale && isSupportedLocale(locale) ? locale : resolveCurrentLocale();
+  const intlLocale = resolved === "am" ? "am-ET" : "en-US";
   const localeStringOptions: Intl.DateTimeFormatOptions = {};
 
   if (!displayOptions.date?.hidden) {
@@ -40,5 +50,5 @@ export const formatCallDate = (
     localeStringOptions.timeZoneName = "short";
   }
 
-  return date.toLocaleString("en-US", localeStringOptions);
+  return date.toLocaleString(intlLocale, localeStringOptions);
 };

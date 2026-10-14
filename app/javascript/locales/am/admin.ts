@@ -1,0 +1,15 @@
+export const admin = {
+  title: "የአስተዳዳሪ ፖርታል",
+  overview: "አጠቃላይ እይታ",
+  creators: "ሻጮች",
+  products: "ምርቶች",
+  orders: "ትዕዛዞች",
+  reports: "ሪፖርቶች",
+  payouts: "የሻጭ ክፍያዎች",
+  subscriptions: "ምዝገባዎች",
+  customers: "ደንበኞች",
+  marketing: "ግብይት",
+  team: "ቡድን",
+  activity_log: "የእንቅስቃሴ መዝገብ",
+  exit_to_storefront: "ወደ መደብር ተመለስ",
+} as const;

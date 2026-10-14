@@ -1,3 +1,4 @@
+import { resolveCurrentLocale, type SupportedLocale } from "$app/utils/i18n";
 import { formatPrice, parseUnitStringToPriceCents, priceCentsToUnit } from "$app/utils/price";
 
 import currenciesInfo from "../../../config/currencies.json";
@@ -30,23 +31,28 @@ export const currencyCodeList: CurrencyCode[] = Object.keys(currenciesMap);
 export const formatMoney = (
   amountCents: number,
   currencyCode: CurrencyCode = DEFAULT_PLATFORM_CURRENCY,
-  options: { noCentsIfWhole?: boolean; symbolFormat?: "long" | "short" } = {},
-): string =>
-  formatPriceCentsWithCurrencySymbol(currencyCode, amountCents, {
+  options: { noCentsIfWhole?: boolean; symbolFormat?: "long" | "short"; locale?: SupportedLocale } = {},
+): string => {
+  const formatOptions: { symbolFormat: "long" | "short"; noCentsIfWhole?: boolean; locale?: SupportedLocale } = {
     symbolFormat: options.symbolFormat ?? "short",
     noCentsIfWhole: options.noCentsIfWhole ?? false,
-  });
+  };
+  if (options.locale) {
+    formatOptions.locale = options.locale;
+  }
+  return formatPriceCentsWithCurrencySymbol(currencyCode, amountCents, formatOptions);
+};
 
 export const formatCents = (
   amountCents: number,
   currencyCode: CurrencyCode = DEFAULT_PLATFORM_CURRENCY,
-  options: { noCentsIfWhole?: boolean } = {},
+  options: { noCentsIfWhole?: boolean; locale?: SupportedLocale } = {},
 ): string => formatMoney(amountCents, currencyCode, options);
 
 export const formatCurrency = (
   amountCents: number,
   currencyCode: string = DEFAULT_PLATFORM_CURRENCY,
-  options: { noCentsIfWhole?: boolean } = {},
+  options: { noCentsIfWhole?: boolean; locale?: SupportedLocale } = {},
 ): string => {
   const lower = currencyCode.toLowerCase();
   const code: CurrencyCode = isCurrencyCode(lower) ? lower : DEFAULT_PLATFORM_CURRENCY;
@@ -99,16 +105,25 @@ export const parseCurrencyUnitStringToCents = (code: CurrencyCode, unitAmount: s
 export const formatPriceCentsWithCurrencySymbol = (
   code: CurrencyCode,
   amountCents: number,
-  { symbolFormat, noCentsIfWhole }: { symbolFormat: "long" | "short"; noCentsIfWhole?: boolean },
+  {
+    symbolFormat,
+    noCentsIfWhole,
+    locale,
+  }: { symbolFormat: "long" | "short"; noCentsIfWhole?: boolean; locale?: SupportedLocale },
 ): string => {
+  const resolvedLocale = locale ?? resolveCurrentLocale();
   const currency = findCurrencyByCode(code);
-  const currencySymbol = symbolFormat === "long" ? currency.longSymbol : currency.shortSymbol;
+  let currencySymbol = symbolFormat === "long" ? currency.longSymbol : currency.shortSymbol;
+  if (code.toLowerCase() === "etb" && resolvedLocale === "am") {
+    currencySymbol = "ብር";
+  }
 
   return formatPrice(
     currencySymbol,
     priceCentsToUnit(amountCents, currency.isSingleUnit),
     currency.isSingleUnit ? 0 : 2,
     { noCentsIfWhole: noCentsIfWhole !== undefined ? noCentsIfWhole : true },
+    resolvedLocale,
   );
 };
 

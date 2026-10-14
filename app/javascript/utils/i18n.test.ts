@@ -88,6 +88,32 @@ describe("i18n utility", () => {
       expect(result).toBe("ምዝገባዎ በማራዘሚያ ጊዜ ውስጥ ነው (ቀሪ 3 ቀናት)። ያልተቋረጠ መዳረሻ ለማግኘት አሁኑኑ ያድሱ።");
     });
 
+    it("supports pluralization with {count} for one and other forms", () => {
+      // In English
+      expect(translate("checkout.item_count", "en", { count: 1 })).toBe("1 item");
+      expect(translate("checkout.item_count", "en", { count: 2 })).toBe("2 items");
+      expect(translate("checkout.item_count", "en", { count: 0 })).toBe("0 items");
+
+      // In Amharic
+      expect(translate("checkout.item_count", "am", { count: 1 })).toBe("1 እቃ");
+      expect(translate("checkout.item_count", "am", { count: 2 })).toBe("2 እቃዎች");
+      expect(translate("checkout.item_count", "am", { count: 0 })).toBe("0 እቃዎች");
+
+      // Dispute evidence attaching files
+      expect(translate("disputes.attaching_files", "en", { count: 1 })).toBe(
+        "You are attaching 1 file, in addition to the file you already saved.",
+      );
+      expect(translate("disputes.attaching_files", "en", { count: 3 })).toBe(
+        "You are attaching 3 files, in addition to the file you already saved.",
+      );
+      expect(translate("disputes.attaching_files", "am", { count: 1 })).toBe(
+        "ቀድሞ ከተቀመጠው ፋይል በተጨማሪ 1 ፋይል በማያያዝ ላይ ነዎት።",
+      );
+      expect(translate("disputes.attaching_files", "am", { count: 3 })).toBe(
+        "ቀድሞ ከተቀመጠው ፋይል በተጨማሪ 3 ፋይሎችን በማያያዝ ላይ ነዎት።",
+      );
+    });
+
     it("falls back to English when a key is missing in Amharic", () => {
       const result = translate("nonexistent.nested.key", "am", undefined, "Default Fallback");
       expect(result).toBe("Default Fallback");
@@ -95,6 +121,19 @@ describe("i18n utility", () => {
 
     it("falls back to the key name if no fallback is provided and key is missing", () => {
       expect(translate("unknown.key", "en")).toBe("unknown.key");
+    });
+
+    it("accepts fallback string as 3rd argument and params as 4th argument", () => {
+      const result = translate("nonexistent.with.params", "en", "Hello %{name}, you have {count} items", {
+        name: "Abebe",
+        count: 5,
+      });
+      expect(result).toBe("Hello Abebe, you have 5 items");
+    });
+
+    it("handles t() with (key, fallback, params)", () => {
+      const result = translate("nonexistent.cart", "en", "Inactive for at least %{hours} hours", { hours: 24 });
+      expect(result).toBe("Inactive for at least 24 hours");
     });
   });
 

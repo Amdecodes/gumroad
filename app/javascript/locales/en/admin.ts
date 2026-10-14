@@ -1,0 +1,15 @@
+export const admin = {
+  title: "Admin Portal",
+  overview: "Overview",
+  creators: "Creators",
+  products: "Products",
+  orders: "Orders",
+  reports: "Reports",
+  payouts: "Payouts",
+  subscriptions: "Subscriptions",
+  customers: "Customers",
+  marketing: "Marketing",
+  team: "Team",
+  activity_log: "Activity Log",
+  exit_to_storefront: "Exit to Storefront",
+} as const;

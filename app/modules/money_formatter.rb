@@ -18,18 +18,18 @@ module MoneyFormatter
       return with_symbol && iso.present? ? "#{number} #{iso}" : number
     end
 
-    opts[:symbol] = pricing_or_registry_symbol(currency_type, currency) if with_symbol
+    opts[:symbol] = pricing_or_registry_symbol(currency_type, currency, opts[:locale]) if with_symbol
     Money.new(amount, currency).format(opts)
   end
 
-  def symbol_for(currency_type)
+  def symbol_for(currency_type, locale: nil)
     currency = find_currency(currency_type)
     unless currency
       soft_fail_unknown_currency(currency_type)
       return iso_code_for(currency_type)
     end
 
-    pricing_or_registry_symbol(currency_type, currency)
+    pricing_or_registry_symbol(currency_type, currency, locale)
   end
 
   def find_currency(currency_type)
@@ -42,8 +42,12 @@ module MoneyFormatter
   end
   private_class_method :find_currency
 
-  def pricing_or_registry_symbol(currency_type, currency)
-    CURRENCY_CHOICES.dig(currency_type.to_s.downcase, :symbol) || currency.symbol
+  def pricing_or_registry_symbol(currency_type, currency, locale = nil)
+    code = currency_type.to_s.downcase
+    current_locale = (locale || I18n.locale).to_s
+    return "ብር" if code == "etb" && current_locale == "am"
+
+    CURRENCY_CHOICES.dig(code, :symbol) || currency.symbol
   end
   private_class_method :pricing_or_registry_symbol
 

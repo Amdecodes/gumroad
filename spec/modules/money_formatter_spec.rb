@@ -97,5 +97,20 @@ describe MoneyFormatter do
       expect(MoneyFormatter.symbol_for(nil)).to eq ""
       expect(MoneyFormatter.symbol_for("")).to eq ""
     end
+
+    it "formats ETB with ETB in English and ብር in Amharic" do
+      I18n.with_locale(:en) do
+        expect(MoneyFormatter.format(25_000, :etb)).to eq "250.00 ETB"
+        expect(MoneyFormatter.symbol_for(:etb)).to eq "ETB"
+      end
+
+      I18n.with_locale(:am) do
+        expect(MoneyFormatter.format(25_000, :etb)).to eq "250.00 ብር"
+        expect(MoneyFormatter.symbol_for(:etb)).to eq "ብር"
+      end
+
+      expect(MoneyFormatter.format(25_000, :etb, locale: :am)).to eq "250.00 ብር"
+      expect(MoneyFormatter.symbol_for(:etb, locale: :am)).to eq "ብር"
+    end
   end
 end
