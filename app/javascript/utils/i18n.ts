@@ -84,6 +84,8 @@ export const DEFAULT_PLATFORM_PARAMS: Record<SupportedLocale, Record<string, str
     supportEmail: "support@arifdrop.com",
     statement_descriptor: "ARIFDROP*",
     statementDescriptor: "ARIFDROP*",
+    kindle_email: "noreply@customers.arifdrop.com",
+    kindleEmail: "noreply@customers.arifdrop.com",
   },
   am: {
     app_name: "አሪፍድሮፕ",
@@ -92,6 +94,8 @@ export const DEFAULT_PLATFORM_PARAMS: Record<SupportedLocale, Record<string, str
     supportEmail: "support@arifdrop.com",
     statement_descriptor: "ARIFDROP*",
     statementDescriptor: "ARIFDROP*",
+    kindle_email: "noreply@customers.arifdrop.com",
+    kindleEmail: "noreply@customers.arifdrop.com",
   },
 };
 
