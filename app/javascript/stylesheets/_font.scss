@@ -22,8 +22,54 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: "Noto Sans Ethiopic";
+  src: url("/fonts/NotoSansEthiopic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0, U+1200-137F, U+2010-2015, U+2018-2019, U+201C-201D, U+2026, U+20AC;
+}
+
+@font-face {
+  font-family: "Noto Sans Ethiopic";
+  src: url("/fonts/NotoSansEthiopic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0, U+1200-137F, U+2010-2015, U+2018-2019, U+201C-201D, U+2026, U+20AC;
+}
 /* Ethiopic Script Typography (Fidel Unicode U+1200-U+137F) */
-:lang(am), [lang="am"], .lang-am, .font-ethiopic {
+:lang(am),
+[lang="am"],
+.lang-am,
+.font-ethiopic {
   font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", sans-serif;
   line-height: 1.5; /* Prevents Fidel ascender/descender clipping */
+}
+
+.lang-am {
+  button,
+  input,
+  select,
+  textarea {
+    font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", sans-serif;
+  }
+
+  /* Prevent tight buttons/inputs from clipping tall Fidel characters without distorting avatars/icons/images */
+  button.h-8,
+  button.h-9,
+  input.h-8,
+  input.h-9,
+  select.h-8,
+  select.h-9,
+  textarea.h-8,
+  textarea.h-9,
+  [role="button"].h-8,
+  [role="button"].h-9 {
+    min-height: 2.25rem;
+    height: auto;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
 }
