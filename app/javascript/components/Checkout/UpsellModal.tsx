@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { type CartState, type CartItem, getDiscountedPrice, type Upsell } from "$app/components/Checkout/cartState";
 import { computeOptionPrice, OptionRadioButton, type Option } from "$app/components/Product/ConfigurationSelector";
@@ -47,9 +49,9 @@ export const UpsellModal = ({
         </Tabs>
       </div>
       <footer style={{ display: "grid", gap: "var(--spacer-4)", gridTemplateColumns: "1fr 1fr" }}>
-        <Button onClick={decline}>Don't upgrade</Button>
+        <Button onClick={decline}>{t("actions.dont_upgrade")}</Button>
         <Button color="primary" onClick={accept}>
-          Upgrade
+          {t("actions.upgrade")}
         </Button>
       </footer>
     </>

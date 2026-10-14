@@ -13,6 +13,7 @@ import { isOpenTuple } from "$app/utils/array";
 import { assert } from "$app/utils/assert";
 import { CurrencyCode, getIsSingleUnitCurrency } from "$app/utils/currency";
 import { isValidEmail } from "$app/utils/email";
+import { resolveCurrentLocale, t } from "$app/utils/i18n";
 import { calculateFirstInstallmentPaymentPriceCents } from "$app/utils/price";
 import { assertResponseError } from "$app/utils/request";
 import { startTrackingForSeller, trackProductEvent } from "$app/utils/user_analytics";
@@ -225,7 +226,7 @@ const CheckoutIndexPage = () => {
   // Flush the initial cart's side effects exactly once, off the render path.
   useRunOnce(() => {
     if (initialCheckout.overLimit) {
-      showAlert(`You cannot add more than ${max_allowed_cart_products} products to the cart.`, "error");
+      showAlert(t("checkout.max_products_limit", { count: max_allowed_cart_products }), "error");
       return;
     }
     for (const seller of initialCheckout.sellersToTrack) startTrackingForSeller(seller.id, seller.analytics);
@@ -343,7 +344,7 @@ const CheckoutIndexPage = () => {
         .then(setSurchargesIfAccepted)
         .catch((e: unknown) => {
           assertResponseError(e);
-          showAlert("Sorry, something went wrong. Please try again.", "error");
+          showAlert(t("checkout.something_went_wrong_retry"), "error");
           dispatch({ type: "cancel" });
         }),
     [currentOffer],
@@ -573,7 +574,7 @@ const CheckoutIndexPage = () => {
           plugins: getPlugins(),
           friend: document.querySelector<HTMLInputElement>(".friend")?.value ?? null,
           url_parameters: window.location.search,
-          locale: navigator.language,
+          locale: resolveCurrentLocale(),
         },
         recaptchaResponse: state.status.recaptchaResponse ?? null,
         recaptchaChallengeFallback: state.status.challengeFallback ?? false,
@@ -859,9 +860,7 @@ const CheckoutIndexPage = () => {
         }
         const retryable = e.retryable;
         showAlert(
-          retryable
-            ? "Part of your payment is being processed — check your email for its receipt. The items that couldn't be charged are still in your cart to try again."
-            : "Your payment is being processed — check your email for your receipt. Please do not pay again.",
+          retryable ? t("checkout.payment_processing_partial") : t("checkout.payment_processing_full"),
           "warning",
         );
         // Same stale-save hazard as the success path above: a pre-purchase save still pending
@@ -899,7 +898,7 @@ const CheckoutIndexPage = () => {
         return;
       }
       assertResponseError(e);
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("checkout.something_went_wrong_retry"), "error");
       dispatch({ type: "cancel" });
     }
   }
@@ -1176,7 +1175,7 @@ const CheckoutIndexPage = () => {
           setShowLargeTipConfirmation(false);
           dispatch({ type: "cancel" });
         }}
-        title="Confirm tip amount"
+        title={t("checkout.confirm_tip_title")}
         footer={
           <>
             <Button
@@ -1185,7 +1184,7 @@ const CheckoutIndexPage = () => {
                 dispatch({ type: "cancel" });
               }}
             >
-              Edit tip
+              {t("checkout.edit_tip")}
             </Button>
             <Button
               color="primary"
@@ -1196,27 +1195,26 @@ const CheckoutIndexPage = () => {
                 dispatch({ type: "set-awaiting-buyer-confirmation", awaiting: false });
               }}
             >
-              Yes, leave tip
+              {t("checkout.confirm_tip")}
             </Button>
           </>
         }
       >
         <p>
-          You're about to leave a tip of{" "}
-          {listedCurrency
-            ? formatPresentmentCents(listedTipCents, listedCurrency)
-            : formatCheckoutPrice(computeTip(state), buyerCurrencyDisplay, {
-                usdSymbolFormat: "short",
-                noCentsIfWhole: true,
-              })}{" "}
-          on a{" "}
-          {listedCurrency
-            ? formatPresentmentCents(listedProductTotalCents, listedCurrency)
-            : formatCheckoutPrice(getTotalPriceFromProducts(state), buyerCurrencyDisplay, {
-                usdSymbolFormat: "short",
-                noCentsIfWhole: true,
-              })}{" "}
-          purchase. Are you sure?
+          {t("checkout.tip_confirmation_message", {
+            tip: listedCurrency
+              ? formatPresentmentCents(listedTipCents, listedCurrency)
+              : formatCheckoutPrice(computeTip(state), buyerCurrencyDisplay, {
+                  usdSymbolFormat: "short",
+                  noCentsIfWhole: true,
+                }),
+            price: listedCurrency
+              ? formatPresentmentCents(listedProductTotalCents, listedCurrency)
+              : formatCheckoutPrice(getTotalPriceFromProducts(state), buyerCurrencyDisplay, {
+                  usdSymbolFormat: "short",
+                  noCentsIfWhole: true,
+                }),
+          })}
         </p>
       </Modal>
       <Modal
@@ -1225,7 +1223,7 @@ const CheckoutIndexPage = () => {
           setDuplicatePurchaseConfirmation(null);
           dispatch({ type: "cancel" });
         }}
-        title="You already own this"
+        title={t("checkout.already_own_title")}
         footer={
           <>
             <Button
@@ -1234,7 +1232,7 @@ const CheckoutIndexPage = () => {
                 dispatch({ type: "cancel" });
               }}
             >
-              Cancel
+              {t("actions.cancel")}
             </Button>
             <Button
               color="primary"
@@ -1246,13 +1244,17 @@ const CheckoutIndexPage = () => {
                 dispatch({ type: "set-awaiting-buyer-confirmation", awaiting: false });
               }}
             >
-              Buy again
+              {t("checkout.buy_again")}
             </Button>
           </>
         }
       >
         {/* The heading already carries ownership — saying it again here read as the same point twice. */}
-        <p>Do you want to buy {duplicatePurchaseConfirmation?.productNames.join(", ") ?? ""} again?</p>
+        <p>
+          {t("checkout.buy_again_prompt", {
+            product: duplicatePurchaseConfirmation?.productNames.join(", ") ?? "",
+          })}
+        </p>
       </Modal>
     </StateContext.Provider>
   );

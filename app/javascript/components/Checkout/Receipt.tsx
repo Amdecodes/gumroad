@@ -5,6 +5,7 @@ import { createAccount, CreateAccountPayload } from "$app/data/account";
 import type { ErrorLineItemResult, LineItemResult, SuccessfulLineItemResult } from "$app/data/purchase";
 import { trackUserProductAction } from "$app/data/user_action_event";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
@@ -50,7 +51,7 @@ export const LineItemResultEntry = ({ name, result }: { name: string; result: Li
   );
 
 const FailedLineItemResultEntry = ({ name, result }: { name: string; result: ErrorLineItemResult }) => {
-  const message = result.error_message ?? "Sorry, something went wrong.";
+  const message = result.error_message ?? t("receipt.something_went_wrong");
   return (
     <CardContent asChild details>
       <section className="space-y-3">
@@ -124,9 +125,7 @@ const SuccessfulLineItemResultEntry = ({ name, result }: { name: string; result:
               <CardContent>
                 <div className="grow text-muted">
                   {result.gift_sender_text}{" "}
-                  {result.has_files
-                    ? "They'll get an email with your note and a download link."
-                    : "They'll get an email with your note."}
+                  {result.has_files ? t("receipt.gift_download_note") : t("receipt.gift_note_only")}
                 </div>
               </CardContent>
             ) : result.extra_purchase_notice ? (
@@ -146,13 +145,13 @@ const SuccessfulLineItemResultEntry = ({ name, result }: { name: string; result:
             ) : null}
             <CardContent>
               <div className="generate-invoice grow text-muted">
-                Need an invoice for this?{" "}
+                {t("receipt.need_invoice")}{" "}
                 <a
                   target="_blank"
                   href={Routes.new_purchase_invoice_path(result.id, { email: result.email })}
                   rel="noreferrer"
                 >
-                  Generate
+                  {t("receipt.generate_invoice")}
                 </a>
               </div>
             </CardContent>
@@ -165,7 +164,7 @@ const SuccessfulLineItemResultEntry = ({ name, result }: { name: string; result:
           <Card borderless asChild className="grow">
             <section>
               <CardContent>
-                <LineItem name="Shipping" price={result.shipping_amount} card />
+                <LineItem name={t("checkout.shipping")} price={result.shipping_amount} card />
               </CardContent>
             </section>
           </Card>
@@ -226,26 +225,26 @@ export const CreateAccountForm = ({
       className={classNames("flex flex-col gap-4", className)}
     >
       {status === "success" ? (
-        <Alert variant="success">Done! Your account has been created. You'll get a confirmation email shortly.</Alert>
+        <Alert variant="success">{t("receipt.account_created_notice")}</Alert>
       ) : (
         <>
           <div className="space-y-1">
-            <h3>Keep everything in one place</h3>
-            <p className="text-muted">Create an account to access all of your purchases anytime.</p>
+            <h3>{t("receipt.keep_everything_title")}</h3>
+            <p className="text-muted">{t("receipt.keep_everything_desc")}</p>
           </div>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}email`}>Email</Label>
+              <Label htmlFor={`${uid}email`}>{t("receipt.email")}</Label>
             </FieldsetTitle>
             <Input type="text" readOnly value={createAccountData.email} id={`${uid}email`} />
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}password`}>Password</Label>
+              <Label htmlFor={`${uid}password`}>{t("receipt.password")}</Label>
             </FieldsetTitle>
             <Input
               type="password"
-              placeholder="Enter password"
+              placeholder={t("receipt.enter_password")}
               value={password}
               onChange={(evt) => setPassword(evt.target.value)}
               id={`${uid}password`}
@@ -254,14 +253,14 @@ export const CreateAccountForm = ({
 
           <div className="space-y-2">
             <Button type="submit" color="primary" disabled={status === "processing"} className="w-full">
-              {status === "processing" ? "Signing up..." : "Sign up"}
+              {status === "processing" ? t("actions.signing_up") : t("actions.sign_up")}
             </Button>
             <FieldsetDescription className="text-center">
-              By signing up, you agree to our{" "}
+              {t("receipt.terms_notice")}{" "}
               {/* Opens in a new tab: the receipt is in-memory checkout state, so navigating
                   away would destroy it with no way back. */}
               <a href="https://gumroad.com/terms" target="_blank" rel="noreferrer">
-                Terms of Use
+                {t("receipt.terms_of_use")}
               </a>
               .
             </FieldsetDescription>
@@ -292,15 +291,21 @@ export const Receipt = ({
         <header>
           {/* Intentionally not a heading: this is card chrome (a title bar), not document
               structure — keeping it out of the outline avoids an h4 before the h2 below. */}
-          <div className="font-bold">Checkout</div>
-          <a href={discoverUrl} aria-label="Close" className="text-muted transition-colors hover:text-foreground">
+          <div className="font-bold">{t("checkout.title")}</div>
+          <a
+            href={discoverUrl}
+            aria-label={t("actions.close")}
+            className="text-muted transition-colors hover:text-foreground"
+          >
             <XCircle className="size-5" />
           </a>
         </header>
       </CardContent>
       <CardContent asChild details>
         <header className="space-y-1">
-          <h2>{results.some(({ result }) => !result.success) ? "Summary" : "Your purchase was successful!"}</h2>
+          <h2>
+            {results.some(({ result }) => !result.success) ? t("receipt.summary_title") : t("receipt.success_title")}
+          </h2>
 
           {results.some(({ result }) => result.success) ? (
             <p className="text-muted">
@@ -311,8 +316,8 @@ export const Receipt = ({
                   !item.product.is_preorder &&
                   !item.product.free_trial,
               )
-                ? `We charged your card and sent a receipt to ${state.email}`
-                : `We sent a receipt to ${state.email}`}
+                ? t("receipt.charged_card_and_sent_receipt", { email: state.email })
+                : t("receipt.sent_receipt_to", { email: state.email })}
             </p>
           ) : null}
         </header>

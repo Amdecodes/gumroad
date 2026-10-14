@@ -29,18 +29,18 @@ class CheckoutController < ApplicationController
     # Guard against the rare case where `cart` is sent as a scalar (e.g. `cart=foo`);
     # `params.require(:cart)` would return the String unchanged and `.permit` would raise.
     unless params[:cart].respond_to?(:permit)
-      return redirect_to checkout_path, alert: "Sorry, something went wrong. Please try again."
+      return redirect_to checkout_path, alert: t("flash.checkout.something_went_wrong")
     end
 
     items = update_permitted_params[:items].to_a
     if items.length > Cart::MAX_ALLOWED_CART_PRODUCTS
-      return redirect_to checkout_path, alert: "You cannot add more than #{Cart::MAX_ALLOWED_CART_PRODUCTS} products to the cart."
+      return redirect_to checkout_path, alert: t("flash.checkout.cart_product_limit", count: Cart::MAX_ALLOWED_CART_PRODUCTS)
     end
 
     # Reject invalid items before the transaction; skipping them during filtering
     # would mark every existing cart product deleted.
     if items.any? { |item| item[:product].blank? || item[:product][:id].blank? }
-      return redirect_to checkout_path, alert: "A product in your cart is missing. Refresh the page and try again."
+      return redirect_to checkout_path, alert: t("flash.checkout.product_missing")
     end
 
     ActiveRecord::Base.transaction do
@@ -122,7 +122,7 @@ class CheckoutController < ApplicationController
     # validation failures, deadlocks) still notifies as before.
     ErrorNotifier.notify(e) unless cart_product_out_of_range_error?(e)
     Rails.logger.error(e.full_message) if Rails.env.development?
-    redirect_to checkout_path, alert: "Sorry, something went wrong. Please try again."
+    redirect_to checkout_path, alert: t("flash.checkout.something_went_wrong")
   end
 
   private
@@ -206,7 +206,7 @@ class CheckoutController < ApplicationController
       return redirect_to(request_path_except_cart_id_param) if cart.nil?
 
       # Prompt the user to log in if the cart matching the `cart_id` param is associated with a user
-      return redirect_to login_url(next: request_path_except_cart_id_param, email: cart.user.email), alert: "Please log in to complete checkout." if cart.user.present?
+      return redirect_to login_url(next: request_path_except_cart_id_param, email: cart.user.email), alert: t("flash.checkout.login_required") if cart.user.present?
 
       browser_guid = cookies[:_gumroad_guid]
       if cart.browser_guid != browser_guid

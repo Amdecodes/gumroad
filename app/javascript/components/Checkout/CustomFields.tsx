@@ -2,6 +2,7 @@ import { uniqBy } from "lodash-es";
 import * as React from "react";
 
 import { CustomFieldDescriptor } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 
 import { Creator } from "$app/components/Checkout/cartState";
 import { Product, getCustomFieldKey, getErrors, isProcessing, useState } from "$app/components/Checkout/payment";
@@ -30,12 +31,14 @@ const CustomField = ({ field, fieldKey }: { field: CustomFieldDescriptor; fieldK
             type="text"
             aria-invalid={hasError}
             aria-describedby={hasError ? `${uid}-error` : undefined}
-            placeholder={`${field.name}${field.required ? "" : " (optional)"}`}
+            placeholder={`${field.name}${field.required ? "" : ` (${t("common.optional")})`}`}
             value={value ?? ""}
             onChange={(e) => dispatch({ type: "set-custom-field", key: fieldKey, value: e.target.value })}
             disabled={isProcessing(state)}
           />
-          {hasError ? <FieldsetDescription id={`${uid}-error`}>This field is required.</FieldsetDescription> : null}
+          {hasError ? (
+            <FieldsetDescription id={`${uid}-error`}>{t("checkout.field_required")}</FieldsetDescription>
+          ) : null}
         </Fieldset>
       );
     }
@@ -53,9 +56,11 @@ const CustomField = ({ field, fieldKey }: { field: CustomFieldDescriptor; fieldK
               style={{ margin: 0 }}
               disabled={isProcessing(state)}
             />
-            {field.required ? field.name : `${field.name} (optional)`}
+            {field.required ? field.name : `${field.name} (${t("common.optional")})`}
           </Label>
-          {hasError ? <FieldsetDescription id={`${uid}-error`}>This field is required.</FieldsetDescription> : null}
+          {hasError ? (
+            <FieldsetDescription id={`${uid}-error`}>{t("checkout.field_required")}</FieldsetDescription>
+          ) : null}
         </Fieldset>
       );
     }
@@ -73,13 +78,13 @@ const CustomField = ({ field, fieldKey }: { field: CustomFieldDescriptor; fieldK
               style={{ margin: 0 }}
               disabled={isProcessing(state)}
             />
-            I accept
+            {t("checkout.accept_terms_prefix")}{" "}
             <a href={field.name} target="_blank" rel="noreferrer">
-              Terms and Conditions
+              {t("checkout.terms_and_conditions")}
             </a>
           </Label>
           {hasError ? (
-            <FieldsetDescription id={`${uid}-error`}>Please accept the Terms and Conditions.</FieldsetDescription>
+            <FieldsetDescription id={`${uid}-error`}>{t("checkout.accept_terms_error")}</FieldsetDescription>
           ) : null}
         </Fieldset>
       );

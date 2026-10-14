@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { formatOrderOfMagnitude } from "$app/utils/formatOrderOfMagnitude";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { CartItem, CartState, CrossSell, getDiscountedPrice } from "$app/components/Checkout/cartState";
@@ -87,10 +88,10 @@ export const CrossSellModal = ({
       </div>
       <footer style={{ display: "grid", gap: "var(--spacer-4)", gridTemplateColumns: "1fr 1fr" }}>
         <Button onClick={decline}>
-          {crossSell.replace_selected_products ? "Don't upgrade" : "Continue without adding"}
+          {crossSell.replace_selected_products ? t("actions.dont_upgrade") : t("actions.continue_without_adding")}
         </Button>
         <Button color="primary" onClick={accept}>
-          {crossSell.replace_selected_products ? "Upgrade" : "Add to cart"}
+          {crossSell.replace_selected_products ? t("actions.upgrade") : t("storefront.add_to_cart")}
         </Button>
       </footer>
     </>

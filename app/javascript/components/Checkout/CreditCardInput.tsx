@@ -4,6 +4,7 @@ import { StripeCardElement, StripeCardElementChangeEvent } from "@stripe/stripe-
 import * as React from "react";
 
 import { SavedCreditCard } from "$app/parsers/card";
+import { t } from "$app/utils/i18n";
 import { getStripeInstance } from "$app/utils/stripe_loader";
 
 import {
@@ -52,26 +53,26 @@ export const CreditCardInput = ({
   return (
     <Fieldset state={invalid ? "danger" : undefined}>
       <FieldsetTitle>
-        <Label>Card information</Label>
+        <Label>{t("checkout.card_information")}</Label>
         {savedCreditCard ? (
           <LinkButton className="font-normal" disabled={disabled} onClick={() => setUseSavedCard(!useSavedCard)}>
-            {useSavedCard ? "Use a different card?" : "Use saved card"}
+            {useSavedCard ? t("checkout.use_different_card") : t("checkout.use_saved_card")}
           </LinkButton>
         ) : null}
       </FieldsetTitle>
       {savedCreditCard && useSavedCard ? (
-        <InputGroup readOnly aria-label="Saved credit card">
+        <InputGroup readOnly aria-label={t("checkout.saved_credit_card")}>
           <CreditCard className="size-5" />
           <span>{savedCreditCard.number}</span>
           <span style={{ marginLeft: "auto" }}>{savedCreditCard.expiration_date}</span>
         </InputGroup>
       ) : (
-        <InputGroup disabled={disabled} aria-label="Card information" aria-invalid={invalid}>
+        <InputGroup disabled={disabled} aria-label={t("checkout.card_information")} aria-invalid={invalid}>
           <StripeElementsProvider>
             <CardElement
               className="flex-1"
               options={{
-                style: { base: baseStripeStyle ?? {} },
+                style: { base: baseStripeStyle },
                 hidePostalCode: true,
                 disabled: disabled ?? false,
                 disableLink: !enableLink,

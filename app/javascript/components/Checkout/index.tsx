@@ -9,6 +9,7 @@ import { isOpenTuple } from "$app/utils/array";
 import { classNames } from "$app/utils/classNames";
 import { findCurrencyByCode, isCurrencyCode } from "$app/utils/currency";
 import { formatCallDate } from "$app/utils/date";
+import { t } from "$app/utils/i18n";
 import { variantLabel } from "$app/utils/labels";
 import {
   formatAmountPerRecurrence,
@@ -207,7 +208,7 @@ const CurrencyPicker = ({
     <div className="grid gap-4 border-t border-border p-4 sm:p-5">
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor={uid}>Currency</Label>
+          <Label htmlFor={uid}>{t("checkout.currency_label")}</Label>
         </FieldsetTitle>
         <Select
           id={uid}
@@ -220,14 +221,14 @@ const CurrencyPicker = ({
           {options.map((option) => (
             <option key={option.code} value={option.code}>
               {option.label}
-              {option.code === detected ? " — detected" : ""}
+              {option.code === detected ? ` — ${t("checkout.currency_detected")}` : ""}
             </option>
           ))}
         </Select>
       </Fieldset>
       {/* Always rendered so the live region exists before the text lands in it. */}
       <div role="status" className="text-muted empty:hidden">
-        {isRequoting ? "Updating total…" : ""}
+        {isRequoting ? t("checkout.updating_total") : ""}
       </div>
     </div>
   );
@@ -244,8 +245,10 @@ const CurrencyRefusalNotice = ({ summaryCurrencyCode }: { summaryCurrencyCode: s
   return (
     <div className="border-t border-border p-4 sm:p-5">
       <Alert variant="warning">
-        We can't charge this cart in {currencyLabel(unavailable)}, so the total is in{" "}
-        {currencyLabel(summaryCurrencyCode)}.
+        {t("checkout.currency_unsupported", {
+          currency: currencyLabel(unavailable),
+          fallbackCurrency: currencyLabel(summaryCurrencyCode),
+        })}
       </Alert>
     </div>
   );
@@ -289,19 +292,13 @@ export const Checkout = ({
           : acc;
       }, 0);
       if (pppDiscountGreaterCount === entries.length) {
-        showAlert(
-          "The offer code will not be applied because the purchasing power parity discount is greater than the offer code discount for all products.",
-          "error",
-        );
+        showAlert(t("checkout.ppp_greater_all"), "error");
       } else {
         // One showAlert, because the toast is a single slot — a second call replaces the first
         // before it paints. Both reasons can be true and each names a different set of lines.
-        const warnings = [
-          pppDiscountGreaterCount > 0
-            ? "The offer code will not be applied to some products for which the purchasing power parity discount is greater than the offer code discount."
-            : null,
-          discount.notice,
-        ].filter(Boolean);
+        const warnings = [pppDiscountGreaterCount > 0 ? t("checkout.ppp_greater_some") : null, discount.notice].filter(
+          Boolean,
+        );
         if (warnings.length > 0) showAlert(warnings.join(" "), "warning");
         updateCart({
           discountCodes: [
@@ -542,10 +539,10 @@ export const Checkout = ({
     <div className="@container mx-auto w-full max-w-400" data-checkout-scope>
       <PageHeader
         className="border-none pb-0 md:px-16 md:pb-0 @[64rem]:mb-2"
-        title="Checkout"
+        title={t("checkout.title")}
         actions={
           <NavigationButton className="hidden @[64rem]:inline-flex" href={cart.returnUrl ?? discoverUrl}>
-            Continue shopping
+            {t("actions.continue_shopping")}
           </NavigationButton>
         }
         showTitleOnMobile
@@ -593,7 +590,7 @@ export const Checkout = ({
                   {summarySurcharges ? (
                     <>
                       <CartPriceItem
-                        title="Subtotal"
+                        title={t("checkout.subtotal")}
                         price={
                           localAmounts && localCurrency
                             ? formatPresentmentCents(localAmounts.subtotalCents, localCurrency, { noCentsIfWhole })
@@ -603,7 +600,7 @@ export const Checkout = ({
                       />
                       {summarySurcharges.tax_included_cents ? (
                         <CartPriceItem
-                          title={`${nameOfSalesTaxForCountry(state.country)} (included)`}
+                          title={t("checkout.tax_included", { tax: nameOfSalesTaxForCountry(state.country) })}
                           price={
                             listedAmounts && listedCurrency
                               ? formatPresentmentCents(listedAmounts.taxIncludedCents, listedCurrency, {
@@ -629,7 +626,7 @@ export const Checkout = ({
                       ) : null}
                       {summarySurcharges.shipping_rate_cents ? (
                         <CartPriceItem
-                          title="Shipping rate"
+                          title={t("checkout.shipping_rate")}
                           price={
                             localAmounts && localCurrency
                               ? formatPresentmentCents(localAmounts.shippingCents, localCurrency, { noCentsIfWhole })
@@ -645,19 +642,16 @@ export const Checkout = ({
                   {visibleDiscounts.length || discount > 0 ? (
                     <div className="grid grid-flow-col justify-between gap-4">
                       <h4 className="inline-flex flex-wrap gap-2">
-                        Discounts
+                        {t("checkout.discounts")}
                         {cart.items.some((item) => !!item.product.ppp_details && item.price !== 0) &&
                         !cart.rejectPppDiscount ? (
-                          <WithTooltip
-                            tip="This discount is applied based on the cost of living in your country."
-                            position="top"
-                          >
+                          <WithTooltip tip={t("checkout.ppp_tooltip")} position="top">
                             <Pill asChild size="small" className="font-inherit cursor-pointer">
                               <button
                                 onClick={() => updateCart({ rejectPppDiscount: true })}
-                                aria-label="Purchasing power parity discount"
+                                aria-label={t("checkout.ppp_discount")}
                               >
-                                Purchasing power parity discount
+                                {t("checkout.ppp_discount")}
                                 <X className="ml-2 size-5" />
                               </button>
                             </Pill>
@@ -671,7 +665,7 @@ export const Checkout = ({
                               updateCart({ discountCodes: cart.discountCodes.filter((item) => item !== code) })
                             }
                             key={code.code}
-                            aria-label="Discount code"
+                            aria-label={t("checkout.discount_code")}
                           >
                             {code.code}
                             <X className="ml-2 size-5" />
@@ -700,14 +694,14 @@ export const Checkout = ({
                       }}
                     >
                       <Input
-                        placeholder="Discount code"
+                        placeholder={t("checkout.discount_code")}
                         value={newDiscountCode}
                         className="flex-1"
                         disabled={discountInputDisabled}
                         onChange={(e) => setNewDiscountCode(e.target.value)}
                       />
                       <Button type="submit" disabled={discountInputDisabled}>
-                        Apply
+                        {t("actions.apply")}
                       </Button>
                     </form>
                   ) : null}
@@ -716,7 +710,7 @@ export const Checkout = ({
                   <>
                     <footer className="grid gap-4 border-t border-border p-4 sm:px-5" aria-busy={isRequoting}>
                       <CartPriceItem
-                        title="Total"
+                        title={t("checkout.total")}
                         price={
                           localAmounts && localCurrency
                             ? formatPresentmentCents(localAmounts.totalCents, localCurrency, { noCentsIfWhole })
@@ -737,7 +731,7 @@ export const Checkout = ({
                     {commissionCompletionTotal > 0 || futureInstallmentsWithoutTipsTotal > 0 ? (
                       <div className="grid gap-4 border-t border-border p-4">
                         <CartPriceItem
-                          title="Payment today"
+                          title={t("checkout.payment_today")}
                           price={
                             buyerCurrencyDisplay
                               ? formatPresentmentCents(
@@ -755,14 +749,14 @@ export const Checkout = ({
                         />
                         {commissionCompletionTotal > 0 ? (
                           <CartPriceItem
-                            title="Payment after completion"
+                            title={t("checkout.payment_after_completion")}
                             price={formatCheckoutPrice(commissionCompletionTotal, localCurrency, { noCentsIfWhole })}
                             isRequoting={isRequoting}
                           />
                         ) : null}
                         {futureInstallmentsWithoutTipsTotal > 0 ? (
                           <CartPriceItem
-                            title="Future installments"
+                            title={t("checkout.future_installments")}
                             price={
                               buyerCurrencyDisplay?.futureInstallmentsPresentmentTotalCents != null
                                 ? formatPresentmentCents(
@@ -784,7 +778,11 @@ export const Checkout = ({
               </CartItemList>
               {recommendedProducts && recommendedProducts.length > 0 ? (
                 <section className="flex flex-col gap-4">
-                  <h2>Customers who bought {cart.items.length === 1 ? "this item" : "these items"} also bought</h2>
+                  <h2>
+                    {t("checkout.customers_also_bought", {
+                      items: cart.items.length === 1 ? t("checkout.this_item") : t("checkout.these_items"),
+                    })}
+                  </h2>
                   <ProductCardGrid narrow>
                     {recommendedProducts.map((product, idx) => (
                       // All of this grid is off-screen. so we just eager load the first image
@@ -796,7 +794,7 @@ export const Checkout = ({
             </div>
             <PaymentForm />
             <NavigationButton className="@[64rem]:hidden" href={cart.returnUrl ?? discoverUrl}>
-              Continue shopping
+              {t("actions.continue_shopping")}
             </NavigationButton>
           </div>
         </div>
@@ -804,10 +802,10 @@ export const Checkout = ({
         <div className="p-4 md:p-8">
           <Placeholder>
             <PlaceholderImage src={placeholder} />
-            <h3>You haven't added anything...yet!</h3>
-            <p>Once you do, it'll show up here so you can complete your purchases.</p>
+            <h3>{t("checkout.empty_cart_title")}</h3>
+            <p>{t("checkout.empty_cart_desc")}</p>
             <Button asChild color="accent">
-              <a href={discoverUrl}>Discover products</a>
+              <a href={discoverUrl}>{t("checkout.discover_products")}</a>
             </Button>
           </Placeholder>
         </div>
@@ -867,7 +865,7 @@ const TipSelector = ({
   return (
     <div className="@container flex flex-col gap-2 sm:gap-3">
       <CartPriceItem
-        title="Add a tip?"
+        title={t("checkout.add_tip")}
         price={
           presentmentTipCents != null && buyerCurrencyDisplay
             ? formatPresentmentCents(presentmentTipCents, buyerCurrencyDisplay, { noCentsIfWhole })
@@ -904,7 +902,7 @@ const TipSelector = ({
                   }}
                   disabled={isProcessing(state)}
                 >
-                  {percentage === 0 ? "No Tip" : `${percentage}%`}
+                  {percentage === 0 ? t("checkout.no_tip") : `${percentage}%`}
                 </Button>
               </Tab>
             ))}
@@ -913,7 +911,7 @@ const TipSelector = ({
         <Fieldset state={errors.has("tip") ? "danger" : undefined} className="col-span-full @[52rem]:col-span-1!">
           <PriceInput
             hasError={errors.has("tip")}
-            ariaLabel="Tip"
+            ariaLabel={t("checkout.tip")}
             currencyCode={buyerCurrencyDisplay?.currencyCode ?? "usd"}
             cents={fixedTipCents}
             onChange={(newAmount) => {
@@ -935,7 +933,7 @@ const TipSelector = ({
                 },
               });
             }}
-            placeholder="Custom tip"
+            placeholder={t("checkout.custom_tip")}
             disabled={isProcessing(state)}
             name="tip_amount"
           />
@@ -1048,7 +1046,7 @@ const CartItemComponent = ({
     if (isPWYW && (selection.price.value === null || selection.price.value < priceCents))
       return setSelection({ ...selection, price: { ...selection.price, error: true } });
     if (selection.optionId !== item.option_id && findCartItem(cart, item.product.permalink, selection.optionId))
-      return setError("You already have this item in your cart.");
+      return setError(t("checkout.item_already_in_cart"));
     const index = cart.items.findIndex((i) => i === item);
     const items = cart.items.slice();
     items[index] = {
@@ -1073,7 +1071,7 @@ const CartItemComponent = ({
       extra={
         item.product.bundle_products.length > 0 ? (
           <div className="flex flex-col gap-3">
-            <h4>This bundle contains...</h4>
+            <h4>{t("checkout.bundle_contains")}</h4>
             <CartItemList className="overflow-hidden">
               {item.product.bundle_products.map((bundleProduct) => (
                 <CartItem key={bundleProduct.product_id} isBundleItem>
@@ -1082,7 +1080,9 @@ const CartItemComponent = ({
                       <Thumbnail url={bundleProduct.thumbnail_url} nativeType={bundleProduct.native_type} />
                     </a>
                   </CartItemMedia>
-                  <span className="sr-only">Qty: {bundleProduct.quantity || item.quantity}</span>
+                  <span className="sr-only">
+                    {t("checkout.quantity_short")} {bundleProduct.quantity || item.quantity}
+                  </span>
                   <CartItemMain className="h-20">
                     <CartItemTitle className="line-clamp-1">{bundleProduct.name}</CartItemTitle>
                     {bundleProduct.variant ? (
@@ -1131,7 +1131,8 @@ const CartItemComponent = ({
           ) : null}
           {item.call_start_time ? (
             <span>
-              <strong>Time:</strong> {formatCallDate(new Date(item.call_start_time), { date: { hideYear: true } })}
+              <strong>{t("checkout.time_short")}</strong>{" "}
+              {formatCallDate(new Date(item.call_start_time), { date: { hideYear: true } })}
             </span>
           ) : null}
           <CartItemActions>
@@ -1145,7 +1146,7 @@ const CartItemComponent = ({
               <Popover open={editPopoverOpen} onOpenChange={setEditPopoverOpen}>
                 <PopoverAnchor>
                   <PopoverTrigger asChild>
-                    <Button className="h-8 w-15 !p-0 !text-xs">Edit</Button>
+                    <Button className="h-8 min-w-15 px-2 !text-xs">{t("actions.edit")}</Button>
                   </PopoverTrigger>
                 </PopoverAnchor>
                 <PopoverContent className="max-h-[var(--radix-popover-content-available-height,80vh)] overflow-auto">
@@ -1166,14 +1167,14 @@ const CartItemComponent = ({
                     />
                     {error ? <Alert variant="danger">{error}</Alert> : null}
                     <Button color="accent" onClick={saveChanges}>
-                      Save changes
+                      {t("actions.save_changes")}
                     </Button>
                   </div>
                 </PopoverContent>
               </Popover>
             ) : null}
             <Button
-              className="h-8 w-15 !p-0 !text-xs"
+              className="h-8 min-w-15 px-2 !text-xs"
               onClick={() => {
                 const newItems = cart.items.filter((i) => i !== item);
                 updateCart({
@@ -1190,7 +1191,7 @@ const CartItemComponent = ({
                 });
               }}
             >
-              Remove
+              {t("actions.remove")}
             </Button>
           </CartItemActions>
         </CartItemFooter>
@@ -1200,7 +1201,7 @@ const CartItemComponent = ({
           second line on narrow viewports instead of squeezing the title column
           down to one letter per line. */}
       <CartItemEnd className="max-w-1/2 text-right">
-        <span className="current-price text-base font-bold sm:text-lg" aria-label="Price">
+        <span className="current-price text-base font-bold sm:text-lg" aria-label={t("checkout.price")}>
           {presentmentPriceCents != null && buyerCurrencyDisplay
             ? formatPresentmentCents(presentmentPriceCents, buyerCurrencyDisplay, { noCentsIfWhole })
             : formatCheckoutPrice(convertToUSD(item, price), buyerCurrencyDisplay, { noCentsIfWhole })}
@@ -1208,10 +1209,10 @@ const CartItemComponent = ({
         {hasFreeTrial(item, isGift) && item.product.free_trial ? (
           <>
             <span className="text-sm">
-              {item.product.free_trial.duration.amount === 1
-                ? `one ${item.product.free_trial.duration.unit}`
-                : `${item.product.free_trial.duration.amount} ${item.product.free_trial.duration.unit}s`}{" "}
-              free
+              {t("checkout.free_trial_duration", {
+                count: item.product.free_trial.duration.amount,
+                unit: item.product.free_trial.duration.unit,
+              })}
             </span>
             {item.recurrence ? (
               <span className="text-sm">
@@ -1224,19 +1225,21 @@ const CartItemComponent = ({
                     noCentsIfWhole,
                   }),
                 )}{" "}
-                after
+                {t("checkout.after")}
               </span>
             ) : null}
           </>
         ) : item.pay_in_installments && item.product.installment_plan ? (
-          <span className="text-sm">in {item.product.installment_plan.number_of_installments} installments</span>
+          <span className="text-sm">
+            {t("checkout.in_installments", { count: item.product.installment_plan.number_of_installments })}
+          </span>
         ) : item.recurrence ? (
           isGift ? (
             <span className="text-sm">{recurrenceDurationLabels[item.recurrence]}</span>
           ) : isSingleChargeDuration(item.recurrence, item.product.duration_in_months) ? (
             // A fixed-length membership whose duration is one recurrence period
             // charges exactly once, so "Yearly" would wrongly suggest renewals.
-            <span className="text-sm">One-time payment</span>
+            <span className="text-sm">{t("checkout.one_time_payment")}</span>
           ) : (
             <span className="text-sm">{recurrenceNames[item.recurrence]}</span>
           )

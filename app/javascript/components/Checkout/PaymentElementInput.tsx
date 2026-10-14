@@ -9,6 +9,7 @@ import {
 import * as React from "react";
 
 import { paymentElementBillingDetailsCollection } from "$app/data/card_payment_method_data";
+import { t } from "$app/utils/i18n";
 import { getCheckoutStripeInstance } from "$app/utils/stripe_loader";
 
 import {
@@ -160,7 +161,7 @@ export const PaymentElementInput = ({
   return (
     <Fieldset
       state={invalid ? "danger" : undefined}
-      aria-label="Card information"
+      aria-label={t("checkout.card_information")}
       // Stripe sizes the element's iframe as `width: calc(100% + 8px); margin: 0 -4px` — a 4px
       // bleed on each side that its inner UI offsets back, so focus rings can render outside the
       // rows without clipping. Our global base rule (`* { max-width: 100% }` in _global.scss)

@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { useState, getErrors, isProcessing } from "$app/components/Checkout/payment";
 import { Modal } from "$app/components/Modal";
@@ -42,21 +44,16 @@ export const GiftForm = ({ isMembership, className }: { isMembership: boolean; c
             }
           }}
         />
-        <h4>Give as a gift?</h4>
+        <h4>{t("checkout.give_as_gift")}</h4>
       </Label>
 
       {gift ? (
         <div className="flex w-full flex-col gap-4">
-          {isMembership ? (
-            <Alert variant="info">
-              Note: Free trials will be charged immediately. The membership will not auto-renew. The recipient must
-              update the payment method to renew the membership.
-            </Alert>
-          ) : null}
+          {isMembership ? <Alert variant="info">{t("checkout.gift_membership_note")}</Alert> : null}
           {gift.type === "normal" ? (
             <Fieldset state={hasError ? "danger" : undefined}>
               <FieldsetTitle>
-                <Label htmlFor={giftEmailUID}>Recipient email</Label>
+                <Label htmlFor={giftEmailUID}>{t("checkout.recipient_email")}</Label>
               </FieldsetTitle>
               <Input
                 id={giftEmailUID}
@@ -64,20 +61,20 @@ export const GiftForm = ({ isMembership, className }: { isMembership: boolean; c
                 value={gift.email}
                 disabled={processing}
                 onChange={(evt) => dispatch({ type: "set-value", gift: { ...gift, email: evt.target.value } })}
-                placeholder="Recipient email address"
+                placeholder={t("checkout.recipient_email_placeholder")}
                 aria-invalid={hasError}
               />
             </Fieldset>
           ) : (
             <Alert variant="info">
-              {gift.name}'s email has been hidden for privacy purposes.{" "}
-              <LinkButton onClick={() => setCancellingPresetGift(true)}>Cancel gift option</LinkButton>
+              {t("checkout.gift_email_hidden", { name: gift.name })}{" "}
+              <LinkButton onClick={() => setCancellingPresetGift(true)}>{t("checkout.cancel_gift_option")}</LinkButton>
               <Modal
                 open={cancellingPresetGift}
                 onClose={() => setCancellingPresetGift(false)}
                 footer={
                   <>
-                    <Button onClick={() => setCancellingPresetGift(false)}>No, cancel</Button>
+                    <Button onClick={() => setCancellingPresetGift(false)}>{t("actions.no_cancel")}</Button>
                     <Button
                       color="primary"
                       disabled={processing}
@@ -86,27 +83,26 @@ export const GiftForm = ({ isMembership, className }: { isMembership: boolean; c
                         setCancellingPresetGift(false);
                       }}
                     >
-                      Yes, reset
+                      {t("actions.yes_reset")}
                     </Button>
                   </>
                 }
-                title="Reset gift option?"
+                title={t("checkout.reset_gift_title")}
               >
-                You are about to switch off the gift option. To gift this wishlist again, you will need to return to the
-                wishlist page and select "Gift this product".
+                {t("checkout.reset_gift_message")}
               </Modal>
             </Alert>
           )}
           <Fieldset className="w-full">
             <FieldsetTitle>
-              <Label htmlFor={giftNoteUID}>Message</Label>
+              <Label htmlFor={giftNoteUID}>{t("checkout.message")}</Label>
             </FieldsetTitle>
             <Textarea
               id={giftNoteUID}
               value={gift.note}
               disabled={processing}
               onChange={(evt) => dispatch({ type: "set-value", gift: { ...gift, note: evt.target.value } })}
-              placeholder="A personalized message (optional)"
+              placeholder={t("checkout.gift_message_placeholder")}
               className="w-full"
             />
           </Fieldset>
@@ -116,7 +112,7 @@ export const GiftForm = ({ isMembership, className }: { isMembership: boolean; c
               disabled={processing}
               onChange={() => dispatch({ type: "set-value", gift: { ...gift, hideGifter: !gift.hideGifter } })}
             />
-            Stay anonymous to the recipient
+            {t("checkout.stay_anonymous")}
           </Label>
         </div>
       ) : null}

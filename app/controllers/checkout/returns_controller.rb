@@ -60,6 +60,6 @@ class Checkout::ReturnsController < ApplicationController
     end
 
     def failure_message(responses)
-      responses.values.filter_map { _1[:error_message] }.first || "Sorry, something went wrong."
+      responses.values.filter_map { _1[:error_message] }.first || t("flash.checkout.something_went_wrong")
     end
 end

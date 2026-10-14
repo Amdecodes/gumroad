@@ -397,9 +397,14 @@ describe("PaymentForm validation-failure feedback", () => {
   describe("client-confirm token errors", () => {
     const message =
       "We are experiencing issues connecting to our payments provider. Please check your internet connection.";
-    const renderClientConfirm = () => {
+    const renderClientConfirm = (options?: {
+      chapa_payments_enabled?: boolean;
+      tokenError?: { type: string; code?: string; decline_code?: string; message?: string };
+    }) => {
       const submit = vi.fn().mockResolvedValue({});
-      const createConfirmationToken = vi.fn().mockResolvedValue({ error: { type: "api_connection_error", message } });
+      const createConfirmationToken = vi.fn().mockResolvedValue({
+        error: options?.tokenError ?? { type: "api_connection_error", message },
+      });
       const stripe: Stripe = Object.create(null);
       stripe.createConfirmationToken = createConfirmationToken;
       const elements: StripeElements = Object.create(null);
@@ -417,6 +422,7 @@ describe("PaymentForm validation-failure feedback", () => {
           request_apple_pay_merchant_tokens: false,
           payment_element_wallets: true,
           flat_payment_methods: true,
+          chapa_payments_enabled: options?.chapa_payments_enabled ?? false,
           elements_options: {
             stripe_elements_mode: "payment",
             currency: "usd",
@@ -498,6 +504,69 @@ describe("PaymentForm validation-failure feedback", () => {
       await waitFor(() => expect(harness.actions).toContainEqual({ type: "cancel" }));
       expect(createConfirmationToken).toHaveBeenCalledTimes(1);
       expect(showAlert).not.toHaveBeenCalled();
+    });
+
+    it("suggests Chapa on card decline when Chapa is available", async () => {
+      const { pay } = renderClientConfirm({
+        chapa_payments_enabled: true,
+        tokenError: { type: "card_error", code: "card_declined", message: "Your card was declined." },
+      });
+      pay();
+      await waitFor(() =>
+        expect(showAlert).toHaveBeenCalledWith(
+          "Your card was declined. Please try another card or checkout with Chapa.",
+          "error",
+        ),
+      );
+    });
+
+    it("displays mapped error for insufficient funds", async () => {
+      const { pay } = renderClientConfirm({
+        tokenError: {
+          type: "card_error",
+          code: "card_declined",
+          decline_code: "insufficient_funds",
+          message: "Your card has insufficient funds.",
+        },
+      });
+      pay();
+      await waitFor(() =>
+        expect(showAlert).toHaveBeenCalledWith(
+          "Your card has insufficient funds. Please use a different card or payment method.",
+          "error",
+        ),
+      );
+    });
+
+    it("displays mapped error for expired card", async () => {
+      const { pay } = renderClientConfirm({
+        tokenError: { type: "card_error", code: "expired_card", message: "Your card is expired." },
+      });
+      pay();
+      await waitFor(() =>
+        expect(showAlert).toHaveBeenCalledWith("Your card has expired. Please use a valid card.", "error"),
+      );
+    });
+
+    it("displays mapped error for incorrect CVC", async () => {
+      const { pay } = renderClientConfirm({
+        tokenError: { type: "card_error", code: "incorrect_cvc", message: "Your card's security code is incorrect." },
+      });
+      pay();
+      await waitFor(() =>
+        expect(showAlert).toHaveBeenCalledWith(
+          "The security code (CVC) is incorrect. Please check and try again.",
+          "error",
+        ),
+      );
+    });
+
+    it("displays generic payment error for unknown decline code", async () => {
+      const { pay } = renderClientConfirm({
+        tokenError: { type: "card_error", code: "some_unrecognized_processor_code", message: "Something failed." },
+      });
+      pay();
+      await waitFor(() => expect(showAlert).toHaveBeenCalledWith("Payment failed. Please try again.", "error"));
     });
   });
 

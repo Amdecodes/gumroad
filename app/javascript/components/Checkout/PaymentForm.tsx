@@ -121,7 +121,7 @@ const CountryInput = () => {
   return (
     <Fieldset>
       <FieldsetTitle>
-        <Label htmlFor={`${uid}country`}>Country</Label>
+        <Label htmlFor={`${uid}country`}>{t("checkout.country")}</Label>
       </FieldsetTitle>
       <Select
         id={`${uid}country`}
@@ -156,18 +156,18 @@ const StateInput = () => {
   let states: string[] | null = null;
   switch (state.country) {
     case "US":
-      stateLabel = "State";
+      stateLabel = t("checkout.state");
       states = state.usStates;
       break;
     case "PH":
-      stateLabel = "State";
+      stateLabel = t("checkout.state");
       break;
     case "CA":
-      stateLabel = "Province";
+      stateLabel = t("checkout.province");
       states = state.caProvinces;
       break;
     default:
-      stateLabel = "County";
+      stateLabel = t("checkout.county");
       break;
   }
 
@@ -208,7 +208,7 @@ const ZipCodeInput = () => {
   const [state, dispatch] = useState();
   const uid = React.useId();
   const errors = getErrors(state);
-  const label = state.country === "US" || state.country === "PH" ? "ZIP code" : "Postal";
+  const label = state.country === "US" || state.country === "PH" ? t("checkout.zip_code") : t("checkout.postal_code");
 
   return (
     <Fieldset state={errors.has("zipCode") ? "danger" : undefined}>
@@ -376,7 +376,7 @@ const SharedInputs = () => {
     <>
       <Fieldset state={errors.has("email") ? "danger" : undefined}>
         <FieldsetTitle>
-          <Label htmlFor={`${uid}email`}>Email address</Label>
+          <Label htmlFor={`${uid}email`}>{t("checkout.email_address")}</Label>
         </FieldsetTitle>
         <div className="relative inline-block w-full">
           <Popover open={!!state.emailTypoSuggestion}>
@@ -395,10 +395,10 @@ const SharedInputs = () => {
                     pay/download button) sit right below the email field, and a downward
                     popover covers them, blocking the purchase until the buyer answers. */}
             <PopoverContent className="grid gap-2" matchTriggerWidth side="top">
-              <div>Did you mean {state.emailTypoSuggestion}?</div>
+              <div>{t("checkout.did_you_mean_email", { email: state.emailTypoSuggestion ?? "" })}</div>
               <div className="flex gap-2">
-                <Button onClick={rejectEmailTypoSuggestion}>No</Button>
-                <Button onClick={acceptEmailTypoSuggestion}>Yes</Button>
+                <Button onClick={rejectEmailTypoSuggestion}>{t("common.no")}</Button>
+                <Button onClick={acceptEmailTypoSuggestion}>{t("common.yes")}</Button>
               </div>
             </PopoverContent>
           </Popover>
@@ -407,7 +407,7 @@ const SharedInputs = () => {
       {showFullNameInput ? (
         <Fieldset state={errors.has("fullName") ? "danger" : undefined}>
           <FieldsetTitle>
-            <Label htmlFor={`${uid}fullName`}>Full name</Label>
+            <Label htmlFor={`${uid}fullName`}>{t("checkout.full_name")}</Label>
           </FieldsetTitle>
           <Input
             id={`${uid}fullName`}
@@ -493,7 +493,7 @@ const PaymentMethodRadioRow = ({
 const useFail = () => {
   const [_, dispatch] = useState();
   return () => {
-    showAlert("Sorry, something went wrong. You were not charged.", "error");
+    showAlert(t("checkout.payment_failed_uncharged"), "error");
     dispatch({ type: "cancel" });
   };
 };
@@ -518,10 +518,10 @@ const CustomerDetails = ({ className }: { className?: string }) => {
         <Card>
           <div className={className}>
             <div className="flex grow flex-col gap-4">
-              <h4 className="text-base sm:text-lg">Shipping information</h4>
+              <h4 className="text-base sm:text-lg">{t("checkout.shipping_information")}</h4>
               <Fieldset state={errors.has("fullName") ? "danger" : undefined}>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}fullName`}>Full name</Label>
+                  <Label htmlFor={`${uid}fullName`}>{t("checkout.full_name")}</Label>
                 </FieldsetTitle>
                 <Input
                   id={`${uid}fullName`}
@@ -534,7 +534,7 @@ const CustomerDetails = ({ className }: { className?: string }) => {
               </Fieldset>
               <Fieldset state={errors.has("address") ? "danger" : undefined}>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}address`}>Street address</Label>
+                  <Label htmlFor={`${uid}address`}>{t("checkout.street_address")}</Label>
                 </FieldsetTitle>
                 <Input
                   id={`${uid}address`}
@@ -548,7 +548,7 @@ const CustomerDetails = ({ className }: { className?: string }) => {
               <div style={{ display: "grid", gridAutoFlow: "column", gridAutoColumns: "1fr", gap: "var(--spacer-2)" }}>
                 <Fieldset state={errors.has("city") ? "danger" : undefined}>
                   <FieldsetTitle>
-                    <Label htmlFor={`${uid}city`}>City</Label>
+                    <Label htmlFor={`${uid}city`}>{t("checkout.city")}</Label>
                   </FieldsetTitle>
                   <Input
                     id={`${uid}city`}
@@ -566,12 +566,12 @@ const CustomerDetails = ({ className }: { className?: string }) => {
               {isLoggedIn ? (
                 <Label>
                   <Checkbox
-                    title="Save shipping address to account"
+                    title={t("checkout.save_shipping_address_title")}
                     checked={state.saveAddress}
                     onChange={(e) => dispatch({ type: "set-value", saveAddress: e.target.checked })}
                     disabled={isProcessing(state)}
                   />
-                  Save address for future purchases
+                  {t("checkout.save_address_for_future")}
                 </Label>
               ) : null}
             </div>
@@ -586,7 +586,7 @@ const CustomerDetails = ({ className }: { className?: string }) => {
                 <span>{state.warning ?? BUYER_CURRENCY_QUOTE_REFRESH_MESSAGE}</span>
                 {state.surcharges.type === "error" && state.buyerCurrencyRemint ? (
                   <Button onClick={() => dispatch({ type: "refresh-expired-buyer-currency-quote" })}>
-                    Retry price update
+                    {t("checkout.retry_price_update")}
                   </Button>
                 ) : null}
               </div>
@@ -626,12 +626,7 @@ const PayButton = ({
       >
         {payLabel}
       </Button>
-      {isTestPurchase ? (
-        <Alert variant="info">
-          This will be a test purchase as you are the creator of at least one of the products. Your payment method will
-          not be charged.
-        </Alert>
-      ) : null}
+      {isTestPurchase ? <Alert variant="info">{t("checkout.test_purchase_notice")}</Alert> : null}
     </div>
   );
 
@@ -640,6 +635,63 @@ const PayButton = ({
   }
 
   return content;
+};
+
+export const getProcessorErrorMessage = (
+  error: { code?: string; decline_code?: string; message?: string },
+  isChapaAvailable: boolean,
+): string => {
+  const code = (error.decline_code || error.code || "").toLowerCase();
+  const message = (error.message || "").toLowerCase();
+
+  if (code === "insufficient_funds" || message.includes("insufficient funds")) {
+    return t(
+      "errors.insufficient_funds",
+      undefined,
+      "Your card has insufficient funds. Please use a different card or payment method.",
+    );
+  }
+  if (code === "expired_card" || message.includes("expired")) {
+    return t("errors.expired_card", undefined, "Your card has expired. Please use a valid card.");
+  }
+  if (
+    code === "incorrect_cvc" ||
+    code === "invalid_cvc" ||
+    message.includes("incorrect cvc") ||
+    message.includes("invalid cvc")
+  ) {
+    return t("errors.incorrect_cvc", undefined, "The security code (CVC) is incorrect. Please check and try again.");
+  }
+  if (code === "chapa_failure" || code === "chapa_failed" || message.includes("chapa failure")) {
+    return t(
+      "errors.chapa_failure",
+      undefined,
+      "Chapa payment failed. Please try again or use another payment method.",
+    );
+  }
+  if (code === "chapa_cancel" || code === "chapa_cancelled" || message.includes("chapa cancel")) {
+    return t(
+      "errors.chapa_cancel",
+      undefined,
+      "Chapa payment was cancelled. Please try again to complete your purchase.",
+    );
+  }
+  if (code === "card_declined" || Boolean(error.decline_code) || message.includes("declined")) {
+    return isChapaAvailable
+      ? t(
+          "errors.card_declined_chapa",
+          undefined,
+          "Your card was declined. Please try another card or checkout with Chapa.",
+        )
+      : t("errors.card_declined", undefined, "Your card was declined. Please try another card or payment method.");
+  }
+
+  // When an error code was returned but is unknown, show the localized generic payment error.
+  if (code) {
+    return t("errors.generic_payment_error", undefined, "Payment failed. Please try again.");
+  }
+
+  return error.message || t("errors.generic_payment_error", undefined, "Payment failed. Please try again.");
 };
 
 const CreditCardContent = ({
@@ -869,7 +921,7 @@ const CreditCardContent = ({
         paymentElementRequiresFullName(paymentElementTypeRef.current) &&
         !state.fullName
       ) {
-        showAlert("Please enter your full name — it's required for this payment method.", "warning");
+        showAlert(t("checkout.name_required_for_method"), "warning");
         return dispatch({ type: "cancel" });
       }
 
@@ -899,9 +951,10 @@ const CreditCardContent = ({
         });
         if (tokenResult.status === "error") {
           setCardError(true);
-          // Stripe handles inline validation and wallet-dismissal errors itself.
           if (tokenResult.stripe_error.type !== "validation_error" && tokenResult.stripe_error.message) {
-            showAlert(tokenResult.stripe_error.message, "error");
+            const isChapaAvailable = Boolean(state.checkoutPayment.chapa_payments_enabled);
+            const errorMessage = getProcessorErrorMessage(tokenResult.stripe_error, isChapaAvailable);
+            showAlert(errorMessage, "error");
           }
           return dispatch({ type: "cancel" });
         }
@@ -1121,10 +1174,7 @@ const CreditCardContent = ({
       dispatch({ type: "set-payment-method", paymentMethod: resolution.paymentMethod });
     } else if (resolution.type === "re-confirm") {
       dispatch({ type: "cancel" });
-      showAlert(
-        "Your total changed after applying your payment method's billing address. Please review the updated total and try again.",
-        "warning",
-      );
+      showAlert(t("checkout.total_changed_billing_address"), "warning");
     }
     // "abort": the submission was cancelled or failed elsewhere while holding — just drop it.
   }, [state.surcharges, state.status.type]);
@@ -1143,7 +1193,7 @@ const CreditCardContent = ({
               disabled={isProcessing(state)}
               onClick={() => setUseSavedCard(true)}
             >
-              Use saved card
+              {t("checkout.use_saved_card")}
             </LinkButton>
           ) : null}
           <PaymentElementInput
@@ -1209,7 +1259,7 @@ const CreditCardContent = ({
             checked={keepOnFile}
             onChange={(evt) => setKeepOnFile(evt.target.checked)}
           />
-          Save card for future purchases
+          {t("checkout.save_card_for_future")}
         </Label>
       ) : null}
     </div>
@@ -1242,12 +1292,7 @@ const CreditCardPayButtonContent = ({
       >
         {payLabel}
       </Button>
-      {isTestPurchase ? (
-        <Alert variant="info">
-          This will be a test purchase as you are the creator of at least one of the products. Your payment method will
-          not be charged.
-        </Alert>
-      ) : null}
+      {isTestPurchase ? <Alert variant="info">{t("checkout.test_purchase_notice")}</Alert> : null}
     </div>
   );
 };
@@ -1482,11 +1527,11 @@ const PayPalContent = () => {
     if (state.status.type !== "input") return;
     const errors = state.status.errors;
     const error = errors.has("email")
-      ? "Please provide a valid email address."
+      ? t("checkout.valid_email_prompt")
       : errors.has("fullName")
-        ? "Please enter your full name."
+        ? t("checkout.enter_full_name_prompt")
         : hasShipping(state) && addressFields.some((field) => errors.has(field))
-          ? "The shipping address you have entered is in an invalid format."
+          ? t("checkout.invalid_shipping_format")
           : null;
     if (error) showAlert(error, "error");
   }, [state.status.type]);
@@ -1657,7 +1702,7 @@ const useStripePaymentRequest = (disabled: boolean) => {
               shippingOptions: [
                 {
                   id: "standard",
-                  label: "Standard Shipping",
+                  label: t("checkout.standard_shipping"),
                   detail: "",
                   amount: state.surcharges.result.shipping_rate_cents,
                 },
@@ -1891,11 +1936,15 @@ const PaymentMethodsSection = ({
     <>
       <div className="overflow-hidden rounded border border-border">
         {hasMultiplePaymentMethods ? (
-          <PaymentMethodRadioRow paymentMethod="card" label="Card" icon={<CreditCard className="size-5" />} />
+          <PaymentMethodRadioRow
+            paymentMethod="card"
+            label={t("checkout.card_label")}
+            icon={<CreditCard className="size-5" />}
+          />
         ) : (
           <div className="flex items-center gap-3 bg-body p-4">
             <CreditCard className="size-5" />
-            <span className="font-medium">Card</span>
+            <span className="font-medium">{t("checkout.card_label")}</span>
           </div>
         )}
         {state.paymentMethod === "card" ? (
@@ -2018,7 +2067,7 @@ export const PaymentForm = ({
               showAlert(RECAPTCHA_UNAVAILABLE_MESSAGE, "error");
             } else if (!(e instanceof RecaptchaCancelledError)) {
               // A provider exception must not strand checkout after the wallet sheet closes.
-              showAlert("We couldn't complete the security check. Please try again to finish your purchase.", "error");
+              showAlert(t("checkout.security_check_failed"), "error");
             }
             dispatch({ type: "cancel" });
           });
@@ -2029,7 +2078,11 @@ export const PaymentForm = ({
   const isPayPalAvailable = useIsPayPalAvailable();
 
   return (
-    <div className={`flex flex-col gap-6 ${className}`} aria-label="Payment form" ref={paymentFormRef}>
+    <div
+      className={`flex flex-col gap-6 ${className}`}
+      aria-label={t("checkout.payment_form_aria")}
+      ref={paymentFormRef}
+    >
       {showCustomFields ? <CustomFields className="p-4 sm:p-5" /> : null}
       <CustomerDetails className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5" />
       {!isFreePurchase ? (
@@ -2040,7 +2093,7 @@ export const PaymentForm = ({
           <CardContent className="sm:p-5">
             <div className="flex grow flex-col gap-4">
               <SharedInputs />
-              <h4 className="text-base sm:text-lg">Pay with</h4>
+              <h4 className="text-base sm:text-lg">{t("checkout.pay_with")}</h4>
               {isChapaOnly ? (
                 <PaymentMethodsSection isPayPalAvailable={false} isTestPurchase={!!isTestPurchase} />
               ) : (

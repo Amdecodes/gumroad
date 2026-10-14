@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Card, CardContent } from "$app/components/ui/Card";
 
 export const PENDING_RELOAD_MS = 3_000;
@@ -61,13 +63,10 @@ export default function Pending() {
     <Card className="mx-auto my-8 max-w-2xl">
       <CardContent asChild>
         <header>
-          <h2 className="grow">Your payment is being processed</h2>
+          <h2 className="grow">{t("checkout.processing_pending_title")}</h2>
         </header>
       </CardContent>
-      <CardContent>
-        Check your email for your receipt — it will arrive once the payment completes. Please do not pay again. This
-        page updates automatically.
-      </CardContent>
+      <CardContent>{t("checkout.processing_pending_desc")}</CardContent>
     </Card>
   );
 }
