@@ -2,7 +2,7 @@
 
 class FollowerMailer < ApplicationMailer
   layout "layouts/email"
-  default from: "Gumroad <noreply@#{FOLLOWER_CONFIRMATION_MAIL_DOMAIN}>"
+  default from: "#{PlatformConfig::APP_NAME} <noreply@#{FOLLOWER_CONFIRMATION_MAIL_DOMAIN}>"
 
   def confirm_follower(followed_user_id, follower_id)
     @follower = Follower.find(follower_id)

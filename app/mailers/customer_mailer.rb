@@ -364,7 +364,7 @@ class CustomerMailer < ApplicationMailer
       mail(
         to: cart.user&.email.presence || cart.email,
         subject:,
-        from: "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
+        from: "#{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: (cart.user&.email.presence || cart.email))
       )
     end

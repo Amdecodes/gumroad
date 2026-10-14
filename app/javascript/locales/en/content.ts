@@ -66,7 +66,7 @@ export const content = {
   send: "Send",
   back: "Back",
   sent_to_kindle: "It's been sent to your Kindle.",
-  send_to_kindle_instruction: "You'll need to add noreply@customers.gumroad.com to your {approved_emails_link}.",
+  send_to_kindle_instruction: "You'll need to add noreply@customers.arifdrop.com to your {approved_emails_link}.",
   approved_emails_link_text: "list of approved personal document emails",
   call_link: "Call link",
   removed_by_seller: "Removed by the seller",

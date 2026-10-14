@@ -1,7 +1,7 @@
 <%= header_section(@subject) %>
 <div>
   <p>
-    We're happy to let you know that <%= [@receiver.name.presence, @receiver.email].reject(&:blank?).join(" - ") %> has joined Gumroad from your referral.
+    We're happy to let you know that <%= [@receiver.name.presence, @receiver.email].reject(&:blank?).join(" - ") %> has joined <%= PlatformConfig::APP_NAME %> from your referral.
   </p>
   <p>
     Thanks for spreading the good word!

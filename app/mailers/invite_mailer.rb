@@ -9,9 +9,9 @@ class InviteMailer < ApplicationMailer
     @receiver = User.find(@invite.receiver_id)
 
     @subject = if @receiver.name.present?
-      "#{@receiver.name} has joined Gumroad, thanks to you."
+      "#{@receiver.name} has joined #{PlatformConfig::APP_NAME}, thanks to you."
     else
-      "A creator you invited has joined Gumroad."
+      "A creator you invited has joined #{PlatformConfig::APP_NAME}."
     end
     deliver_email(to: @sender.form_email)
   end

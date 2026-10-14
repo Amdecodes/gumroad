@@ -10,7 +10,7 @@ class ServiceMailer < ApplicationMailer
   def service_charge_receipt(service_charge_id)
     @service_charge = ServiceCharge.find(service_charge_id)
     @user = @service_charge.user
-    @subject = "Gumroad — Receipt"
+    @subject = "#{PlatformConfig::APP_NAME} — Receipt"
   end
 
   # recurring service emails

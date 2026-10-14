@@ -16,7 +16,7 @@
       <div class="footer">
         <div class="paragraphs">
           <%= render(@footer_template) if @footer_template %>
-          <p><%= GumroadAddress.full %></p>
+          <p><%= PlatformConfig::LEGAL_ADDRESS %></p>
 
           <% if @unsub_link.present? %>
             <p>
@@ -29,7 +29,7 @@
         </div>
         <a class="wordmark" href="<%= root_url %>">
           <%= t("mailers.common.powered_by") %>
-          <img src="<%= image_url("email/wordmark_logo.png") %>" alt="Gumroad" style="width: 138px; height: 18px;" width="138" height="18">
+          <img src="<%= image_url("email/wordmark_logo.png") %>" alt="<%= PlatformConfig::APP_NAME %>" style="width: 138px; height: 18px;" width="138" height="18">
         </a>
       </div>
     </div>

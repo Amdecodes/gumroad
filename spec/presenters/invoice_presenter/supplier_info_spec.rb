@@ -44,16 +44,16 @@ describe InvoicePresenter::SupplierInfo do
 
     describe "#attributes" do
       context "when is not supplied by the seller" do
-        it "returns Gumroad attributes including the Gumroad note attribute" do
+        it "returns platform supplier attributes including the platform note attribute" do
           expect(presenter.attributes).to eq(
             [
               {
                 label: nil,
-                value: "Gumroad, Inc.",
+                value: PlatformConfig.legal_name,
               },
               {
                 label: "Office address",
-                value: "548 Market St\nSan Francisco, CA 94104-5401\nUnited States",
+                value: PlatformConfig.legal_address,
               },
               {
                 label: "Email",
@@ -65,7 +65,7 @@ describe InvoicePresenter::SupplierInfo do
               },
               {
                 label: nil,
-                value: "Products supplied by Gumroad.",
+                value: "Products supplied via #{PlatformConfig.app_name}.",
               }
             ]
           )

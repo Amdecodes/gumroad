@@ -33,18 +33,14 @@ class InvoicePresenter::SupplierInfo
     def gumroad_address_attribute
       {
         label: "Office address",
-        value: [
-          GumroadAddress::STREET,
-          "#{GumroadAddress::CITY}, #{GumroadAddress::STATE} #{GumroadAddress::ZIP_PLUS_FOUR}",
-          GumroadAddress::COUNTRY.common_name
-        ].join("\n")
+        value: PlatformConfig.legal_address,
       }
     end
 
     def gumroad_title_attribute
       {
         label: nil,
-        value: "Gumroad, Inc.",
+        value: PlatformConfig.legal_name,
       }
     end
 
@@ -77,7 +73,7 @@ class InvoicePresenter::SupplierInfo
     def gumroad_note_attribute
       {
         label: nil,
-        value: "Products supplied by Gumroad.",
+        value: "Products supplied via #{PlatformConfig.app_name}.",
       }
     end
 

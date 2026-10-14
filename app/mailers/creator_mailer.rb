@@ -15,7 +15,7 @@ class CreatorMailer < ApplicationMailer
     @fee_saved_amount = seller.gumroad_day_saved_fee_amount
     return unless @fee_saved_amount.present?
 
-    mail to: email, subject: "You saved #{@fee_saved_amount} in fees on Gumroad Day!"
+    mail to: email, subject: "You saved #{@fee_saved_amount} in fees on #{PlatformConfig::APP_NAME} Day!"
   end
 
   def year_in_review(seller:, year:, analytics_data:, payout_csv_url: nil, recipient: nil)
@@ -46,7 +46,7 @@ class CreatorMailer < ApplicationMailer
 
     mail(
       to: email,
-      from: "Gumroad <gumroad@#{CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN}>",
+      from: "#{PlatformConfig::APP_NAME} <gumroad@#{CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN}>",
       subject: @subject,
       delivery_method_options: MailerInfo.random_delivery_method_options(domain: :creators)
     )

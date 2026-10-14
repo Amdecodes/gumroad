@@ -27,7 +27,7 @@ module MailerHelper
       # So we remove those characters from the sender name if any
       name.delete("\n").gsub(User::INVALID_NAME_FOR_EMAIL_DELIVERY_REGEX, "").strip
     else
-      "Gumroad"
+      PlatformConfig::APP_NAME
     end
   end
 end

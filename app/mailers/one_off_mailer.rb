@@ -12,7 +12,7 @@ class OneOffMailer < ApplicationMailer
     email ||= User.alive.not_suspended.find_by(id: user_id)&.form_email
     return unless EmailFormatValidator.valid?(email)
 
-    from ||= "Gumroad <hi@#{CUSTOMERS_MAIL_DOMAIN}>"
+    from ||= "#{PlatformConfig::APP_NAME} <hi@#{CUSTOMERS_MAIL_DOMAIN}>"
     sender_domain ||= :customers
 
     @subject = subject

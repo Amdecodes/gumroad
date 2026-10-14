@@ -17,7 +17,7 @@ class ApplicationMailer < ActionMailer::Base
     SUPPORT_EMAIL: "support@#{DEFAULT_EMAIL_DOMAIN}"
   }.each do |key, email|
     const_set(key, email)
-    const_set("#{key}_WITH_NAME", email_address_with_name(email, "Gumroad"))
+    const_set("#{key}_WITH_NAME", email_address_with_name(email, PlatformConfig::APP_NAME))
   end
 
   default from: NOREPLY_EMAIL_WITH_NAME,

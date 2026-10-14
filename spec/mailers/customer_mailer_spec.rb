@@ -137,10 +137,10 @@ describe CustomerMailer do
         end
 
         context "and symbols" do
-          it "sets the FROM name to 'Gumroad'" do
+          it "sets the FROM name to 'ArifDrop'" do
             @user.update!(name: "Juan Girão @ Gumroad")
             mail = CustomerMailer.receipt(@purchase.id)
-            expect(mail.header.to_s).to include("From: Gumroad <noreply@staging.customers.gumroad.com>")
+            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@staging.customers.gumroad.com>")
           end
         end
       end
@@ -153,10 +153,10 @@ describe CustomerMailer do
         end
 
         context "and symbols" do
-          it "sets the FROM name to 'Gumroad'" do
+          it "sets the FROM name to 'ArifDrop'" do
             @user.update!(name: "Ștefan Opriță @ Gumroad")
             mail = CustomerMailer.receipt(@purchase.id)
-            expect(mail.header.to_s).to include("From: Gumroad <noreply@staging.customers.gumroad.com>")
+            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@staging.customers.gumroad.com>")
           end
         end
       end
@@ -1816,7 +1816,7 @@ describe CustomerMailer do
     context "when the purchase has no presentment record" do
       it "renders the canonical amount exactly as before" do
         mail = CustomerMailer.refund("test@example.com", product.id, purchase.id)
-        expect(mail.body.encoded).to include("for #{purchase.formatted_total_transaction_amount} on Gumroad")
+        expect(mail.body.encoded).to include("for #{purchase.formatted_total_transaction_amount} on #{PlatformConfig.app_name}")
         expect(mail.body.encoded).not_to include("USD)")
       end
     end

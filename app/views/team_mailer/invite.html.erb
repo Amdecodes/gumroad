@@ -1,13 +1,13 @@
 <div>
   <p>
-    <%= image_tag("email/wordmark_logo.png", alt: "Gumroad", style: "height: 22px; margin: 0 auto;", height: 22) %>
+    <%= image_tag("email/wordmark_logo.png", alt: PlatformConfig::APP_NAME, style: "height: 22px; margin: 0 auto;", height: 22) %>
   </p>
 </div>
 <div style="background-color: #f4f4f0">
   <h2 style="text-align: center;"><%= @subject %></h2>
 </div>
 <div>
-  <p>You have been invited to join a team on Gumroad with the role of <%= @team_invitation.role.humanize %>.</p>
+  <p>You have been invited to join a team on <%= PlatformConfig::APP_NAME %> with the role of <%= @team_invitation.role.humanize %>.</p>
   <p>This is a team invitation, not a purchase receipt or a charge notice.</p>
   <p>
     <strong>This invitation will expire in <%= (@team_invitation.expires_at.to_date - Time.current.to_date).to_i %> days.</strong>

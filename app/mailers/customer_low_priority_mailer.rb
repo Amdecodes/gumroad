@@ -5,7 +5,7 @@ class CustomerLowPriorityMailer < ApplicationMailer
   helper PreorderHelper
   helper ProductsHelper
   include ActionView::Helpers::TextHelper
-  default from: "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>"
+  default from: "#{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>"
 
   layout "layouts/email"
 
@@ -323,8 +323,8 @@ class CustomerLowPriorityMailer < ApplicationMailer
     with_recipient_locale(authorization_purchase) do
       mail(
         to: authorization_purchase.email,
-        from: "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
-        reply_to: [@product.user.email, "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>"],
+        from: "#{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
+        reply_to: [@product.user.email, "#{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>"],
         subject: t("mailers.customer.preorder_card_declined.subject", product: @product.name, default: "Could not charge your credit card for #{@product.name}"),
         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: authorization_purchase.email)
       )

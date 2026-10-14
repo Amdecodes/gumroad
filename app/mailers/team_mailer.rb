@@ -17,7 +17,7 @@ class TeamMailer < ApplicationMailer
     return if team_invitation.matches_owner_email?
 
     @team_invitation = team_invitation
-    @subject = "Gumroad team invitation"
+    @subject = "#{PlatformConfig::APP_NAME} team invitation"
 
     mail(
       from: NOREPLY_EMAIL_WITH_NAME,

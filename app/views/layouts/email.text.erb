@@ -1,7 +1,7 @@
 <%= yield %>
 
 --
-<%= GumroadAddress.full %>
+<%= PlatformConfig::LEGAL_ADDRESS %>
 <% if @unsub_link.present? %><%= t("mailers.common.unsubscribe") %>: <%= @unsub_link %>
 <% end %>
-<%= t("mailers.common.powered_by") %> Gumroad
+<%= t("mailers.common.powered_by") %> <%= PlatformConfig::APP_NAME %>

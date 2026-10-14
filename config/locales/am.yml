@@ -474,7 +474,7 @@ am:
         greeting: "ሰላም"
         body_html: "ከ<strong>%{seller}</strong> ለፈጸሙት ግዢ ደረሰኝ በፒዲኤፍ (PDF) ተያይዟል።"
         billing_settings_note_html: "የሂሳብ አከፋፈል መረጃዎ እስከተመዘገበ ድረስ በእያንዳንዱ ግዢ ይህንን በራስ-ሰር ይቀበላሉ። የደረሰኝ አድራሻን፣ የንግድ ድርጅት ስምን ለመቀየር ወይም ይህንን ለማጥፋት <a href=\"%{url}\">የክፍያ ቅንብሮችዎን</a> ይጎብኙ።"
-        signoff_html: "እናመሰግናለን፣<br>Gumroad"
+        signoff_html: "እናመሰግናለን፣<br>%{app_name}"
       preorder_receipt:
         subject: "\"%{product}\" በቅድመ-ትዕዛዝ ገዝተዋል!"
         body_physical: "\"%{product}\" በተሳካ ሁኔታ በቅድመ-ትዕዛዝ ገዝተዋል። ክፍያው በ%{date} የሚፈጸም ሲሆን ከዚያም ብዙ ሳይቆይ እቃው ይላካል።"
@@ -484,8 +484,8 @@ am:
       refund:
         subject: "ተመላሽ ገንዘብ ተደርጎልዎታል።"
         header: "ተመላሽ ገንዘብ ተደርጎልዎታል።"
-        body: "በGumroad ላይ የፈጸሙት የ \"%{product}\" ግዢ በጠቅላላው %{total} ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።"
-        body_presentment: "በGumroad ላይ የፈጸሙት የ \"%{product}\" ግዢ በጠቅላላው %{total} (%{usd_total} USD) ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።"
+        body: "በ \"%{app_name}\" ላይ የፈጸሙት የ \"%{product}\" ግዢ በጠቅላላው %{total} ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።"
+        body_presentment: "በ \"%{app_name}\" ላይ የፈጸሙት የ \"%{product}\" ግዢ በጠቅላላው %{total} (%{usd_total} USD) ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።"
       partial_refund:
         subject: "ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል።"
         header: "ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል።"
@@ -495,7 +495,7 @@ am:
         subject: "በPayPal የፈጸሙት ክፍያ አልተሳካም።"
         header: "በPayPal የፈጸሙት ክፍያ አልተሳካም።"
         greeting: "ሰላም"
-        body_intro: "ስሜ ሳሂል ይባላል። በቅርቡ ሊፈጽሙት የሞከሩትን የክፍያ ሂደት ከሚያስተናግደው የGumroad ቡድን አባል ነኝ።"
+        body_intro: "በቅርቡ ሊፈጽሙት የሞከሩትን የክፍያ ሂደት ከሚያስተናግደው የ \"%{app_name}\" ቡድን አባል ነኝ።"
         body_notification: "PayPal በመጠቀም \"%{product}\" ለመግዛት እንደሞከሩ እና ክፍያው እንዳልተሳካ መረጃ ደርሶኛል።"
         body_pending_note: "አንዳንድ ጊዜ የPayPal መግለጫዎ 'በሂደት ላይ' (pending) ሊል ይችላል — አይጨነቁ፣ በጥቂት ቀናት ውስጥ ይጠፋል።"
         body_retry_note: "እባክዎ እዚህ ጠቅ በማድረግ እንደገና ይሞክሩ (አሁንም ካልተሳካ በሌላ ካርድ ይሞክሩ)፦"
@@ -658,7 +658,7 @@ am:
         header: "ስለ ቅርብ ጊዜ ክርክርዎ።"
         disputed_items: "የሚከተሉትን እቃዎች"
         body_1: "ለፈጸሙት የ%{amount} የ%{product} ግዢ ክርክር አስመዝግበዋል። ደረሰኝ ወደ %{email} ተልኳል — ማግኘት ካልቻሉ እባክዎ የስፓም (Spam) ማህደርዎን ይመልከቱ።"
-        body_2: "ይህንን ክርክር ያስመዘገቡት በሂሳብ መግለጫዎ ላይ \"Gumroad\"ን ባለማወቅዎ ከሆነ፣ ክርክሩን ለመሰረዝ ባንክዎን ወይም PayPalን ማነጋገር ይችላሉ።"
+        body_2: "ይህንን ክርክር ያስመዘገቡት በሂሳብ መግለጫዎ ላይ \"%{statement_descriptor}\" የሚለውን ስም ባለማወቅዎ ከሆነ፣ ክርክሩን ለመሰረዝ ባንክዎን ማነጋገር ይችላሉ።"
       credit_card_expiring_membership:
         subject: "ለ%{product} የተመዘገበው የክፍያ ዘዴ ሊያበቃ ነው"
         header: "ለ%{product} የተመዘገበው የክፍያ ዘዴ ሊያበቃ ነው"
@@ -667,7 +667,7 @@ am:
         manage_button: "አባልነትን ያስተዳድሩ"
         or_click_here: "ወይም እዚህ ጠቅ ማድረግ ይችላሉ"
         why_heading: "ይህ ለምን ተላከልኝ?"
-        why_body: "በGumroad ላይ አካውንት ከፍተው የካርድ መረጃዎ እንዲቀመጥ መርጠዋል። መረጃዎን ወቅታዊ ማድረግ የወደፊት ግዢዎችዎን ፈጣን እና ቀላል ያደርጋል።"
+        why_body: "በ \"%{app_name}\" ላይ አካውንት ከፍተው የካርድ መረጃዎ እንዲቀመጥ መርጠዋል። መረጃዎን ወቅታዊ ማድረግ የወደፊት ግዢዎችዎን ፈጣን እና ቀላል ያደርጋል።"
       free_trial_expiring_soon:
         subject: "የነፃ ሙከራ ጊዜዎ ሊያበቃ ነው"
         header: "የነፃ ሙከራ ጊዜዎ ሊያበቃ ነው"
@@ -721,7 +721,7 @@ am:
       authentication_token:
         subject: "የማረጋገጫ ኮድዎ %{token} ነው"
         header: "ባለሁለት ደረጃ ማረጋገጫ"
-        instruction: "ወደ Gumroad መለያዎ አዲስ መግባት ተገኝቷል። ለመቀጠል እባክዎ ይህንን የማረጋገጫ ኮድ በማረጋገጫ ገጹ ላይ ያስገቡ፦"
+        instruction: "ወደ \"%{app_name}\" መለያዎ አዲስ መግባት ተገኝቷል። ለመቀጠል እባክዎ ይህንን የማረጋገጫ ኮድ በማረጋገጫ ገጹ ላይ ያስገቡ፦"
         action_notice: "ወደ መለያዎ ለመግባት የሚከተለውን አዝራር ጠቅ ማድረግም ይችላሉ።"
         action: "ግባ"
         expires_in: "ይህ የማረጋገጫ ኮድ እና የመግቢያ አገናኝ በ%{time} ውስጥ ያበቃል።"
@@ -776,8 +776,8 @@ am:
       purchase_success: "ግዢዎ በተሳካ ሁኔታ ተጠናቋል! ደረሰኝ ወደ %{email} ልከናል!"
       unsubscribed_purchases: "የግዢ ማሳወቂያዎች ምዝገባዎ ተሰርዟል።"
       unsubscribed_sales: "የሳምንታዊ ሽያጭ ዝመናዎች ምዝገባዎ ተሰርዟል።"
-      unsubscribed_announcements: "የGumroad ማስታወቂያዎች ምዝገባዎ ተሰርዟል።"
-      account_deleted: "አካውንትዎ በተሳካ ሁኔታ ተሰርዟል። Gumroadን ስለተጠቀሙ እናመሰግናለን።"
+      unsubscribed_announcements: "የ \"%{app_name}\" ማስታወቂያዎች ምዝገባዎ ተሰርዟል።"
+      account_deleted: "አካውንትዎ በተሳካ ሁኔታ ተሰርዟል። \"%{app_name}\"ን ስለተጠቀሙ እናመሰግናለን።"
   activerecord:
     errors:
       models:
@@ -845,14 +845,14 @@ am:
         denied_p1: "የታገደ መለያን የይለፍ ቃል ዳግም ለማስጀመር እየሞከሩ ይመስላል።"
         denied_p2: "ይህ መለያ የአገልግሎት ውል በመጣሱ ምክንያት ታግዷል።"
         header: "የይለፍ ቃል ዳግም ማስጀመሪያ ጥያቄ"
-        instruction: "የGumroad መለያዎን የይለፍ ቃል የረሱት ይመስላል። ከታች ያለውን አዝራር ጠቅ በማድረግ የይለፍ ቃልዎን መቀየር ይችላሉ፦"
+        instruction: "የ \"%{app_name}\" መለያዎን የይለፍ ቃል የረሱት ይመስላል። ከታች ያለውን አዝራር ጠቅ በማድረግ የይለፍ ቃልዎን መቀየር ይችላሉ፦"
         action: "የይለፍ ቃልን ዳግም አስጀምር"
         or_click: "ወይም እዚህ ጠቅ ማድረግ ይችላሉ፦"
         ignore_notice: "ይህንን ካልጠየቁ እባክዎ ይህንን ኢሜይል ችላ ይበሉ። ሌላ አይላክላችሁም!"
       email_changed:
-        subject: "የGumroad መለያዎ ኢሜይል እየተቀየረ ነው"
-        header: "የGumroad መለያዎ ኢሜይል እየተቀየረ ነው"
-        notification: "የGumroad መለያዎ ኢሜይል ከ%{old_email} ወደ %{new_email} እየተቀየረ መሆኑን ለማሳወቅ እንጽፋለን።"
+        subject: "የ \"%{app_name}\" መለያዎ ኢሜይል እየተቀየረ ነው"
+        header: "የ \"%{app_name}\" መለያዎ ኢሜይል እየተቀየረ ነው"
+        notification: "የ \"%{app_name}\" መለያዎ ኢሜይል ከ%{old_email} ወደ %{new_email} እየተቀየረ መሆኑን ለማሳወቅ እንጽፋለን።"
         support_notice: "ይህንን ለውጥ ያላደረጉት እርስዎ ከሆኑ፣ እባክዎ ለዚህ ኢሜይል ምላሽ በመስጠት ወዲያውኑ ድጋፍን ያነጋግሩ።"
         user_id: "የተጠቃሚ መለያ፦ %{user_id}"
       unlock_instructions:

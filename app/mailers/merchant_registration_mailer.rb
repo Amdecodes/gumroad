@@ -23,7 +23,7 @@ class MerchantRegistrationMailer < ApplicationMailer
   def confirm_email_on_paypal(user_id, email)
     @user = User.find(user_id)
     @subject = "Please confirm your email address with PayPal"
-    @body = "You need to confirm the email address (#{email}) attached to your PayPal account before you can start using it with Gumroad."
+    @body = "You need to confirm the email address (#{email}) attached to your PayPal account before you can start using it with #{PlatformConfig::APP_NAME}."
     mail(subject: @subject, from: NOREPLY_EMAIL_WITH_NAME, to: @user.email)
   end
 
@@ -65,6 +65,6 @@ class MerchantRegistrationMailer < ApplicationMailer
     # (their two questions are "how much" and "when"). The template falls back
     # to "your next scheduled payout" if the date can't be computed.
     @next_payout_date = @user.next_payout_date unless @payouts_blocked
-    mail(subject: "You can no longer accept payments on Gumroad", from: NOREPLY_EMAIL_WITH_NAME, to: @user.email)
+    mail(subject: "You can no longer accept payments on #{PlatformConfig::APP_NAME}", from: NOREPLY_EMAIL_WITH_NAME, to: @user.email)
   end
 end

@@ -474,7 +474,7 @@ en:
         greeting: "Hi"
         body_html: "An invoice for your purchase from <strong>%{seller}</strong> is attached as a PDF."
         billing_settings_note_html: "You'll receive this automatically with every purchase as long as your billing details are on file. To change the invoice address, business name, or turn this off, visit your <a href=\"%{url}\">Billing settings</a>."
-        signoff_html: "Thanks,<br>Gumroad"
+        signoff_html: "Thanks,<br>%{app_name}"
       preorder_receipt:
         subject: "You pre-ordered %{product}!"
         body_physical: "You have successfully pre-ordered %{product}. You'll be charged on %{date}, and shipment will occur soon after."
@@ -484,8 +484,8 @@ en:
       refund:
         subject: "You have been refunded."
         header: "You have been refunded."
-        body: "Your purchase of %{product} for %{total} on Gumroad has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
-        body_presentment: "Your purchase of %{product} for %{total} (%{usd_total} USD) on Gumroad has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
+        body: "Your purchase of %{product} for %{total} on %{app_name} has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
+        body_presentment: "Your purchase of %{product} for %{total} (%{usd_total} USD) on %{app_name} has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
       partial_refund:
         subject: "You have been %{refund_type} refunded."
         header: "You have been %{refund_type} refunded."
@@ -495,7 +495,7 @@ en:
         subject: "Your purchase with PayPal failed."
         header: "Your purchase with PayPal failed."
         greeting: "Hi there"
-        body_intro: "My name is Sahil. I'm part of the Gumroad team, and we power the payment process you tried to complete recently."
+        body_intro: "I'm part of the %{app_name} team, and we power the payment process you tried to complete recently."
         body_notification: "I got a notification that you attempted to purchase %{product} using PayPal, but it looks like the transaction ultimately did not go through."
         body_pending_note: "Sometimes your PayPal statement will say 'pending' even in this scenario — rest assured, this will go away in a few days' time."
         body_retry_note: "Please try again by clicking here (if it still doesn't go through, please try with another credit card):"
@@ -658,7 +658,7 @@ en:
         header: "Regarding your recent dispute."
         disputed_items: "the following items"
         body_1: "You recently filed a dispute for your purchase of %{product} for %{amount}. A receipt was sent to %{email} — please check your Spam folder if you are unable to locate it."
-        body_2: "If you filed this dispute because you didn't recognize \"Gumroad\" on your account statement, you can contact your bank or PayPal to cancel the dispute."
+        body_2: "If you filed this dispute because you didn't recognize \"%{statement_descriptor}\" on your account statement, you can contact your bank to cancel the dispute."
       credit_card_expiring_membership:
         subject: "Payment method for %{product} is about to expire"
         header: "Payment method for %{product} is about to expire"
@@ -667,7 +667,7 @@ en:
         manage_button: "Manage subscription"
         or_click_here: "Or you can click here"
         why_heading: "Why am I getting this?"
-        why_body: "You created an account on Gumroad and elected to save your card info on file. Keeping it up to date will help you keep future purchases speedy and smooth."
+        why_body: "You created an account on %{app_name} and elected to save your card info on file. Keeping it up to date will help you keep future purchases speedy and smooth."
       free_trial_expiring_soon:
         subject: "Your free trial is ending soon"
         header: "Your free trial is ending soon"
@@ -721,7 +721,7 @@ en:
       authentication_token:
         subject: "Your authentication token is %{token}"
         header: "Two-Factor Authentication"
-        instruction: "We have detected a new login to your Gumroad account. Please enter this authentication token in the challenge page to continue:"
+        instruction: "We have detected a new login to your %{app_name} account. Please enter this authentication token in the challenge page to continue:"
         action_notice: "You can also click the following button to continue with your login."
         action: "Login"
         expires_in: "This authentication token and login link will expire in %{time}."
@@ -776,8 +776,8 @@ en:
       purchase_success: "Your purchase was successful! We sent a receipt to %{email}."
       unsubscribed_purchases: "You have been unsubscribed from purchase notifications."
       unsubscribed_sales: "You have been unsubscribed from weekly sales updates."
-      unsubscribed_announcements: "You have been unsubscribed from Gumroad announcements."
-      account_deleted: "Your account has been successfully deleted. Thank you for using Gumroad."
+      unsubscribed_announcements: "You have been unsubscribed from %{app_name} announcements."
+      account_deleted: "Your account has been successfully deleted. Thank you for using %{app_name}."
   activerecord:
     errors:
       models:
@@ -845,14 +845,14 @@ en:
         denied_p1: "It seems you are trying to reset the password of a suspended account."
         denied_p2: "This account was suspended because of a ToS violation."
         header: "Forgotten password request"
-        instruction: "It seems you forgot the password for your Gumroad account. You can change your password by clicking the button below:"
+        instruction: "It seems you forgot the password for your %{app_name} account. You can change your password by clicking the button below:"
         action: "Reset password"
         or_click: "Or you can click here:"
         ignore_notice: "If you didn't request this, please ignore this email. You won't get another one!"
       email_changed:
-        subject: "Your Gumroad account email is being changed"
-        header: "Your Gumroad account email is being changed"
-        notification: "We're contacting you to notify that your Gumroad account email is being changed from %{old_email} to %{new_email}."
+        subject: "Your %{app_name} account email is being changed"
+        header: "Your %{app_name} account email is being changed"
+        notification: "We're contacting you to notify that your %{app_name} account email is being changed from %{old_email} to %{new_email}."
         support_notice: "If you did not make this change, please contact support immediately by replying to this email."
         user_id: "User ID: %{user_id}"
       unlock_instructions:

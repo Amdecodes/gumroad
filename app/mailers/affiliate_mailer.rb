@@ -126,7 +126,7 @@ class AffiliateMailer < ApplicationMailer
   def collaborator_creation(collaborator_id)
     @collaborator = Collaborator.find(collaborator_id)
     @seller = @collaborator.seller
-    @subject = "#{@collaborator.seller.name_or_username} has added you as a collaborator on Gumroad"
+    @subject = "#{@collaborator.seller.name_or_username} has added you as a collaborator on #{PlatformConfig::APP_NAME}"
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
     mail to: @collaborator.affiliate_user.form_email,
@@ -137,7 +137,7 @@ class AffiliateMailer < ApplicationMailer
   def collaborator_update(collaborator_id)
     @collaborator = Collaborator.find(collaborator_id)
     @seller = @collaborator.seller
-    @subject = "#{@collaborator.seller.name_or_username} has updated your collaborator status on Gumroad"
+    @subject = "#{@collaborator.seller.name_or_username} has updated your collaborator status on #{PlatformConfig::APP_NAME}"
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
     mail to: @collaborator.affiliate_user.form_email,
@@ -178,7 +178,7 @@ class AffiliateMailer < ApplicationMailer
 
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
-    @subject = "#{inviter_name} has invited you to collaborate on Gumroad"
+    @subject = "#{inviter_name} has invited you to collaborate on #{PlatformConfig::APP_NAME}"
 
     mail to: invitee.form_email,
          cc: @inviter.form_email,
@@ -191,7 +191,7 @@ class AffiliateMailer < ApplicationMailer
     @invitee = collaborator.affiliate_user
     invitee_name = @invitee.name_or_username
 
-    @subject = "#{invitee_name} has accepted your invitation to collaborate on Gumroad"
+    @subject = "#{invitee_name} has accepted your invitation to collaborate on #{PlatformConfig::APP_NAME}"
 
     mail to: inviter.form_email,
          subject: @subject
@@ -203,7 +203,7 @@ class AffiliateMailer < ApplicationMailer
     @invitee = collaborator.affiliate_user
     invitee_name = @invitee.name_or_username
 
-    @subject = "#{invitee_name} has declined your invitation to collaborate on Gumroad"
+    @subject = "#{invitee_name} has declined your invitation to collaborate on #{PlatformConfig::APP_NAME}"
 
     mail to: inviter.form_email,
          subject: @subject

@@ -174,7 +174,7 @@ export const seller = {
     ai_ready_desc:
       "Take a moment to check out the product and content tabs. Tweak things and make it your own—this is your time to shine!",
     commission_deposit_notice: "Commission products use a 50% deposit upfront, 50% upon completion payment split.",
-    community_chat_label: "Invite your customers to your Gumroad community chat",
+    community_chat_label: "Invite your customers to your {app_name} community chat",
     membership_last_post_label: "New members will be emailed this product's last published post",
     membership_all_posts_label: "New members will get access to all posts you have published",
     membership_block_access_label: "Members will lose access when their memberships end",
@@ -275,14 +275,14 @@ export const seller = {
     remove_version_modal_desc:
       "If you delete this version, its associated content will be removed as well. Your existing customers who purchased it will see the content from the current cheapest version as a fallback. If no version exists, they will see the product-level content.",
     price_checker_title: "Price checker",
-    price_checker_tagline: "How your price compares to similar {productType} on Gumroad.",
+    price_checker_tagline: "How your price compares to similar {productType} on {app_name}.",
     check_prices: "Check prices",
     checking: "Checking…",
     refresh: "Refresh",
     retry: "Retry",
     error_loading: "Couldn't load price comparison.",
     insufficient_title: "Not enough comparable products yet",
-    insufficient_desc: "We found {count} similar {productType} on Gumroad.",
+    insufficient_desc: "We found {count} similar {productType} on {app_name}.",
     match_accuracy: "Match accuracy",
     match_accuracy_details: "Match accuracy details",
     your_price: "Your price",
@@ -294,7 +294,7 @@ export const seller = {
       other: "{count} products",
     },
     based_on_taxonomy: "Based on {count} {productType} in {taxonomy}.",
-    based_on_general: "Based on {count} {productType} on Gumroad.",
+    based_on_general: "Based on {count} {productType} on {app_name}.",
     based_on_broadened: "Based on {count} {productType} (broadened — set a category to refine).",
     check_product_type: "Product type — {productType}",
     check_product_name: "Product name",
@@ -399,7 +399,7 @@ export const seller = {
     landing_page_desc:
       "Replace your default product page with a custom landing page. Copy the prompt and hand it to your AI agent (Claude, Cursor, etc.) — it builds and publishes the page for you.",
     landing_page_sandboxed:
-      "For safety, your landing page is sandboxed: animations and interactive effects work, but it can't reach your Gumroad account or send data to other sites.",
+      "For safety, your landing page is sandboxed: animations and interactive effects work, but it can't reach your {app_name} account or send data to other sites.",
     copy_prompt: "Copy prompt",
     remove_landing_page: "Remove landing page",
     show_prompt: "Show prompt",
@@ -499,7 +499,7 @@ export const seller = {
     email_draft_state_incomplete: "Incomplete",
     email_draft_state_sent: "Send complete",
     x_read_only_alert:
-      "Gumroad can't post for you yet: your connected X account only allows reading. Post it yourself, or reconnect X to let Gumroad post for you. X now asks you to select “I trust this app” before it enables the Authorize button.",
+      "{app_name} can't post for you yet: your connected X account only allows reading. Post it yourself, or reconnect X to let {app_name} post for you. X now asks you to select “I trust this app” before it enables the Authorize button.",
     x_unknown_alert: "We couldn't confirm whether this post went through. Check your X account before posting again.",
     post_failed_alert: "The post didn't go through ({errorCode}). You can still post it yourself.",
     email_draft_declined_alert: "You deleted the launch email for this product, so we won't create another one.",

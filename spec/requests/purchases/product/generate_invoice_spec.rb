@@ -74,7 +74,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
         expect(page).not_to have_content(GUMROAD_VAT_REGISTRATION_NUMBER)
         expect(page).to have_content(purchase.seller.name_or_username)
         expect(page).to have_content(purchase.seller.email)
-        expect(page).to have_content("Products supplied by Gumroad.")
+        expect(page).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
 
       within find("h5", text: "Invoice").first(:xpath, ".//..") do
@@ -110,7 +110,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       expect(pdf_text).to include("Custom information.")
       expect(pdf_text).to_not include("VAT Registration Number")
       expect(pdf_text).to_not include(GUMROAD_VAT_REGISTRATION_NUMBER)
-      expect(pdf_text).to have_content("Products supplied by Gumroad.")
+      expect(pdf_text).to have_content("Products supplied via #{PlatformConfig.app_name}.")
     end
 
     it "shows Gumroad's VAT registration number for EU purchases" do
@@ -737,10 +737,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       fill_in("ZIP code", with: "12345")
 
       within find("h5", text: "Supplier").first(:xpath, ".//..//..") do
-        expect(page).to have_content("Supplier\nGumroad, Inc")
+        expect(page).to have_content("Supplier\n#{PlatformConfig.legal_name}")
         expect(page).to have_content(purchase.seller.name_or_username)
         expect(page).to have_content(purchase.seller.email)
-        expect(page).to have_content("Products supplied by Gumroad.")
+        expect(page).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
 
       click_on "Download"
@@ -752,10 +752,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       expect(reader.pages.size).to be(1)
 
       pdf_text = reader.page(1).text.squish
-      expect(pdf_text).not_to have_content("Supplier: Gumroad")
+      expect(pdf_text).not_to have_content("Supplier: #{PlatformConfig.legal_name}")
       expect(pdf_text).to have_content(purchase.seller.name_or_username)
       expect(pdf_text).to have_content(purchase.seller.email)
-      expect(pdf_text).to have_content("Products supplied by Gumroad.")
+      expect(pdf_text).to have_content("Products supplied via #{PlatformConfig.app_name}.")
     end
 
     it "shows Gumroad as the supplier for a non-physical product sale to the US" do
@@ -772,7 +772,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       within find("h5", text: "Supplier").first(:xpath, ".//..//..") do
         expect(page).to have_content(purchase.seller.name_or_username)
         expect(page).to have_content(purchase.seller.email)
-        expect(page).to have_content("Products supplied by Gumroad.")
+        expect(page).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
 
       click_on "Download"
@@ -786,7 +786,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       pdf_text = reader.page(1).text.squish
       expect(pdf_text).to have_content(purchase.seller.name_or_username)
       expect(pdf_text).to have_content(purchase.seller.email)
-      expect(pdf_text).to have_content("Products supplied by Gumroad.")
+      expect(pdf_text).to have_content("Products supplied via #{PlatformConfig.app_name}.")
     end
 
     it "shows Gumroad as the supplier for a sale via Gumroad Discover" do
@@ -801,7 +801,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       fill_in("ZIP code", with: "12345")
 
       within find("h5", text: "Supplier").first(:xpath, ".//..//..") do
-        expect(page).to have_content("Gumroad, Inc")
+        expect(page).to have_content(PlatformConfig.legal_name)
         expect(page).not_to have_content("Products supplied by #{purchase.seller.display_name}.")
       end
 
@@ -815,7 +815,7 @@ describe("Generate invoice for purchase", type: :system, js: true) do
 
       pdf_text = reader.page(1).text.squish
       within find("h5", text: "Supplier").first(:xpath, ".//..") do
-        expect(pdf_text).to have_content("Gumroad, Inc.")
+        expect(pdf_text).to have_content("#{PlatformConfig.legal_name}.")
         expect(pdf_text).not_to have_content("Products supplied by #{purchase.seller.display_name}.")
       end
     end
@@ -831,10 +831,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       fill_in("ZIP code", with: "12345")
 
       within find("h5", text: "Supplier").first(:xpath, ".//..//..") do
-        expect(page).to have_content("Supplier\nGumroad, Inc")
+        expect(page).to have_content("Supplier\n#{PlatformConfig.legal_name}")
         expect(page).to have_content(purchase.seller.name_or_username)
         expect(page).to have_content(purchase.seller.email)
-        expect(page).to have_content("Products supplied by Gumroad.")
+        expect(page).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
 
       click_on "Download"
@@ -847,10 +847,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
 
       pdf_text = reader.page(1).text.squish
       within find("h5", text: "Supplier").first(:xpath, ".//..") do
-        expect(pdf_text).to have_content("Gumroad, Inc.")
+        expect(pdf_text).to have_content("#{PlatformConfig.legal_name}.")
         expect(pdf_text).to have_content(purchase.seller.name_or_username)
         expect(pdf_text).to have_content(purchase.seller.email)
-        expect(pdf_text).to have_content("Products supplied by Gumroad.")
+        expect(pdf_text).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
     end
 
@@ -866,10 +866,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
       fill_in("ZIP code", with: "12345")
 
       within find("h5", text: "Supplier").first(:xpath, ".//..//..") do
-        expect(page).to have_content("Supplier\nGumroad, Inc")
+        expect(page).to have_content("Supplier\n#{PlatformConfig.legal_name}")
         expect(page).to have_content(purchase.seller.name_or_username)
         expect(page).to have_content(purchase.seller.email)
-        expect(page).to have_content("Products supplied by Gumroad.")
+        expect(page).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
 
       click_on "Download"
@@ -882,10 +882,10 @@ describe("Generate invoice for purchase", type: :system, js: true) do
 
       pdf_text = reader.page(1).text.squish
       within find("h5", text: "Supplier").first(:xpath, ".//..") do
-        expect(pdf_text).to have_content("Gumroad, Inc.")
+        expect(pdf_text).to have_content("#{PlatformConfig.legal_name}.")
         expect(pdf_text).to have_content(purchase.seller.name_or_username)
         expect(pdf_text).to have_content(purchase.seller.email)
-        expect(pdf_text).to have_content("Products supplied by Gumroad.")
+        expect(pdf_text).to have_content("Products supplied via #{PlatformConfig.app_name}.")
       end
     end
 
