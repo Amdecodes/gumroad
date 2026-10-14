@@ -16,6 +16,8 @@ FactoryBot.define do
     card_type do
       if charge_processor_id == PaypalChargeProcessor.charge_processor_id
         CardType::PAYPAL
+      elsif charge_processor_id == "chapa"
+        nil
       else
         "visa"
       end
@@ -23,6 +25,8 @@ FactoryBot.define do
     card_visual do
       if charge_processor_id == PaypalChargeProcessor.charge_processor_id
         "jane@paypal.com"
+      elsif charge_processor_id == "chapa"
+        nil
       else
         "**** **** **** 4062"
       end

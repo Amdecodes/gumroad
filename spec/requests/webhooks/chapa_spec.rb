@@ -94,6 +94,12 @@ RSpec.describe "POST /webhooks/chapa" do
       expect(JSON.parse(response.body)["status"]).to eq("success")
       expect(purchase.reload.stripe_transaction_id).to eq("CHAPA_TRANS_776655")
       expect(purchase.charge_processor_id).to eq("chapa")
+      expect(purchase.card_type).to be_nil
+      expect(purchase.card_type).not_to eq(CardType::UNKNOWN)
+
+      payment_info = ReceiptPresenter::PaymentInfo.new(purchase)
+      expect(payment_info.send(:credit_card_note)).to be_nil
+      expect(payment_info.notes).to be_empty
     end
 
     it "rejects when gateway verification reports amount mismatch" do
