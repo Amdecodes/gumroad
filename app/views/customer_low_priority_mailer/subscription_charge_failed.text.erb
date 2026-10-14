@@ -1,0 +1,9 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_charge_failed.installment_header") %>
+<%= t("mailers.customer.subscription_charge_failed.installment_body", product: @subscription.link.name) %>
+<%= t("mailers.customer.subscription_charge_failed.installment_warning", product: @subscription.link.name) %>
+<% else %>
+<%= t("mailers.customer.subscription_charge_failed.header") %>
+<%= t("mailers.customer.subscription_charge_failed.subscription_body", product: @subscription.link.name) %>
+<%= t("mailers.customer.subscription_charge_failed.subscription_warning", product: @subscription.link.name) %>
+<% end %>

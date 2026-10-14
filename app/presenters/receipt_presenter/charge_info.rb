@@ -16,7 +16,7 @@ class ReceiptPresenter::ChargeInfo
   end
 
   def formatted_created_at
-    chargeable.orderable.created_at.to_fs(:formatted_date_abbrev_month)
+    I18n.l(chargeable.orderable.created_at.to_date, format: :abbrev_month)
   end
 
   def formatted_total_transaction_amount
@@ -34,13 +34,13 @@ class ReceiptPresenter::ChargeInfo
   def product_questions_note
     return if chargeable.orderable.receipt_for_gift_sender?
 
-    question = "Questions about your #{"product".pluralize(order_items_count)}?"
+    question = I18n.t("mailers.customer.receipt.questions_about_product", count: order_items_count)
 
     action = \
       if for_email
-        "Contact #{h(seller.display_name)} by replying to this email."
+        I18n.t("mailers.customer.receipt.contact_seller_reply", seller: h(seller.display_name))
       else
-        "Contact #{h(seller.display_name)} at #{mail_to(chargeable.support_email)}."
+        I18n.t("mailers.customer.receipt.contact_seller_at", seller: h(seller.display_name), email: mail_to(chargeable.support_email))
       end
     "#{question} #{action}".html_safe
   rescue NotImplementedError

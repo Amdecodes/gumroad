@@ -1,7 +1,7 @@
 <%= header_section(@title) %>
 <div>
-  <p>Get excited! <%= @seller_name %> just added new content to <%= @product_name %>. You can access it by visiting your library or clicking the button below.</p>
+  <p><%= t("mailers.customer.bundle_content_updated.body", seller: @seller_name, product: @product_name) %></p>
   <a class="button primary" href="<%= library_url({ bundles: @purchase.link.external_id }) %>">
-    View content
+    <%= t("mailers.customer.bundle_content_updated.view_content_button") %>
   </a>
 </div>

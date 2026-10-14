@@ -1,12 +1,12 @@
 <% if @subscription.is_installment_plan %>
-  <%= header_section("Your installment plan has been canceled.") %>
+  <%= header_section(t("mailers.customer.subscription_product_deleted.installment_subject")) %>
 <% else %>
-  <%= header_section("Your subscription has been canceled.") %>
+  <%= header_section(t("mailers.customer.subscription_product_deleted.subscription_subject")) %>
 <% end %>
 <div>
   <% if @subscription.is_installment_plan %>
-    <p>Your installment plan for <%= @subscription.link.name %> has been canceled due to the creator deleting the product. You will no longer be charged.</p>
+    <p><%= t("mailers.customer.subscription_product_deleted.installment_body", product: @subscription.link.name) %></p>
   <% else %>
-    <p>Your subscription to <%= @subscription.link.name %> has been canceled due to the creator deleting the product. You will no longer be charged.</p>
+    <p><%= t("mailers.customer.subscription_product_deleted.subscription_body", product: @subscription.link.name) %></p>
   <% end %>
 </div>

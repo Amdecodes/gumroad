@@ -1,0 +1,10 @@
+<%= t("mailers.customer.order_shipped.header") %>
+
+<% if @tracking_url.present? %>
+<%= t("mailers.customer.order_shipped.body_tracking", product: @product.name) %>
+<%= @tracking_url %>
+<% else %>
+<%= t("mailers.customer.order_shipped.body_no_tracking", product: @product.name) %>
+<% end %>
+
+<%= t("mailers.customer.order_shipped.questions_reply") %>

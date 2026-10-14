@@ -1,12 +1,13 @@
 <%= header_section(@subject) %>
 <div>
+  <% why_declined_link = link_to(t("mailers.customer.subscription_charge_blocked_location.why_declined_link"), "https://gumroad.com/help/article/203-why-did-my-payment-fail#Not-available-in-your-location-Xr4mB") %>
   <% if @subscription.is_installment_plan %>
-    <p>We were not able to process the latest payment for your installment plan for <%= @subscription.link.name %>. The address on it is in a location that United States sanctions prevent us from processing payments to or from, so no charge was attempted and there is nothing wrong with your card.</p>
-    <p>If that address is out of date, <%= link_to "update it from your installment plan", @edit_card_url %> and the next payment will go through normally.</p>
-    <p>Otherwise your installment plan for <%= @subscription.link.name %> will be paused within 5 days and you will lose access to the product. You can read more about <%= link_to "why a payment can be declined", "https://gumroad.com/help/article/203-why-did-my-payment-fail#Not-available-in-your-location-Xr4mB" %>.</p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.installment_body_1", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.installment_body_2_html", link: link_to(t("mailers.customer.subscription_charge_blocked_location.installment_update_link"), @edit_card_url)).html_safe %></p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.installment_body_3_html", product: @subscription.link.name, why_link: why_declined_link).html_safe %></p>
   <% else %>
-    <p>We were not able to process the latest payment for your membership to <%= @subscription.link.name %>. The address on it is in a location that United States sanctions prevent us from processing payments to or from, so no charge was attempted and there is nothing wrong with your card.</p>
-    <p>If that address is out of date, <%= link_to "update it from your membership", @edit_card_url %> and the next payment will go through normally.</p>
-    <p>Otherwise your membership to <%= @subscription.link.name %> will be canceled within 5 days. You can read more about <%= link_to "why a payment can be declined", "https://gumroad.com/help/article/203-why-did-my-payment-fail#Not-available-in-your-location-Xr4mB" %>.</p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.subscription_body_1", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.subscription_body_2_html", link: link_to(t("mailers.customer.subscription_charge_blocked_location.subscription_update_link"), @edit_card_url)).html_safe %></p>
+    <p><%= t("mailers.customer.subscription_charge_blocked_location.subscription_body_3_html", product: @subscription.link.name, why_link: why_declined_link).html_safe %></p>
   <% end %>
 </div>

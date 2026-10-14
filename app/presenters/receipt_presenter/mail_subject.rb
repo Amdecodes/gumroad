@@ -27,17 +27,20 @@ class ReceiptPresenter::MailSubject
 
     def build_for_one_purchase
       purchase = purchases.first
-      subject = "You bought #{purchase.link_name}!"
-      subject = "You got #{purchase.link_name}!" if purchase.price_cents == 0
-      subject = "You rented #{purchase.link_name}!" if purchase.is_rental
-      subject = "You've subscribed to #{purchase.link_name}!" if purchase.link.is_recurring_billing
-      subject = "Recurring charge for #{purchase.link_name}." if purchase.link.is_recurring_billing && purchase.is_recurring_subscription_charge
-      subject = "You've upgraded your membership for #{purchase.link_name}!" if purchase.link.is_recurring_billing && purchase.is_upgrade_purchase
-      subject = "#{purchase.gifter_email} bought #{purchase.link_name} for you!" if purchase.is_gift_receiver_purchase
-      subject = "#{purchase.gifter_full_name} (#{purchase.gifter_email}) bought #{purchase.link_name} for you!" if purchase.is_gift_receiver_purchase && purchase.gifter_full_name
-      subject = "Someone bought #{purchase.link_name} for you!" if purchase.is_gift_receiver_purchase && purchase.gifter_hidden_from_recipient?
-      subject = "You bought #{purchase.giftee_name_or_email} #{purchase.link_name}!" if purchase.is_gift_sender_purchase
-      subject = "#{purchase.link.name} is ready for download!" if purchase.is_commission_completion_purchase?
+      name = purchase.link_name
+      subject = I18n.t("mailers.customer.receipt.subject_bought", product: name)
+      subject = I18n.t("mailers.customer.receipt.subject_got_free", product: name) if purchase.price_cents == 0
+      subject = I18n.t("mailers.customer.receipt.subject_rented", product: name) if purchase.is_rental
+      subject = I18n.t("mailers.customer.receipt.subject_subscribed", product: name) if purchase.link.is_recurring_billing
+      subject = I18n.t("mailers.customer.receipt.subject_recurring_charge", product: name) if purchase.link.is_recurring_billing && purchase.is_recurring_subscription_charge
+      subject = I18n.t("mailers.customer.receipt.subject_membership_upgraded", product: name) if purchase.link.is_recurring_billing && purchase.is_upgrade_purchase
+      if purchase.is_gift_receiver_purchase
+        subject = I18n.t("mailers.customer.receipt.subject_gift_named", gifter: purchase.gifter_email, product: name)
+        subject = I18n.t("mailers.customer.receipt.subject_gift_named", gifter: "#{purchase.gifter_full_name} (#{purchase.gifter_email})", product: name) if purchase.gifter_full_name
+        subject = I18n.t("mailers.customer.receipt.subject_gift_anonymous", product: name) if purchase.gifter_hidden_from_recipient?
+      end
+      subject = I18n.t("mailers.customer.receipt.subject_gift_sent", giftee: purchase.giftee_name_or_email, product: name) if purchase.is_gift_sender_purchase
+      subject = I18n.t("mailers.customer.receipt.subject_commission_ready", product: purchase.link.name) if purchase.is_commission_completion_purchase?
       subject
     end
 
@@ -45,12 +48,12 @@ class ReceiptPresenter::MailSubject
       first_name = purchases.first.link_name
       last_name = purchases.last.link_name
 
-      return "You bought #{first_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT)}!" if first_name == last_name
+      return I18n.t("mailers.customer.receipt.subject_bought", product: first_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT)) if first_name == last_name
 
-      "You bought #{first_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT)} and #{last_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT)}"
+      I18n.t("mailers.customer.receipt.subject_bought_two", first: first_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT), second: last_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT))
     end
 
     def build_for_more_than_two_purchases
-      "You bought #{purchases.first.link_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT)} and #{purchases.count - 1} more products"
+      I18n.t("mailers.customer.receipt.subject_bought_multiple", first: purchases.first.link_name.truncate(PRODUCT_NAME_CHARACTER_LIMIT), count: purchases.count - 1)
     end
 end

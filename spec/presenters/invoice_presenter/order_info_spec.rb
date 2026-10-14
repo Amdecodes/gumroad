@@ -2,7 +2,7 @@
 
 describe InvoicePresenter::OrderInfo do
   let(:seller) { create(:named_seller) }
-  let(:product) { create(:product, user: seller) }
+  let(:product) { create(:product, user: seller, price_currency_type: "usd") }
   # The purchase factory attaches Gumroad's own Stripe merchant account, and a paid
   # purchase fails validation without one, so make sure it exists.
   let!(:merchant_account) do
@@ -17,6 +17,7 @@ describe InvoicePresenter::OrderInfo do
       seller:,
       merchant_account:,
       price_cents: 14_99,
+      displayed_price_currency_type: "usd",
       created_at: DateTime.parse("January 1, 2023")
     )
   end
@@ -442,9 +443,10 @@ describe InvoicePresenter::OrderInfo do
         create(
           :purchase,
           email: "customer@example.com",
-          link: create(:product, name: "Second Product", user: seller),
+          link: create(:product, name: "Second Product", user: seller, price_currency_type: "usd"),
           seller:,
           displayed_price_cents: 9_99,
+          displayed_price_currency_type: "usd",
           was_purchase_taxable: true,
           tax_cents: 60,
           created_at: DateTime.parse("January 1, 2023")

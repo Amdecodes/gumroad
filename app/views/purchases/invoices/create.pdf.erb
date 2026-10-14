@@ -3,6 +3,10 @@
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <style>
+      body, .invoice {
+        font-family: 'Noto Sans Ethiopic', 'Droid Sans Ethiopic', 'Noto Serif Ethiopic', 'Abyssinica SIL', Nyala, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
       .container {
         width: 960px;
         margin: 0 auto;
@@ -47,7 +51,7 @@
       <div class="container invoice">
         <div class="sidebar">
           <% supplier_info = invoice_presenter.supplier_info %>
-          <h2>Supplier</h2>
+          <h2><%= t("receipt.invoices.supplier", default: "Supplier") %></h2>
           <% supplier_info.attributes.each do |attribute| %>
             <p>
               <% if attribute[:label].present? %>
@@ -56,7 +60,7 @@
               <p class="with-line-breaks"><%= attribute[:value] %></p>
             </p>
           <% end %>
-          <h2>Creator</h2>
+          <h2><%= t("receipt.invoices.seller", default: "Creator") %></h2>
           <% seller_info = invoice_presenter.seller_info %>
           <% seller_info.attributes.each do |attribute| %>
             <p>

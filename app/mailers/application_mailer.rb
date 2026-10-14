@@ -77,4 +77,57 @@ class ApplicationMailer < ActionMailer::Base
         raise "From email `#{from}` domain does not match expected delivery domain `#{expected_domain}`"
       end
     end
+
+    def with_recipient_locale(target = nil, &block)
+      resolved_locale = resolve_recipient_locale(target)
+      I18n.with_locale(resolved_locale, &block)
+    end
+
+    def resolve_recipient_locale(target)
+      case target
+      when Symbol, String
+        target.to_s.presence_in(I18n.available_locales.map(&:to_s)) || I18n.default_locale
+      when Purchase
+        target.locale.presence || target.user&.locale.presence || I18n.default_locale
+      when Subscription
+        target.original_purchase&.locale.presence || target.user&.locale.presence || I18n.default_locale
+      when Preorder
+        target.authorization_purchase&.locale.presence || target.user&.locale.presence || I18n.default_locale
+      when Shipment
+        target.purchase&.locale.presence || target.purchase&.user&.locale.presence || I18n.default_locale
+      when Dispute
+        target.disputable&.try(:purchase_for_dispute_evidence)&.locale.presence ||
+          target.try(:purchase)&.locale.presence ||
+          target.try(:purchase)&.user&.locale.presence ||
+          I18n.default_locale
+      when Cart
+        target.user&.locale.presence || I18n.default_locale
+      when ProductReview
+        target.purchase&.locale.presence || target.purchase&.user&.locale.presence || I18n.default_locale
+      when Call
+        target.purchase&.locale.presence || target.purchase&.user&.locale.presence || I18n.default_locale
+      when User
+        target.locale.presence || I18n.default_locale
+      when Order
+        target.purchases.first&.locale.presence || target.user&.locale.presence || I18n.default_locale
+      else
+        if target.respond_to?(:locale) && target.locale.present?
+          target.locale
+        elsif target.respond_to?(:original_purchase) && target.original_purchase&.locale.present?
+          target.original_purchase.locale
+        elsif target.respond_to?(:authorization_purchase) && target.authorization_purchase&.locale.present?
+          target.authorization_purchase.locale
+        elsif target.respond_to?(:purchases) && target.purchases.first&.locale.present?
+          target.purchases.first.locale
+        elsif target.respond_to?(:purchaser) && target.purchaser&.locale.present?
+          target.purchaser.locale
+        elsif target.respond_to?(:orderable) && target.orderable.respond_to?(:locale) && target.orderable.locale.present?
+          target.orderable.locale
+        elsif target.respond_to?(:user) && target.user&.locale.present?
+          target.user.locale
+        else
+          I18n.default_locale
+        end
+      end
+    end
 end

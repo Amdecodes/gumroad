@@ -1,0 +1,8 @@
+<%= t("mailers.customer.paypal_purchase_failed.header") %>
+
+<%= t("mailers.customer.paypal_purchase_failed.greeting") %>,
+<%= t("mailers.customer.paypal_purchase_failed.body_intro") %>
+<%= t("mailers.customer.paypal_purchase_failed.body_notification", product: @product.name) %>
+<%= t("mailers.customer.paypal_purchase_failed.body_pending_note") %>
+<%= t("mailers.customer.paypal_purchase_failed.body_retry_note") %>
+<%= @product.long_url %>

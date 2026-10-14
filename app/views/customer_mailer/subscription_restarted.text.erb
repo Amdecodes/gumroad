@@ -1,0 +1,19 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_restarted.installment_subject") %>
+<% else %>
+<%= t("mailers.customer.subscription_restarted.subscription_subject") %>
+<% end %>
+
+<% if @subscription.is_installment_plan %>
+  <% if @reason == Subscription::ResubscriptionReason::PAYMENT_ISSUE_RESOLVED %>
+    <%= t("mailers.customer.subscription_restarted.body_installment_resolved", product: @subscription.link.name) %>
+  <% else %>
+    <%= t("mailers.customer.subscription_restarted.body_installment_manual", product: @subscription.link.name) %>
+  <% end %>
+<% else %>
+  <% if @reason == Subscription::ResubscriptionReason::PAYMENT_ISSUE_RESOLVED %>
+    <%= strip_tags(t("mailers.customer.subscription_restarted.body_subscription_resolved_html", product: @subscription.link.name, link: @edit_card_url)) %>
+  <% else %>
+    <%= t("mailers.customer.subscription_restarted.body_subscription_manual", product: @subscription.link.name) %>
+  <% end %>
+<% end %>

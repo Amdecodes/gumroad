@@ -1,0 +1,10 @@
+<%= t("mailers.two_factor_authentication.authentication_token.header") %>
+
+<%= t("mailers.two_factor_authentication.authentication_token.instruction") %>
+
+<%= @authentication_token %>
+
+<%= t("mailers.two_factor_authentication.authentication_token.action_notice") %>
+<%= verify_two_factor_authentication_url(token: @authentication_token, user_id: @user.encrypted_external_id, format: :html) %>
+
+<%= t("mailers.two_factor_authentication.authentication_token.expires_in", time: distance_of_time_in_words(TwoFactorAuthentication::TOKEN_VALIDITY)) %>

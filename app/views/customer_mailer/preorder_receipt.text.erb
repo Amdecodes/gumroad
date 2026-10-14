@@ -1,0 +1,15 @@
+<%= t("mailers.customer.preorder_receipt.subject", product: @product.name) %>
+
+<% if @product.is_physical %>
+<%= t("mailers.customer.preorder_receipt.body_physical", product: @product.name, date: displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone)) %>
+
+<%= t("mailers.customer.preorder_receipt.contact_address_note") %>
+
+<%= t("mailers.customer.preorder_receipt.shipping_address") %>:
+<%= @shipping_info["full_name"] %>
+<%= @shipping_info["street_address"] %>
+<%= @shipping_info["city"] %>, <%= @shipping_info["state"] %> <%= @shipping_info["zip_code"] %>
+<%= @shipping_info["country"] %>
+<% else %>
+<%= t("mailers.customer.preorder_receipt.body_digital", product: @product.name, date: displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone)) %>
+<% end %>

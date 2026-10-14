@@ -8,8 +8,8 @@ describe Purchases::InvoicesController, :vcr, type: :controller, inertia: true d
     describe "GET new" do
       let(:date) { Time.find_zone("UTC").local(2024, 04, 10) }
       let(:seller) { create(:named_seller) }
-      let(:product_one) { create(:product, user: seller, name: "Product One") }
-      let(:purchase_one) { create(:purchase, created_at: date, link: product_one) }
+      let(:product_one) { create(:product, user: seller, name: "Product One", price_currency_type: "usd") }
+      let(:purchase_one) { create(:purchase, created_at: date, link: product_one, displayed_price_currency_type: "usd") }
       let(:purchase) { purchase_one }
       let(:params) { { purchase_id: purchase.external_id, email: purchase.email } }
 
@@ -65,8 +65,8 @@ describe Purchases::InvoicesController, :vcr, type: :controller, inertia: true d
       end
 
       describe "for Charge" do
-        let(:product_two) { create(:product, user: seller, name: "Product Two") }
-        let(:purchase_two) { create(:purchase, created_at: date, link: product_two) }
+        let(:product_two) { create(:product, user: seller, name: "Product Two", price_currency_type: "usd") }
+        let(:purchase_two) { create(:purchase, created_at: date, link: product_two, displayed_price_currency_type: "usd") }
         let(:charge) { create(:charge, seller:, purchases: [purchase_one, purchase_two]) }
         let(:order) { charge.order }
 
@@ -129,8 +129,8 @@ describe Purchases::InvoicesController, :vcr, type: :controller, inertia: true d
 
       let(:date) { Time.find_zone("UTC").local(2024, 04, 10) }
       let(:seller) { create(:named_seller) }
-      let(:product_one) { create(:product, user: seller, name: "Product One") }
-      let(:purchase_one) { create(:purchase, created_at: date, link: product_one) }
+      let(:product_one) { create(:product, user: seller, name: "Product One", price_currency_type: "usd") }
+      let(:purchase_one) { create(:purchase, created_at: date, link: product_one, displayed_price_currency_type: "usd") }
       let(:purchase) { purchase_one }
       let(:payload) do
         {
@@ -469,8 +469,8 @@ describe Purchases::InvoicesController, :vcr, type: :controller, inertia: true d
       end
 
       describe "for Charge" do
-        let(:product_two) { create(:product, user: seller, name: "Product Two") }
-        let(:purchase_two) { create(:purchase, created_at: date, link: product_two) }
+        let(:product_two) { create(:product, user: seller, name: "Product Two", price_currency_type: "usd") }
+        let(:purchase_two) { create(:purchase, created_at: date, link: product_two, displayed_price_currency_type: "usd") }
         let(:charge) { create(:charge, seller:, purchases: [purchase_one, purchase_two]) }
         let(:order) { charge.order }
 

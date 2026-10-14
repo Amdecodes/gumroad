@@ -1,6 +1,6 @@
 <!-- IMPORTANT: If you modify this file, you may also need to modify app/views/posts/post_email.html.erb -->
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>" class="<%= "lang-am" if I18n.locale == :am %>">
   <head>
     <title><%= @subject %></title>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
@@ -20,7 +20,7 @@
 
           <% if @unsub_link.present? %>
             <p>
-              <a href="<%= @unsub_link %>">Unsubscribe</a>
+              <a href="<%= @unsub_link %>"><%= t("mailers.common.unsubscribe") %></a>
             </p>
           <% end %>
           <% unless Rails.env.production? %>
@@ -28,7 +28,7 @@
           <% end %>
         </div>
         <a class="wordmark" href="<%= root_url %>">
-          Powered by
+          <%= t("mailers.common.powered_by") %>
           <img src="<%= image_url("email/wordmark_logo.png") %>" alt="Gumroad" style="width: 138px; height: 18px;" width="138" height="18">
         </a>
       </div>

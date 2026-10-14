@@ -18,9 +18,9 @@ class ReceiptPresenter::PaymentInfo
   def title
     # Applies for recurring subscription receipts only
     if chargeable.is_recurring_subscription_charge
-      "Thank you for your payment!"
+      I18n.t("mailers.customer.receipt.thank_you_payment", default: "Thank you for your payment!")
     else
-      "Payment info"
+      I18n.t("mailers.customer.receipt.payment_info_title", default: "Payment info")
     end
   end
 
@@ -67,7 +67,7 @@ class ReceiptPresenter::PaymentInfo
       end
 
       {
-        label: "Shipping",
+        label: I18n.t("checkout.shipping", default: "Shipping"),
         value: format_today_amount(amount_cents),
       }
     end
@@ -136,7 +136,7 @@ class ReceiptPresenter::PaymentInfo
         end
 
       {
-        label: "Payment method",
+        label: I18n.t("checkout.payment_method", default: "Payment method"),
         value:
       }
     end
@@ -154,9 +154,9 @@ class ReceiptPresenter::PaymentInfo
         link_to_product = link_to(product.name, product.long_url, target: "_blank")
 
         if purchase.is_installment_payment
-          "We have successfully processed the installment payment for #{link_to_product}.".html_safe
+          I18n.t("mailers.customer.receipt.installment_processed", product: link_to_product).html_safe
         else
-          "We have successfully processed the payment for your recurring subscription to #{link_to_product}.".html_safe
+          I18n.t("mailers.customer.receipt.subscription_processed", product: link_to_product).html_safe
         end
       end
     end
@@ -164,7 +164,7 @@ class ReceiptPresenter::PaymentInfo
     def usd_currency_note
       return if presentment_currency.present?
 
-      "All charges are processed in United States Dollars. Your bank or financial institution may apply their own fees for currency conversion."
+      I18n.t("mailers.customer.receipt.usd_currency_note", default: "All charges are processed in United States Dollars. Your bank or financial institution may apply their own fees for currency conversion.")
     end
 
     def credit_card_note
@@ -175,14 +175,14 @@ class ReceiptPresenter::PaymentInfo
       return if orderable.card_type.in?([CardType::PAYPAL, CardType::LINK, CardType::UPI, CardType::IDEAL, CardType::BANCONTACT, CardType::PIX, CardType::KLARNA, CardType::ALIPAY])
 
       # TODO: Update when multiple charges per receipt are supported
-      "The charge will be listed as GUMRD.COM* on your credit card statement."
+      I18n.t("mailers.customer.receipt.credit_card_note", default: "The charge will be listed as GUMRD.COM* on your credit card statement.")
     end
 
     def today_payment_heading_attribute
       return unless any_upcoming_payments?
 
       {
-        label: "Today's payment",
+        label: I18n.t("receipt.invoices.payment", default: "Payment"),
         value: nil
       }
     end
@@ -251,7 +251,7 @@ class ReceiptPresenter::PaymentInfo
       return unless purchase.subscription.charges_completed?
       return unless purchase == purchase.subscription.last_purchase
 
-      " - This is the final payment. You will not be charged for this product again."
+      " - " + I18n.t("mailers.customer.receipt.final_payment_note", default: "This is the final payment. You will not be charged for this product again.")
     end
 
     def today_total_price_attribute
@@ -265,7 +265,7 @@ class ReceiptPresenter::PaymentInfo
         presentment_currency.present? ? purchase.buyer_presentment_total_cents : purchase.total_transaction_cents
       end
       {
-        label: "Amount paid",
+        label: I18n.t("mailers.customer.receipt.amount_paid", default: "Amount paid"),
         value: format_today_amount(amount_cents),
       }
     end
@@ -275,13 +275,13 @@ class ReceiptPresenter::PaymentInfo
 
       {
         label: nil,
-        value: link_to("Generate invoice", chargeable.invoice_url)
+        value: link_to(I18n.t("receipt.invoices.generate", default: "Generate invoice"), chargeable.invoice_url)
       }
     end
 
     def upcoming_payment_heading_attribute
       {
-        label: "Upcoming #{"payment".pluralize(upcoming_price_attributes.size)}",
+        label: I18n.t("mailers.customer.receipt.upcoming_payments", count: upcoming_price_attributes.size),
         value: nil
       }
     end
@@ -292,8 +292,8 @@ class ReceiptPresenter::PaymentInfo
       subscription = chargeable.subscription
 
       {
-        label: "Membership paid for until",
-        value: subscription.end_time_of_subscription.to_fs(:formatted_date_abbrev_month)
+        label: I18n.t("mailers.customer.receipt.membership_paid_until", default: "Membership paid for until"),
+        value: I18n.l(subscription.end_time_of_subscription.to_date, format: :abbrev_month)
       }
     end
 
@@ -355,12 +355,14 @@ class ReceiptPresenter::PaymentInfo
         end
 
         next_payment_date = purchase.is_free_trial_purchase? ? subscription.free_trial_ends_at : purchase.created_at + subscription.period
+        formatted_date = I18n.l(next_payment_date.to_date, format: :abbrev_month)
+        formatted_amount = formatted_price(
+          purchase.displayed_price_currency_type,
+          subscription.current_subscription_price_cents + purchase.shipping_in_purchase_currency + next_payment_tax_cents
+        )
         {
           label: price_attribute_label(purchase) + upcoming_price_attribute_label_notes(purchase),
-          value: "#{formatted_price(
-              purchase.displayed_price_currency_type,
-              subscription.current_subscription_price_cents + purchase.shipping_in_purchase_currency + next_payment_tax_cents
-            )} on #{next_payment_date.to_fs(:formatted_date_abbrev_month)}".html_safe
+          value: I18n.t("mailers.customer.receipt.amount_on_date", amount: formatted_amount, date: formatted_date).html_safe
         }
       end
     end

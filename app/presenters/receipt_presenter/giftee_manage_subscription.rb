@@ -21,7 +21,8 @@ class ReceiptPresenter::GifteeManageSubscription
         { host: UrlService.domain_with_protocol },
       )
 
-      "Your gift includes a #{single_period_indicator(subscription.recurrence)} membership. If you wish to continue your membership, you can visit #{link_to("subscription settings", url, target: "_blank")}.".html_safe
+      settings_link = link_to(I18n.t("mailers.customer.receipt.subscription_settings", default: "subscription settings"), url, target: "_blank")
+      I18n.t("mailers.customer.receipt.giftee_subscription_note_html", period: single_period_indicator(subscription.recurrence), settings_link:).html_safe
     end
   end
 

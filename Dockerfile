@@ -20,6 +20,7 @@ RUN apt-get update -qq && \
       default-mysql-client \
       ffmpeg \
       fonts-dejavu \
+      fonts-noto-core \
       gnupg \
       imagemagick \
       jq \

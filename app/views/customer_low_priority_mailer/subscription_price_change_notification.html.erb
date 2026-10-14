@@ -1,28 +1,28 @@
 <div>
   <p><%= Rinku.auto_link(@message.html_safe, :all, 'target="_blank" rel="nofollow"'.html_safe) %></p>
   <p>
-    <strong>Product: </strong>
+    <strong><%= t("mailers.customer.subscription_price_change_notification.product_label") %>: </strong>
     <%= link_to @product.name, @product.long_url, target: "_blank" %>
     <br>
 
-    <strong>New price: </strong>
+    <strong><%= t("mailers.customer.subscription_price_change_notification.new_price_label") %>: </strong>
     <%= @new_price %>
     <br>
 
-    <strong>Previous price: </strong>
+    <strong><%= t("mailers.customer.subscription_price_change_notification.previous_price_label") %>: </strong>
     <%= @previous_price %>
     <br>
 
-    <strong>Next payment date: </strong>
+    <strong><%= t("mailers.customer.subscription_price_change_notification.next_payment_date_label") %>: </strong>
     <%= @next_payment_date %>
     <br>
 
-    <strong>Payment method: </strong>
+    <strong><%= t("mailers.customer.subscription_price_change_notification.payment_method_label") %>: </strong>
     <%= @payment_method %>
     <br>
   </p>
 
-  <%= link_to "Manage your subscription", @edit_card_url, class: "button primary", target: "_blank" %>
+  <%= link_to t("mailers.customer.subscription_price_change_notification.manage_subscription_button"), @edit_card_url, class: "button primary", target: "_blank" %>
 </div>
 
 <%= render("customer_mailer/product_questions_footer", seller_name: @seller_name) %>

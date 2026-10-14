@@ -1,0 +1,5 @@
+<%= t("mailers.customer.auto_invoice.greeting") %>,
+
+<%= strip_tags(t("mailers.customer.auto_invoice.body_html", seller: @chargeable.seller.name_or_username)) %>
+
+<%= strip_tags(t("mailers.customer.auto_invoice.billing_settings_note_html", url: settings_billing_url)) %>

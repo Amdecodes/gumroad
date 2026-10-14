@@ -47,13 +47,15 @@ class CustomerMailer < ApplicationMailer
     reply_targets = @chargeables.map(&:support_email).uniq
     @shared_reply_target = reply_targets.one?
 
-    mail(
-      to: last_chargeable.orderable.email,
-      from: from_email_address_with_name(last_chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @shared_reply_target ? reply_targets.first : SUPPORT_EMAIL,
-      subject: "Receipts for Purchases",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: last_chargeable.orderable.email)
-    )
+    with_recipient_locale(last_chargeable) do
+      mail(
+        to: last_chargeable.orderable.email,
+        from: from_email_address_with_name(last_chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @shared_reply_target ? reply_targets.first : SUPPORT_EMAIL,
+        subject: t("mailers.customer.grouped_receipt.subject", default: "Receipts for Purchases"),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: last_chargeable.orderable.email)
+      )
+    end
   end
 
   def receipt(purchase_id = nil, charge_id = nil, for_email: true, single_purchase: false)
@@ -71,18 +73,20 @@ class CustomerMailer < ApplicationMailer
     # MailSubject calls link_name on the first successful purchase and raises when that set is empty.
     return if @chargeable.successful_purchases.none?
 
-    @receipt_presenter = ReceiptPresenter.new(@chargeable, for_email:)
+    with_recipient_locale(@chargeable) do
+      @receipt_presenter = ReceiptPresenter.new(@chargeable, for_email:)
 
-    is_receipt_for_gift_receiver = receipt_for_gift_receiver?(@chargeable)
-    @footer_template = "layouts/mailers/receipt_footer" unless is_receipt_for_gift_receiver
-    mail(
-      to: @chargeable.orderable.email,
-      from: from_email_address_with_name(@chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @chargeable.support_email,
-      subject: @receipt_presenter.mail_subject,
-      template_name: is_receipt_for_gift_receiver ? "gift_receiver_receipt" : "receipt",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @chargeable.seller, to: @chargeable.orderable.email)
-    )
+      is_receipt_for_gift_receiver = receipt_for_gift_receiver?(@chargeable)
+      @footer_template = "layouts/mailers/receipt_footer" unless is_receipt_for_gift_receiver
+      mail(
+        to: @chargeable.orderable.email,
+        from: from_email_address_with_name(@chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @chargeable.support_email,
+        subject: @receipt_presenter.mail_subject,
+        template_name: is_receipt_for_gift_receiver ? "gift_receiver_receipt" : "receipt",
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @chargeable.seller, to: @chargeable.orderable.email)
+      )
+    end
   end
 
   def auto_invoice(purchase_id = nil, charge_id = nil)
@@ -94,18 +98,20 @@ class CustomerMailer < ApplicationMailer
 
     return unless AutoInvoiceEligibility.eligible?(@chargeable)
 
-    billing_detail = @chargeable.purchaser.billing_detail
-    pdf_bytes = InvoicePdfGenerator.new(@chargeable, billing_detail:).call
-    attachments["invoice-#{@chargeable.external_id_numeric_for_invoice}.pdf"] = pdf_bytes
+    with_recipient_locale(@chargeable) do
+      billing_detail = @chargeable.purchaser&.billing_detail
+      pdf_bytes = InvoicePdfGenerator.new(@chargeable, billing_detail:).call
+      attachments["invoice-#{@chargeable.external_id_numeric_for_invoice}.pdf"] = pdf_bytes
 
-    mail(
-      to: @chargeable.orderable.email,
-      from: from_email_address_with_name(@chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @chargeable.support_email,
-      subject: "Your invoice from #{@chargeable.seller.name_or_username}",
-      template_name: "auto_invoice",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @chargeable.seller, to: @chargeable.orderable.email)
-    )
+      mail(
+        to: @chargeable.orderable.email,
+        from: from_email_address_with_name(@chargeable.seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @chargeable.support_email,
+        subject: t("mailers.customer.auto_invoice.subject", seller: @chargeable.seller.name_or_username, default: "Your invoice from #{@chargeable.seller.name_or_username}"),
+        template_name: "auto_invoice",
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @chargeable.seller, to: @chargeable.orderable.email)
+      )
+    end
   end
 
   def preorder_receipt(preorder_id, link_id = nil, email = nil)
@@ -130,73 +136,58 @@ class CustomerMailer < ApplicationMailer
     else
       @product = Link.find(link_id)
     end
-    mail(
-      to: email,
-      from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @product.support_email_or_default,
-      subject: "You pre-ordered #{@product.name}!",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
-    )
+
+    with_recipient_locale(@preorder || @product) do
+      mail(
+        to: email,
+        from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @product.support_email_or_default,
+        subject: t("mailers.customer.preorder_receipt.subject", product: @product.name, default: "You pre-ordered #{@product.name}!"),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
+      )
+    end
   end
 
   def refund(email, link_id, purchase_id)
     @product = Link.find(link_id)
     @purchase = purchase_id ? Purchase.find(purchase_id) : nil
-    # For purchases charged in the buyer's own currency, lead with the purchase total in
-    # that currency — the number that matches their card statement — with the canonical
-    # USD total alongside. This reads the purchase's charge-time presentment row (written
-    # and committed when the purchase was made) instead of the just-created Refund row:
-    # this email is enqueued inside the refund transaction, so a fast worker (or a lagging
-    # read replica) could otherwise look the refund up before it is visible and silently
-    # fall back to the legacy USD-only rendering. Using the purchase total also keeps the
-    # copy right when earlier partial/tax-only refunds preceded this final refund — the
-    # email describes the original purchase, not the last refund's remainder.
-    if @purchase&.buyer_presentment?
-      @formatted_presentment_total = @purchase.formatted_buyer_presentment_total
-      # The "(… USD)" figure shown alongside must actually be in USD.
-      # formatted_total_transaction_amount is in the product's display currency, which is
-      # not necessarily USD, so format the USD cents explicitly here instead.
-      @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents)
+
+    with_recipient_locale(@purchase || @product) do
+      if @purchase&.buyer_presentment?
+        @formatted_presentment_total = @purchase.formatted_buyer_presentment_total
+        @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents)
+      end
+      mail(
+        to: email,
+        from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @product.user.support_or_form_email,
+        subject: t("mailers.customer.refund.subject", default: "You have been refunded."),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
+      )
     end
-    mail(
-      to: email,
-      from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @product.user.support_or_form_email,
-      subject: "You have been refunded.",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
-    )
   end
 
-  # presentment_refund_amount_cents / presentment_refund_currency are the buyer-currency
-  # amount of this specific refund, passed as plain values rather than a Refund id: the
-  # job is enqueued inside the refund's database transaction, so a fast worker (or a
-  # lagging read replica) could look the Refund row up before it is visible and silently
-  # render the legacy USD-only email. Plain values survive that race. Both are nil for
-  # non-presentment purchases and for jobs queued before these parameters existed.
   def partial_refund(email, link_id, purchase_id, refund_amount_cents_usd, refund_type, presentment_refund_amount_cents = nil, presentment_refund_currency = nil)
     @product = Link.find(link_id)
     @purchase = purchase_id ? Purchase.find(purchase_id) : nil
-    amount_cents = usd_cents_to_currency(@product.price_currency_type, refund_amount_cents_usd, @purchase.rate_converted_to_usd)
-    @formatted_refund_amount = formatted_price(@product.price_currency_type, amount_cents)
-    if presentment_refund_currency.present? && presentment_refund_amount_cents.to_i > 0
-      # Buyer-currency amount of this refund — the number that matches the buyer's card
-      # statement — shown first, with the canonical USD amounts alongside.
-      @formatted_presentment_refund_amount = StripeChargeProcessor.format_charge_presentment_amount(presentment_refund_amount_cents, presentment_refund_currency)
-      # Amounts shown next to a "USD" label must actually be formatted in USD.
-      # @formatted_refund_amount above is in the product's price currency and
-      # formatted_total_transaction_amount is in the display currency — neither is
-      # guaranteed to be USD, so format the USD cents explicitly for those labels.
-      @formatted_usd_refund_amount = formatted_price("usd", refund_amount_cents_usd)
-      @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents) if @purchase
-    end
     @refund_type = refund_type
-    mail(
-      to: email,
-      from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: from_email_address_with_name(@product.user.name, @product.user.email),
-      subject: "You have been #{@refund_type} refunded.",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
-    )
+
+    with_recipient_locale(@purchase || @product) do
+      amount_cents = usd_cents_to_currency(@product.price_currency_type, refund_amount_cents_usd, @purchase&.rate_converted_to_usd)
+      @formatted_refund_amount = formatted_price(@product.price_currency_type, amount_cents)
+      if presentment_refund_currency.present? && presentment_refund_amount_cents.to_i > 0
+        @formatted_presentment_refund_amount = StripeChargeProcessor.format_charge_presentment_amount(presentment_refund_amount_cents, presentment_refund_currency)
+        @formatted_usd_refund_amount = formatted_price("usd", refund_amount_cents_usd)
+        @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents) if @purchase
+      end
+      mail(
+        to: email,
+        from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: from_email_address_with_name(@product.user.name, @product.user.email),
+        subject: t("mailers.customer.partial_refund.subject", refund_type: @refund_type, default: "You have been #{@refund_type} refunded."),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: email)
+      )
+    end
   end
 
   # The default is a sentinel (not nil) so we can tell "queued before this
@@ -262,12 +253,14 @@ class CustomerMailer < ApplicationMailer
   def paypal_purchase_failed(purchase_id)
     purchase = Purchase.find(purchase_id)
     @product = purchase.link
-    mail(
-      to: purchase.email,
-      from: "noreply@#{CUSTOMERS_MAIL_DOMAIN}",
-      subject: "Your purchase with PayPal failed.",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: purchase.email)
-    )
+    with_recipient_locale(purchase) do
+      mail(
+        to: purchase.email,
+        from: "noreply@#{CUSTOMERS_MAIL_DOMAIN}",
+        subject: t("mailers.customer.paypal_purchase_failed.subject", default: "Your purchase with PayPal failed."),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: purchase.email)
+      )
+    end
   end
 
   def subscription_restarted(subscription_id, reason = nil)
@@ -277,13 +270,17 @@ class CustomerMailer < ApplicationMailer
     @purchase = @subscription.original_purchase
     @footer_template = "layouts/mailers/subscription_restarted_footer"
     seller = @subscription.link.user
-    mail(
-      to: @subscription.email,
-      from: from_email_address_with_name(seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: seller.support_or_form_email,
-      subject: @subscription.is_installment_plan? ? "Your installment plan has been restarted." : "Your subscription has been restarted.",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @purchase.seller, to: @subscription.email)
-    )
+
+    with_recipient_locale(@subscription) do
+      subject = @subscription.is_installment_plan? ? t("mailers.customer.subscription_restarted.installment_subject", default: "Your installment plan has been restarted.") : t("mailers.customer.subscription_restarted.subscription_subject", default: "Your subscription has been restarted.")
+      mail(
+        to: @subscription.email,
+        from: from_email_address_with_name(seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: seller.support_or_form_email,
+        subject:,
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @purchase.seller, to: @subscription.email)
+      )
+    end
   end
 
   def subscription_magic_link(subscription_id, email)
@@ -291,11 +288,13 @@ class CustomerMailer < ApplicationMailer
 
     return unless EmailFormatValidator.valid?(email)
 
-    mail(
-      to: email,
-      subject: "Magic Link",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :gumroad, to: email)
-    )
+    with_recipient_locale(@subscription) do
+      mail(
+        to: email,
+        subject: t("mailers.customer.subscription_magic_link.subject", default: "Magic Link"),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :gumroad, to: email)
+      )
+    end
   end
 
   def abandoned_cart_preview(recipient_id, installment_id)
@@ -356,13 +355,15 @@ class CustomerMailer < ApplicationMailer
       return if @installments.empty?
     end
 
-    subject = @installments.one? ? @installments.first[:subject] : "You left something in your cart"
-    mail(
-      to: cart.user&.email.presence || cart.email,
-      subject:,
-      from: "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: (cart.user&.email.presence || cart.email))
-    )
+    with_recipient_locale(cart) do
+      subject = @installments.one? ? @installments.first[:subject] : t("mailers.customer.abandoned_cart.subject", default: "You left something in your cart")
+      mail(
+        to: cart.user&.email.presence || cart.email,
+        subject:,
+        from: "Gumroad <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: (cart.user&.email.presence || cart.email))
+      )
+    end
   end
 
   def review_response(review_response)
@@ -372,13 +373,15 @@ class CustomerMailer < ApplicationMailer
     seller = @product.user
     @seller_presenter = UserPresenter.new(user: seller).author_byline_props
 
-    mail(
-      to: review.purchase.email,
-      subject: "#{@seller_presenter[:name]} responded to your review",
-      from: from_email_address_with_name(seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: seller.support_or_form_email,
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: review.purchase.email)
-    )
+    with_recipient_locale(review.purchase) do
+      mail(
+        to: review.purchase.email,
+        subject: t("mailers.customer.review_response.subject", seller: @seller_presenter[:name], default: "#{@seller_presenter[:name]} responded to your review"),
+        from: from_email_address_with_name(seller.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: seller.support_or_form_email,
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, to: review.purchase.email)
+      )
+    end
   end
 
   def upcoming_call_reminder(call_id)
@@ -386,13 +389,15 @@ class CustomerMailer < ApplicationMailer
     return unless call.eligible_for_reminder?
 
     @purchase = call.purchase
-    @subject = "Your scheduled call with #{@purchase.seller.display_name} is tomorrow!"
     @item_info = ReceiptPresenter::ItemInfo.new(@purchase)
-    mail(
-      to: @purchase.email,
-      subject: @subject,
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :gumroad, to: @purchase.email)
-    )
+    with_recipient_locale(@purchase) do
+      @subject = t("mailers.customer.upcoming_call_reminder.subject", seller: @purchase.seller.display_name, default: "Your scheduled call with #{@purchase.seller.display_name} is tomorrow!")
+      mail(
+        to: @purchase.email,
+        subject: @subject,
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :gumroad, to: @purchase.email)
+      )
+    end
   end
 
   def files_ready_for_download(purchase_id)
@@ -400,13 +405,15 @@ class CustomerMailer < ApplicationMailer
     @product = @purchase.link
     @url_redirect = @purchase.url_redirect
 
-    mail(
-      to: @purchase.email,
-      from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
-      reply_to: @product.support_email_or_default,
-      subject: "Your files are ready for download!",
-      delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: @purchase.email)
-    )
+    with_recipient_locale(@purchase) do
+      mail(
+        to: @purchase.email,
+        from: from_email_address_with_name(@product.user.name, "noreply@#{CUSTOMERS_MAIL_DOMAIN}"),
+        reply_to: @product.support_email_or_default,
+        subject: t("mailers.customer.files_ready_for_download.subject", default: "Your files are ready for download!"),
+        delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @product.user, to: @purchase.email)
+      )
+    end
   end
 
   private

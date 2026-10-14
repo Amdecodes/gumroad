@@ -1,7 +1,7 @@
-<p>Hey there,</p>
+<p><%= t("mailers.customer.already_subscribed_checkout_attempt.greeting") %>,</p>
 
-<p>Someone just tried to purchase a membership to <strong><%= @product.name %></strong> using your email address, but you already have an active subscription.</p>
+<p><%= t("mailers.customer.already_subscribed_checkout_attempt.body_1", product: "<strong>#{ERB::Util.html_escape(@product.name)}</strong>").html_safe %></p>
 
-<p>If this was you, no worries! Your existing membership is still active and you don't need to do anything. You can <%= link_to "manage your subscription here", @manage_url %> at any time.</p>
+<p><%= t("mailers.customer.already_subscribed_checkout_attempt.body_2_html", link: link_to(t("mailers.customer.already_subscribed_checkout_attempt.manage_link"), @manage_url)).html_safe %></p>
 
-<p>If you didn't try to make this purchase, you can safely ignore this email.</p>
+<p><%= t("mailers.customer.already_subscribed_checkout_attempt.body_3") %></p>

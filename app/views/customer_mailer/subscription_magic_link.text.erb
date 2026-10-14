@@ -1,0 +1,7 @@
+<%= t("mailers.customer.subscription_magic_link.header") %>
+
+<%= t("mailers.customer.subscription_magic_link.body", product: @subscription.link.name, hours: (Subscription::TOKEN_VALIDITY / 1.hour)) %>
+
+<%= manage_subscription_url(id: @subscription.external_id, token: @subscription.token, format: :html) %>
+
+<%= t("mailers.customer.subscription_magic_link.ignore_notice") %>

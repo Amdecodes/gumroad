@@ -1,0 +1,11 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_autocancelled.installment_subject") %>
+
+<%= t("mailers.customer.subscription_autocancelled.installment_body_1", product: @subscription.link.name) %>
+<%= strip_tags(t("mailers.customer.subscription_autocancelled.installment_body_2_html", link: manage_subscription_url(id: @subscription.external_id))) %>
+<% else %>
+<%= t("mailers.customer.subscription_autocancelled.subscription_subject") %>
+
+<%= t("mailers.customer.subscription_autocancelled.subscription_body_1", product: @subscription.link.name) %>
+<%= strip_tags(t("mailers.customer.subscription_autocancelled.subscription_body_2_html", link: @subscription.link.long_url)) %>
+<% end %>

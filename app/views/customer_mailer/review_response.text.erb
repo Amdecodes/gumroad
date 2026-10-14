@@ -1,0 +1,9 @@
+<%= t("mailers.customer.review_response.header", seller: @seller_presenter[:name]) %>
+
+<%= @review_presenter[:message] %>
+<%= @review_presenter[:rater][:name] %>
+
+<%= @review_presenter[:response][:message] %>
+<%= @seller_presenter[:name] %> (<%= t("receipt.invoices.seller", default: "Creator") %>)
+
+<%= @product.long_url %>

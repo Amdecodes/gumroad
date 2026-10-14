@@ -1,0 +1,11 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_charge_blocked_location.installment_subject") %>
+<%= t("mailers.customer.subscription_charge_blocked_location.installment_body_1", product: @subscription.link.name) %>
+<%= strip_tags(t("mailers.customer.subscription_charge_blocked_location.installment_body_2_html", link: manage_subscription_url(id: @subscription.external_id))) %>
+<%= strip_tags(t("mailers.customer.subscription_charge_blocked_location.installment_body_3_html", product: @subscription.link.name, why_link: "https://help.gumroad.com")) %>
+<% else %>
+<%= t("mailers.customer.subscription_charge_blocked_location.subscription_subject") %>
+<%= t("mailers.customer.subscription_charge_blocked_location.subscription_body_1", product: @subscription.link.name) %>
+<%= strip_tags(t("mailers.customer.subscription_charge_blocked_location.subscription_body_2_html", link: manage_subscription_url(id: @subscription.external_id))) %>
+<%= strip_tags(t("mailers.customer.subscription_charge_blocked_location.subscription_body_3_html", product: @subscription.link.name, why_link: "https://help.gumroad.com")) %>
+<% end %>

@@ -1,0 +1,5 @@
+<%= t("mailers.customer.rental_expiring_soon.body_intro") %>,
+
+<%= strip_tags(t("mailers.customer.rental_expiring_soon.body_html", product: @purchase.link.name, time: distance_of_time_in_words(Time.current, @purchase.rental_valid_until))) %>
+
+<%= @purchase.url_redirect&.download_page_url %>

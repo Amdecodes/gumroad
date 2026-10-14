@@ -1,0 +1,6 @@
+<%= t("mailers.customer.chargeback_notice_to_customer.header") %>
+
+<% product_label = @disputable.multiple_purchases? ? t("mailers.customer.chargeback_notice_to_customer.disputed_items") : @disputable.purchase_for_dispute_evidence.link.name %>
+<%= strip_tags(t("mailers.customer.chargeback_notice_to_customer.body_1", product: product_label, amount: @disputable.formatted_disputed_amount, email: @disputable.customer_email)) %>
+
+<%= t("mailers.customer.chargeback_notice_to_customer.body_2") %>

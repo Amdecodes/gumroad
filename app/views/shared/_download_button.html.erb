@@ -22,7 +22,7 @@ question the use of try in this template. %>
     if !url_redirect&.is_rental?
       [view_content_button_text(link), preview ? "#" : url_redirect_download_page_url(url_redirect.token)]
     elsif link.streamable?
-      ["Watch", preview ? "#" : url_redirect_stream_page_url(url_redirect.token)]
+      [t("mailers.common.watch", default: "Watch"), preview ? "#" : url_redirect_stream_page_url(url_redirect.token)]
     end
 %>
 <% if cta %>

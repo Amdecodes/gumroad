@@ -1,0 +1,13 @@
+<% if @charge_processor_id == "stripe_india" %>
+<%= t("mailers.customer.subscription_card_declined.upi_header") %>
+<%= strip_tags(t("mailers.customer.subscription_card_declined.upi_body_html", product: @subscription.link.name, link: manage_subscription_url(id: @subscription.external_id))) %>
+<%= t("mailers.customer.subscription_card_declined.upi_warning", product: @subscription.link.name) %>
+<% elsif @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_card_declined.header") %>
+<%= strip_tags(t("mailers.customer.subscription_card_declined.installment_body_html", product: @subscription.link.name, link: manage_subscription_url(id: @subscription.external_id))) %>
+<%= t("mailers.customer.subscription_card_declined.installment_warning", product: @subscription.link.name) %>
+<% else %>
+<%= t("mailers.customer.subscription_card_declined.header") %>
+<%= strip_tags(t("mailers.customer.subscription_card_declined.subscription_body_html", product: @subscription.link.name, link: manage_subscription_url(id: @subscription.external_id))) %>
+<%= t("mailers.customer.subscription_card_declined.subscription_warning", product: @subscription.link.name) %>
+<% end %>

@@ -1,0 +1,9 @@
+<%= strip_tags(@message) %>
+
+<%= t("mailers.customer.subscription_price_change_notification.product_label") %>: <%= @product.name %>
+<%= t("mailers.customer.subscription_price_change_notification.new_price_label") %>: <%= @new_price %>
+<%= t("mailers.customer.subscription_price_change_notification.previous_price_label") %>: <%= @previous_price %>
+<%= t("mailers.customer.subscription_price_change_notification.next_payment_date_label") %>: <%= @next_payment_date %>
+<%= t("mailers.customer.subscription_price_change_notification.payment_method_label") %>: <%= @payment_method %>
+
+<%= @edit_card_url %>

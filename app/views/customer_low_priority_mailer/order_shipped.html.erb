@@ -1,15 +1,15 @@
-<%= header_section("Your order has shipped!") %>
+<%= header_section(t("mailers.customer.order_shipped.header")) %>
 <div>
   <% if @tracking_link %>
-    <p>Your order of <%= @product.name %> is en route and should arrive soon.</p>
+    <p><%= t("mailers.customer.order_shipped.body_tracking", product: @product.name) %></p>
     <p>
       <%= link_to(@tracking_link[:label], @tracking_link[:url], class: "button primary") %>
       <% if @tracking_link[:host].present? %>
-        <span>Destination: <%= @tracking_link[:host] %></span>
+        <span><%= t("mailers.customer.order_shipped.destination", host: @tracking_link[:host]) %></span>
       <% end %>
     </p>
   <% else %>
-    <p>Your order of <%= @product.name %> has been shipped and should arrive soon.</p>
+    <p><%= t("mailers.customer.order_shipped.body_no_tracking", product: @product.name) %></p>
   <% end %>
-  <p>If you have any questions about the status of the shipment, you can reach out by replying to this email.</p>
+  <p><%= t("mailers.customer.order_shipped.questions_reply") %></p>
 </div>

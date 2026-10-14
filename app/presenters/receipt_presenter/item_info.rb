@@ -74,7 +74,7 @@ class ReceiptPresenter::ItemInfo
     def free_trial_purchase_note
       return unless purchase.is_free_trial_purchase?
 
-      "Your free trial has begun!"
+      I18n.t("mailers.customer.receipt.free_trial_begun", default: "Your free trial has begun!")
     end
 
     def physical_product_note
@@ -82,28 +82,30 @@ class ReceiptPresenter::ItemInfo
       return if purchase.is_gift_sender_purchase
 
       if purchase.is_preorder_authorization
-        "The shipment will occur soon after #{displayable_release_at_date_and_time(
-            purchase.link.preorder_link.release_at,
-            purchase.link.user.timezone
-          )}."
+        date = displayable_release_at_date_and_time(
+          purchase.link.preorder_link.release_at,
+          purchase.link.user.timezone
+        )
+        I18n.t("mailers.customer.receipt.shipment_preorder_note", date:, default: "The shipment will occur soon after #{date}.")
       else
-        "Your order will ship shortly. The creator will notify you when your package is on its way."
+        I18n.t("mailers.customer.receipt.shipment_shortly_note", default: "Your order will ship shortly. The creator will notify you when your package is on its way.")
       end
     end
 
     def rental_product_note
       return unless purchase.is_rental
 
-      "Your rental of #{purchase.link.name} will expire in 30 days or 72 hours after you begin viewing it."
+      I18n.t("mailers.customer.receipt.rental_note", product: purchase.link.name, default: "Your rental of #{purchase.link.name} will expire in 30 days or 72 hours after you begin viewing it.")
     end
 
     def preorder_note
       return unless purchase.is_preorder_authorization
 
-      "You'll get it on #{displayable_release_at_date_and_time(
-          purchase.link.preorder_link.release_at,
-          purchase.link.user.timezone
-        )}."
+      date = displayable_release_at_date_and_time(
+        purchase.link.preorder_link.release_at,
+        purchase.link.user.timezone
+      )
+      I18n.t("mailers.customer.receipt.preorder_delivery_note", date:, default: "You'll get it on #{date}.")
     end
 
     def show_download_button
@@ -144,7 +146,7 @@ class ReceiptPresenter::ItemInfo
 
     def gift_sender_attribute
       {
-        label: "Gift sent to",
+        label: I18n.t("mailers.customer.receipt.gift_sent_to", default: "Gift sent to"),
         value: purchase.giftee_name_or_email
       }
     end
@@ -154,7 +156,7 @@ class ReceiptPresenter::ItemInfo
       return if value.blank?
 
       {
-        label: "Message",
+        label: I18n.t("checkout.message", default: "Message"),
         value:
       }
     end
@@ -177,7 +179,7 @@ class ReceiptPresenter::ItemInfo
 
       bundle_product = purchase.bundle_purchase.link
       {
-        label: "Bundle",
+        label: I18n.t("mailers.customer.receipt.bundle", default: "Bundle"),
         value: link_to(bundle_product.name, bundle_product.long_url, target: "_blank").html_safe
       }
     end
@@ -187,7 +189,7 @@ class ReceiptPresenter::ItemInfo
       return if purchase.link.native_type === Link::NATIVE_TYPE_COFFEE
 
       {
-        label: purchase.link.native_type === Link::NATIVE_TYPE_CALL ? "Duration" : "Variant",
+        label: purchase.link.native_type === Link::NATIVE_TYPE_CALL ? I18n.t("mailers.customer.receipt.duration", default: "Duration") : I18n.t("mailers.customer.receipt.variant", default: "Variant"),
         value: variant_names_displayable(purchase.variant_names),
       }
     end
@@ -196,7 +198,7 @@ class ReceiptPresenter::ItemInfo
       return if purchase.free_purchase?
 
       {
-        label: purchase.link.native_type === Link::NATIVE_TYPE_COFFEE ? "Donation" : "Product price",
+        label: purchase.link.native_type === Link::NATIVE_TYPE_COFFEE ? I18n.t("mailers.customer.receipt.donation", default: "Donation") : I18n.t("mailers.customer.receipt.product_price", default: "Product price"),
         value: show_buyer_presentment_amounts? ? purchase.formatted_buyer_presentment_price_per_unit : purchase.formatted_total_display_price_per_unit
       }
     end
@@ -205,7 +207,7 @@ class ReceiptPresenter::ItemInfo
       return unless purchase.tip.present?
 
       {
-        label: "Tip",
+        label: I18n.t("receipt.summary_title", default: "Tip"),
         value: show_buyer_presentment_amounts? ? purchase.formatted_buyer_presentment_tip : format_just_price_in_cents(purchase.tip.value_cents, purchase.displayed_price_currency_type),
       }
     end
@@ -217,9 +219,9 @@ class ReceiptPresenter::ItemInfo
         return if purchase.link.native_type === Link::NATIVE_TYPE_COFFEE
 
         label = if purchase.license_key.present? && purchase.is_multiseat_license?
-          "Number of seats"
+          I18n.t("storefront.seats", default: "Seats")
         else
-          "Quantity"
+          I18n.t("storefront.quantity", default: "Quantity")
         end
         {
           label:,
@@ -271,7 +273,7 @@ class ReceiptPresenter::ItemInfo
       return unless purchase.call.present?
 
       {
-        label: "Call schedule",
+        label: I18n.t("mailers.customer.receipt.call_schedule", default: "Call schedule"),
         value: [purchase.call.formatted_time_range, purchase.call.formatted_date_range],
       }
     end
@@ -280,7 +282,7 @@ class ReceiptPresenter::ItemInfo
       return unless purchase.call&.call_url.present?
 
       {
-        label: "Call link",
+        label: I18n.t("mailers.customer.receipt.call_link", default: "Call link"),
         value: purchase.call.call_url,
       }
     end
@@ -305,11 +307,8 @@ class ReceiptPresenter::ItemInfo
       return gift_subscription_renewal_note if subscription.gift? && subscription.credit_card_id.blank?
       return single_charge_membership_note if subscription.single_charge? && !purchase.is_free_trial_purchase?
 
-      <<~HTML.squish.html_safe
-        You will be charged once #{recurrence_long_indicator(subscription.recurrence)}.
-        If you would like to manage your membership you can visit
-        #{link_to("subscription settings", manage_subscription_href, target: "_blank")}.
-      HTML
+      settings_link = link_to(I18n.t("mailers.customer.receipt.subscription_settings", default: "subscription settings"), manage_subscription_href, target: "_blank")
+      I18n.t("mailers.customer.receipt.manage_membership_html", recurrence: recurrence_long_indicator(subscription.recurrence), settings_link:).html_safe
     end
 
     # A fixed-length membership whose duration is a single billing period only
@@ -317,12 +316,9 @@ class ReceiptPresenter::ItemInfo
     # reads like an auto-renewing subscription. Free-trial receipts keep the
     # regular wording above because their one charge hasn't happened yet.
     def single_charge_membership_note
-      <<~HTML.squish.html_safe
-        You will not be charged again for this membership.
-        Your membership ends on #{subscription.end_time_of_subscription.to_fs(:formatted_date_abbrev_month)}.
-        If you would like to manage your membership you can visit
-        #{link_to("subscription settings", manage_subscription_href, target: "_blank")}.
-      HTML
+      settings_link = link_to(I18n.t("mailers.customer.receipt.subscription_settings", default: "subscription settings"), manage_subscription_href, target: "_blank")
+      date = I18n.l(subscription.end_time_of_subscription.to_date, format: :abbrev_month)
+      I18n.t("mailers.customer.receipt.single_charge_membership_html", date:, settings_link:).html_safe
     end
 
     def manage_installment_plan_note
@@ -330,21 +326,17 @@ class ReceiptPresenter::ItemInfo
       started_at = subscription.created_at.in_time_zone(timezone)
       expected_completion_time = subscription.expected_completion_time
 
-      # The expected completion time is nil when the subscription has no
-      # successful, non-refunded charge to anchor the projection on (for
-      # example, when the only installment charge was refunded). Skip the
-      # final-charge sentence rather than crashing the receipt.
       final_charge_sentence =
         if expected_completion_time.present?
           expected_ends_at = expected_completion_time.in_time_zone(timezone)
-          "Your final charge will be on #{expected_ends_at.to_fs(:formatted_date_abbrev_month)}."
+          I18n.t("mailers.customer.receipt.installment_final_charge", date: I18n.l(expected_ends_at.to_date, format: :abbrev_month))
+        else
+          ""
         end
 
-      <<~HTML.squish.html_safe
-        Installment plan initiated on #{started_at.to_fs(:formatted_date_abbrev_month)}.
-        #{final_charge_sentence}
-        You can manage your payment settings #{link_to("here", manage_subscription_href, target: "_blank")}.
-      HTML
+      here_link = link_to("here", manage_subscription_href, target: "_blank")
+      date = I18n.l(started_at.to_date, format: :abbrev_month)
+      I18n.t("mailers.customer.receipt.installment_plan_html", date:, final_charge: final_charge_sentence, here_link:).html_safe
     end
 
     def manage_subscription_href
@@ -355,6 +347,6 @@ class ReceiptPresenter::ItemInfo
     end
 
     def gift_subscription_renewal_note
-      "Note that #{purchase.giftee_name_or_email}’s membership will not automatically renew."
+      I18n.t("mailers.customer.receipt.gift_no_autorenew", giftee: purchase.giftee_name_or_email, default: "Note that #{purchase.giftee_name_or_email}’s membership will not automatically renew.")
     end
 end

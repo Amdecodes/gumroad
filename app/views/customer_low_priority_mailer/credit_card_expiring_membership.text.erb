@@ -1,0 +1,10 @@
+<%= t("mailers.customer.credit_card_expiring_membership.header", product: @product.name) %>
+
+<%= t("mailers.customer.credit_card_expiring_membership.greeting") %>,
+
+<%= t("mailers.customer.credit_card_expiring_membership.body", last4: @last_4_digits_of_credit_card, month: @expiry_month_name, product: @product.name) %>
+
+<%= @edit_card_url %>
+
+<%= t("mailers.customer.credit_card_expiring_membership.why_heading") %>
+<%= t("mailers.customer.credit_card_expiring_membership.why_body") %>

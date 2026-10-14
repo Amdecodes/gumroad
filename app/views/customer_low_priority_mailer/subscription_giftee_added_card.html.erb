@@ -1,6 +1,6 @@
 <div>
   <p>
-    <%= Time.current.to_fs(:formatted_date_abbrev_month) %>
+    <%= I18n.l(Date.current, format: :abbrev_month) %>
   </p>
 </div>
 

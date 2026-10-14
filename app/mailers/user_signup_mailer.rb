@@ -7,6 +7,23 @@ class UserSignupMailer < Devise::Mailer
   helper ApplicationHelper
   layout "layouts/email"
 
+  def devise_mail(record, action, opts = {}, &block)
+    resolved_locale = (record.respond_to?(:locale) && record.locale.presence) || I18n.default_locale
+    I18n.with_locale(resolved_locale) do
+      super
+    end
+  end
+
+  def reset_password_instructions(record, token, opts = {})
+    resolved_locale = (record.respond_to?(:locale) && record.locale.presence) || I18n.default_locale
+    I18n.with_locale(resolved_locale) do
+      if record.suspended?
+        opts[:subject] ||= I18n.t("devise.mailer.reset_password_instructions.denied_subject", default: "Forgotten password request denied")
+      end
+      super
+    end
+  end
+
   def email_changed(record, opts = {})
     opts[:from] = ApplicationMailer::NOREPLY_EMAIL_WITH_NAME
     opts[:reply_to] = ApplicationMailer::NOREPLY_EMAIL_WITH_NAME

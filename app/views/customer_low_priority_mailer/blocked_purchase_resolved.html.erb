@@ -1,5 +1,9 @@
-<%= header_section("Your payment issue has been resolved.") %>
+<%= header_section(t("mailers.customer.blocked_purchase_resolved.header")) %>
 <div>
-  <p>We recently reviewed a payment issue on our side that stopped <% if @product.present? %>your purchase of <%= link_to @product.name, @product.long_url %><% else %>a recent purchase of yours<% end %> from going through. It has been fixed.</p>
-  <p>You did nothing wrong — this was our mistake, and we're sorry for the trouble. If you'd still like the product, you can try your purchase again now and it should go through as normal.</p>
+  <% if @product.present? %>
+    <p><%= t("mailers.customer.blocked_purchase_resolved.body_with_product_html", link: link_to(@product.name, @product.long_url)).html_safe %></p>
+  <% else %>
+    <p><%= t("mailers.customer.blocked_purchase_resolved.body_without_product") %></p>
+  <% end %>
+  <p><%= t("mailers.customer.blocked_purchase_resolved.body_reassurance") %></p>
 </div>

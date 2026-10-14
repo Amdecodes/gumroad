@@ -1,0 +1,5 @@
+<%= t("mailers.customer.subscription_indian_card_mandate_invalid.subject") %>
+
+<%= t("mailers.customer.subscription_indian_card_mandate_invalid.body_intro", product: @subscription.link.name) %>
+<%= t("mailers.customer.subscription_indian_card_mandate_invalid.body_paused") %>
+<%= strip_tags(t("mailers.customer.subscription_indian_card_mandate_invalid.body_update_html", link: manage_subscription_url(id: @subscription.external_id))) %>

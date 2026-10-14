@@ -1,0 +1,9 @@
+<%= t("mailers.customer.blocked_purchase_resolved.header") %>
+
+<% if @purchase.link.present? %>
+<%= strip_tags(t("mailers.customer.blocked_purchase_resolved.body_with_product_html", link: @purchase.link.long_url)) %>
+<% else %>
+<%= t("mailers.customer.blocked_purchase_resolved.body_without_product") %>
+<% end %>
+
+<%= t("mailers.customer.blocked_purchase_resolved.body_reassurance") %>

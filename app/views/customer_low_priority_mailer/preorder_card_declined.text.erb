@@ -1,0 +1,3 @@
+<%= t("mailers.customer.preorder_card_declined.header", product: @product.name) %>
+
+<%= strip_tags(t("mailers.customer.preorder_card_declined.body_html", product: @product.name, link: @product.long_url)) %>

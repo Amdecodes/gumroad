@@ -1,11 +1,11 @@
-<%= header_section("Your files are ready for download!") %>
+<%= header_section(t("mailers.customer.files_ready_for_download.header")) %>
 
 <div>
-  <p>Your files for <strong><%= @product.name %></strong> are now ready for download.</p>
+  <p><%= t("mailers.customer.files_ready_for_download.body", product: "<strong>#{ERB::Util.html_escape(@product.name)}</strong>").html_safe %></p>
 
-  <p>Click the button below to access your files:</p>
+  <p><%= t("mailers.customer.files_ready_for_download.click_below") %></p>
 
   <%= render("shared/download_button", link: @product, url_redirect: @url_redirect) %>
 
-  <p>Questions about your product? Contact Seller by replying to this email.</p>
+  <p><%= t("mailers.customer.receipt.questions_and_contact") %></p>
 </div>

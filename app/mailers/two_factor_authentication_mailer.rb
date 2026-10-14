@@ -10,9 +10,11 @@ class TwoFactorAuthenticationMailer < ApplicationMailer
 
   def authentication_token(user_id, email_provider: nil)
     @user = User.find(user_id)
-    @authentication_token = @user.otp_code
-    @subject = "Your authentication token is #{@authentication_token}"
-    @email_provider = email_provider
+    with_recipient_locale(@user) do
+      @authentication_token = @user.otp_code
+      @subject = t("mailers.two_factor_authentication.authentication_token.subject", token: @authentication_token, default: "Your authentication token is #{@authentication_token}")
+      @email_provider = email_provider
+    end
   end
 
   private
@@ -30,7 +32,9 @@ class TwoFactorAuthenticationMailer < ApplicationMailer
         )
       end
 
-      mail(mailer_args)
+      with_recipient_locale(@user) do
+        mail(mailer_args)
+      end
     end
 
     def record_email_sent

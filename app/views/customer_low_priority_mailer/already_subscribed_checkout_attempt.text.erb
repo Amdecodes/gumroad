@@ -1,0 +1,7 @@
+<%= t("mailers.customer.already_subscribed_checkout_attempt.greeting") %>,
+
+<%= strip_tags(t("mailers.customer.already_subscribed_checkout_attempt.body_1", product: @product.name)) %>
+
+<%= strip_tags(t("mailers.customer.already_subscribed_checkout_attempt.body_2_html", link: @manage_url)) %>
+
+<%= t("mailers.customer.already_subscribed_checkout_attempt.body_3") %>

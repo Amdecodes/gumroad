@@ -24,8 +24,8 @@ class SubscriptionsController < ApplicationController
 
   def unsubscribe_by_user
     @subscription.cancel!(by_seller: false)
-    subscription_entity = @subscription.is_installment_plan ? "installment plan" : "membership"
-    redirect_to manage_subscription_path(@subscription.external_id), notice: "Your #{subscription_entity} has been cancelled."
+    subscription_entity = @subscription.is_installment_plan ? t("installment_plan") : t("membership")
+    redirect_to manage_subscription_path(@subscription.external_id), notice: t("flash.subscriptions.cancelled", entity: subscription_entity)
   rescue ActiveRecord::RecordInvalid => e
     redirect_to manage_subscription_path(@subscription.external_id), alert: e.message
   end
@@ -83,7 +83,7 @@ class SubscriptionsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { redirect_to manage_subscription_path(@subscription.external_id), alert: "Unable to initiate payment: #{init_result[:error]}" }
+        format.html { redirect_to manage_subscription_path(@subscription.external_id), alert: t("flash.subscriptions.payment_initiate_failed", error: init_result[:error]) }
         format.json { render json: { success: false, error: init_result[:error] }, status: :unprocessable_entity }
       end
     end
@@ -93,7 +93,7 @@ class SubscriptionsController < ApplicationController
     product = @subscription.link
     @body_id = "product_page"
 
-    set_meta_tag(title: @subscription.is_installment_plan ? "Manage installment plan" : "Manage membership")
+    set_meta_tag(title: @subscription.is_installment_plan ? t("manage_installment_plan") : t("manage_membership"))
     set_product_page_meta(product)
 
     props = CheckoutPresenter.new(logged_in_user:, ip: request.remote_ip)

@@ -1,0 +1,23 @@
+<% presenter = local_assigns[:receipt_presenter] || @receipt_presenter %>
+<%= t("mailers.customer.receipt.order_id") %>: <%= presenter.charge_info.order_id %>
+<%= t("mailers.customer.receipt.order_date") %>: <%= presenter.charge_info.formatted_created_at %>
+<% if presenter.charge_info.formatted_total_transaction_amount.present? %>
+<%= t("checkout.total", default: "Total") %>: <%= presenter.charge_info.formatted_total_transaction_amount %>
+<% end %>
+
+<% presenter.items_infos.each do |item_info| %>
+* <%= item_info.product.name %>
+<% item_info.props[:notes]&.each do |note| %>
+  <%= note %>
+<% end %>
+<% if item_info.props[:license_key].present? %>
+  <%= t("mailers.customer.receipt.license_key") %>: <%= item_info.props[:license_key] %>
+<% end %>
+<% if item_info.props[:show_download_button] %>
+  <% purchase = item_info.purchase %>
+  <% url_redirect = purchase.is_commission_completion_purchase? ? purchase.commission.deposit_purchase.url_redirect : purchase.url_redirect %>
+  <%= url_redirect&.download_page_url %>
+<% end %>
+<% end %>
+
+<%= t("mailers.customer.receipt.thank_you_payment") %>

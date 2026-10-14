@@ -23,7 +23,7 @@ class Subscriptions::MagicLinksController < ApplicationController
 
     redirect_to new_subscription_magic_link_path(@subscription.external_id, email_sent: email_source),
                 status: :see_other,
-                notice: "Magic link sent to #{EmailRedactorService.redact(email)}"
+                notice: t("flash.subscriptions.magic_link_sent", email: EmailRedactorService.redact(email))
   end
 
   private

@@ -1,0 +1,9 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_cancelled_by_seller.installment_subject") %>
+
+<%= t("mailers.customer.subscription_cancelled_by_seller.installment_body", product: @subscription.link.name) %>
+<% else %>
+<%= t("mailers.customer.subscription_cancelled_by_seller.subscription_subject") %>
+
+<%= t("mailers.customer.subscription_cancelled_by_seller.subscription_body", product: @subscription.link.name, date: @subscription.formatted_end_time_of_subscription) %>
+<% end %>

@@ -1,0 +1,9 @@
+<%= t("mailers.customer.subscription_early_fraud_warning_notification.subject") %>
+
+<%= t("mailers.customer.subscription_early_fraud_warning_notification.body_1", date: I18n.l(@purchase.created_at.to_date, format: :abbrev_month), price: @purchase.formatted_total_transaction_amount, product: @purchase.link.name, email: @purchase.email) %>
+
+<%= t("mailers.customer.subscription_early_fraud_warning_notification.body_2") %>
+
+<% if @purchase.subscription.present? %>
+<%= strip_tags(t("mailers.customer.subscription_early_fraud_warning_notification.body_manage_html", link: manage_subscription_url(id: @purchase.subscription.external_id))) %>
+<% end %>

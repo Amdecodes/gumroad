@@ -1,0 +1,7 @@
+<%= header_section(t("devise.mailer.unlock_instructions.header")) %>
+<div>
+  <p><%= t("devise.mailer.unlock_instructions.instruction") %></p>
+  <% url = defined?(unlock_url) ? unlock_url(@resource, unlock_token: @token) : root_url %>
+  <p><%= link_to(t("devise.mailer.unlock_instructions.action"), url, class: "button primary") %></p>
+  <p><%= t("devise.mailer.unlock_instructions.or_click") %> <%= link_to(url, url) %></p>
+</div>

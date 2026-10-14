@@ -1,0 +1,12 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.customer.subscription_ended.installment_header") %>
+
+<%= t("mailers.customer.subscription_ended.installment_body_1", product: @subscription.link.name) %>
+<%= t("mailers.customer.subscription_ended.installment_body_2") %>
+<% else %>
+<%= t("mailers.customer.subscription_ended.subscription_header") %>
+
+<%= t("mailers.customer.subscription_ended.subscription_body", product: @subscription.link.name) %>
+<% end %>
+
+<%= t("mailers.customer.subscription_ended.questions_contact_creator") %>

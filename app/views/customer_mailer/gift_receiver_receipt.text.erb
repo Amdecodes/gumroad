@@ -1,0 +1,29 @@
+<%= t("mailers.customer.receipt.order_id") %>: <%= @receipt_presenter.charge_info.order_id %>
+<%= t("mailers.customer.receipt.order_date") %>: <%= @receipt_presenter.charge_info.formatted_created_at %>
+
+<%= t("mailers.customer.receipt.gift_received_title") %>
+
+<%= t("mailers.customer.auto_invoice.greeting") %>! <% if @chargeable.try(:gifter_hidden_from_recipient?) %><%= t("mailers.customer.receipt.gift_someone") %><% else %><%= @chargeable.gifter_email %><% end %> <%= t("mailers.customer.receipt.gift_received_body") %>
+
+<% if @chargeable.gift_note.present? %>
+<%= @chargeable.gift_note %>
+<% end %>
+
+<% @receipt_presenter.items_infos.each do |item_info| %>
+* <%= item_info.product.name %>
+<% item_info.props[:notes].each do |note| %>
+  <%= note %>
+<% end %>
+<% if item_info.props[:license_key].present? %>
+  <%= t("mailers.customer.receipt.license_key") %>: <%= item_info.props[:license_key] %>
+<% end %>
+<% if item_info.props[:show_download_button] %>
+  <% purchase = item_info.purchase %>
+  <% url_redirect = purchase.is_commission_completion_purchase? ? purchase.commission.deposit_purchase.url_redirect : purchase.url_redirect %>
+  <%= url_redirect&.download_page_url %>
+<% end %>
+<% end %>
+
+<% if @receipt_presenter.giftee_manage_subscription.note.present? %>
+<%= @receipt_presenter.giftee_manage_subscription.note %>
+<% end %>

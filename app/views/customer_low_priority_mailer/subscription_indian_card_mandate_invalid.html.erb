@@ -1,6 +1,6 @@
 <%= header_section(@subject) %>
 <div>
-  <p>We could not verify the recurring payment authorization for <%= @subscription.link.name %>.</p>
-  <p>We paused automatic renewals and did not retry the payment. You keep access while renewals are paused.</p>
-  <p>Please <%= link_to "update your payment method", @edit_card_url %> to restore automatic renewals.</p>
+  <p><%= t("mailers.customer.subscription_indian_card_mandate_invalid.body_intro", product: @subscription.link.name) %></p>
+  <p><%= t("mailers.customer.subscription_indian_card_mandate_invalid.body_paused") %></p>
+  <p><%= t("mailers.customer.subscription_indian_card_mandate_invalid.body_update_html", link: link_to(t("mailers.customer.subscription_card_declined.update_payment_link"), @edit_card_url)).html_safe %></p>
 </div>

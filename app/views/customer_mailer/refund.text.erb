@@ -1,0 +1,7 @@
+<%= t("mailers.customer.refund.header") %>
+
+<% if @formatted_presentment_total.present? %>
+<%= t("mailers.customer.refund.body_presentment", product: @purchase.link_name, total: @formatted_presentment_total, usd_total: @formatted_usd_total) %>
+<% else %>
+<%= t("mailers.customer.refund.body", product: @purchase.link_name, total: @purchase.formatted_total_transaction_amount) %>
+<% end %>

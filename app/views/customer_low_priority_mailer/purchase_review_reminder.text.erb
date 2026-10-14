@@ -1,0 +1,9 @@
+<%= @title %>
+
+<%= t("mailers.customer.purchase_review_reminder.body_greeting", name: (@purchaser_name.present? ? " #{@purchaser_name}" : "")) %>,
+
+<%= t("mailers.customer.purchase_review_reminder.body_message", product: @product_name) %>
+
+<%= @review_url %>
+
+<%= t("mailers.customer.purchase_review_reminder.thank_you") %>

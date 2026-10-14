@@ -1,0 +1,3 @@
+<%= t("mailers.customer.subscription_cancelled.header") %>
+
+<%= t("mailers.customer.subscription_cancelled.body", product: @subscription.link.name, date: @subscription.formatted_end_time_of_subscription) %>

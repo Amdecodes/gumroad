@@ -1,19 +1,19 @@
 <% charge_info = @receipt_presenter.charge_info %>
 <div class="receipt">
   <div class="info-row">
-    <span class="info-label">Order ID:</span>
+    <span class="info-label"><%= t("mailers.customer.receipt.order_id") %>:</span>
     <span class="info-value"><%= charge_info.order_id %></span>
   </div>
   <div class="info-row with-top-margin">
-    <span class="info-label">Order date:</span>
+    <span class="info-label"><%= t("mailers.customer.receipt.order_date") %>:</span>
     <span class="info-value"><%= charge_info.formatted_created_at %></span>
   </div>
 </div>
 
 <div>
-  <h2>You've received a gift!</h2>
+  <h2><%= t("mailers.customer.receipt.gift_received_title") %></h2>
 
-  <p>Hi! <% if @chargeable.try(:gifter_hidden_from_recipient?) %>Someone<% else %><%= mail_to(@chargeable.gifter_email) %><% end %> bought this as a gift for you. We hope you like it!</p>
+  <p><%= t("mailers.customer.auto_invoice.greeting") %>! <% if @chargeable.try(:gifter_hidden_from_recipient?) %><%= t("mailers.customer.receipt.gift_someone") %><% else %><%= mail_to(@chargeable.gifter_email) %><% end %> <%= t("mailers.customer.receipt.gift_received_body") %></p>
 
   <% if @chargeable.gift_note.present? %>
     <div>

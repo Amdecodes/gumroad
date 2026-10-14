@@ -1,0 +1,3 @@
+<%= t("mailers.customer.free_trial_expiring_soon.header") %>
+
+<%= strip_tags(t("mailers.customer.free_trial_expiring_soon.body_html", product: @subscription.link.name, date: @subscription.free_trial_end_date_formatted, link: manage_subscription_url(@subscription.external_id, token: @subscription.token))) %>

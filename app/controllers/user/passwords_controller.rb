@@ -21,9 +21,9 @@ class User::PasswordsController < Devise::PasswordsController
     user = User.alive.by_email(email).first if EmailFormatValidator.valid?(email)
 
     if user&.send_reset_password_instructions
-      redirect_to login_url, notice: "Password reset sent! Please make sure to check your spam folder.", status: :see_other
+      redirect_to login_url, notice: t("flash.passwords.reset_sent"), status: :see_other
     else
-      redirect_back fallback_location: login_url, warning: "An account does not exist with that email."
+      redirect_back fallback_location: login_url, warning: t("flash.passwords.account_not_found")
     end
   end
 
@@ -32,7 +32,7 @@ class User::PasswordsController < Devise::PasswordsController
     user = User.find_or_initialize_with_error_by(:reset_password_token,
                                                  Devise.token_generator.digest(User, :reset_password_token, reset_password_token))
     if user.errors.present?
-      return redirect_to root_path, warning: "That reset password token doesn't look valid (or may have expired)."
+      return redirect_to root_path, warning: t("flash.passwords.invalid_token")
     end
 
     set_meta_tag(title: "Reset your password")
@@ -47,25 +47,25 @@ class User::PasswordsController < Devise::PasswordsController
 
     if user.errors.present?
       error_message = if user.errors[:password_confirmation].present?
-        "Those two passwords didn't match."
+        t("flash.passwords.passwords_do_not_match")
       elsif user.errors[:password].present?
         user.errors.full_messages.first
       else
-        "That reset password token doesn't look valid (or may have expired)."
+        t("flash.passwords.invalid_token")
       end
       redirect_to edit_user_password_path(reset_password_token: reset_password_token), warning: error_message
     else
       user.invalidate_active_sessions!
       if user.deleted?
-        redirect_to root_path, status: :see_other, notice: "Your password has been reset."
+        redirect_to root_path, status: :see_other, notice: t("flash.passwords.reset_success")
       else
         sign_in_or_prepare_for_two_factor_auth(user)
 
         if session[:verify_two_factor_auth_for] == user.id
           redirect_to two_factor_authentication_path(next: root_path), status: :see_other,
-                                                                       notice: "Your password has been reset. Please complete two-factor authentication to continue."
+                                                                       notice: t("flash.passwords.reset_two_factor")
         else
-          redirect_to root_path, status: :see_other, notice: "Your password has been reset, and you're now logged in."
+          redirect_to root_path, status: :see_other, notice: t("flash.passwords.reset_logged_in")
         end
       end
     end

@@ -1,10 +1,10 @@
-<%= header_section("You pre-ordered #{@product.name}!") %>
+<%= header_section(t("mailers.customer.preorder_receipt.subject", product: @product.name)) %>
 <div>
   <% if @product.is_physical %>
-    <p>You have successfully pre-ordered <%= @product.name %>. You'll be charged on <%= displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone) %>, and shipment will occur soon after.</p>
-    <p>If you need to update your address, contact the creator immediately with your updated address by replying to this email.</p>
+    <p><%= t("mailers.customer.preorder_receipt.body_physical", product: @product.name, date: displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone)) %></p>
+    <p><%= t("mailers.customer.preorder_receipt.contact_address_note") %></p>
     <p>
-      <strong>Shipping address</strong>
+      <strong><%= t("mailers.customer.preorder_receipt.shipping_address") %></strong>
     </p>
     <p>
       <%= @shipping_info["full_name"] %>
@@ -16,6 +16,6 @@
       <%= @shipping_info["country"] %>
     </p>
   <% else %>
-    <p>You have successfully pre-ordered <%= @product.name %>. The product is set to release on <%= displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone) %>.</p>
+    <p><%= t("mailers.customer.preorder_receipt.body_digital", product: @product.name, date: displayable_release_at_date_and_time(@product.preorder_link.release_at, @product.user.timezone)) %></p>
   <% end %>
 </div>

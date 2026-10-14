@@ -1,0 +1,7 @@
+<%= t("devise.mailer.email_changed.header") %>
+
+<%= t("devise.mailer.email_changed.notification", old_email: @old_email, new_email: @new_email) %>
+
+<%= t("devise.mailer.email_changed.support_notice") %>
+
+<%= t("devise.mailer.email_changed.user_id", user_id: @resource.external_id) %>

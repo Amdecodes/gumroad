@@ -1,0 +1,8 @@
+<%= t("mailers.customer.files_ready_for_download.header") %>
+
+<%= strip_tags(t("mailers.customer.files_ready_for_download.body", product: @product.name)) %>
+
+<%= t("mailers.customer.files_ready_for_download.click_below") %>:
+<%= @url_redirect&.download_page_url %>
+
+<%= t("mailers.customer.receipt.questions_and_contact") %>

@@ -1,10 +1,14 @@
-<%= header_section("Your recurring charge failed.") %>
+<% if @subscription.is_installment_plan %>
+  <%= header_section(t("mailers.customer.subscription_charge_failed.installment_header")) %>
+<% else %>
+  <%= header_section(t("mailers.customer.subscription_charge_failed.header")) %>
+<% end %>
 <div>
   <% if @subscription.is_installment_plan %>
-    <p>We attempted to charge your card for your installment payment for <%= @subscription.link.name %>, but were unable to.</p>
-    <p>If a charge to your credit card is not successful within 5 days, your installment plan for <%= @subscription.link.name %> will be canceled.</p>
+    <p><%= t("mailers.customer.subscription_charge_failed.installment_body", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_charge_failed.installment_warning", product: @subscription.link.name) %></p>
   <% else %>
-    <p>We attempted to charge your card for your subscription to <%= @subscription.link.name %>, but were unable to.</p>
-    <p>If a charge to your credit card is not successful within 5 days, your subscription to <%= @subscription.link.name %> will be canceled.</p>
+    <p><%= t("mailers.customer.subscription_charge_failed.subscription_body", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_charge_failed.subscription_warning", product: @subscription.link.name) %></p>
   <% end %>
 </div>

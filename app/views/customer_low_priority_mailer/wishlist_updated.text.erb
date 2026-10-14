@@ -1,0 +1,11 @@
+<% if @products.one? %>
+<%= t("mailers.customer.wishlist_updated.header_single", user: @wishlist_owner_name) %>
+<% else %>
+<%= t("mailers.customer.wishlist_updated.header_multiple", user: @wishlist_owner_name, count: @products.count) %>
+<% end %>
+
+<% @products.each do |product| %>
+* <%= product.name %> - <%= product.long_url %>
+<% end %>
+
+<%= t("mailers.customer.wishlist_updated.future_updates_note") %>

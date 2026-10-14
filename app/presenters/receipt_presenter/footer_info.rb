@@ -24,14 +24,14 @@ class ReceiptPresenter::FooterInfo
     # charge. Free-trial receipts keep the recurring wording because their one
     # charge hasn't happened yet.
     if chargeable.subscription.single_charge? && !chargeable.is_free_trial_purchase?
-      "You won't be charged again for this membership."
+      I18n.t("mailers.customer.receipt.footer_single_charge_note", default: "You won't be charged again for this membership.")
     else
-      "You'll be charged once #{recurrence_long_indicator(chargeable.subscription.recurrence)}."
+      I18n.t("mailers.customer.receipt.footer_recurring_note", recurrence: recurrence_long_indicator(chargeable.subscription.recurrence), default: "You'll be charged once %{recurrence}.")
     end
   end
 
   def manage_subscription_link
-    link_to("Manage membership", manage_subscription_url)
+    link_to(I18n.t("subscriptions.manage_membership", default: "Manage membership"), manage_subscription_url)
   end
 
   def manage_subscription_url
@@ -50,7 +50,7 @@ class ReceiptPresenter::FooterInfo
     end
 
     link_to(
-      "Unsubscribe",
+      I18n.t("mailers.common.unsubscribe", default: "Unsubscribe"),
       Rails.application.routes.url_helpers.unsubscribe_purchase_url(
         purchase.secure_external_id(scope: "unsubscribe"),
         host: UrlService.domain_with_protocol

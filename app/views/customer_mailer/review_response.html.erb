@@ -1,4 +1,4 @@
-<%= header_section("#{@seller_presenter[:name]} responded to your review") %>
+<%= header_section(t("mailers.customer.review_response.header", seller: @seller_presenter[:name])) %>
 
 <div class="review">
   <div class="content">
@@ -17,11 +17,11 @@
     <div class="byline">
       <img class="user-avatar" src="<%= @seller_presenter[:avatar_url] %>" alt="<%= @seller_presenter[:name] %>">
       <span><%= @seller_presenter[:name] %></span>
-      <span class="pill small">Creator</span>
+      <span class="pill small"><%= t("receipt.invoices.seller", default: "Creator") %></span>
     </div>
   </div>
 </div>
 
 <div>
-  <%= link_to "View product", @product.long_url, class: "button primary" %>
+  <%= link_to t("mailers.customer.review_response.view_product"), @product.long_url, class: "button primary" %>
 </div>

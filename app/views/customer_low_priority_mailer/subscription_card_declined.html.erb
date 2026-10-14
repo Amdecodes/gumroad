@@ -1,13 +1,13 @@
 <%= header_section(@subject) %>
 <div>
   <% if @payment_method_is_upi %>
-    <p>We couldn't process the recurring payment for <%= @subscription.link.name %> using your saved UPI payment method. Please <%= link_to "update your payment method", @edit_card_url %> to complete the transaction.</p>
-    <p>If a payment is not successful within 5 days, your subscription to <%= @subscription.link.name %> will be canceled.</p>
+    <p><%= t("mailers.customer.subscription_card_declined.upi_body_html", product: @subscription.link.name, link: link_to(t("mailers.customer.subscription_card_declined.update_payment_link"), @edit_card_url)).html_safe %></p>
+    <p><%= t("mailers.customer.subscription_card_declined.upi_warning", product: @subscription.link.name) %></p>
   <% elsif @subscription.is_installment_plan %>
-    <p>We attempted to charge your card for your installment payment for <%= @subscription.link.name %>, but were unable. Please <%= link_to "re-authorize or update your card", @edit_card_url %> to complete the transaction.</p>
-    <p>If a charge to your credit card is not successful within 5 days, your installment plan for <%= @subscription.link.name %> will be paused and you will lose access to the product.</p>
+    <p><%= t("mailers.customer.subscription_card_declined.installment_body_html", product: @subscription.link.name, link: link_to(t("mailers.customer.subscription_card_declined.reauthorize_card_link"), @edit_card_url)).html_safe %></p>
+    <p><%= t("mailers.customer.subscription_card_declined.installment_warning", product: @subscription.link.name) %></p>
   <% else %>
-    <p>We attempted to charge your card for your subscription to <%= @subscription.link.name %>, but were unable. Please <%= link_to "re-authorize or update your card", @edit_card_url %> to complete the transaction.</p>
-    <p>If a charge to your credit card is not successful within 5 days, your subscription to <%= @subscription.link.name %> will be canceled.</p>
+    <p><%= t("mailers.customer.subscription_card_declined.subscription_body_html", product: @subscription.link.name, link: link_to(t("mailers.customer.subscription_card_declined.reauthorize_card_link"), @edit_card_url)).html_safe %></p>
+    <p><%= t("mailers.customer.subscription_card_declined.subscription_warning", product: @subscription.link.name) %></p>
   <% end %>
 </div>

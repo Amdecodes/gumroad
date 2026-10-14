@@ -114,9 +114,185 @@ class CustomerLowPriorityMailerPreview < ActionMailer::Preview
     CustomerLowPriorityMailer.wishlist_updated(wishlist_follower&.id, wishlist_follower&.wishlist&.wishlist_products&.alive&.count || 0)
   end
 
+  def credit_card_expiring_membership_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.credit_card_expiring_membership(subscription&.id) }
+  end
+
+  def preorder_cancelled_am
+    preorder = Preorder.authorization_successful.last
+    with_am_preorder(preorder) { CustomerLowPriorityMailer.preorder_cancelled(preorder&.id) }
+  end
+
+  def preorder_card_declined_am
+    preorder = Preorder.authorization_successful.last
+    with_am_preorder(preorder) { CustomerLowPriorityMailer.preorder_card_declined(preorder&.id) }
+  end
+
+  def subscription_autocancelled_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_autocancelled(subscription&.id) }
+  end
+
+  def subscription_cancelled_am
+    subscription = Subscription.last
+    subscription&.link&.update_attribute(:subscription_duration, :monthly)
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_cancelled(subscription&.id) }
+  end
+
+  def subscription_cancelled_by_seller_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_cancelled_by_seller(subscription&.id) }
+  end
+
+  def subscription_ended_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_ended(subscription&.id) }
+  end
+
+  def subscription_card_declined_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_card_declined(subscription&.id) }
+  end
+
+  def subscription_card_declined_warning_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_card_declined_warning(subscription&.id) }
+  end
+
+  def subscription_indian_card_mandate_invalid
+    CustomerLowPriorityMailer.subscription_indian_card_mandate_invalid(Subscription.last&.id)
+  end
+
+  def subscription_indian_card_mandate_invalid_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_indian_card_mandate_invalid(subscription&.id) }
+  end
+
+  def subscription_charge_failed_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_charge_failed(subscription&.id) }
+  end
+
+  def subscription_charge_blocked_location
+    CustomerLowPriorityMailer.subscription_charge_blocked_location(Subscription.last&.id)
+  end
+
+  def subscription_charge_blocked_location_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_charge_blocked_location(subscription&.id) }
+  end
+
+  def subscription_product_deleted_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_product_deleted(subscription&.id) }
+  end
+
+  def subscription_renewal_reminder_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_renewal_reminder(subscription&.id) }
+  end
+
+  def subscription_price_change_notification_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_price_change_notification(subscription_id: subscription&.id, new_price: 15_99) }
+  end
+
+  def subscription_early_fraud_warning_notification_am
+    purchase = Subscription.last&.purchases&.last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.subscription_early_fraud_warning_notification(purchase&.id) }
+  end
+
+  def subscription_giftee_added_card_am
+    purchase = Purchase.successful.is_gift_sender_purchase.where.not(subscription_id: nil).last
+    subscription = purchase&.subscription
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.subscription_giftee_added_card(subscription&.id) }
+  end
+
+  def rental_expiring_soon_am
+    purchase = Purchase.joins(:url_redirect).last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.rental_expiring_soon(purchase&.id, 60 * 60 * 24) }
+  end
+
+  def order_shipped_with_tracking_am
+    shipment = Shipment.create(purchase: shippable_purchase, tracking_url: "https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=1234567890", carrier: "USPS")
+    shipment.mark_shipped
+    with_am_purchase(shipment.purchase) { CustomerLowPriorityMailer.order_shipped(shipment.id) }
+  end
+
+  def order_shipped_am
+    shipment = Shipment.create(purchase: shippable_purchase)
+    shipment.mark_shipped
+    with_am_purchase(shipment.purchase) { CustomerLowPriorityMailer.order_shipped(shipment.id) }
+  end
+
+  def blocked_purchase_resolved
+    CustomerLowPriorityMailer.blocked_purchase_resolved(Purchase.last&.id)
+  end
+
+  def blocked_purchase_resolved_am
+    purchase = Purchase.last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.blocked_purchase_resolved(purchase&.id) }
+  end
+
+  def chargeback_notice_to_customer_am
+    purchase = Purchase.last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.chargeback_notice_to_customer(purchase&.id) }
+  end
+
+  def free_trial_expiring_soon_am
+    sub = Subscription.where.not(free_trial_ends_at: nil).take
+    with_am_subscription(sub) { CustomerLowPriorityMailer.free_trial_expiring_soon(sub&.id) }
+  end
+
+  def purchase_review_reminder_am
+    purchase = Purchase.where.missing(:product_review).last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.purchase_review_reminder(purchase&.id) }
+  end
+
+  def order_review_reminder_am
+    purchase = Purchase.where.missing(:product_review).last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.order_review_reminder(purchase&.order&.id) }
+  end
+
+  def bundle_content_updated_am
+    purchase = Purchase.is_bundle_purchase.last
+    with_am_purchase(purchase) { CustomerLowPriorityMailer.bundle_content_updated(purchase&.id) }
+  end
+
+  def wishlist_updated_am
+    wishlist_follower = WishlistFollower.alive.last
+    wishlist_follower&.user&.update_column(:locale, "am")
+    I18n.with_locale(:am) { CustomerLowPriorityMailer.wishlist_updated(wishlist_follower&.id, wishlist_follower&.wishlist&.wishlist_products&.alive&.count || 0) }
+  end
+
+  def already_subscribed_checkout_attempt
+    CustomerLowPriorityMailer.already_subscribed_checkout_attempt(Subscription.last&.id)
+  end
+
+  def already_subscribed_checkout_attempt_am
+    subscription = Subscription.last
+    with_am_subscription(subscription) { CustomerLowPriorityMailer.already_subscribed_checkout_attempt(subscription&.id) }
+  end
+
   private
     # Shipment now validates this on create, so the preview needs a sale that actually ships.
     def shippable_purchase
       Purchase.joins(:link).where("links.flags & #{Link.flag_mapping["flags"][:is_physical]} > 0 OR links.require_shipping = TRUE").last
+    end
+
+    def with_am_purchase(purchase, &block)
+      purchase&.update_column(:locale, "am") if purchase&.persisted? && purchase&.locale != "am"
+      I18n.with_locale(:am, &block)
+    end
+
+    def with_am_subscription(subscription, &block)
+      subscription&.original_purchase&.update_column(:locale, "am")
+      I18n.with_locale(:am, &block)
+    end
+
+    def with_am_preorder(preorder, &block)
+      preorder&.purchase&.update_column(:locale, "am")
+      I18n.with_locale(:am, &block)
     end
 end

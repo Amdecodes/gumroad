@@ -1,4 +1,4 @@
-<%= header_section("Your pre-order has been canceled.") %>
+<%= header_section(t("mailers.customer.preorder_cancelled.header")) %>
 <div>
-  <p>The creator canceled your pre-order of <%= @preorder.link.name %>. You will not be charged.</p>
+  <p><%= t("mailers.customer.preorder_cancelled.body", product: @preorder.link.name) %></p>
 </div>

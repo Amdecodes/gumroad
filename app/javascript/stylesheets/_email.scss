@@ -12,6 +12,9 @@ $accent-color: map-get($colors, "pink"); // [1]
 .email {
   @include font-size(2);
   padding: spacer(3);
+  font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", Avenir, Montserrat, Corbel, "URW Gothic",
+    source-sans-pro, sans-serif;
+  line-height: 1.5;
 
   & > .main,
   & > .footer {

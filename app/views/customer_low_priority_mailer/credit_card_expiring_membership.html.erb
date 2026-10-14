@@ -1,12 +1,12 @@
-<%= header_section("Payment method for #{@product.name} is about to expire") %>
+<%= header_section(t("mailers.customer.credit_card_expiring_membership.header", product: @product.name)) %>
 
 <div>
-  <p>Hi there,</p>
-  <p>This is a reminder that your card ending in '<%= @last_4_digits_of_credit_card %>' expires on <%= @expiry_month_name %>. To continue your <strong><%= @product.name %></strong> subscription, please update your card information.</p>
-  <p><%= link_to "Manage subscription", @edit_card_url, class: "button primary" %></p>
+  <p><%= t("mailers.customer.credit_card_expiring_membership.greeting") %>,</p>
+  <p><%= t("mailers.customer.credit_card_expiring_membership.body", last4: @last_4_digits_of_credit_card, month: @expiry_month_name, product: @product.name) %></p>
+  <p><%= link_to t("mailers.customer.credit_card_expiring_membership.manage_button"), @edit_card_url, class: "button primary" %></p>
 
-  <p>Or you can click here: <%= link_to @edit_card_url, @edit_card_url %></p>
+  <p><%= t("mailers.customer.credit_card_expiring_membership.or_click_here") %>: <%= link_to @edit_card_url, @edit_card_url %></p>
 
-  <p><strong>Why am I getting this?</strong></p>
-  <p>You created an account on Gumroad and elected to save your card info on file. Keeping it up to date will help you keep future purchases speedy and smooth.</p>
+  <p><strong><%= t("mailers.customer.credit_card_expiring_membership.why_heading") %></strong></p>
+  <p><%= t("mailers.customer.credit_card_expiring_membership.why_body") %></p>
 </div>

@@ -1,14 +1,14 @@
 <% if @subscription.is_installment_plan %>
-  <%= header_section("Your installment plan has been paused.") %>
+  <%= header_section(t("mailers.customer.subscription_autocancelled.installment_subject")) %>
 <% else %>
-  <%= header_section("Your subscription has been canceled.") %>
+  <%= header_section(t("mailers.customer.subscription_autocancelled.subscription_subject")) %>
 <% end %>
 <div>
   <% if @subscription.is_installment_plan %>
-    <p>Due to multiple failed payment attempts, your installment plan for <%= @subscription.link.name %> has been paused and you have lost access to the product.</p>
-    <p>Please <%= link_to "update your payment method", manage_subscription_url(@subscription.external_id, token: @subscription.refresh_token) %> to resume your installment plan.</p>
+    <p><%= t("mailers.customer.subscription_autocancelled.installment_body_1", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_autocancelled.installment_body_2_html", link: link_to(t("mailers.customer.subscription_autocancelled.update_payment_method_link"), manage_subscription_url(@subscription.external_id, token: @subscription.refresh_token))).html_safe %></p>
   <% else %>
-    <p>Your subscription to <%= @subscription.link.name %> has been automatically canceled due to multiple failed payments.</p>
-    <p>If you would like to subscribe to the product, please purchase it <%= link_to "here", @subscription.link.long_url %> with an updated credit card.</p>
+    <p><%= t("mailers.customer.subscription_autocancelled.subscription_body_1", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_autocancelled.subscription_body_2_html", link: link_to(t("common.here", default: "here"), @subscription.link.long_url)).html_safe %></p>
   <% end %>
 </div>

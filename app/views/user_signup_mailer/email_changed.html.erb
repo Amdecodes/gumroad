@@ -1,6 +1,6 @@
-<%= header_section("Your Gumroad account email is being changed") %>
+<%= header_section(t("devise.mailer.email_changed.header")) %>
 <div>
-  <p>We're contacting you to notify that your Gumroad account email is being changed from <%= @old_email %> to <%= @new_email %>.</p>
-  <p>If you did not make this change, please contact support immediately by replying to this email.</p>
-  <p>User ID: <%= @resource.external_id %></p>
+  <p><%= t("devise.mailer.email_changed.notification", old_email: @old_email, new_email: @new_email) %></p>
+  <p><%= t("devise.mailer.email_changed.support_notice") %></p>
+  <p><%= t("devise.mailer.email_changed.user_id", user_id: @resource.external_id) %></p>
 </div>

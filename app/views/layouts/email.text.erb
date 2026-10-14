@@ -1,0 +1,7 @@
+<%= yield %>
+
+--
+<%= GumroadAddress.full %>
+<% if @unsub_link.present? %><%= t("mailers.common.unsubscribe") %>: <%= @unsub_link %>
+<% end %>
+<%= t("mailers.common.powered_by") %> Gumroad

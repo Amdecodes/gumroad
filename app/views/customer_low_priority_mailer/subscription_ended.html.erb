@@ -1,14 +1,14 @@
 <% if @subscription.is_installment_plan %>
-  <%= header_section("Your installment plan has been paid in full.") %>
+  <%= header_section(t("mailers.customer.subscription_ended.installment_header")) %>
 <% else %>
-  <%= header_section("Your subscription has ended.") %>
+  <%= header_section(t("mailers.customer.subscription_ended.subscription_header")) %>
 <% end %>
 <div>
   <% if @subscription.is_installment_plan %>
-    <p>You have completed all your installment payments for <%= @subscription.link.name %>. You will no longer be charged.</p>
-    <p>The product will remain in your library.</p>
+    <p><%= t("mailers.customer.subscription_ended.installment_body_1", product: @subscription.link.name) %></p>
+    <p><%= t("mailers.customer.subscription_ended.installment_body_2") %></p>
   <% else %>
-    <p>Your subscription to <%= @subscription.link.name %> has ended. You will no longer be charged, nor will you receive new content.</p>
+    <p><%= t("mailers.customer.subscription_ended.subscription_body", product: @subscription.link.name) %></p>
   <% end %>
-  <p>If you have any questions, please contact the creator.</p>
+  <p><%= t("mailers.customer.subscription_ended.questions_contact_creator") %></p>
 </div>

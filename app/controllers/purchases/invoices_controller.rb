@@ -17,10 +17,10 @@ class Purchases::InvoicesController < ApplicationController
   end
 
   def create
-    return redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: "Your purchase has not been completed by PayPal yet. Please try again soon." if invoice_params["vat_id"].present? && !@purchase.successful?
+    return redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: t("flash.invoices.paypal_pending") if invoice_params["vat_id"].present? && !@purchase.successful?
 
     address_fields = invoice_params[:address_fields]
-    return redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: "Address information is required to generate an invoice." if address_fields.blank?
+    return redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: t("flash.invoices.address_required") if address_fields.blank?
 
     selected_country_code = invoice_params.dig(:address_fields, :country_code)
     address_fields[:state] = nil if selected_country_code.present? && selected_country_code != Compliance::Countries::USA.alpha2
@@ -67,28 +67,30 @@ class Purchases::InvoicesController < ApplicationController
         end
       end
 
-      invoice_html = render_to_string(locals: { invoice_presenter: }, formats: [:pdf], layout: false)
+      invoice_html = I18n.with_locale(@purchase.locale.presence || I18n.default_locale) do
+        render_to_string(locals: { invoice_presenter: }, formats: [:pdf], layout: false)
+      end
       pdf = PDFKit.new(invoice_html, page_size: "Letter").to_pdf
       s3_obj = @chargeable.upload_invoice_pdf(pdf)
 
-      message = +"The invoice will be downloaded automatically."
+      message = +t("flash.invoices.downloaded_automatically")
       if refundable_vat_id
         notice =
           if @chargeable.purchase_sales_tax_info.present? &&
              (Compliance::Countries::GST_APPLICABLE_COUNTRY_CODES.include?(@chargeable.purchase_sales_tax_info.country_code) ||
              Compliance::Countries::IND.alpha2 == @chargeable.purchase_sales_tax_info.country_code)
-            "GST has also been refunded."
+            t("flash.invoices.gst_refunded")
           elsif @chargeable.purchase_sales_tax_info.present? &&
                 Compliance::Countries::CAN.alpha2 == @chargeable.purchase_sales_tax_info.country_code
-            "QST has also been refunded."
+            t("flash.invoices.qst_refunded")
           elsif @chargeable.purchase_sales_tax_info.present? &&
             Compliance::Countries::MYS.alpha2 == @chargeable.purchase_sales_tax_info.country_code
-            "Service tax has also been refunded."
+            t("flash.invoices.service_tax_refunded")
           elsif @chargeable.purchase_sales_tax_info.present? &&
             Compliance::Countries::JPN.alpha2 == @chargeable.purchase_sales_tax_info.country_code
-            "CT has also been refunded."
+            t("flash.invoices.ct_refunded")
           else
-            "VAT has also been refunded."
+            t("flash.invoices.vat_refunded")
           end
         message << " " << notice
       end
@@ -99,12 +101,12 @@ class Purchases::InvoicesController < ApplicationController
       Rails.logger.error(e.message)
       Rails.logger.error(e.backtrace.join("\n"))
 
-      redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: "Sorry, something went wrong."
+      redirect_to new_purchase_invoice_path(@purchase.external_id, email: invoice_params[:email]), alert: t("flash.invoices.something_went_wrong")
     end
   end
 
   def new
-    set_meta_tag(title: "Generate invoice")
+    set_meta_tag(title: t("receipt.invoices.generate"))
 
     render inertia: "Purchases/Invoices/New", props: {
       form_data: -> { new_invoice_presenter.invoice_generation_form_data_props },
@@ -165,6 +167,6 @@ class Purchases::InvoicesController < ApplicationController
     def require_email_confirmation
       return if ActiveSupport::SecurityUtils.secure_compare(@purchase.email, params[:email].to_s)
 
-      redirect_to confirm_purchase_invoice_path(@purchase.external_id), **(params[:email].blank? ? { warning: "Please enter the purchase's email address to generate the invoice." } : { alert: "Incorrect email address. Please try again." })
+      redirect_to confirm_purchase_invoice_path(@purchase.external_id), **(params[:email].blank? ? { warning: t("flash.invoices.enter_email") } : { alert: t("flash.invoices.incorrect_email") })
     end
 end

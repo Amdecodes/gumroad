@@ -31,14 +31,14 @@ class TwoFactorAuthenticationController < ApplicationController
 
   def resend_authentication_token
     if two_factor_auth_method != "email"
-      redirect_to two_factor_authentication_path, warning: "Cannot resend token for authenticator app.", status: :see_other
+      redirect_to two_factor_authentication_path, warning: t("flash.two_factor.cannot_resend"), status: :see_other
       return
     end
 
     @user.send_authentication_token!
     mark_authentication_token_sent
 
-    redirect_to two_factor_authentication_path, notice: "Resent the authentication token, please check your inbox.", status: :see_other
+    redirect_to two_factor_authentication_path, notice: t("flash.two_factor.token_resent"), status: :see_other
   end
 
   def switch_to_email
@@ -46,7 +46,7 @@ class TwoFactorAuthenticationController < ApplicationController
     @user.send_authentication_token!
     mark_authentication_token_sent
 
-    redirect_to two_factor_authentication_path, notice: "Authentication token sent to #{@user.email}.", status: :see_other
+    redirect_to two_factor_authentication_path, notice: t("flash.two_factor.token_sent", email: @user.email), status: :see_other
   end
 
   def switch_to_recovery
@@ -71,7 +71,7 @@ class TwoFactorAuthenticationController < ApplicationController
     # request was a plain page load (a POST path is not something we can send them back to).
     def redirect_to_login_path
       redirect_to login_path(next: (request.fullpath if request.get?)),
-                  warning: "Your login session expired. Please sign in again.",
+                  warning: t("flash.two_factor.session_expired"),
                   status: :see_other
     end
 
@@ -79,9 +79,9 @@ class TwoFactorAuthenticationController < ApplicationController
       if valid_two_factor_token?(@user, token)
         sign_in_with_two_factor_authentication(@user)
 
-        redirect_to login_path_for(@user), notice: "Successfully logged in!", status: :see_other, allow_other_host: true
+        redirect_to login_path_for(@user), notice: t("flash.two_factor.logged_in"), status: :see_other, allow_other_host: true
       else
-        redirect_to two_factor_authentication_path, warning: "Invalid token, please try again.", status: :see_other
+        redirect_to two_factor_authentication_path, warning: t("flash.two_factor.invalid_token"), status: :see_other
       end
     end
 

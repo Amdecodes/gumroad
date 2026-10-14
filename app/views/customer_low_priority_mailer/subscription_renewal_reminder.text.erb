@@ -1,0 +1,17 @@
+<% if @subscription.is_installment_plan %>
+<%= t("mailers.subscription_renewal_reminder.installment_subject") %>
+
+<%= t("mailers.subscription_renewal_reminder.installment_body", price: @price, product: @subscription.link.name, date: @date) %>
+
+<%= @edit_card_url %>
+<% else %>
+<%= t("mailers.subscription_renewal_reminder.membership_subject") %>
+
+<%= t("mailers.subscription_renewal_reminder.membership_body", product: @subscription.link.name, date: @date) %>
+<%= t("mailers.subscription_renewal_reminder.paying", price: @price) %>
+
+<%= @edit_card_url %>
+<% end %>
+
+<%= t("mailers.subscription_renewal_reminder.questions") %>
+<%= t("mailers.subscription_renewal_reminder.contact_seller", seller: @subscription.link.user.display_name) %>

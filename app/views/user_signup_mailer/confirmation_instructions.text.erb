@@ -1,0 +1,8 @@
+<%= t("devise.mailer.confirmation_instructions.header") %>
+
+<%= t("devise.mailer.confirmation_instructions.instruction") %>
+
+<% url = confirmation_url(@resource, confirmation_token: @resource.confirmation_token) %>
+<%= url %>
+
+<%= t("devise.mailer.confirmation_instructions.ignore_notice") %>
