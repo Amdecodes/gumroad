@@ -65,6 +65,22 @@ RSpec.describe "Branding Audit" do
     ]
   ).select { |f| File.file?(f) }.freeze
 
+  # Unreachable upstream templates identified as deletion candidates (unsupported payment methods,
+  # US-only tax compliance forms, or historical one-off promotions).
+  DELETION_CANDIDATE_FILES = [
+    Rails.root.join("app/views/accounting_mailer/email_outstanding_balances_csv.html.erb").to_s,
+    Rails.root.join("app/views/accounting_mailer/stripe_currency_balances_report.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/gumroad_day_credit_notification.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/paypal_suspension_notification.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/singapore_identity_verification_reminder.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/stripe_document_verification_failed.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/stripe_identity_verification_failed.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/suspended_due_to_stripe_risk.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/tax_form_1099k.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/tax_form_1099misc.html.erb").to_s,
+    Rails.root.join("app/views/contacting_creator_mailer/tax_form_transaction_report.html.erb").to_s,
+  ].freeze
+
   # Lines matching these patterns are explicit allowlist entries
   # (comments, image assets, legal references, or specific internal code identifiers).
   # No whole-directory exemptions exist.
@@ -156,11 +172,10 @@ RSpec.describe "Branding Audit" do
     end
   end
 
-  describe "seller mailers (pending remediation)" do
-    it "audits seller mailers for forbidden tokens" do
-      pending "Seller mailers de-branding is planned for follow-up"
-      violations = check_files(SELLER_MAILER_VIEW_FILES)
-      expect(violations).to be_empty
+  describe "seller mailers" do
+    it "contains zero unallowed occurrences of forbidden tokens in reachable views" do
+      violations = check_files(SELLER_MAILER_VIEW_FILES - DELETION_CANDIDATE_FILES)
+      expect(violations).to be_empty, "Found forbidden branding tokens in seller mailers:\n#{violations.join("\n")}"
     end
   end
 end

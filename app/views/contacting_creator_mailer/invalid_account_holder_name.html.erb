@@ -1,6 +1,6 @@
 <%= header_section("Your bank account holder name was rejected.") %>
 <div>
-  <p>Hi there. Your bank rejected the account holder name on your Gumroad payout settings. This prevents your payouts from being delivered.</p>
+  <p>Hi there. Your bank rejected the account holder name on your <%= PlatformConfig.app_name %> payout settings. This prevents your payouts from being delivered.</p>
   <% case @country_code %>
   <% when Compliance::Countries::JPN.alpha2 %>
     <p>For Japanese bank accounts, the account holder name must be written in Katakana and exactly match the name registered with your bank.</p>

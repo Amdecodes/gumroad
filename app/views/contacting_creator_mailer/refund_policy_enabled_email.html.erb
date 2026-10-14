@@ -1,7 +1,7 @@
 <div>
   <p>Hey <%= @seller.name_or_username %>,</p>
   <p>
-    We've updated how refund policies work on Gumroad. Instead of individual product policies, all your products now use a single account-level policy,
+    We've updated how refund policies work on <%= PlatformConfig.app_name %>. Instead of individual product policies, all your products now use a single account-level policy,
     which is set to <strong><%= @seller.refund_policy.title %></strong>, effective <%= @postponed_date.present? ? @postponed_date.to_fs(:formatted_date_full_month) : "immediately" %>.
   </p>
   <% if @postponed_date.present? %>
@@ -24,7 +24,7 @@
   <p>
     To review or update your account-level refund policy:
     <ol>
-      <li>Log in to your Gumroad account</li>
+      <li>Log in to your <%= PlatformConfig.app_name %> account</li>
       <li>Go to <%= link_to "Settings", settings_main_url %></li>
       <li>Update the refund policy information</li>
       <li>Click <strong>Update settings</strong></li>

@@ -32,7 +32,7 @@
       <% end %>
     <% end %>
     <p>
-      Sometimes, a customer will dispute a charge with their bank because they don't recognize "Gumroad" on their credit card transaction. We have contacted the customer about this, and have asked them to contact you (if they have a legitimate issue) or their bank (to cancel the dispute).
+      Sometimes, a customer will dispute a charge with their bank because they don't recognize "<%= PlatformConfig.statement_descriptor %>" on their credit card transaction. We have contacted the customer about this, and have asked them to contact you (if they have a legitimate issue) or their bank (to cancel the dispute).
     </p>
     <%= @dispute_evidence_content %>
     <p>
