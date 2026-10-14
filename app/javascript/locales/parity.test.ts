@@ -3,6 +3,8 @@ import * as path from "path";
 import { describe, expect, it } from "vitest";
 import * as yaml from "yaml";
 
+import { translate } from "$app/utils/i18n";
+
 import { am } from "./am";
 import { en } from "./en";
 
@@ -60,5 +62,19 @@ describe("Locale Parity", () => {
     expect(missingInAmYaml, "Keys present in en.yml but missing in am.yml").toEqual([]);
     expect(extraInAmYaml, "Keys present in am.yml but missing in en.yml").toEqual([]);
     expect(amYamlKeys).toEqual(enYamlKeys);
+  });
+
+  it("injects default platform parameters (app_name, support_email, statement_descriptor) in translate()", () => {
+    expect(
+      translate(
+        "test_platform_key",
+        "en",
+        undefined,
+        "Welcome to {app_name} | {support_email} | {statement_descriptor}",
+      ),
+    ).toBe("Welcome to ArifDrop | support@arifdrop.com | ARIFDROP*");
+    expect(translate("test_platform_key", "am", undefined, "እንኳን ወደ {app_name} በደህና መጡ")).toBe(
+      "እንኳን ወደ አሪፍድሮፕ በደህና መጡ",
+    );
   });
 });

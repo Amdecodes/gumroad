@@ -76,6 +76,25 @@ const resolvePluralCandidate = (val: unknown, count?: number): unknown => {
   return val;
 };
 
+export const DEFAULT_PLATFORM_PARAMS: Record<SupportedLocale, Record<string, string>> = {
+  en: {
+    app_name: "ArifDrop",
+    appName: "ArifDrop",
+    support_email: "support@arifdrop.com",
+    supportEmail: "support@arifdrop.com",
+    statement_descriptor: "ARIFDROP*",
+    statementDescriptor: "ARIFDROP*",
+  },
+  am: {
+    app_name: "አሪፍድሮፕ",
+    appName: "አሪፍድሮፕ",
+    support_email: "support@arifdrop.com",
+    supportEmail: "support@arifdrop.com",
+    statement_descriptor: "ARIFDROP*",
+    statementDescriptor: "ARIFDROP*",
+  },
+};
+
 export const translate = (
   key: string,
   locale: SupportedLocale = "en",
@@ -120,16 +139,17 @@ export const translate = (
 
   const resolvedText = typeof text === "string" ? text : (actualFallback ?? key);
 
-  if (actualParams) {
-    return resolvedText.replace(/%?\{(\w+)\}/gu, (_, placeholder: string) => {
-      if (Object.prototype.hasOwnProperty.call(actualParams, placeholder)) {
-        return String(actualParams[placeholder]);
-      }
-      return `{${placeholder}}`;
-    });
-  }
+  const effectiveParams = {
+    ...DEFAULT_PLATFORM_PARAMS[locale],
+    ...(actualParams ?? {}),
+  };
 
-  return resolvedText;
+  return resolvedText.replace(/%?\{(\w+)\}/gu, (_, placeholder: string) => {
+    if (Object.prototype.hasOwnProperty.call(effectiveParams, placeholder)) {
+      return String(effectiveParams[placeholder]);
+    }
+    return `{${placeholder}}`;
+  });
 };
 
 export type TFunction = (

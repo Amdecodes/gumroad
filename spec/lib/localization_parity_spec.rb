@@ -34,4 +34,24 @@ RSpec.describe "Localization Parity" do
     expect(extra_in_am).to be_empty, "Keys present in am.yml but missing in en.yml: #{extra_in_am}"
     expect(am_keys).to eq(en_keys)
   end
+
+  it "automatically injects default platform parameters into I18n.t" do
+    expect(I18n.t("test", locale: :en, default: "Welcome to %{app_name} (%{statement_descriptor}) | %{support_email}")).to eq(
+      "Welcome to ArifDrop (ARIFDROP*) | support@arifdrop.com"
+    )
+
+    expect(I18n.t("test", locale: :am, default: "እንኳን ወደ %{app_name} በደህና መጡ")).to eq(
+      "እንኳን ወደ አሪፍድሮፕ በደህና መጡ"
+    )
+
+    expect(I18n.t("test", locale: :en, app_name: "CustomApp", default: "Welcome to %{app_name}")).to eq(
+      "Welcome to CustomApp"
+    )
+  end
+
+  it "derives fee values in PlatformConfig directly from Purchase constants" do
+    expect(PlatformConfig.flat_fee_percent).to eq(Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 10.0)
+    expect(PlatformConfig.discover_fee_percent).to eq(Purchase::GUMROAD_DISCOVER_FEE_PER_THOUSAND / 10.0)
+    expect(PlatformConfig.fixed_fee_cents).to eq(Purchase::GUMROAD_FIXED_FEE_CENTS)
+  end
 end

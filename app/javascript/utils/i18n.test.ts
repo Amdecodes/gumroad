@@ -88,6 +88,26 @@ describe("i18n utility", () => {
       expect(result).toBe("ምዝገባዎ በማራዘሚያ ጊዜ ውስጥ ነው (ቀሪ 3 ቀናት)። ያልተቋረጠ መዳረሻ ለማግኘት አሁኑኑ ያድሱ።");
     });
 
+    it("automatically injects platform parameters (app_name, support_email, statement_descriptor)", () => {
+      // In English
+      expect(translate("nonexistent.key", "en", undefined, "Welcome to {app_name} ({statement_descriptor})")).toBe(
+        "Welcome to ArifDrop (ARIFDROP*)",
+      );
+      expect(translate("nonexistent.key", "en", undefined, "Contact us at {support_email}")).toBe(
+        "Contact us at support@arifdrop.com",
+      );
+
+      // In Amharic
+      expect(translate("nonexistent.key", "am", undefined, "እንኳን ወደ {app_name} በደህና መጡ")).toBe(
+        "እንኳን ወደ አሪፍድሮፕ በደህና መጡ",
+      );
+
+      // Custom params override defaults if provided
+      expect(translate("nonexistent.key", "en", { app_name: "CustomApp" }, "Welcome to {app_name}")).toBe(
+        "Welcome to CustomApp",
+      );
+    });
+
     it("supports pluralization with {count} for one and other forms", () => {
       // In English
       expect(translate("checkout.item_count", "en", { count: 1 })).toBe("1 item");
