@@ -1,8 +1,6 @@
 import { Link } from "@inertiajs/react";
 import * as React from "react";
 
-import { Input } from "$app/components/ui/Input";
-
 import logoG from "$assets/images/logo-g.svg";
 
 const FooterLink = ({
@@ -48,27 +46,6 @@ export const HomeFooter = ({
 }: { currencySelector?: boolean | undefined } = {}) => (
   <div className="flex flex-col justify-between gap-16 bg-black px-8 py-16 leading-relaxed text-white lg:flex-row lg:px-[4vw] lg:py-24">
     <div className="flex w-full max-w-3xl flex-col gap-16">
-      <div className="flex flex-col gap-8">
-        <div className="text-3xl lg:text-5xl lg:leading-tight">
-          Subscribe to get tips and tactics to grow the way you want.
-        </div>
-        <form action="https://gumroad.com/follow_from_embed_form" method="post" className="flex gap-1">
-          <input name="seller_id" type="hidden" value="6282492303727" />
-          <div className="lg:flex-1">
-            <Input name="email" placeholder="Your email address" type="email" />
-          </div>
-          <div className="group relative inline-block">
-            <div className="absolute inset-0 z-[2] rounded-sm border border-black bg-yellow transition-transform duration-150" />
-            <div className="absolute inset-0 z-[1] rounded-sm border border-black bg-red transition-transform duration-150 group-hover:translate-x-2 group-hover:translate-y-2" />
-            <button
-              type="submit"
-              className="relative z-[3] inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-sm border border-black bg-pink px-3 text-base text-black no-underline transition-all duration-150 group-hover:-translate-x-2 group-hover:-translate-y-2 lg:h-12 lg:w-auto lg:px-6 lg:text-base"
-            >
-              →
-            </button>
-          </div>
-        </form>
-      </div>
       <div className="flex items-center gap-2">
         <img src={logoG} alt="Gumroad icon" className="h-6 w-6" />
         <div>Ⓒ Gumroad, Inc.</div>

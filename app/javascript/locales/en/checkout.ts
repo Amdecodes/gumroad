@@ -15,7 +15,6 @@ export const checkout = {
   pending: "Payment pending verification",
   redirecting: "Redirecting to Chapa checkout...",
   card_label: "Card",
-  paypal_label: "PayPal",
   pay_with: "Pay with",
   payment_form_aria: "Payment form",
   use_saved_card: "Use saved card",

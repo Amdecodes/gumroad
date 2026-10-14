@@ -318,11 +318,7 @@ export const ProductTab = () => {
                       <section className="grid gap-8 border-t border-border p-4 md:p-8">
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <h2>{t("seller.productEdit.durations_section")}</h2>
-                          <a
-                            href="https://gumroad.com/help/article/70-can-i-sell-services#call"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
+                          <a href="/help/article/70-can-i-sell-services#call" target="_blank" rel="noreferrer">
                             {t("seller.productEdit.learn_more")}
                           </a>
                         </div>

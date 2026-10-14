@@ -15,7 +15,6 @@ export const checkout = {
   pending: "ክፍያ በማረጋገጥ ላይ",
   redirecting: "ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ...",
   card_label: "ካርድ",
-  paypal_label: "PayPal",
   pay_with: "ይክፈሉ በ",
   payment_form_aria: "የክፍያ ቅጽ",
   use_saved_card: "የተቀመጠ ካርድ ይጠቀሙ",

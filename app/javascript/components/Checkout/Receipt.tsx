@@ -259,7 +259,7 @@ export const CreateAccountForm = ({
               {t("receipt.terms_notice")}{" "}
               {/* Opens in a new tab: the receipt is in-memory checkout state, so navigating
                   away would destroy it with no way back. */}
-              <a href="https://gumroad.com/terms" target="_blank" rel="noreferrer">
+              <a href="/terms" target="_blank" rel="noreferrer">
                 {t("receipt.terms_of_use")}
               </a>
               .

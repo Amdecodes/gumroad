@@ -11,7 +11,7 @@ import { Label } from "$app/components/ui/Label";
 import { Select } from "$app/components/ui/Select";
 import { Textarea } from "$app/components/ui/Textarea";
 
-export const SUPPORT_EMAIL = "support@gumroad.com";
+export const SUPPORT_EMAIL = "support@arifdrop.com";
 
 const CATEGORIES = ["account", "payouts", "purchases & refunds", "technical issue", "other"] as const;
 

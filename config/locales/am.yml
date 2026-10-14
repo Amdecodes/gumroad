@@ -93,7 +93,6 @@ am:
     pending: "ክፍያ በማረጋገጥ ላይ"
     redirecting: "ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ..."
     card_label: "ካርድ"
-    paypal_label: "PayPal"
     pay_with: "ይክፈሉ በ"
     payment_form_aria: "የክፍያ ቅጽ"
     use_saved_card: "የተቀመጠ ካርድ ይጠቀሙ"
@@ -733,7 +732,7 @@ am:
       product_missing: "በጋሪዎ ውስጥ ያለ ምርት ጎድሏል። ገጹን አድሰው እንደገና ይሞክሩ።"
       login_required: "ክፍያውን ለማጠናቀቅ እባክዎ ይግቡ።"
     invoices:
-      paypal_pending: "ግዢዎ በPayPal ገና አልተጠናቀቀም። እባክዎ ጥቂት ቆይተው እንደገና ይሞክሩ።"
+      paypal_pending: "ግዢዎ ገና አልተጠናቀቀም። እባክዎ ጥቂት ቆይተው እንደገና ይሞክሩ።"
       address_required: "ደረሰኝ ለማውጣት የአድራሻ መረጃ ያስፈልጋል።"
       downloaded_automatically: "ደረሰኙ በራስ-ሰር ይወርዳል።"
       gst_refunded: "GSTም ተመላሽ ተደርጓል።"

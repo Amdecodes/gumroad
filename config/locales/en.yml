@@ -93,7 +93,6 @@ en:
     pending: "Payment pending verification"
     redirecting: "Redirecting to Chapa checkout..."
     card_label: "Card"
-    paypal_label: "PayPal"
     pay_with: "Pay with"
     payment_form_aria: "Payment form"
     use_saved_card: "Use saved card"
@@ -733,7 +732,7 @@ en:
       product_missing: "A product in your cart is missing. Refresh the page and try again."
       login_required: "Please log in to complete checkout."
     invoices:
-      paypal_pending: "Your purchase has not been completed by PayPal yet. Please try again soon."
+      paypal_pending: "Your purchase has not been completed yet. Please try again soon."
       address_required: "Address information is required to generate an invoice."
       downloaded_automatically: "The invoice will be downloaded automatically."
       gst_refunded: "GST has also been refunded."

@@ -1,10 +1,10 @@
 <%= header_section(t("mailers.customer.partial_refund.header", refund_type: @refund_type)) %>
 <div>
-  <% if @formatted_presentment_refund_amount.present? %>
+  <% if @formatted_presentment_refund_amount.present? && @formatted_usd_refund_amount.present? %>
     <%# Presentment purchases were charged in the buyer's own currency, so lead with that
         amount (it matches their card statement) and show the canonical USD amount alongside. %>
     <p><%= t("mailers.customer.partial_refund.body_presentment", refund_amount: @formatted_presentment_refund_amount, usd_refund_amount: @formatted_usd_refund_amount, purchase_amount: (@purchase.buyer_presentment? ? "#{@purchase.formatted_buyer_presentment_total} (#{@formatted_usd_total} USD)" : @purchase.formatted_total_transaction_amount), product: @purchase.link_name) %></p>
   <% else %>
-    <p><%= t("mailers.customer.partial_refund.body", refund_amount: @formatted_refund_amount, purchase_amount: @purchase.formatted_total_transaction_amount, product: @purchase.link_name) %></p>
+    <p><%= t("mailers.customer.partial_refund.body", refund_amount: @formatted_refund_amount, purchase_amount: @purchase&.formatted_total_price || @purchase&.formatted_total_transaction_amount, product: @purchase.link_name) %></p>
   <% end %>
 </div>

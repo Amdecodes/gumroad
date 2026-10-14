@@ -162,6 +162,9 @@ class ReceiptPresenter::PaymentInfo
     end
 
     def usd_currency_note
+      first_purchase = chargeable.successful_purchases.first
+      purchase_currency = first_purchase&.displayed_price_currency_type&.to_s&.upcase
+      return if purchase_currency.in?(["ETB", Currency::ETB.to_s.upcase])
       return if presentment_currency.present?
 
       I18n.t("mailers.customer.receipt.usd_currency_note", default: "All charges are processed in United States Dollars. Your bank or financial institution may apply their own fees for currency conversion.")
@@ -175,7 +178,8 @@ class ReceiptPresenter::PaymentInfo
       return if orderable.card_type.in?([CardType::PAYPAL, CardType::LINK, CardType::UPI, CardType::IDEAL, CardType::BANCONTACT, CardType::PIX, CardType::KLARNA, CardType::ALIPAY])
 
       # TODO: Update when multiple charges per receipt are supported
-      I18n.t("mailers.customer.receipt.credit_card_note", default: "The charge will be listed as GUMRD.COM* on your credit card statement.")
+      descriptor = PlatformConfig.statement_descriptor
+      I18n.t("mailers.customer.receipt.credit_card_note", statement_descriptor: descriptor, default: "The charge will be listed as %{statement_descriptor} on your credit card statement.")
     end
 
     def today_payment_heading_attribute

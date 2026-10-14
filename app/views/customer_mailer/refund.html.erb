@@ -1,11 +1,8 @@
 <%= header_section(t("mailers.customer.refund.header")) %>
 <div>
-  <% if @formatted_presentment_total.present? %>
-    <%# Presentment purchases were charged in the buyer's own currency, so lead with the
-        full purchase total in that currency (it matches their card statement) and show
-        the canonical USD total alongside. %>
+  <% if @formatted_presentment_total.present? && @formatted_usd_total.present? %>
     <p><%= t("mailers.customer.refund.body_presentment", product: @purchase.link_name, total: @formatted_presentment_total, usd_total: @formatted_usd_total) %></p>
   <% else %>
-    <p><%= t("mailers.customer.refund.body", product: @purchase.link_name, total: @purchase.formatted_total_transaction_amount) %></p>
+    <p><%= t("mailers.customer.refund.body", product: @purchase&.link_name || @product.name, total: @purchase&.formatted_total_price || @product.formatted_price) %></p>
   <% end %>
 </div>

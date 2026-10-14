@@ -1,6 +1,6 @@
 <%= header_section(@subject) %>
 <div>
-  <% why_declined_link = link_to(t("mailers.customer.subscription_charge_blocked_location.why_declined_link"), "https://gumroad.com/help/article/203-why-did-my-payment-fail#Not-available-in-your-location-Xr4mB") %>
+  <% why_declined_link = link_to(t("mailers.customer.subscription_charge_blocked_location.why_declined_link"), help_center_article_url("203-why-did-my-payment-fail")) %>
   <% if @subscription.is_installment_plan %>
     <p><%= t("mailers.customer.subscription_charge_blocked_location.installment_body_1", product: @subscription.link.name) %></p>
     <p><%= t("mailers.customer.subscription_charge_blocked_location.installment_body_2_html", link: link_to(t("mailers.customer.subscription_charge_blocked_location.installment_update_link"), @edit_card_url)).html_safe %></p>
