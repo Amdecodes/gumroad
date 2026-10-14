@@ -2,6 +2,7 @@ import { Discord } from "@boxicons/react";
 import * as React from "react";
 
 import { joinServer, leaveServer } from "$app/data/discord_integration";
+import { t } from "$app/utils/i18n";
 import { DISCORD_CLIENT_ID, DISCORD_OAUTH_URL } from "$app/utils/integrations";
 import { startOauthRedirectChecker } from "$app/utils/oauth";
 
@@ -43,15 +44,15 @@ export const DiscordButton = ({
       onSuccess: async (code) => {
         const response = await joinServer(code, purchaseId, token);
         if (response.ok) {
-          showAlert(`You've been added to the Discord server #${response.serverName}!`, "success");
+          showAlert(t("content.added_to_discord", { server: response.serverName }), "success");
           setDiscordConnected(true);
         } else {
-          showAlert("Could not join the Discord server, please try again.", "error");
+          showAlert(t("checkout.something_went_wrong_retry"), "error");
         }
         setLoading(false);
       },
       onError: () => {
-        showAlert("Could not join the Discord server, please try again.", "error");
+        showAlert(t("checkout.something_went_wrong_retry"), "error");
         setLoading(false);
       },
       onPopupClose: () => setLoading(false),
@@ -64,10 +65,10 @@ export const DiscordButton = ({
 
     const response = await leaveServer(purchaseId, token);
     if (response.ok) {
-      showAlert(`You've left the Discord server #${response.serverName}.`, "success");
+      showAlert(t("content.left_discord", { server: response.serverName }), "success");
       setDiscordConnected(false);
     } else {
-      showAlert("Could not leave the Discord server.", "error");
+      showAlert(t("checkout.something_went_wrong_retry"), "error");
     }
     setLoading(false);
   };
@@ -79,7 +80,7 @@ export const DiscordButton = ({
   ) : (
     <Button color="discord" onClick={discordConnected ? leaveDiscord : openJoinDiscordPopup}>
       <Discord pack="brands" className="size-5" />
-      {discordConnected ? "Leave Discord" : "Join Discord"}
+      {discordConnected ? t("content.leave_discord") : t("content.join_discord")}
     </Button>
   );
 };

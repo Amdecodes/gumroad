@@ -1,6 +1,8 @@
 import { Form, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { PoweredByFooter } from "$app/components/PoweredByFooter";
 import { Card, CardContent } from "$app/components/ui/Card";
@@ -15,16 +17,16 @@ const PurchasesInvoiceConfirmationPage = () => {
         <main className="mx-auto h-min w-full max-w-md">
           <CardContent asChild>
             <header className="text-center">
-              <h2>Generate invoice</h2>
+              <h2>{t("receipt.invoices.generate")}</h2>
             </header>
           </CardContent>
           <CardContent asChild>
             <Form action={url} method="POST" options={{ preserveScroll: true }} className="flex flex-col gap-4">
               {({ processing }) => (
                 <>
-                  <Input type="text" name="email" placeholder="Email address" className="grow" />
+                  <Input type="text" name="email" placeholder={t("checkout.email_address")} className="grow" />
                   <Button type="submit" color="accent" disabled={processing}>
-                    Confirm email
+                    {t("receipt.invoices.confirm_email")}
                   </Button>
                 </>
               )}

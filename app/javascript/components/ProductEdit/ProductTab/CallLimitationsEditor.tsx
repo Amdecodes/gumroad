@@ -1,6 +1,8 @@
 import { ChevronDown } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { NumberInput } from "$app/components/NumberInput";
 import { CallLimitationInfo } from "$app/components/ProductEdit/state";
 import { TypeSafeOptionSelect } from "$app/components/TypeSafeOptionSelect";
@@ -40,6 +42,17 @@ const getNoticeInMinutes = ({ unit, value }: MinimumNotice) => {
   }
 };
 
+const getUnitLabel = (unit: Unit) => {
+  switch (unit) {
+    case "minutes":
+      return t("seller.productEdit.units_minutes");
+    case "hours":
+      return t("seller.productEdit.units_hours");
+    case "days":
+      return t("seller.productEdit.units_days");
+  }
+};
+
 export const CallLimitationsEditor = ({
   callLimitations,
   onChange,
@@ -62,19 +75,19 @@ export const CallLimitationsEditor = ({
   return (
     <>
       <Fieldset>
-        <Label htmlFor={`${uid}-notice-period`}>Notice period</Label>
+        <Label htmlFor={`${uid}-notice-period`}>{t("seller.productEdit.notice_period")}</Label>
         <NumberInput value={minimumNotice.value} onChange={(value) => setMinimumNotice({ ...minimumNotice, value })}>
           {(props) => (
             <InputGroup ref={inputRef}>
               <Input id={`${uid}-notice-period`} placeholder="15" {...props} />
               <Pill asChild className="relative -mr-2 shrink-0 cursor-pointer">
                 <Label>
-                  <span>{minimumNotice.unit}</span>
+                  <span>{getUnitLabel(minimumNotice.unit)}</span>
                   <TypeSafeOptionSelect
-                    aria-label="Units"
+                    aria-label={t("seller.productEdit.notice_period")}
                     onChange={(unit) => setMinimumNotice({ ...minimumNotice, unit })}
                     value={minimumNotice.unit}
-                    options={UNITS.map((unit) => ({ id: unit, label: unit }))}
+                    options={UNITS.map((unit) => ({ id: unit, label: getUnitLabel(unit) }))}
                     className="absolute inset-0 z-1 m-0! cursor-pointer opacity-0"
                   />
                   <ChevronDown className="ml-auto size-5" />
@@ -83,17 +96,17 @@ export const CallLimitationsEditor = ({
             </InputGroup>
           )}
         </NumberInput>
-        <FieldsetDescription>Minimum notice time required when booking a call</FieldsetDescription>
+        <FieldsetDescription>{t("seller.productEdit.notice_period_desc")}</FieldsetDescription>
       </Fieldset>
       <Fieldset>
-        <Label htmlFor={`${uid}-daily-limit`}>Daily limit</Label>
+        <Label htmlFor={`${uid}-daily-limit`}>{t("seller.productEdit.daily_limit")}</Label>
         <NumberInput
           onChange={(maximum_calls_per_day) => updateCallLimitations({ maximum_calls_per_day })}
           value={maximum_calls_per_day}
         >
           {(props) => <Input id={`${uid}-daily-limit`} placeholder="2" {...props} />}
         </NumberInput>
-        <FieldsetDescription>Maximum calls allowed per day</FieldsetDescription>
+        <FieldsetDescription>{t("seller.productEdit.daily_limit_desc")}</FieldsetDescription>
       </Fieldset>
     </>
   );

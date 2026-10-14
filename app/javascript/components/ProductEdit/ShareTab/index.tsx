@@ -1,6 +1,8 @@
 import { CartPlus } from "@boxicons/react";
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { CopyToClipboard } from "$app/components/CopyToClipboard";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
@@ -25,6 +27,7 @@ import { useRunOnce } from "$app/components/useRunOnce";
 import hands from "$assets/images/illustrations/hands.png";
 
 export const ShareTab = () => {
+  const { t } = useTranslation();
   const currentSeller = useCurrentSeller();
 
   const {
@@ -53,15 +56,23 @@ export const ShareTab = () => {
           <section className="grid gap-8 p-4! md:p-8!">
             <DiscoverEligibilityPromo />
             <header>
-              <h2>Share</h2>
+              <h2>{t("seller.productEdit.share_title")}</h2>
             </header>
-            <ShareButtons url={url} twitterText={`Buy ${product.name} on @Gumroad`} facebookText={product.name}>
+            <ShareButtons
+              url={url}
+              twitterText={t("seller.productEdit.share_twitter_text", { name: product.name })}
+              facebookText={product.name}
+            >
               {/* The header used to carry a "Copy checkout link" button; it lives here now so the
                   header stays at just Unpublish + Save changes. */}
-              <CopyToClipboard text={checkoutUrl} copyTooltip="Copy checkout URL" tooltipPosition="top">
+              <CopyToClipboard
+                text={checkoutUrl}
+                copyTooltip={t("seller.productEdit.copy_checkout_url")}
+                tooltipPosition="top"
+              >
                 <Button>
                   <CartPlus className="size-5" />
-                  Copy checkout URL
+                  {t("seller.productEdit.copy_checkout_url")}
                 </Button>
               </CopyToClipboard>
             </ShareButtons>
@@ -80,25 +91,22 @@ export const ShareTab = () => {
           />
           <section className="grid gap-8 border-t border-border p-4 md:p-8">
             <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h2>Gumroad Discover</h2>
+              <h2>{t("seller.productEdit.discover_title")}</h2>
               <a href="/help/article/79-gumroad-discover" target="_blank" rel="noreferrer">
-                Learn more
+                {t("seller.productEdit.learn_more")}
               </a>
             </header>
             {isListedOnDiscover ? (
               <Alert role="status" variant="success">
                 <div className="flex flex-col justify-between sm:flex-row">
-                  {product.name} is listed on Gumroad Discover.
-                  <a href={discoverLink.toString()}>View</a>
+                  {t("seller.productEdit.discover_listed", { name: product.name })}
+                  <a href={discoverLink.toString()}>{t("seller.productEdit.view")}</a>
                 </div>
               </Alert>
             ) : null}
             <div className="flex flex-col gap-4">
-              <p>
-                Gumroad Discover recommends your products to prospective customers for a flat 30% fee on each sale,
-                helping you grow beyond your existing following and find even more people who care about your work.
-              </p>
-              <p>When enabled, the product will also become part of the Gumroad affiliate program.</p>
+              <p>{t("seller.productEdit.discover_fee_info")}</p>
+              <p>{t("seller.productEdit.discover_affiliate_info")}</p>
             </div>
             <TaxonomyEditor
               taxonomyId={product.taxonomy_id}
@@ -116,18 +124,18 @@ export const ShareTab = () => {
               <Switch
                 checked={product.display_product_reviews}
                 onChange={(e) => updateProduct({ display_product_reviews: e.target.checked })}
-                label="Display your product's 1-5 star rating to prospective customers"
+                label={t("seller.productEdit.display_reviews_label")}
               />
               <Switch
                 checked={product.is_adult}
                 onChange={(e) => updateProduct({ is_adult: e.target.checked })}
                 label={
                   <>
-                    This product contains content meant{" "}
+                    {t("seller.productEdit.adult_content_label_prefix")}{" "}
                     <a href="/help/article/156-gumroad-and-adult-content" target="_blank" rel="noreferrer">
-                      only for adults,
+                      {t("seller.productEdit.adult_content_label_link")}
                     </a>{" "}
-                    including the preview
+                    {t("seller.productEdit.adult_content_label_suffix")}
                   </>
                 }
               />
@@ -140,6 +148,7 @@ export const ShareTab = () => {
 };
 
 const DiscoverEligibilityPromo = () => {
+  const { t } = useTranslation();
   const [show, setShow] = React.useState(false);
 
   useRunOnce(() => {
@@ -154,16 +163,15 @@ const DiscoverEligibilityPromo = () => {
         <img src={hands} alt="" className="size-12" />
         <div className="flex flex-1 flex-col gap-2">
           <div>
-            To appear on Gumroad Discover, make sure to meet all the{" "}
+            {t("seller.productEdit.discover_eligibility_notice_1")}{" "}
             <a href="/help/article/79-gumroad-discover" target="_blank" rel="noreferrer">
-              eligibility criteria
+              {t("seller.productEdit.discover_eligibility_link_criteria")}
             </a>
-            , which includes making at least one successful sale and completing the Risk Review process explained in
-            detail{" "}
+            {t("seller.productEdit.discover_eligibility_notice_2")}{" "}
             <a href="/help/article/13-getting-paid" target="_blank" rel="noreferrer">
-              here
+              {t("seller.productEdit.discover_eligibility_link_here")}
             </a>
-            .
+            {t("seller.productEdit.discover_eligibility_notice_3")}
           </div>
           <LinkButton
             className="w-max"
@@ -172,7 +180,7 @@ const DiscoverEligibilityPromo = () => {
               setShow(false);
             }}
           >
-            Close
+            {t("seller.productEdit.close")}
           </LinkButton>
         </div>
       </div>

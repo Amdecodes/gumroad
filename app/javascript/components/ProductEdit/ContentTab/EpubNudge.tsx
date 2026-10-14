@@ -1,6 +1,8 @@
 import { X } from "@boxicons/react";
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { useProductEditContext } from "$app/components/ProductEdit/state";
 import { Alert } from "$app/components/ui/Alert";
 
@@ -10,6 +12,7 @@ import { Alert } from "$app/components/ui/Alert";
 // sessionStorage on purpose — this is a lightweight hint, not a persistent
 // setting, so we avoid adding a database column for it.
 export const EpubNudge = () => {
+  const { t } = useTranslation();
   const { id, product } = useProductEditContext();
   const storageKey = `epub-nudge-dismissed-${id}`;
 
@@ -41,9 +44,16 @@ export const EpubNudge = () => {
     <Alert role="status" variant="info" className="m-4 mb-0">
       <div className="flex items-start gap-2">
         <p className="flex-1">
-          Buyers read on phones and e-readers — consider adding an EPUB (electronic publication) version of your PDF.
+          {t(
+            "seller.productEdit.epub_nudge_text",
+            "Buyers read on phones and e-readers — consider adding an EPUB (electronic publication) version of your PDF.",
+          )}
         </p>
-        <button aria-label="Dismiss" onClick={dismiss} className="cursor-pointer all-unset">
+        <button
+          aria-label={t("seller.productEdit.dismiss", "Dismiss")}
+          onClick={dismiss}
+          className="cursor-pointer all-unset"
+        >
           <X className="size-5" />
         </button>
       </div>

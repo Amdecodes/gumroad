@@ -5,6 +5,7 @@ import { Link, useMatches, useNavigate } from "react-router-dom";
 import { setProductPublished } from "$app/data/publish_product";
 import { classNames } from "$app/utils/classNames";
 import { getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
+import { t } from "$app/utils/i18n";
 import { ResponseError } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
@@ -89,10 +90,10 @@ const NotifyAboutProductUpdatesAlert = () => {
     >
       <Alert variant="info">
         <div className="flex flex-col gap-4">
-          Changes saved! Would you like to notify your customers about those changes?
+          {t("seller.productEdit.content_updates_saved")}
           <div className="flex gap-2">
             <Button color="primary" outline onClick={() => close()}>
-              Skip for now
+              {t("seller.productEdit.skip_for_now")}
             </Button>
             <NavigationButton
               color="primary"
@@ -109,7 +110,7 @@ const NotifyAboutProductUpdatesAlert = () => {
               target="_blank"
               rel="noreferrer"
             >
-              Send notification
+              {t("seller.productEdit.send_notification")}
             </NavigationButton>
           </div>
         </div>
@@ -184,7 +185,10 @@ export const Layout = ({
       if (!saved) return;
       await setProductPublished(uniquePermalink, published);
       updateProduct({ is_published: published });
-      showAlert(published ? "Published!" : "Unpublished!", "success");
+      showAlert(
+        published ? t("seller.productEdit.published_alert") : t("seller.productEdit.unpublished_alert"),
+        "success",
+      );
       if (tab === "share") {
         if (product.native_type === "coffee") navigate.current(rootPath);
         else navigate.current(`${rootPath}/content`);
@@ -196,7 +200,7 @@ export const Layout = ({
       else {
         // Release Save and Publish for any other error too, or they stay disabled with no message.
         if (typeof reportError === "function") reportError(e);
-        showAlert("Something went wrong. Please try again.", "error");
+        showAlert(t("seller.productEdit.something_went_wrong"), "error");
       }
     } finally {
       setIsPublishing(false);
@@ -212,13 +216,13 @@ export const Layout = ({
   const isUploadingFilesOrImages = isLoading || isUploadingFiles || !!imageSettings?.isUploading;
   const isBusy = isUploadingFilesOrImages || saving || saveBlocked || isPublishing;
   const saveButtonTooltip = isUploadingFiles
-    ? "Files are still uploading..."
+    ? t("seller.productEdit.files_uploading_tooltip")
     : isUploadingFilesOrImages
-      ? "Images are still uploading..."
+      ? t("seller.productEdit.images_uploading_tooltip")
       : saveBlocked
-        ? "Reload the page to save again."
+        ? t("seller.productEdit.save_blocked_tooltip")
         : isBusy
-          ? "Please wait..."
+          ? t("seller.productEdit.please_wait_tooltip")
           : undefined;
 
   React.useEffect(() => {
@@ -234,16 +238,16 @@ export const Layout = ({
   const saveButton = (
     <WithTooltip tip={saveButtonTooltip}>
       <Button color="primary" disabled={isBusy} onClick={() => void save()}>
-        {saving ? "Saving changes..." : "Save changes"}
+        {saving ? t("seller.productEdit.saving_changes") : t("seller.productEdit.save_changes")}
       </Button>
     </WithTooltip>
   );
 
   const onTabClick = (e: React.MouseEvent<HTMLAnchorElement>, callback?: () => void) => {
     const message = isUploadingFiles
-      ? "Some files are still uploading, please wait..."
+      ? t("seller.productEdit.files_uploading_tab_warning")
       : isUploadingFilesOrImages
-        ? "Some images are still uploading, please wait..."
+        ? t("seller.productEdit.images_uploading_tab_warning")
         : undefined;
 
     if (message) {
@@ -265,13 +269,14 @@ export const Layout = ({
           <Alert variant="warning">
             {currentSeller.publishBlockedReason === "payout_setup_rejected" ? (
               <>
-                Your payout setup needs another look before you can publish this product for sale.{" "}
-                <a href={Routes.settings_payments_path()}>Review your payout setup</a>
+                {t("seller.productEdit.payout_setup_needed_title")}{" "}
+                <a href={Routes.settings_payments_path()}>{t("seller.productEdit.review_payout_setup")}</a>
               </>
             ) : (
               <>
-                You haven't connected a payout method yet, so you won't be able to publish this product for sale.{" "}
-                <a href={Routes.settings_payments_path()}>Connect a payout method</a> — it only takes a minute.
+                {t("seller.productEdit.connect_payout_method")}{" "}
+                <a href={Routes.settings_payments_path()}>{t("seller.productEdit.connect_payout_method_link")}</a>{" "}
+                {t("seller.productEdit.connect_payout_method_suffix")}
               </>
             )}
           </Alert>
@@ -286,15 +291,14 @@ export const Layout = ({
           <Alert variant="warning">
             {currentSeller.legalGuardianUnsupported ? (
               <>
-                Our payment partner cannot verify a seller under 18 in your country, even with a legal guardian on the
-                account — you can still publish and take orders, but payouts will start once you turn 18.{" "}
-                <a href={Routes.settings_payments_path()}>Review your payout setup</a>
+                {t("seller.productEdit.guardian_under_18_unsupported")}{" "}
+                <a href={Routes.settings_payments_path()}>{t("seller.productEdit.review_payout_setup")}</a>
               </>
             ) : (
               <>
-                You're under 18, so a parent or guardian needs to be added to your account before you can get paid out
-                for this product. <a href={Routes.settings_payments_path()}>Add a guardian</a> — you can still publish
-                and take orders, but payouts won't go through until that's done.
+                {t("seller.productEdit.guardian_under_18_needed")}{" "}
+                <a href={Routes.settings_payments_path()}>{t("seller.productEdit.add_guardian")}</a>{" "}
+                {t("seller.productEdit.guardian_under_18_suffix")}
               </>
             )}
           </Alert>
@@ -304,7 +308,7 @@ export const Layout = ({
       <form className="hidden" data-id={uniquePermalink} id="edit-link-basic-form" />
       <PageHeader
         className="sticky-top"
-        title={product.name || "Untitled"}
+        title={product.name || t("seller.productEdit.untitled")}
         actions={
           product.is_published ? (
             <>
@@ -312,7 +316,7 @@ export const Layout = ({
                   checkout links lives at the top of the Share tab instead of crowding the
                   header. */}
               <Button disabled={isBusy} onClick={() => void setPublished(false)}>
-                {isPublishing ? "Unpublishing..." : "Unpublish"}
+                {isPublishing ? t("seller.productEdit.unpublishing") : t("seller.productEdit.unpublish")}
               </Button>
               {saveButton}
             </>
@@ -326,14 +330,14 @@ export const Layout = ({
                 })
               }
             >
-              {saving ? "Saving changes..." : "Save and continue"}
+              {saving ? t("seller.productEdit.saving_changes") : t("seller.productEdit.save_and_continue")}
             </Button>
           ) : (
             <>
               {saveButton}
               <WithTooltip tip={saveButtonTooltip}>
                 <Button color="accent" disabled={isBusy} onClick={() => void setPublished(true)}>
-                  {isPublishing ? "Publishing..." : "Publish and continue"}
+                  {isPublishing ? t("seller.productEdit.publishing") : t("seller.productEdit.publish_and_continue")}
                 </Button>
               </WithTooltip>
             </>
@@ -349,19 +353,19 @@ export const Layout = ({
           <Tabs style={{ gridColumn: 1 }}>
             <Tab asChild isSelected={tab === "product"}>
               <Link to={rootPath} onClick={onTabClick}>
-                Product
+                {t("seller.productEdit.tab_product")}
               </Link>
             </Tab>
             {!isCoffee ? (
               <Tab asChild isSelected={tab === "content"}>
                 <Link to={`${rootPath}/content`} onClick={onTabClick}>
-                  Content
+                  {t("seller.productEdit.tab_content")}
                 </Link>
               </Tab>
             ) : null}
             <Tab asChild isSelected={tab === "receipt"}>
               <Link to={`${rootPath}/receipt`} onClick={onTabClick}>
-                Receipt
+                {t("seller.productEdit.tab_receipt")}
               </Link>
             </Tab>
             <Tab asChild isSelected={tab === "share"}>
@@ -371,15 +375,12 @@ export const Layout = ({
                   onTabClick(evt, () => {
                     if (!product.is_published) {
                       evt.preventDefault();
-                      showAlert(
-                        "Not yet! You've got to publish your awesome product before you can share it with your audience and the world.",
-                        "warning",
-                      );
+                      showAlert(t("seller.productEdit.not_published_share_warning"), "warning");
                     }
                   });
                 }}
               >
-                Share
+                {t("seller.productEdit.tab_share")}
               </Link>
             </Tab>
           </Tabs>
@@ -403,7 +404,7 @@ export const Layout = ({
                     subject: receiptSubject ?? undefined,
                   }
                 : {
-                    title: product.name || "Untitled",
+                    title: product.name || t("seller.productEdit.untitled"),
                     // Tabs without a live page to open (showNavigationButton=false) show the
                     // title alone, with no address line or arrow.
                     url: showNavigationButton ? url : undefined,

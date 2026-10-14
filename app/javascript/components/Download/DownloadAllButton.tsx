@@ -1,6 +1,8 @@
 import { ChevronDown, Dropbox as DropboxIcon, FileCode } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button, NavigationButton } from "$app/components/Button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "$app/components/Popover";
 
@@ -11,7 +13,7 @@ export const DownloadAllButton = ({ zip_path, files }: Props) => (
     <PopoverAnchor>
       <PopoverTrigger asChild>
         <Button>
-          Download all
+          {t("content.download_all")}
           <ChevronDown className="size-5" />
         </Button>
       </PopoverTrigger>
@@ -20,11 +22,11 @@ export const DownloadAllButton = ({ zip_path, files }: Props) => (
       <div className="grid gap-2">
         <NavigationButton href={zip_path}>
           <FileCode pack="filled" className="size-5" />
-          Download as ZIP
+          {t("content.download_as_zip")}
         </NavigationButton>
         <Button onClick={() => Dropbox.save({ files })}>
           <DropboxIcon pack="brands" className="size-5" />
-          Save to Dropbox
+          {t("content.save_to_dropbox")}
         </Button>
       </div>
     </PopoverContent>

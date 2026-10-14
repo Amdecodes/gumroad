@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { formatBuyerLocalOrSetPrice } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import {
@@ -40,7 +41,7 @@ export const PurchaseButton = React.forwardRef<HTMLAnchorElement, Props>(
         setSelection?.({ ...selection, price: { ...selection.price, error: true } });
         if (selection.price.value === null) {
           configurationSelectorRef?.current?.focusRequiredInput();
-          showAlert("You must input an amount", "warning");
+          showAlert(t("storefront.must_input_amount"), "warning");
         } else if (selection.price.value < discountedPriceCents) {
           const formattedMinPrice = formatBuyerLocalOrSetPrice(
             discountedPriceCents,
@@ -53,12 +54,12 @@ export const PurchaseButton = React.forwardRef<HTMLAnchorElement, Props>(
             { symbolFormat: "short" },
           );
           configurationSelectorRef?.current?.focusRequiredInput();
-          showAlert(`Minimum price for this product is ${formattedMinPrice}.`, "error");
+          showAlert(t("storefront.minimum_price_is", { price: formattedMinPrice }), "error");
         }
         return false;
       }
       if (product.native_type === "call" && !selection.callStartTime) {
-        showAlert("You must select a date and time for the call", "warning");
+        showAlert(t("storefront.must_select_call_date_time"), "warning");
         return false;
       }
       return true;

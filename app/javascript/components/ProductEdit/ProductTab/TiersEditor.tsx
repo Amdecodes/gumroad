@@ -6,6 +6,7 @@ import * as React from "react";
 import { sendSamplePriceChangeEmail } from "$app/data/membership_tiers";
 import { confirmRemovedVariantPageDeletions, reorderPreservingMembership } from "$app/data/product_save_contract";
 import { getIsSingleUnitCurrency } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 import { priceCentsToUnit } from "$app/utils/price";
 import {
   numberOfMonthsInRecurrence,
@@ -49,6 +50,7 @@ const areAllEnabledPricesZero = (recurrencePriceValues: Record<string, Recurrenc
 };
 
 export const TiersEditor = ({ tiers, onChange }: { tiers: Tier[]; onChange: (tiers: Tier[]) => void }) => {
+  const { t } = useTranslation();
   const { updateProduct, canCloseMembershipTiers } = useProductEditContext();
   const updateVersion = (id: string, update: Partial<Tier>) => {
     onChange(tiers.map((version) => (version.id === id ? { ...version, ...update } : version)));
@@ -108,14 +110,17 @@ export const TiersEditor = ({ tiers, onChange }: { tiers: Tier[]; onChange: (tie
       }}
     >
       <Plus className="size-5" />
-      Add tier
+      {t("seller.productEdit.add_tier", "Add tier")}
     </Button>
   );
 
   return tiers.length === 0 ? (
     <Placeholder>
-      <h2>Offer different tiers of this membership</h2>
-      Sweeten the deal for your customers with different levels of access. Every membership needs at least one tier.
+      <h2>{t("seller.productEdit.tiers_empty_title", "Offer different tiers of this membership")}</h2>
+      {t(
+        "seller.productEdit.tiers_empty_desc",
+        "Sweeten the deal for your customers with different levels of access. Every membership needs at least one tier.",
+      )}
       {addButton}
     </Placeholder>
   ) : (
@@ -124,19 +129,24 @@ export const TiersEditor = ({ tiers, onChange }: { tiers: Tier[]; onChange: (tie
         <Modal
           open={!!deletionModalVersion}
           onClose={() => setDeletionModalVersionId(null)}
-          title={`Remove ${deletionModalVersion.name}?`}
+          title={t("seller.productEdit.remove_tier_modal_title", "Remove %{name}?", {
+            name: deletionModalVersion.name,
+          })}
           footer={
             <>
-              <Button onClick={() => setDeletionModalVersionId(null)}>No, cancel</Button>
+              <Button onClick={() => setDeletionModalVersionId(null)}>
+                {t("seller.productEdit.no_cancel", "No, cancel")}
+              </Button>
               <Button color="accent" onClick={() => confirmRemoval(deletionModalVersion)}>
-                Yes, remove
+                {t("seller.productEdit.yes_remove", "Yes, remove")}
               </Button>
             </>
           }
         >
-          If you delete this tier, its associated content will be removed as well. Your existing customers who purchased
-          it will see the content from the current cheapest tier as a fallback. If no tier exists, they will see the
-          product-level content.
+          {t(
+            "seller.productEdit.remove_tier_modal_desc",
+            "If you delete this tier, its associated content will be removed as well. Your existing customers who purchased it will see the content from the current cheapest tier as a fallback. If no tier exists, they will see the product-level content.",
+          )}
         </Modal>
       ) : null}
       <SortableList
@@ -172,6 +182,7 @@ const TierEditor = ({
   updateTier: (update: Partial<Tier>) => void;
   onDelete: () => void;
 }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
   const { product, currencyType } = useProductEditContext();
 
@@ -226,22 +237,28 @@ const TierEditor = ({
         <ReorderingHandle />
         <LayersAlt pack="filled" className="size-5" />
         <div>
-          <h3>{tier.name || "Untitled"}</h3>
+          <h3>{tier.name || t("seller.productEdit.untitled", "Untitled")}</h3>
           {tier.active_subscribers_count ? (
             <small className="block">
-              {tier.active_subscribers_count} {tier.active_subscribers_count === 1 ? "supporter" : "supporters"}
+              {t("seller.productEdit.supporters", { count: tier.active_subscribers_count })}
             </small>
           ) : null}
         </div>
       </RowContent>
       <RowActions>
-        <WithTooltip tip={isOpen ? "Close drawer" : "Open drawer"}>
+        <WithTooltip
+          tip={
+            isOpen
+              ? t("seller.productEdit.close_drawer", "Close drawer")
+              : t("seller.productEdit.open_drawer", "Open drawer")
+          }
+        >
           <Button size="icon" onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}>
             {isOpen ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
           </Button>
         </WithTooltip>
-        <WithTooltip tip="Remove">
-          <Button size="icon" onClick={onDelete} aria-label="Remove">
+        <WithTooltip tip={t("actions.remove", "Remove")}>
+          <Button size="icon" onClick={onDelete} aria-label={t("actions.remove", "Remove")}>
             <Trash className="size-5" />
           </Button>
         </WithTooltip>
@@ -250,7 +267,7 @@ const TierEditor = ({
         <RowDetails asChild>
           <Drawer className="grid gap-6">
             <Fieldset>
-              <Label htmlFor={`${uid}-name`}>Name</Label>
+              <Label htmlFor={`${uid}-name`}>{t("seller.productEdit.field_name", "Name")}</Label>
               <InputGroup>
                 <Input
                   id={`${uid}-name`}
@@ -259,12 +276,12 @@ const TierEditor = ({
                   onChange={(evt) => updateTier({ name: evt.target.value })}
                 />
                 <a href={url} target="_blank" rel="noreferrer">
-                  Share
+                  {t("seller.productEdit.share_title", "Share")}
                 </a>
               </InputGroup>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={`${uid}-description`}>Description</Label>
+              <Label htmlFor={`${uid}-description`}>{t("seller.productEdit.field_description", "Description")}</Label>
               <Textarea
                 id={`${uid}-description`}
                 value={tier.description}
@@ -272,7 +289,9 @@ const TierEditor = ({
               />
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={`${uid}-max-purchase-count`}>Maximum number of active supporters</Label>
+              <Label htmlFor={`${uid}-max-purchase-count`}>
+                {t("seller.productEdit.max_active_supporters", "Maximum number of active supporters")}
+              </Label>
               <NumberInput
                 onChange={(value) => updateTier({ max_purchase_count: value })}
                 value={tier.max_purchase_count}
@@ -286,7 +305,7 @@ const TierEditor = ({
               <Switch
                 checked={tier.closed_to_new_purchases === true}
                 onChange={(e) => updateTier({ closed_to_new_purchases: e.target.checked })}
-                label="Stop accepting new supporters"
+                label={t("seller.productEdit.stop_accepting_new_supporters", "Stop accepting new supporters")}
               />
             ) : null}
             <Fieldset
@@ -296,7 +315,7 @@ const TierEditor = ({
                 gridTemplateColumns: "repeat(auto-fit, max(var(--dynamic-grid), 50% - var(--spacer-3) / 2))",
               }}
             >
-              <FieldsetTitle>Pricing</FieldsetTitle>
+              <FieldsetTitle>{t("seller.productEdit.pricing_section", "Pricing")}</FieldsetTitle>
               {Object.entries(tier.recurrence_price_values).map(([recurrence, value]) => (
                 <div
                   style={{
@@ -326,7 +345,9 @@ const TierEditor = ({
               ))}
             </Fieldset>
             {allEnabledPricesAreZero ? (
-              <Alert variant="info">Free tiers require a pay what they want price.</Alert>
+              <Alert variant="info">
+                {t("seller.productEdit.free_tier_pwyw_alert", "Free tiers require a pay what they want price.")}
+              </Alert>
             ) : null}
             <Details open={tier.customizable_price}>
               <DetailsToggle chevronPosition="none" className="mb-0">
@@ -334,7 +355,7 @@ const TierEditor = ({
                   checked={tier.customizable_price}
                   onChange={(e) => updateTier({ customizable_price: e.target.checked })}
                   disabled={allEnabledPricesAreZero}
-                  label="Allow customers to pay what they want"
+                  label={t("seller.productEdit.allow_pwyw", "Allow customers to pay what they want")}
                 />
               </DetailsToggle>
               <Dropdown>
@@ -350,7 +371,7 @@ const TierEditor = ({
                       <React.Fragment key={recurrence}>
                         <Fieldset>
                           <Label htmlFor={`${uid}-${recurrence}-minimum-price`}>
-                            Minimum amount {perRecurrenceLabels[recurrence]}
+                            {t("seller.productEdit.minimum_amount", "Minimum amount")} {perRecurrenceLabels[recurrence]}
                           </Label>
                           <PriceInput
                             id={`${uid}-${recurrence}-minimum-price`}
@@ -361,7 +382,8 @@ const TierEditor = ({
                         </Fieldset>
                         <Fieldset>
                           <Label htmlFor={`${uid}-${recurrence}-suggested-price`}>
-                            Suggested amount {perRecurrenceLabels[recurrence]}
+                            {t("seller.productEdit.suggested_amount", "Suggested amount")}{" "}
+                            {perRecurrenceLabels[recurrence]}
                           </Label>
                           <PriceInput
                             id={`${uid}-${recurrence}-suggested-price`}
@@ -384,7 +406,7 @@ const TierEditor = ({
             <PriceChangeSettings tier={tier} updateTier={updateTier} />
             {integrations.length > 0 ? (
               <Fieldset>
-                <FieldsetTitle>Integrations</FieldsetTitle>
+                <FieldsetTitle>{t("seller.productEdit.integrations_section", "Integrations")}</FieldsetTitle>
                 {integrations.map((integration) => (
                   <Switch
                     checked={tier.integrations[integration]}
@@ -393,7 +415,9 @@ const TierEditor = ({
                     }
                     key={integration}
                     label={
-                      integration === "circle" ? "Enable access to Circle community" : "Enable access to Discord server"
+                      integration === "circle"
+                        ? t("seller.productEdit.circle_enable_access", "Enable access to Circle community")
+                        : t("seller.productEdit.discord_enable_access", "Enable access to Discord server")
                     }
                   />
                 ))}
@@ -408,6 +432,7 @@ const TierEditor = ({
 
 const getDateWithUTCOffset = (date: Date): Date => new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
 const PriceChangeSettings = ({ tier, updateTier }: { tier: Tier; updateTier: (update: Partial<Tier>) => void }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
 
   const [isMounted, setIsMounted] = React.useState(false);
@@ -444,9 +469,11 @@ const PriceChangeSettings = ({ tier, updateTier }: { tier: Tier; updateTier: (up
   const [editor, setEditor] = React.useState<Editor | null>(null);
 
   const formattedEffectiveDate = format(effectiveDate.value, "yyyy-MM-dd");
-  const placeholder = `The price of your membership to "${product.name}" is changing on ${formattedEffectiveDate}.
-
-You can modify or cancel your membership at any time.`;
+  const placeholder = t(
+    "seller.productEdit.price_change_placeholder",
+    `The price of your membership to "${product.name}" is changing on ${formattedEffectiveDate}.\n\nYou can modify or cancel your membership at any time.`,
+    { name: product.name, date: formattedEffectiveDate },
+  );
 
   React.useEffect(() => {
     if (editor) {
@@ -475,20 +502,26 @@ You can modify or cancel your membership at any time.`;
               subscription_price_change_effective_date: effectiveDate.value.toISOString(),
             })
           }
-          label="Apply price changes to existing customers"
+          label={t("seller.productEdit.apply_price_changes_existing", "Apply price changes to existing customers")}
         />
       </DetailsToggle>
       <Dropdown>
         <div className="grid gap-6">
           {initialEffectiveDate ? (
             <Alert variant="warning">
-              You have scheduled a pricing update for existing customers on {format(initialEffectiveDate, "MMMM d, y")}
+              {t(
+                "seller.productEdit.price_change_scheduled",
+                "You have scheduled a pricing update for existing customers on %{date}",
+                { date: format(initialEffectiveDate, "MMMM d, y") },
+              )}
             </Alert>
           ) : null}
           <div>
             <strong>
-              We'll send an email reminder to your active members stating the new price 7 days prior to their next
-              scheduled payment.
+              {t(
+                "seller.productEdit.price_change_notice",
+                "We'll send an email reminder to your active members stating the new price 7 days prior to their next scheduled payment.",
+              )}
             </strong>{" "}
             <LinkButton
               onClick={() =>
@@ -500,21 +533,26 @@ You can modify or cancel your membership at any time.`;
                   effectiveDate: formattedEffectiveDate,
                 }).then(
                   () => {
-                    showAlert("Email sample sent! Check your email", "success");
+                    showAlert(
+                      t("seller.productEdit.email_sample_sent", "Email sample sent! Check your email"),
+                      "success",
+                    );
                   },
                   (e: unknown) => {
                     assertResponseError(e);
-                    showAlert("Error sending email", "error");
+                    showAlert(t("seller.productEdit.error_sending_email", "Error sending email"), "error");
                   },
                 )
               }
             >
-              Get a sample
+              {t("seller.productEdit.get_a_sample", "Get a sample")}
             </LinkButton>
           </div>
           <Fieldset state={effectiveDate.error ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-date`}>Effective date for existing customers</Label>
+              <Label htmlFor={`${uid}-date`}>
+                {t("seller.productEdit.effective_date_label", "Effective date for existing customers")}
+              </Label>
             </FieldsetTitle>
             <DateInput
               id={`${uid}-date`}
@@ -526,19 +564,26 @@ You can modify or cancel your membership at any time.`;
             />
 
             {effectiveDate.error ? (
-              <FieldsetDescription>The effective date must be at least 7 days from today</FieldsetDescription>
+              <FieldsetDescription>
+                {t(
+                  "seller.productEdit.effective_date_min_warning",
+                  "The effective date must be at least 7 days from today",
+                )}
+              </FieldsetDescription>
             ) : null}
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-custom-message`}>Custom message</Label>
+              <Label htmlFor={`${uid}-custom-message`}>
+                {t("seller.productEdit.custom_message", "Custom message")}
+              </Label>
             </FieldsetTitle>
             {isMounted ? (
               <RichTextEditor
                 id={`${uid}-custom-message`}
                 className="textarea rounded border border-border px-4 py-3"
                 placeholder={placeholder}
-                ariaLabel="Custom message"
+                ariaLabel={t("seller.productEdit.custom_message", "Custom message")}
                 initialValue={editorContent}
                 onChange={onMessageChange}
                 onCreate={setEditor}

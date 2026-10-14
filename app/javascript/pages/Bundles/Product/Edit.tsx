@@ -11,6 +11,7 @@ import {
   RatingsWithPercentages,
 } from "$app/parsers/product";
 import { CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 
 import { BundleEditLayout, useProductUrl } from "$app/components/BundleEdit/Layout";
 import { ProductPreview } from "$app/components/BundleEdit/ProductPreview";
@@ -108,6 +109,7 @@ type ProductFormData = {
 };
 
 export default function BundlesProductEdit() {
+  const { t } = useTranslation();
   const page = usePage();
   const props = typia.assert<ProductPageProps>(page.props);
   const {
@@ -306,7 +308,7 @@ export default function BundlesProductEdit() {
       <form>
         <section className="grid gap-8 p-4! md:p-8!">
           <Fieldset>
-            <Label htmlFor={`${uid}-name`}>Name</Label>
+            <Label htmlFor={`${uid}-name`}>{t("seller.productEdit.name")}</Label>
             <Input
               id={`${uid}-name`}
               type="text"
@@ -330,10 +332,10 @@ export default function BundlesProductEdit() {
           />
         </section>
         <section className="grid gap-8 border-t border-border p-4 md:p-8">
-          <h2>Pricing</h2>
+          <h2>{t("seller.productEdit.pricing_section")}</h2>
           {canTotalStandalonePrices ? (
             <Fieldset state={discountPercentError ? "danger" : undefined}>
-              <Label htmlFor={`${uid}-discount-percent`}>Discount off standalone prices</Label>
+              <Label htmlFor={`${uid}-discount-percent`}>{t("seller.bundles.discount_off_standalone")}</Label>
               <InputGroup>
                 <NumberInput value={discountPercent} onChange={applyDiscountPercent}>
                   {(inputProps) => (
@@ -352,28 +354,32 @@ export default function BundlesProductEdit() {
                   are not announced — aria-live carries the recomputed amount to screen readers. */}
               <FieldsetDescription id={`${uid}-discount-percent-description`} aria-live="polite">
                 {discountPercentError ? (
-                  <>Enter a discount between 0% and 100%. The amount below is unchanged.</>
+                  <>{t("seller.bundles.discount_error_range")}</>
                 ) : discountPercent !== null ? (
                   <>
-                    Amount becomes{" "}
-                    {formatPriceCentsWithCurrencySymbol(
-                      form.data.price_currency_type,
-                      computeDiscountedPriceCents(standaloneTotalCents, discountPercent),
-                      { symbolFormat: "long" },
-                    )}
-                    : {discountPercent}% off the{" "}
-                    {formatPriceCentsWithCurrencySymbol(form.data.price_currency_type, standaloneTotalCents, {
-                      symbolFormat: "long",
-                    })}{" "}
-                    standalone total. Editing the amount removes the discount.
+                    {t("seller.bundles.discount_applied_summary", {
+                      discountedPrice: formatPriceCentsWithCurrencySymbol(
+                        form.data.price_currency_type,
+                        computeDiscountedPriceCents(standaloneTotalCents, discountPercent),
+                        { symbolFormat: "long" },
+                      ),
+                      percent: discountPercent,
+                      standalonePrice: formatPriceCentsWithCurrencySymbol(
+                        form.data.price_currency_type,
+                        standaloneTotalCents,
+                        { symbolFormat: "long" },
+                      ),
+                    })}
                   </>
                 ) : (
                   <>
-                    Your products total{" "}
-                    {formatPriceCentsWithCurrencySymbol(form.data.price_currency_type, standaloneTotalCents, {
-                      symbolFormat: "long",
-                    })}{" "}
-                    when sold separately.
+                    {t("seller.bundles.standalone_total_summary", {
+                      standalonePrice: formatPriceCentsWithCurrencySymbol(
+                        form.data.price_currency_type,
+                        standaloneTotalCents,
+                        { symbolFormat: "long" },
+                      ),
+                    })}
                   </>
                 )}
               </FieldsetDescription>
@@ -431,7 +437,7 @@ export default function BundlesProductEdit() {
           permalink={unique_permalink}
         />
         <section className="grid gap-8 border-t border-border p-4 md:p-8">
-          <h2>Product info</h2>
+          <h2>{t("seller.productEdit.product_info_section")}</h2>
           <CustomButtonTextOptionInput
             value={form.data.custom_button_text_option}
             onChange={(value) => form.setData("custom_button_text_option", value)}
@@ -447,7 +453,7 @@ export default function BundlesProductEdit() {
           />
         </section>
         <section className="grid gap-8 border-t border-border p-4 md:p-8">
-          <h2>Settings</h2>
+          <h2>{t("seller.productEdit.settings_section")}</h2>
           <Fieldset>
             <MaxPurchaseCountToggle
               maxPurchaseCount={form.data.max_purchase_count}
@@ -456,21 +462,21 @@ export default function BundlesProductEdit() {
             <Switch
               checked={form.data.quantity_enabled}
               onChange={(e) => form.setData("quantity_enabled", e.target.checked)}
-              label="Allow customers to choose a quantity"
+              label={t("seller.productEdit.quantity_enabled_label")}
             />
             <Switch
               checked={form.data.should_show_sales_count}
               onChange={(e) => form.setData("should_show_sales_count", e.target.checked)}
-              label="Publicly show the number of sales on your product page"
+              label={t("seller.productEdit.sales_count_product_label")}
             />
             <Switch
               checked={form.data.is_epublication}
               onChange={(e) => form.setData("is_epublication", e.target.checked)}
               label={
                 <>
-                  Mark product as e-publication for VAT purposes{" "}
+                  {t("seller.productEdit.epublication_label")}{" "}
                   <a href="/help/article/10-dealing-with-vat" target="_blank" rel="noreferrer">
-                    Learn more
+                    {t("seller.productEdit.learn_more")}
                   </a>
                 </>
               }

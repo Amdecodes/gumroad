@@ -4,6 +4,7 @@ import * as React from "react";
 import { Membership, SortKey } from "$app/data/products";
 import { classNames } from "$app/utils/classNames";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { Pagination, PaginationProps } from "$app/components/Pagination";
 import { Tab } from "$app/components/ProductsLayout";
@@ -78,24 +79,28 @@ export const ProductsPageMembershipsTable = (props: {
   return (
     <section className="flex flex-col gap-4">
       <Table ref={tableRef} aria-live="polite" className={classNames(isLoading && "pointer-events-none opacity-50")}>
-        <TableCaption>Memberships</TableCaption>
+        <TableCaption>{t("seller.products.memberships_caption")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead />
-            <TableHead {...thProps("name")} title="Sort by Name" className="lg:relative lg:-left-20">
-              Name
+            <TableHead
+              {...thProps("name")}
+              title={t("seller.products.sort_by_name")}
+              className="lg:relative lg:-left-20"
+            >
+              {t("seller.products.name")}
             </TableHead>
-            <TableHead {...thProps("successful_sales_count")} title="Sort by Members">
-              Members
+            <TableHead {...thProps("successful_sales_count")} title={t("seller.products.sort_by_members")}>
+              {t("seller.products.members")}
             </TableHead>
-            <TableHead {...thProps("revenue")} title="Sort by Revenue">
-              Revenue
+            <TableHead {...thProps("revenue")} title={t("seller.products.sort_by_revenue")}>
+              {t("seller.products.revenue")}
             </TableHead>
-            <TableHead {...thProps("display_price_cents")} title="Sort by Price">
-              Price
+            <TableHead {...thProps("display_price_cents")} title={t("seller.products.sort_by_price")}>
+              {t("seller.products.price")}
             </TableHead>
-            <TableHead {...thProps("status")} title="Sort by Status">
-              Status
+            <TableHead {...thProps("status")} title={t("seller.products.sort_by_status")}>
+              {t("seller.products.status")}
             </TableHead>
             <TableHead />
           </TableRow>
@@ -137,7 +142,7 @@ export const ProductsPageMembershipsTable = (props: {
 
                 {membership.remaining_for_sale_count ? (
                   <small className="block">
-                    {membership.remaining_for_sale_count.toLocaleString(userAgentInfo.locale)} remaining
+                    {t("seller.products.remaining", { count: membership.remaining_for_sale_count })}
                   </small>
                 ) : null}
               </TableCell>
@@ -147,16 +152,16 @@ export const ProductsPageMembershipsTable = (props: {
 
                 <small className="block">
                   {membership.has_duration
-                    ? `Including pending payments: ${formatPriceCentsWithCurrencySymbol(
-                        "usd",
-                        membership.revenue_pending,
-                        {
+                    ? t("seller.products.including_pending_payments", {
+                        amount: formatPriceCentsWithCurrencySymbol("usd", membership.revenue_pending, {
                           symbolFormat: "short",
-                        },
-                      )}`
-                    : `${formatPriceCentsWithCurrencySymbol("usd", membership.monthly_recurring_revenue, {
-                        symbolFormat: "short",
-                      })} /mo`}
+                        }),
+                      })
+                    : t("seller.products.monthly_recurring_revenue", {
+                        amount: formatPriceCentsWithCurrencySymbol("usd", membership.monthly_recurring_revenue, {
+                          symbolFormat: "short",
+                        }),
+                      })}
                 </small>
               </TableCell>
 
@@ -166,11 +171,11 @@ export const ProductsPageMembershipsTable = (props: {
                 {(() => {
                   switch (membership.status) {
                     case "unpublished":
-                      return <>Unpublished</>;
+                      return <>{t("seller.products.status_unpublished")}</>;
                     case "preorder":
-                      return <>Pre-order</>;
+                      return <>{t("seller.products.status_preorder")}</>;
                     case "published":
-                      return <>Published</>;
+                      return <>{t("seller.products.status_published")}</>;
                   }
                 })()}
               </TableCell>
@@ -198,15 +203,15 @@ export const ProductsPageMembershipsTable = (props: {
 
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={2}>Totals</TableCell>
+            <TableCell colSpan={2}>{t("seller.products.totals")}</TableCell>
 
-            <TableCell label="Members" className="whitespace-nowrap">
+            <TableCell label={t("seller.products.members")} className="whitespace-nowrap">
               {memberships
                 .reduce((sum, membership) => sum + membership.successful_sales_count, 0)
                 .toLocaleString(userAgentInfo.locale)}
             </TableCell>
 
-            <TableCell colSpan={4} label="Revenue" className="whitespace-nowrap">
+            <TableCell colSpan={4} label={t("seller.products.revenue")} className="whitespace-nowrap">
               {formatPriceCentsWithCurrencySymbol(
                 "usd",
                 memberships.reduce((sum, membership) => sum + membership.revenue, 0),

@@ -1,6 +1,8 @@
 import { Android, Apple } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "$app/components/Popover";
 
@@ -10,13 +12,13 @@ export const OpenInAppButton = ({ iosAppUrl, androidAppUrl }: Props) => (
   <Popover>
     <PopoverAnchor>
       <PopoverTrigger asChild>
-        <Button>Open in app</Button>
+        <Button>{t("content.open_in_app")}</Button>
       </PopoverTrigger>
     </PopoverAnchor>
     <PopoverContent sideOffset={4}>
       <div className="mx-auto grid w-72 gap-4 text-center">
-        <h3>Gumroad Library</h3>
-        <div>Get the app</div>
+        <h3>{t("content.app_library_title")}</h3>
+        <div>{t("content.get_the_app")}</div>
         <div className="grid grid-flow-col justify-between gap-4">
           <Button asChild color="apple">
             <a href={iosAppUrl} target="_blank" rel="noreferrer">

@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Skeleton } from "$app/components/Skeleton";
 
 // What the product editor shows while its code and data are still arriving.
@@ -11,7 +13,7 @@ import { Skeleton } from "$app/components/Skeleton";
 // click had done nothing (gumroad-private#1469).
 export const ProductEditLoadingSkeleton = ({ title }: { title?: string | null }) => (
   <div aria-busy="true" aria-live="polite">
-    <span className="sr-only">Loading product…</span>
+    <span className="sr-only">{t("seller.productEdit.loading_product")}</span>
     <header className="flex flex-col gap-4 border-b border-border p-4 md:p-8">
       <div className="flex items-center justify-between gap-2 sm:min-h-8">
         {/* The product name is already known from the row that was clicked, so show the real title

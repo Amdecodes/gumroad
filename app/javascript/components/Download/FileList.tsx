@@ -18,6 +18,7 @@ import { trackMediaLocationChanged } from "$app/data/media_location";
 import { classNames } from "$app/utils/classNames";
 import { humanizedDuration } from "$app/utils/duration";
 import FileUtils from "$app/utils/file";
+import { t } from "$app/utils/i18n";
 import { createJWPlayer } from "$app/utils/jwPlayer";
 import { dispatchMediaPlaybackState } from "$app/utils/media_playback";
 import { isFinishedMediaLocation, isResumableMediaLocation, persistableMediaLocation } from "$app/utils/mediaLocation";
@@ -199,7 +200,7 @@ export const FileRow = ({
   const downloadUrl = file.download_url;
   const downloadButton = downloadUrl ? (
     <TrackClick eventName="download_click" file={file}>
-      <NavigationButton href={downloadUrl}>Download</NavigationButton>
+      <NavigationButton href={downloadUrl}>{t("content.download")}</NavigationButton>
     </TrackClick>
   ) : null;
   const streamUrl = file.stream_url;
@@ -281,11 +282,7 @@ export const FileRow = ({
 
               {file.file_size ? <li>{FileUtils.getFullFileSizeString(file.file_size)}</li> : null}
 
-              {file.pagelength ? (
-                <li>
-                  {file.pagelength} {file.pagelength === 1 ? "page" : "pages"}
-                </li>
-              ) : null}
+              {file.pagelength ? <li>{t("content.page_count", { count: file.pagelength })}</li> : null}
 
               {file.isbn ? <li>ISBN: {file.isbn}</li> : null}
 
@@ -308,22 +305,22 @@ export const FileRow = ({
           <TrackClick eventName="stream_click" file={file} resumeAt={resumeLocation || 0} contentLength={file.duration}>
             <NavigationButton color="primary" href={streamUrl} target="_blank">
               {isFinishedMediaLocation(file.latest_media_location?.location, file.content_length ?? file.duration)
-                ? "Watch again"
-                : "Watch"}
+                ? t("content.watch_again")
+                : t("content.watch")}
             </NavigationButton>
           </TrackClick>
         ) : null}
 
         {isEmbeddedVideo && isCollapsed ? (
           <Button color="primary" onClick={() => setIsCollapsed(false)}>
-            Play
+            {t("content.play")}
           </Button>
         ) : null}
 
         {externalLinkUrl !== null ? (
           <TrackClick eventName="external_link_click" file={file}>
             <NavigationButton color="primary" href={externalLinkUrl} target="_blank">
-              Open
+              {t("content.open")}
             </NavigationButton>
           </TrackClick>
         ) : null}
@@ -341,7 +338,7 @@ export const FileRow = ({
                     playAudio();
                   } catch (e) {
                     assertResponseError(e);
-                    showAlert("Sorry, something went wrong. Please try again.", "error");
+                    showAlert(t("checkout.something_went_wrong_retry"), "error");
                   }
                 } else {
                   playAudio();
@@ -349,10 +346,10 @@ export const FileRow = ({
               })}
             >
               {isShowingAudioDrawer
-                ? "Close"
+                ? t("content.close")
                 : isFinishedMediaLocation(file.latest_media_location?.location, file.content_length ?? file.duration)
-                  ? "Play again"
-                  : "Play"}
+                  ? t("content.play_again")
+                  : t("content.play")}
             </Button>
           </TrackClick>
         ) : null}
@@ -361,7 +358,7 @@ export const FileRow = ({
           <TrackClick eventName="send_to_kindle_click" file={file}>
             <Button color="kindle" onClick={toggleKindleDrawer}>
               <Amazon pack="brands" className="size-5" />
-              Send to Kindle
+              {t("content.send_to_kindle")}
             </Button>
           </TrackClick>
         ) : null}
@@ -372,8 +369,8 @@ export const FileRow = ({
           <NativeAppLink file={file}>
             <NavigationButton color="primary" href={file.read_url}>
               {file.latest_media_location != null && file.latest_media_location.location === file.content_length
-                ? "Read again"
-                : "Read"}
+                ? t("content.read_again")
+                : t("content.read")}
             </NavigationButton>
           </NativeAppLink>
         ) : null}
@@ -551,7 +548,7 @@ const MobileAppAudioFileRow = ({ file }: { file: FileItem }) => {
       <RowActions style={{ gridColumn: "4", gap: "var(--spacer-4)", flexWrap: "nowrap" }}>
         {file.download_url ? (
           <TrackClick eventName="download_click" file={file}>
-            <button aria-label="Download" className="cursor-pointer all-unset">
+            <button aria-label={t("content.download")} className="cursor-pointer all-unset">
               <ArrowDown className="type-icon size-5" />
             </button>
           </TrackClick>
@@ -565,21 +562,21 @@ const MobileAppAudioFileRow = ({ file }: { file: FileItem }) => {
           contentLength={file.duration}
         >
           {isPlaying ? (
-            <button aria-label="Pause" className="cursor-pointer all-unset">
+            <button aria-label={t("content.pause")} className="cursor-pointer all-unset">
               <PauseCircle
                 className="type-icon size-5"
                 style={{ width: "var(--big-icon-size)", height: "var(--big-icon-size)" }}
               />
             </button>
           ) : isCompleted ? (
-            <button aria-label="Play" className="cursor-pointer all-unset">
+            <button aria-label={t("content.play")} className="cursor-pointer all-unset">
               <CheckCircle
                 className="type-icon size-5 text-muted"
                 style={{ width: "var(--big-icon-size)", height: "var(--big-icon-size)" }}
               />
             </button>
           ) : (
-            <button aria-label="Play" className="cursor-pointer all-unset">
+            <button aria-label={t("content.play")} className="cursor-pointer all-unset">
               <PlayCircle
                 className="type-icon size-5"
                 style={{ width: "var(--big-icon-size)", height: "var(--big-icon-size)" }}
@@ -785,7 +782,7 @@ const VideoEmbedPreview = ({
           }}
           disabled={isFetchingMediaUrls}
           onClick={() => void startPlaying()}
-          aria-label="Watch"
+          aria-label={t("content.watch")}
         >
           {isFetchingMediaUrls ? <LoadingSpinner className="size-16" /> : <PlayVideoIcon />}
         </LinkButton>
@@ -820,7 +817,7 @@ const SendToKindleContainer = ({
       const json = typia.assert<{ success: boolean; error?: string }>(await response.json());
       if (!json.success) throw new ResponseError(json.error ?? "Something went wrong.");
 
-      showAlert("It's been sent to your Kindle.", "success");
+      showAlert(t("content.sent_to_kindle"), "success");
       onDone();
     } catch (e) {
       assertResponseError(e);
@@ -844,15 +841,25 @@ const SendToKindleContainer = ({
             autoFocus
           />
           <FieldsetDescription>
-            You'll need to add noreply@customers.gumroad.com to your{" "}
-            <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX9XLEVV8G4DB28H">
-              list of approved personal document emails
-            </a>
-            .
+            {t("content.send_to_kindle_instruction", { approved_emails_link: "___APPROVED_EMAILS_LINK___" })
+              .split("___APPROVED_EMAILS_LINK___")
+              .reduce<React.ReactNode[]>((acc, part, idx) => {
+                if (idx === 0) return [part];
+                return [
+                  ...acc,
+                  <a
+                    key="approved-emails"
+                    href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX9XLEVV8G4DB28H"
+                  >
+                    {t("content.approved_emails_link_text")}
+                  </a>,
+                  part,
+                ];
+              }, [])}
           </FieldsetDescription>
         </Fieldset>
         <Button color="primary" onClick={() => void sendToKindle()} style={{ alignSelf: "flex-start" }}>
-          Send
+          {t("content.send")}
         </Button>
       </div>
     </div>
@@ -871,7 +878,7 @@ const SubtitleRow = ({ subtitleFile }: { subtitleFile: SubtitleFile }) => (
     </RowContent>
 
     <RowActions>
-      <NavigationButton href={subtitleFile.download_url}>Download</NavigationButton>
+      <NavigationButton href={subtitleFile.download_url}>{t("content.download")}</NavigationButton>
     </RowActions>
   </Row>
 );

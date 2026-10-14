@@ -1,6 +1,8 @@
 import { Box, Plus, Trash } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { PriceInput } from "$app/components/PriceInput";
 import { ShippingDestination, useProductEditContext } from "$app/components/ProductEdit/state";
@@ -35,7 +37,7 @@ export const ShippingDestinationsEditor = ({
   return (
     <section className="grid gap-8 border-t border-border p-4 md:p-8">
       <header>
-        <h2>Shipping destinations</h2>
+        <h2>{t("seller.productEdit.shipping_destinations")}</h2>
       </header>
       {shippingDestinations.length > 0 ? (
         <Card>
@@ -56,17 +58,17 @@ export const ShippingDestinationsEditor = ({
           <CardContent>
             <Button onClick={addShippingDestination} className="grow basis-0">
               <Plus className="size-5" />
-              Add shipping destination
+              {t("seller.productEdit.add_shipping_destination")}
             </Button>
           </CardContent>
         </Card>
       ) : (
         <Placeholder>
-          <h2>Add shipping destinations</h2>
-          Choose where you're able to ship your physical product to
+          <h2>{t("seller.productEdit.add_shipping_destinations_title")}</h2>
+          {t("seller.productEdit.add_shipping_destinations_desc")}
           <Button color="primary" onClick={addShippingDestination}>
             <Box className="size-5" />
-            Add shipping destination
+            {t("seller.productEdit.add_shipping_destination")}
           </Button>
         </Placeholder>
       )}
@@ -94,12 +96,12 @@ const ShippingDestinationRow = ({
     <CardContent aria-label="Shipping destination">
       <Fieldset className="grow basis-0">
         <FieldsetTitle>
-          <Label htmlFor={`${uid}-country`}>Country</Label>
+          <Label htmlFor={`${uid}-country`}>{t("seller.productEdit.shipping_country")}</Label>
         </FieldsetTitle>
         <div className="flex gap-2">
           <Select
             id={`${uid}-country`}
-            aria-label="Country"
+            aria-label={t("seller.productEdit.shipping_country")}
             className="flex-1"
             value={shippingDestination.country_code}
             onChange={(evt) => updateDestination({ country_code: evt.target.value })}
@@ -125,7 +127,7 @@ const ShippingDestinationRow = ({
       <div style={{ display: "grid", gridAutoFlow: "column", gap: "var(--spacer-3)", width: "100%" }}>
         <Fieldset>
           <FieldsetTitle>
-            <Label htmlFor={`${uid}-one-item`}>Amount alone</Label>
+            <Label htmlFor={`${uid}-one-item`}>{t("seller.productEdit.shipping_amount_alone")}</Label>
           </FieldsetTitle>
           <PriceInput
             id={`${uid}-one-item`}
@@ -137,7 +139,7 @@ const ShippingDestinationRow = ({
         </Fieldset>
         <Fieldset>
           <FieldsetTitle>
-            <Label htmlFor={`${uid}-multiple-items`}>Amount with others</Label>
+            <Label htmlFor={`${uid}-multiple-items`}>{t("seller.productEdit.shipping_amount_with_others")}</Label>
           </FieldsetTitle>
           <PriceInput
             id={`${uid}-multiple-items`}

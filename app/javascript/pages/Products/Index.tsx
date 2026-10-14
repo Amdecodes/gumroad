@@ -1,6 +1,8 @@
 import { Deferred, usePage } from "@inertiajs/react";
 import React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { NavigationButtonInertia } from "$app/components/NavigationButton";
 import { ProductsLayout } from "$app/components/ProductsLayout";
 import ProductsPage from "$app/components/ProductsPage";
@@ -36,17 +38,17 @@ const ProductsContent = ({
       {memberships.length === 0 && products.length === 0 ? (
         <Placeholder>
           <PlaceholderImage src={placeholder} />
-          <h2>We've never met an idea we didn't like.</h2>
-          <p>Your first product doesn't need to be perfect. Just put it out there, and see if it sticks.</p>
+          <h2>{t("seller.products.empty_state_title")}</h2>
+          <p>{t("seller.products.empty_state_description")}</p>
           <div>
             <NavigationButtonInertia href={Routes.new_product_path()} disabled={!canCreateProduct} color="accent">
-              New product
+              {t("seller.products.new_product")}
             </NavigationButtonInertia>
           </div>
           <span>
-            or{" "}
+            {t("seller.products.or")}{" "}
             <a href="/help/article/304-products-dashboard" target="_blank" rel="noreferrer">
-              learn more about the products dashboard
+              {t("seller.products.learn_more_dashboard")}
             </a>
           </span>
         </Placeholder>
@@ -75,7 +77,7 @@ const ProductsIndexPage = () => {
   return (
     <ProductsLayout
       selectedTab="products"
-      title="Products"
+      title={t("seller.products.title")}
       archivedTabVisible={enableArchiveTab}
       ctaButton={<HeaderButtons query={query} setQuery={setQuery} />}
     >

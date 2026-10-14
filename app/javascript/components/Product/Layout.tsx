@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { assertDefined } from "$app/utils/assert";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
 import { NavigationButton } from "$app/components/Button";
@@ -147,7 +148,7 @@ export const Layout = (
   const { product, purchase, discount_code: discountCode, cart, hasHero, wishlists, main_section_index } = props;
   const [selection, setSelection] = useSelectionFromUrl(product);
   const ctaButtonRef = React.useRef<HTMLAnchorElement>(null);
-  const ctaLabel = cart ? "Add to cart" : undefined;
+  const ctaLabel = cart ? t("storefront.add_to_cart") : undefined;
 
   const configurationSelectorRef = React.useRef<ConfigurationSelectorHandle>(null);
 
@@ -285,7 +286,7 @@ const CtaBar = ({
 
   return (
     <section
-      aria-label="Product information bar"
+      aria-label={t("storefront.product_info_bar")}
       className="border-0 bg-background"
       style={{
         overflow: "hidden",
@@ -374,7 +375,7 @@ const EditButton = ({ product }: { product: Product }) => {
       href={Routes.edit_link_url({ id: product.permalink }, { host: appDomain })}
     >
       <Pencil className="size-5" aria-hidden="true" />
-      Edit product
+      {t("storefront.edit_product")}
     </NavigationButton>
   );
 };

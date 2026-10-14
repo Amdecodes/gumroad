@@ -1,6 +1,8 @@
 import { router } from "@inertiajs/react";
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { Alert } from "$app/components/ui/Alert";
 
@@ -9,6 +11,7 @@ type BundleContentUpdatedStatusProps = {
 };
 
 export const BundleContentUpdatedStatus = ({ id }: BundleContentUpdatedStatusProps) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = React.useState(false);
 
   const updatePurchases = () => {
@@ -26,10 +29,10 @@ export const BundleContentUpdatedStatus = ({ id }: BundleContentUpdatedStatusPro
   return (
     <Alert role="status" variant="info">
       <div className="flex flex-col gap-4">
-        <strong>Some of your customers don't have access to the latest content in your bundle.</strong>
-        Would you like to give them access and send them an email notification?
+        <strong>{t("seller.bundles.content_outdated_title")}</strong>
+        {t("seller.bundles.content_outdated_desc")}
         <Button color="primary" onClick={updatePurchases} disabled={isLoading}>
-          {isLoading ? "Updating..." : "Yes, update"}
+          {isLoading ? t("seller.bundles.updating") : t("seller.bundles.yes_update")}
         </Button>
       </div>
     </Alert>

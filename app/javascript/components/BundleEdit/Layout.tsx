@@ -3,6 +3,7 @@ import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
 import { getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
+import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { CopyToClipboard } from "$app/components/CopyToClipboard";
@@ -57,7 +58,7 @@ type BundleEditLayoutProps = {
 export const BundleEditLayout = ({
   children,
   id,
-  name = "Untitled",
+  name,
   customPermalink,
   uniquePermalink = "",
   isPublished,
@@ -72,6 +73,7 @@ export const BundleEditLayout = ({
   onPreview,
   onBeforeNavigate,
 }: BundleEditLayoutProps) => {
+  const { t } = useTranslation();
   const tab = useCurrentTab();
   const currentSeller = useCurrentSeller();
 
@@ -85,11 +87,11 @@ export const BundleEditLayout = ({
   const isUploadingFilesOrImages = isLoading || isUploadingFiles;
   const isBusy = isUploadingFilesOrImages || isProcessing;
   const saveButtonTooltip = isUploadingFiles
-    ? "Files are still uploading..."
+    ? t("seller.productEdit.files_uploading_tooltip")
     : isUploadingFilesOrImages
-      ? "Images are still uploading..."
+      ? t("seller.productEdit.images_uploading_tooltip")
       : isBusy
-        ? "Please wait..."
+        ? t("seller.productEdit.please_wait_tooltip")
         : undefined;
 
   // The pay-button/offer-banner accent may be a slightly brightness-adjusted version of the saved
@@ -114,16 +116,16 @@ export const BundleEditLayout = ({
   const saveButton = onSave ? (
     <WithTooltip tip={saveButtonTooltip}>
       <Button color="primary" disabled={isBusy} onClick={onSave}>
-        {isProcessing ? "Saving changes..." : "Save changes"}
+        {isProcessing ? t("seller.productEdit.saving_changes") : t("seller.productEdit.save_changes")}
       </Button>
     </WithTooltip>
   ) : null;
 
   const handleTabClick = (e: React.MouseEvent, targetPath: string) => {
     const message = isUploadingFiles
-      ? "Some files are still uploading, please wait..."
+      ? t("seller.productEdit.files_uploading_tab_warning")
       : isUploadingFilesOrImages
-        ? "Some images are still uploading, please wait..."
+        ? t("seller.productEdit.images_uploading_tab_warning")
         : undefined;
 
     if (message) {
@@ -141,19 +143,19 @@ export const BundleEditLayout = ({
     <>
       <PageHeader
         className="sticky-top"
-        title={name || "Untitled"}
+        title={name || t("seller.productEdit.untitled")}
         actions={
           isPublished ? (
             <>
               {onUnpublish ? (
                 <Button disabled={isBusy} onClick={onUnpublish}>
-                  {isProcessing ? "Unpublishing..." : "Unpublish"}
+                  {isProcessing ? t("seller.productEdit.unpublishing") : t("seller.productEdit.unpublish")}
                 </Button>
               ) : null}
               {saveButton}
               <CopyToClipboard
                 text={url}
-                copyTooltip="Copy product URL"
+                copyTooltip={t("seller.productEdit.copy_url")}
                 tooltipPosition={isDesktop ? "left" : "bottom"}
               >
                 <Button size="icon">
@@ -164,7 +166,7 @@ export const BundleEditLayout = ({
           ) : tab === "product" ? (
             onSaveAndContinue ? (
               <Button color="primary" disabled={isBusy} onClick={onSaveAndContinue}>
-                {isProcessing ? "Saving changes..." : "Save and continue"}
+                {isProcessing ? t("seller.productEdit.saving_changes") : t("seller.productEdit.save_and_continue")}
               </Button>
             ) : null
           ) : (
@@ -173,7 +175,7 @@ export const BundleEditLayout = ({
               {onPublish ? (
                 <WithTooltip tip={saveButtonTooltip}>
                   <Button color="accent" disabled={isBusy} onClick={onPublish}>
-                    {isProcessing ? "Publishing..." : "Publish and continue"}
+                    {isProcessing ? t("seller.productEdit.publishing") : t("seller.productEdit.publish_and_continue")}
                   </Button>
                 </WithTooltip>
               ) : null}
@@ -187,7 +189,7 @@ export const BundleEditLayout = ({
               href={Routes.edit_bundle_product_path(id)}
               onClick={(e) => handleTabClick(e, Routes.edit_bundle_product_path(id))}
             >
-              Product
+              {t("seller.productEdit.tab_product")}
             </Link>
           </Tab>
           <Tab asChild isSelected={tab === "content"}>
@@ -195,7 +197,7 @@ export const BundleEditLayout = ({
               href={Routes.edit_bundle_content_path(id)}
               onClick={(e) => handleTabClick(e, Routes.edit_bundle_content_path(id))}
             >
-              Content
+              {t("seller.productEdit.tab_content")}
             </Link>
           </Tab>
           <Tab asChild isSelected={tab === "share"}>
@@ -203,7 +205,7 @@ export const BundleEditLayout = ({
               href={Routes.edit_bundle_share_path(id)}
               onClick={(e) => handleTabClick(e, Routes.edit_bundle_share_path(id))}
             >
-              Share
+              {t("seller.productEdit.tab_share")}
             </Link>
           </Tab>
         </Tabs>
@@ -213,7 +215,7 @@ export const BundleEditLayout = ({
           {children}
           <PreviewSidebar>
             <PreviewChrome
-              title={name}
+              title={name ?? ""}
               url={url}
               link={(props) => <Button {...props} onClick={onPreview} disabled={isBusy} />}
             >

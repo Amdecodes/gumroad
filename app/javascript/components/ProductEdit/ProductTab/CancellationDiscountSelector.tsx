@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { InputtedDiscount, DiscountInput } from "$app/components/CheckoutDashboard/DiscountInput";
 import { NumberInput } from "$app/components/NumberInput";
 import { useProductEditContext } from "$app/components/ProductEdit/state";
@@ -50,12 +52,12 @@ export const CancellationDiscountSelector = () => {
     <ToggleSettingRow
       value={isEnabled}
       onChange={setIsEnabled}
-      label="Offer a cancellation discount"
+      label={t("seller.productEdit.offer_cancellation_discount")}
       dropdown={
         <section className="flex flex-col gap-4">
           <DiscountInput discount={discount} setDiscount={setDiscount} currencyCode={currencyType} />
           <Fieldset>
-            <Label htmlFor="billing-cycles">Duration in billing cycles</Label>
+            <Label htmlFor="billing-cycles">{t("seller.productEdit.duration_in_billing_cycles")}</Label>
             <NumberInput value={durationInBillingCycles} onChange={setDurationInBillingCycles}>
               {(props) => <Input id="billing-cycles" type="text" autoComplete="off" placeholder="∞" {...props} />}
             </NumberInput>

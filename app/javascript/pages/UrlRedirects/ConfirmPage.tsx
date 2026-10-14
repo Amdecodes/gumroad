@@ -2,6 +2,8 @@ import { useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { Layout, LayoutProps } from "$app/components/DownloadPage/Layout";
 import { Input } from "$app/components/ui/Input";
@@ -73,15 +75,9 @@ const EmailConfirmation = ({
   return (
     <Placeholder>
       <h2>
-        {confirmation_info.is_gift
-          ? "Confirm your email to access this gift"
-          : "You've viewed this product a few times already"}
+        {confirmation_info.is_gift ? t("content.confirm_email_gift_title") : t("content.confirm_email_viewed_title")}
       </h2>
-      <p>
-        {confirmation_info.is_gift
-          ? "Enter the email address this gift was sent to, and you'll be able to access it."
-          : "Once you enter the email address used to purchase this product, you'll be able to access it again."}
-      </p>
+      <p>{confirmation_info.is_gift ? t("content.confirm_email_gift_desc") : t("content.confirm_email_viewed_desc")}</p>
       <form
         action={Routes.confirm_redirect_path()}
         method="post"
@@ -94,19 +90,19 @@ const EmailConfirmation = ({
         <input type="hidden" name="destination" value={data.destination} />
         <input type="hidden" name="display" value={data.display} />
         <label htmlFor="confirm-email" className="sr-only">
-          Email address
+          {t("content.email_address")}
         </label>
         <Input
           id="confirm-email"
           type="email"
           name="email"
           autoComplete="email"
-          placeholder="Email address"
+          placeholder={t("content.email_address")}
           onChange={(e) => setData("email", e.target.value)}
           defaultValue={confirmation_info.email ?? ""}
         />
         <Button type="submit" color="accent" disabled={processing}>
-          {processing ? "Confirming..." : "Confirm email"}
+          {processing ? t("content.confirming") : t("content.confirm_email")}
         </Button>
       </form>
     </Placeholder>

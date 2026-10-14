@@ -5,6 +5,7 @@ import * as React from "react";
 import { Product, SortKey } from "$app/data/products";
 import { classNames } from "$app/utils/classNames";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { Pagination, PaginationProps } from "$app/components/Pagination";
 import { Tab } from "$app/components/ProductsLayout";
@@ -102,24 +103,28 @@ export const ProductsPageProductsTable = (props: {
   return (
     <div className="flex flex-col gap-4">
       <Table ref={tableRef} aria-live="polite" className={classNames(isLoading && "pointer-events-none opacity-50")}>
-        <TableCaption>Products</TableCaption>
+        <TableCaption>{t("seller.products.caption")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead />
-            <TableHead {...thProps("name")} title="Sort by Name" className="lg:relative lg:-left-20">
-              Name
+            <TableHead
+              {...thProps("name")}
+              title={t("seller.products.sort_by_name")}
+              className="lg:relative lg:-left-20"
+            >
+              {t("seller.products.name")}
             </TableHead>
-            <TableHead {...thProps("successful_sales_count")} title="Sort by Sales">
-              Sales
+            <TableHead {...thProps("successful_sales_count")} title={t("seller.products.sort_by_sales")}>
+              {t("seller.products.sales")}
             </TableHead>
-            <TableHead {...thProps("revenue")} title="Sort by Revenue">
-              Revenue
+            <TableHead {...thProps("revenue")} title={t("seller.products.sort_by_revenue")}>
+              {t("seller.products.revenue")}
             </TableHead>
-            <TableHead {...thProps("display_price_cents")} title="Sort by Price">
-              Price
+            <TableHead {...thProps("display_price_cents")} title={t("seller.products.sort_by_price")}>
+              {t("seller.products.price")}
             </TableHead>
-            <TableHead {...thProps("status")} title="Sort by Status">
-              Status
+            <TableHead {...thProps("status")} title={t("seller.products.sort_by_status")}>
+              {t("seller.products.status")}
             </TableHead>
             <TableHead />
           </TableRow>
@@ -174,7 +179,9 @@ export const ProductsPageProductsTable = (props: {
                 </Link>
 
                 {product.remaining_for_sale_count ? (
-                  <small className="block">{product.remaining_for_sale_count.toLocaleString(locale)} remaining</small>
+                  <small className="block">
+                    {t("seller.products.remaining", { count: product.remaining_for_sale_count })}
+                  </small>
                 ) : null}
               </TableCell>
 
@@ -188,11 +195,11 @@ export const ProductsPageProductsTable = (props: {
                 {(() => {
                   switch (product.status) {
                     case "unpublished":
-                      return <>Unpublished</>;
+                      return <>{t("seller.products.status_unpublished")}</>;
                     case "preorder":
-                      return <>Pre-order</>;
+                      return <>{t("seller.products.status_preorder")}</>;
                     case "published":
-                      return <>Published</>;
+                      return <>{t("seller.products.status_published")}</>;
                   }
                 })()}
               </TableCell>
@@ -222,12 +229,12 @@ export const ProductsPageProductsTable = (props: {
 
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={2}>Totals</TableCell>
-            <TableCell label="Sales" className="whitespace-nowrap">
+            <TableCell colSpan={2}>{t("seller.products.totals")}</TableCell>
+            <TableCell label={t("seller.products.sales")} className="whitespace-nowrap">
               {products.reduce((sum, product) => sum + product.successful_sales_count, 0).toLocaleString(locale)}
             </TableCell>
 
-            <TableCell colSpan={5} label="Revenue" className="whitespace-nowrap">
+            <TableCell colSpan={5} label={t("seller.products.revenue")} className="whitespace-nowrap">
               {formatPriceCentsWithCurrencySymbol(
                 "usd",
                 products.reduce((sum, product) => sum + product.revenue, 0),

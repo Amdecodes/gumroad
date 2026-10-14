@@ -15,6 +15,7 @@ import { SearchResults } from "$app/data/search";
 import { CreatorProfile } from "$app/parsers/profile";
 import { CurrencyCode } from "$app/utils/currency";
 import { formatPostDate } from "$app/utils/date";
+import { t } from "$app/utils/i18n";
 
 import { Product, Props as ProductProps } from "$app/components/Product";
 import { CardGrid, useSearchReducer } from "$app/components/Product/CardGrid";
@@ -122,17 +123,17 @@ const ProductsSectionView = ({
       title={
         state.results
           ? state.results.total > 0
-            ? `1-${state.results.products.length} of ${state.results.total} products`
-            : "No products found"
-          : "Loading products..."
+            ? t("profile.showing_products", { count: state.results.products.length, total: state.results.total })
+            : t("discover.no_products_found")
+          : t("profile.loading_products")
       }
       currencyCode={currencyCode}
       defaults={defaultParams}
       prependFilters={
         <CardContent>
           <Input
-            aria-label="Search products"
-            placeholder="Search products"
+            aria-label={t("profile.search_products")}
+            placeholder={t("profile.search_products")}
             value={enteredQuery}
             onChange={(e) => setEnteredQuery(e.target.value)}
             onKeyPress={(e) => {
@@ -178,7 +179,7 @@ export const WishlistsView = ({ wishlists }: { wishlists: CardWishlist[] }) =>
       <h1>
         <Archive pack="filled" className="size-5" />
       </h1>
-      No wishlists selected
+      {t("profile.no_wishlists_selected")}
     </div>
   );
 

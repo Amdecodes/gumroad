@@ -2,6 +2,7 @@ import { ChevronDown } from "@boxicons/react";
 import * as React from "react";
 
 import { searchProductOfferCodes } from "$app/data/offer_code";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { ComboBox } from "$app/components/ComboBox";
@@ -59,7 +60,7 @@ export const DefaultDiscountCodeSelector = ({
         setOptions(results);
       } catch (error) {
         assertResponseError(error);
-        showAlert("Sorry, something went wrong while searching discount codes.", "error");
+        showAlert(t("seller.productEdit.discount_search_error"), "error");
       }
     },
     [uniquePermalink, resetSearch],
@@ -85,11 +86,11 @@ export const DefaultDiscountCodeSelector = ({
     <ToggleSettingRow
       value={isToggleOn}
       onChange={handleToggleChange}
-      label="Automatically apply discount code"
+      label={t("seller.productEdit.auto_discount_code")}
       dropdown={
         <section className="flex flex-col gap-4">
           <Fieldset>
-            <Label htmlFor="default-discount-code">Discount code</Label>
+            <Label htmlFor="default-discount-code">{t("seller.productEdit.discount_code")}</Label>
             <ComboBox<OfferCode>
               editable
               open={isOpen ? options.length > 0 : false}
@@ -108,7 +109,7 @@ export const DefaultDiscountCodeSelector = ({
                     {...props}
                     id="default-discount-code"
                     type="search"
-                    placeholder="Begin typing to select a discount code"
+                    placeholder={t("seller.productEdit.discount_code_placeholder")}
                     value={query}
                     aria-autocomplete="list"
                     onChange={(event) => {

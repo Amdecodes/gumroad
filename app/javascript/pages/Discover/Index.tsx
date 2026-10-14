@@ -11,6 +11,7 @@ import { last } from "$app/utils/array";
 import { classNames } from "$app/utils/classNames";
 import { CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
 import { discoverTitleGenerator, Taxonomy } from "$app/utils/discover";
+import { t } from "$app/utils/i18n";
 
 import { Layout } from "$app/components/Discover/Layout";
 import { RecentlyViewed, RecentlyViewedProps } from "$app/components/Discover/RecentlyViewed";
@@ -51,10 +52,18 @@ type Props = {
 };
 
 const sortTitles = {
-  curated: "Curated for you",
-  trending: "On the market",
-  hot_and_new: "Hot and new products",
-  best_sellers: "Best selling products",
+  get curated() {
+    return t("discover.curated_for_you");
+  },
+  get trending() {
+    return t("discover.trending");
+  },
+  get hot_and_new() {
+    return t("discover.hot_and_new");
+  },
+  get best_sellers() {
+    return t("discover.best_sellers");
+  },
 };
 
 const ProductsCarousel = ({ products, title }: { products: CardProduct[]; title: string }) => {
@@ -112,7 +121,7 @@ const ProductsCarousel = ({ products, title }: { products: CardProduct[]; title:
 const ProductsCarouselSkeleton = () => (
   <section className="grid gap-4">
     <header>
-      <h2>Featured products</h2>
+      <h2>{t("discover.featured_products")}</h2>
     </header>
     <div className="override grid min-h-96 auto-cols-[min(20rem,60vw)] grid-flow-col gap-6 overflow-x-auto pb-1 [scrollbar-width:none] lg:auto-cols-[40rem] [&::-webkit-scrollbar]:hidden">
       {Array.from({ length: 3 }, (_, index) => (
@@ -360,8 +369,10 @@ function DiscoverIndex() {
 
   const showRecommendationSections = !state.params.query && !hasOfferCode;
   const recommendedWishlistsTitle = taxonomyPath
-    ? `Wishlists for ${props.taxonomies_for_nav.find((t) => t.slug === last(taxonomyPath.split("/")))?.label}`
-    : "Wishlists you might like";
+    ? t("discover.wishlists_for_taxonomy", {
+        taxonomy: props.taxonomies_for_nav.find((t) => t.slug === last(taxonomyPath.split("/")))?.label ?? "",
+      })
+    : t("discover.wishlists_you_might_like");
 
   const handleTaxonomyChange = (newTaxonomyPath: string | undefined) => {
     const currentOfferCode = state.params.offer_code;
@@ -440,7 +451,7 @@ function DiscoverIndex() {
               {recommendedProducts.length ? (
                 <ProductsCarousel
                   products={recommendedProducts}
-                  title={isCuratedProducts ? "Recommended" : "Featured products"}
+                  title={isCuratedProducts ? t("discover.recommended") : t("discover.featured_products")}
                 />
               ) : null}
             </Deferred>
@@ -455,7 +466,10 @@ function DiscoverIndex() {
               <h2>
                 {state.params.query || hasOfferCode
                   ? state.results?.products.length
-                    ? `Showing 1-${state.results.products.length} of ${state.results.total} products`
+                    ? t("discover.showing_products", {
+                        count: state.results.products.length,
+                        total: state.results.total,
+                      })
                     : null
                   : sortTitles[typia.is<keyof typeof sortTitles>(state.params.sort) ? state.params.sort : "trending"]}
               </h2>
@@ -471,28 +485,28 @@ function DiscoverIndex() {
                         })
                       }
                     >
-                      Curated
+                      {t("discover.tab_curated")}
                     </Tab>
                   ) : null}
                   <Tab
                     isSelected={!state.params.sort || state.params.sort === "default"}
                     onClick={() => updateParams({ sort: undefined })}
                   >
-                    Trending
+                    {t("discover.tab_trending")}
                   </Tab>
                   {props.curated_product_ids.length === 0 ? (
                     <Tab
                       isSelected={state.params.sort === "best_sellers"}
                       onClick={() => updateParams({ sort: "best_sellers" })}
                     >
-                      Best Sellers
+                      {t("discover.tab_best_sellers")}
                     </Tab>
                   ) : null}
                   <Tab
                     isSelected={state.params.sort === "hot_and_new"}
                     onClick={() => updateParams({ sort: "hot_and_new" })}
                   >
-                    Hot &amp; New
+                    {t("discover.tab_hot_and_new")}
                   </Tab>
                 </Tabs>
               )}
@@ -512,19 +526,19 @@ function DiscoverIndex() {
                   <CardContent asChild details>
                     <Details>
                       <DetailsToggle chevronPosition="right" className="grow">
-                        Rating
+                        {t("discover.rating")}
                       </DetailsToggle>
                       <Fieldset role="group">
                         {range(4, 0).map((number) => (
                           <Label key={number} className="w-full">
                             <span className="flex shrink-0 items-center gap-1">
                               <RatingStars rating={number} />
-                              and up
+                              {t("discover.and_up")}
                             </span>
                             <Radio
                               wrapperClassName="ml-auto"
                               value={number}
-                              aria-label={`${number} ${number === 1 ? "star" : "stars"} and up`}
+                              aria-label={t("discover.stars_and_up", { count: number })}
                               checked={number === state.params.rating}
                               readOnly
                               onClick={() =>
@@ -542,14 +556,14 @@ function DiscoverIndex() {
                     <CardContent asChild details>
                       <Details open>
                         <DetailsToggle chevronPosition="right" className="grow">
-                          Offer code
+                          {t("discover.offer_code")}
                         </DetailsToggle>
                         <div className="flex items-center justify-between gap-2 py-1">
                           <span>{props.black_friday_offer_code}</span>
                           <button
                             onClick={() => updateParams({ offer_code: undefined })}
                             className="flex cursor-pointer items-center justify-center all-unset"
-                            aria-label="Remove offer code filter"
+                            aria-label={t("discover.remove_offer_code_filter")}
                           >
                             <X className="size-4" />
                           </button>

@@ -2,6 +2,7 @@ import { intervalToDuration, Duration } from "date-fns";
 import * as React from "react";
 
 import Countdown from "$app/utils/countdown";
+import { t } from "$app/utils/i18n";
 
 const formatDurationComponent = (component?: number) => (component ?? 0).toString().padStart(2, "0");
 const formatDuration = (duration: Duration) => {
@@ -40,12 +41,15 @@ export const DiscountExpirationCountdown = ({
   // Don't render the countdown if it's greater than 7 days
   if (secondsUntilExpiration > 60 * 60 * 24 * 7) return null;
 
+  const formattedTime = formatDuration(intervalToDuration({ start: 0, end: secondsUntilExpiration * 1000 }));
+  const text = t("storefront.discount_expires_in", { time: "___TIME___" });
+  const [before, after] = text.split("___TIME___");
+
   return (
     <div>
-      This discount expires in{" "}
-      <strong suppressHydrationWarning>
-        {formatDuration(intervalToDuration({ start: 0, end: secondsUntilExpiration * 1000 }))}
-      </strong>
+      {before}
+      <strong suppressHydrationWarning>{formattedTime}</strong>
+      {after}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { OtherRefundPolicy } from "$app/data/products/other_refund_policies";
 import { assertDefined } from "$app/utils/assert";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Dropdown } from "$app/components/Dropdown";
@@ -51,9 +52,9 @@ export const RefundPolicySelector = ({
           onChange={(e) => setIsEnabled(e.target.checked)}
           label={
             <>
-              Specify a refund policy for this product{" "}
+              {t("seller.productEdit.specify_refund_policy")}{" "}
               <a href="/help/article/335-custom-refund-policy" target="_blank" rel="noreferrer">
-                Learn more
+                {t("seller.productEdit.learn_more")}
               </a>
             </>
           }
@@ -62,16 +63,18 @@ export const RefundPolicySelector = ({
       <Dropdown className="flex flex-col gap-4">
         <Fieldset>
           <FieldsetTitle className="flex justify-between">
-            <Label htmlFor={`${uid}-max-refund-period-in-days`}>Refund period</Label>
+            <Label htmlFor={`${uid}-max-refund-period-in-days`}>{t("seller.productEdit.refund_period")}</Label>
             {refundPolicies.length > 0 ? (
               <Popover>
-                <PopoverTrigger className="underline">Copy from other products</PopoverTrigger>
+                <PopoverTrigger className="underline">
+                  {t("seller.productEdit.copy_from_other_products")}
+                </PopoverTrigger>
                 <PopoverContent>
                   <div className="flex w-80 max-w-full flex-col gap-4 font-normal">
                     <Select
                       options={refundPolicies.map(({ id, product_name: label }) => ({ id, label }))}
                       isMulti={false}
-                      placeholder="Select a product"
+                      placeholder={t("seller.productEdit.select_a_product")}
                       onChange={(option) => setSelectedRefundPolicyId(option?.id ?? null)}
                     />
                     <PopoverClose asChild>
@@ -90,7 +93,7 @@ export const RefundPolicySelector = ({
                           }
                         }}
                       >
-                        Copy
+                        {t("seller.productEdit.copy")}
                       </Button>
                     </PopoverClose>
                   </div>
@@ -122,7 +125,7 @@ export const RefundPolicySelector = ({
         </Fieldset>
         <Fieldset>
           <FieldsetTitle>
-            <Label htmlFor={`${uid}-refund-policy-fine-print`}>Fine print (optional)</Label>
+            <Label htmlFor={`${uid}-refund-policy-fine-print`}>{t("seller.productEdit.fine_print")}</Label>
           </FieldsetTitle>
           <Textarea
             id={`${uid}-refund-policy-fine-print`}
@@ -147,7 +150,9 @@ export const RefundPolicyModalPreview = ({ refundPolicy, open }: { refundPolicy:
       title={refundPolicy.title}
       modal={false}
       usePortal={false}
-      footer={`Last updated ${new Date().toLocaleString(userAgentInfo.locale, { dateStyle: "medium" })}`}
+      footer={t("seller.productEdit.last_updated", {
+        date: new Date().toLocaleString(userAgentInfo.locale, { dateStyle: "medium" }),
+      })}
     >
       <div style={{ whiteSpace: "pre-wrap" }}>{refundPolicy.fine_print}</div>
     </Modal>

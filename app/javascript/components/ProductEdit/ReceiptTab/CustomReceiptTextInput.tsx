@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { Fieldset, FieldsetDescription } from "$app/components/ui/Fieldset";
 import { Label } from "$app/components/ui/Label";
 import { Textarea } from "$app/components/ui/Textarea";
@@ -13,6 +15,7 @@ export const CustomReceiptTextInput = ({
   onChange: (value: string) => void;
   maxLength: number;
 }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
   // The textarea silently stops accepting input at maxLength, which is easy to miss when pasting a
   // long draft in one go: the text just appears cut off mid-sentence with no explanation. Showing the
@@ -29,7 +32,7 @@ export const CustomReceiptTextInput = ({
   const charactersUsed = (value ?? "").length;
   return (
     <Fieldset>
-      <Label htmlFor={uid}>Custom message</Label>
+      <Label htmlFor={uid}>{t("seller.productEdit.custom_message_label", "Custom message")}</Label>
       <Textarea
         id={uid}
         aria-describedby={descriptionId}
@@ -39,7 +42,11 @@ export const CustomReceiptTextInput = ({
         rows={3}
       />
       <FieldsetDescription id={descriptionId}>
-        Add a message to the receipt email buyers receive ({charactersUsed} of {maxLength} characters used).
+        {t(
+          "seller.productEdit.custom_message_description",
+          "Add a message to the receipt email buyers receive (%{used} of %{max} characters used).",
+          { used: charactersUsed, max: maxLength },
+        )}
       </FieldsetDescription>
     </Fieldset>
   );

@@ -4,6 +4,7 @@ import * as React from "react";
 import { CardProduct, Ratings } from "$app/parsers/product";
 import { classNames } from "$app/utils/classNames";
 import { formatOrderOfMagnitude } from "$app/utils/formatOrderOfMagnitude";
+import { t } from "$app/utils/i18n";
 import { trackBuyerCurrencyDisplayView } from "$app/utils/user_analytics";
 
 import { AuthorByline } from "$app/components/Product/AuthorByline";
@@ -32,7 +33,9 @@ export const Card = ({
       <ProductCardFigure>
         <Thumbnail url={product.thumbnail_url} nativeType={product.native_type} eager={eager} />
       </ProductCardFigure>
-      {product.quantity_remaining != null ? <Ribbon>{product.quantity_remaining} left</Ribbon> : null}
+      {product.quantity_remaining != null ? (
+        <Ribbon>{t("storefront.quantity_left", { count: product.quantity_remaining })}</Ribbon>
+      ) : null}
       <ProductCardHeader>
         <StretchedLink href={product.url}>
           {/* dir="auto" on product names lets RTL text (Hebrew, Arabic) pick its own
@@ -88,7 +91,9 @@ export const HorizontalCard = ({ product, big, eager }: { product: CardProduct; 
       <ProductCardFigure className="lg:h-full lg:rounded-l lg:rounded-tr-none lg:border-r lg:border-b-0 [&_img]:lg:h-0 [&_img]:lg:min-h-full lg:[&_img]:w-auto">
         <Thumbnail url={product.thumbnail_url} nativeType={product.native_type} eager={eager} />
       </ProductCardFigure>
-      {product.quantity_remaining !== null ? <Ribbon>{product.quantity_remaining} left</Ribbon> : null}
+      {product.quantity_remaining !== null ? (
+        <Ribbon>{t("storefront.quantity_left", { count: product.quantity_remaining })}</Ribbon>
+      ) : null}
       <section className="flex flex-1 flex-col lg:gap-8 lg:px-6 lg:py-4">
         <ProductCardHeader className="lg:border-b-0 lg:p-0">
           <StretchedLink href={product.url} draggable="false">
@@ -148,10 +153,10 @@ export const HorizontalCard = ({ product, big, eager }: { product: CardProduct; 
 };
 
 const Rating = ({ ratings, style }: { ratings: Ratings; style?: React.CSSProperties }) => (
-  <div className="flex shrink-0 items-center gap-1" aria-label="Rating" style={style}>
+  <div className="flex shrink-0 items-center gap-1" aria-label={t("storefront.rating")} style={style}>
     <Star pack="filled" className="size-5" />
     <span className="rating-average">{ratings.average.toFixed(1)}</span>
-    <span title={`${ratings.count} ${ratings.count === 1 ? "rating" : "ratings"}`}>
+    <span title={t("storefront.ratings_count", { count: ratings.count })}>
       {`(${formatOrderOfMagnitude(ratings.count, 1)})`}
     </span>
   </div>

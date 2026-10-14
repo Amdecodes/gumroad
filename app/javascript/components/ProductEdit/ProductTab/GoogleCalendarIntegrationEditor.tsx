@@ -2,6 +2,7 @@ import { Google } from "@boxicons/react";
 import * as React from "react";
 
 import { fetchAccountInfo, fetchCalendarList, getOAuthUrl } from "$app/data/google_calendar_integration";
+import { t } from "$app/utils/i18n";
 import { startOauthRedirectChecker } from "$app/utils/oauth";
 import { assertResponseError } from "$app/utils/request";
 
@@ -113,20 +114,17 @@ export const GoogleCalendarIntegrationEditor = ({
           setEnabledForOptions(false);
         }
       }}
-      label="Connect with Google Calendar to sync your calls"
+      label={t("seller.productEdit.google_calendar_label")}
       dropdown={
         <div className="flex flex-col gap-4">
           {isLoading ? (
             <LoadingSpinner />
           ) : integration ? (
             <>
-              <p>
-                People who purchase your product will automatically receive a Google Calendar invite and we'll keep your
-                calendar in sync.
-              </p>
-              <Label htmlFor="google-account">Google account</Label>
+              <p>{t("seller.productEdit.google_calendar_desc")}</p>
+              <Label htmlFor="google-account">{t("seller.productEdit.google_calendar_account")}</Label>
               <Input id="google-account" type="text" value={integration.integration_details.email} readOnly />
-              <Label htmlFor="calendar-select">Choose calendar</Label>
+              <Label htmlFor="calendar-select">{t("seller.productEdit.google_calendar_choose")}</Label>
               <Select
                 id="calendar-select"
                 value={integration.integration_details.calendar_id}
@@ -150,18 +148,15 @@ export const GoogleCalendarIntegrationEditor = ({
                 ))}
               </Select>
               <Button color="danger" onClick={() => onChange(null)}>
-                Disconnect Google Calendar
+                {t("seller.productEdit.google_calendar_disconnect")}
               </Button>
             </>
           ) : (
             <>
-              <p>
-                People who purchase your product will automatically receive a Google Calendar invite and we'll keep your
-                calendar in sync.
-              </p>
+              <p>{t("seller.productEdit.google_calendar_desc")}</p>
               <Button color="google" onClick={handleConnectGoogleAccount}>
                 <Google pack="brands" className="size-5" />
-                Connect to Google Calendar
+                {t("seller.productEdit.google_calendar_connect")}
               </Button>
             </>
           )}

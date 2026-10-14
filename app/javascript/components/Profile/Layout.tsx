@@ -2,6 +2,7 @@ import { Pencil, Star, TwitterX, Youtube } from "@boxicons/react";
 import * as React from "react";
 
 import { CreatorProfile } from "$app/parsers/profile";
+import { t } from "$app/utils/i18n";
 
 import { NavigationButton } from "$app/components/Button";
 import { CartNavigationButton } from "$app/components/Checkout/CartNavigationButton";
@@ -36,7 +37,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
       {creatorProfile.can_edit ? (
         <NavigationButton color="filled" className="whitespace-nowrap" href={Routes.profile_url({ host: appDomain })}>
           <Pencil className="size-5" />
-          Edit profile
+          {t("profile.edit_profile")}
         </NavigationButton>
       ) : null}
       {creatorProfile.twitter_handle ? (
@@ -63,19 +64,30 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
       <header className="z-20 border-border bg-background text-lg lg:border-b lg:px-4 lg:py-6">
         <div className="mx-auto flex max-w-6xl flex-wrap lg:flex-nowrap lg:items-center lg:gap-6">
           <div className="relative flex min-w-0 grow flex-wrap items-center gap-3 border-b border-border p-4 lg:flex-1 lg:flex-nowrap lg:border-0 lg:p-0">
-            {creatorProfile.avatar_url ? <Avatar src={creatorProfile.avatar_url} alt="Profile Picture" /> : null}
+            {creatorProfile.avatar_url ? (
+              <Avatar src={creatorProfile.avatar_url} alt={t("profile.profile_picture")} />
+            ) : null}
             <a href={Routes.root_path()} className="flex max-w-full min-w-0 items-center gap-2 no-underline">
               <span className="truncate">{creatorProfile.name}</span>
               {creatorProfile.is_verified ? (
-                <WithTooltip tip="Top creator" position="bottom" className="shrink-0">
+                <WithTooltip tip={t("profile.top_creator")} position="bottom" className="shrink-0">
                   <TopCreatorBadge />
                 </WithTooltip>
               ) : null}
             </a>
             {creatorProfile.reputation ? (
-              <div className="flex min-w-0 flex-wrap items-center gap-1 text-sm text-muted" aria-label="Creator rating">
+              <div
+                className="flex min-w-0 flex-wrap items-center gap-1 text-sm text-muted"
+                aria-label={t("profile.creator_rating")}
+              >
                 <Star pack="filled" className="size-4" />
-                {`${creatorProfile.reputation.average} from ${creatorProfile.reputation.count} verified ${creatorProfile.reputation.count === 1 ? "review" : "reviews"} across ${creatorProfile.reputation.products_count} products`}
+                {t("profile.creator_rating_summary", {
+                  average: creatorProfile.reputation.average,
+                  count_reviews: t("storefront.verified_reviews_count", {
+                    count: creatorProfile.reputation.count,
+                  }),
+                  products_count: creatorProfile.reputation.products_count,
+                })}
               </div>
             ) : null}
           </div>
@@ -84,7 +96,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
               <FollowForm creatorProfile={creatorProfile} />
             </div>
           ) : null}
-          {!isDesktop && headerButtons ? <div className="flex basis-full p-4">{headerButtons}</div> : null}
+          {!isDesktop ? <div className="flex basis-full p-4">{headerButtons}</div> : null}
           {isDesktop ? headerButtons : null}
         </div>
       </header>

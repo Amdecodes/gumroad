@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { fetchPriceDistribution, type PriceDistribution } from "$app/data/price_distribution";
 import { classNames } from "$app/utils/classNames";
+import { useTranslation, type TFunction } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -43,21 +44,21 @@ const VARIANT_LABEL_MAX = 12;
 const truncateLabel = (raw: string) =>
   raw.length > VARIANT_LABEL_MAX ? `${raw.slice(0, VARIANT_LABEL_MAX).trimEnd()}…` : raw;
 
-const buildPriceMarkers = (product: Product): PriceMarker[] => {
+const buildPriceMarkers = (product: Product, t: TFunction): PriceMarker[] => {
   if (product.native_type === "membership") {
-    return [{ id: "base", label: "Your price", valueCents: product.price_cents }];
+    return [{ id: "base", label: t("seller.productEdit.your_price", "Your price"), valueCents: product.price_cents }];
   }
   const paidVariants = product.variants.filter(
     (variant) => "price_difference_cents" in variant && (variant.price_difference_cents ?? 0) > 0,
   );
   if (paidVariants.length === 0) {
-    return [{ id: "base", label: "Your price", valueCents: product.price_cents }];
+    return [{ id: "base", label: t("seller.productEdit.your_price", "Your price"), valueCents: product.price_cents }];
   }
   return [
-    { id: "base", label: "Base price", valueCents: product.price_cents },
+    { id: "base", label: t("seller.productEdit.base_price", "Base price"), valueCents: product.price_cents },
     ...paidVariants.map((variant) => ({
       id: variant.id ?? variant.name ?? `variant-${variant.price_difference_cents ?? 0}`,
-      label: truncateLabel(variant.name.trim() || "Variant"),
+      label: truncateLabel(variant.name.trim() || t("seller.productEdit.variant_default", "Variant")),
       valueCents: product.price_cents + (variant.price_difference_cents ?? 0),
     })),
   ];
@@ -121,8 +122,9 @@ export const PriceCheckerCard = () => {
     [load],
   );
 
+  const { t } = useTranslation();
   const productTypeLabel = labelFor(product.native_type);
-  const priceMarkers = React.useMemo(() => buildPriceMarkers(product), [product]);
+  const priceMarkers = React.useMemo(() => buildPriceMarkers(product, t), [product, t]);
 
   const isLoading = status === "loading";
   const hasResult = data !== null;
@@ -137,23 +139,37 @@ export const PriceCheckerCard = () => {
       productDescription={product.description}
       taxonomyId={product.taxonomy_id}
       productTypeLabel={productTypeLabel}
-      tagline={`How your price compares to similar ${productTypeLabel} on Gumroad.`}
+      tagline={t(
+        "seller.productEdit.price_checker_tagline",
+        "How your price compares to similar %{productType} on Gumroad.",
+        {
+          productType: productTypeLabel,
+        },
+      )}
     />
   );
 
   if (!hasResult) {
     return (
       <div className="grid min-h-64 content-center justify-items-center gap-3 rounded-sm border border-dashed border-border bg-background p-4 text-center xl:min-h-80">
-        <h2>Price checker</h2>
-        <p>How your price compares to similar {productTypeLabel} on Gumroad.</p>
+        <h2>{t("seller.productEdit.price_checker_title", "Price checker")}</h2>
+        <p>
+          {t(
+            "seller.productEdit.price_checker_tagline",
+            "How your price compares to similar %{productType} on Gumroad.",
+            {
+              productType: productTypeLabel,
+            },
+          )}
+        </p>
         <Button color="primary" onClick={() => triggerLoad(false)} disabled={isLoading}>
           {isLoading ? (
             <>
               <LoadingSpinner className="size-4" />
-              Checking…
+              {t("seller.productEdit.checking", "Checking…")}
             </>
           ) : (
-            "Check prices"
+            t("seller.productEdit.check_prices", "Check prices")
           )}
         </Button>
       </div>
@@ -161,8 +177,11 @@ export const PriceCheckerCard = () => {
   }
 
   const refreshButton = (
-    <WithTooltip tip="Refresh" className={classNames("shrink-0", { invisible: recheckDisabled })}>
-      <Button size="icon" onClick={() => triggerLoad(true)} aria-label="Refresh">
+    <WithTooltip
+      tip={t("seller.productEdit.refresh", "Refresh")}
+      className={classNames("shrink-0", { invisible: recheckDisabled })}
+    >
+      <Button size="icon" onClick={() => triggerLoad(true)} aria-label={t("seller.productEdit.refresh", "Refresh")}>
         <RefreshCcw className="size-5" />
       </Button>
     </WithTooltip>
@@ -171,7 +190,7 @@ export const PriceCheckerCard = () => {
   const chartHeaderRow = (
     <div className="flex items-start justify-between gap-2">
       <div className="flex items-center gap-2">
-        <span className="inline-flex font-normal">Price checker</span>
+        <span className="inline-flex font-normal">{t("seller.productEdit.price_checker_title", "Price checker")}</span>
         <WithTooltip
           position="bottom"
           tip={tooltipContent}
@@ -179,7 +198,7 @@ export const PriceCheckerCard = () => {
         >
           <button
             type="button"
-            aria-label="Match accuracy details"
+            aria-label={t("seller.productEdit.match_accuracy_details", "Match accuracy details")}
             className="inline-flex appearance-none items-center justify-center border-0 bg-transparent p-0 text-current [-webkit-tap-highlight-color:transparent] focus:outline-none"
           >
             <InfoCircle className="size-5" />
@@ -195,9 +214,9 @@ export const PriceCheckerCard = () => {
       {status === "error" ? (
         <Alert variant="danger">
           <div className="flex items-center justify-between gap-2">
-            <span>Couldn&apos;t load price comparison.</span>
+            <span>{t("seller.productEdit.error_loading", "Couldn't load price comparison.")}</span>
             <Button size="sm" outline onClick={() => triggerLoad(true)}>
-              Retry
+              {t("seller.productEdit.retry", "Retry")}
             </Button>
           </div>
         </Alert>
@@ -207,13 +226,23 @@ export const PriceCheckerCard = () => {
         <div className="grid min-h-64 content-between gap-3 rounded-sm border border-dashed border-border bg-background p-4 xl:min-h-80">
           <div className="flex items-start justify-between gap-2">
             <div className="grid min-w-0 flex-1 gap-1 text-sm">
-              <div className="font-medium text-foreground">Not enough comparable products yet</div>
+              <div className="font-medium text-foreground">
+                {t("seller.productEdit.insufficient_title", "Not enough comparable products yet")}
+              </div>
               <div className="text-muted">
-                We found {data.match_count} similar {productTypeLabel} on Gumroad.
+                {t("seller.productEdit.insufficient_desc", "We found %{count} similar %{productType} on Gumroad.", {
+                  count: data.match_count,
+                  productType: productTypeLabel,
+                })}
               </div>
             </div>
-            <WithTooltip tip="Refresh" className="shrink-0">
-              <Button size="icon" onClick={() => triggerLoad(true)} disabled={recheckDisabled} aria-label="Refresh">
+            <WithTooltip tip={t("seller.productEdit.refresh", "Refresh")} className="shrink-0">
+              <Button
+                size="icon"
+                onClick={() => triggerLoad(true)}
+                disabled={recheckDisabled}
+                aria-label={t("seller.productEdit.refresh", "Refresh")}
+              >
                 <RefreshCcw className="size-5" />
               </Button>
             </WithTooltip>

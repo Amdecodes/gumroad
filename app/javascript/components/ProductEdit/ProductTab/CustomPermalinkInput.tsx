@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { CopyToClipboard } from "$app/components/CopyToClipboard";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -45,9 +47,9 @@ export const CustomPermalinkInput = ({
   return (
     <Fieldset>
       <FieldsetTitle>
-        <Label htmlFor={uid}>URL</Label>
+        <Label htmlFor={uid}>{t("seller.productEdit.url")}</Label>
         <CopyToClipboard text={url}>
-          <LinkButton className="font-normal">Copy URL</LinkButton>
+          <LinkButton className="font-normal">{t("seller.productEdit.copy_url")}</LinkButton>
         </CopyToClipboard>
       </FieldsetTitle>
       <InputGroup>
@@ -62,8 +64,7 @@ export const CustomPermalinkInput = ({
         />
       </InputGroup>
       <FieldsetDescription id={`${uid}-description`}>
-        Letters, numbers, dashes, and underscores only. Each of your products needs its own — if this one is already
-        taken, try adding a word or a number.
+        {t("seller.productEdit.permalink_description")}
       </FieldsetDescription>
     </Fieldset>
   );

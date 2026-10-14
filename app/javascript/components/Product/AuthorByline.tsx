@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Avatar } from "$app/components/ui/Avatar";
 import { WithTooltip } from "$app/components/WithTooltip";
 
@@ -40,9 +42,9 @@ export const AuthorByline = ({
     {avatarUrl ? <Avatar src={avatarUrl} /> : null}
     <span className="min-w-0 truncate">{name}</span>
     {isTopCreator ? (
-      <WithTooltip tip="Top creator" position="top">
+      <WithTooltip tip={t("profile.top_creator")} position="top">
         <TopCreatorBadge />
-        <span className="sr-only">Top creator</span>
+        <span className="sr-only">{t("profile.top_creator")}</span>
       </WithTooltip>
     ) : null}
   </a>

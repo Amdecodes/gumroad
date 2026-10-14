@@ -7,6 +7,7 @@ import { getFolderArchiveDownloadUrl, getProductFileDownloadInfos, saveLastConte
 import { RichContent, RichContentPage } from "$app/parsers/richContent";
 import { assertDefined } from "$app/utils/assert";
 import FileUtils from "$app/utils/file";
+import { t } from "$app/utils/i18n";
 import {
   generatePageIcon,
   PAGE_ICON_COMPONENTS,
@@ -253,7 +254,7 @@ export const WithContent = ({
           ) : null}
           {content.community_chat_url ? (
             <Button asChild color="accent">
-              <a href={content.community_chat_url}>Community</a>
+              <a href={content.community_chat_url}>{t("content.community")}</a>
             </Button>
           ) : null}
           <OpenInAppButton iosAppUrl={content.ios_app_url} androidAppUrl={content.android_app_url} />
@@ -267,7 +268,7 @@ export const WithContent = ({
       }
       pageList={
         showPageList && isDesktop ? (
-          <PageList aria-label="Table of Contents">
+          <PageList aria-label={t("content.table_of_contents")}>
             {pages.map((page, index) => (
               <PageListItem
                 key={page.page_id}
@@ -276,7 +277,7 @@ export const WithContent = ({
                 role="tab"
               >
                 <PageIcon iconKey={pageIcons[index] ?? "text-only"} />
-                <span className="flex-1">{page.title ?? "Untitled"}</span>
+                <span className="flex-1">{page.title ?? t("content.untitled")}</span>
               </PageListItem>
             ))}
           </PageList>
@@ -298,7 +299,7 @@ export const WithContent = ({
                         <h3>{bundleProduct.name}</h3>
                       </div>
                       <NavigationButton href={bundleProduct.url} color="accent">
-                        View content
+                        {t("storefront.view_content")}
                       </NavigationButton>
                     </CardContent>
                   </Card>
@@ -343,7 +344,7 @@ export const WithContent = ({
           {isDesktop ? null : (
             <Popover>
               <PopoverAnchor>
-                <PopoverTrigger aria-label="Table of Contents" asChild>
+                <PopoverTrigger aria-label={t("content.table_of_contents")} asChild>
                   <Button size="icon">
                     <ListUl className="size-5" />
                   </Button>
@@ -363,7 +364,7 @@ export const WithContent = ({
                         }}
                       >
                         <PageIcon iconKey={pageIcons[index] ?? "text-only"} />
-                        {page.title ?? "Untitled"}
+                        {page.title ?? t("content.untitled")}
                       </MenuItemRadio>
                     </PopoverClose>
                   ))}
@@ -371,23 +372,23 @@ export const WithContent = ({
               </PopoverContent>
             </Popover>
           )}
-          <WithTooltip position="top" tip={hasPreviousPage ? null : "No more pages"}>
+          <WithTooltip position="top" tip={hasPreviousPage ? null : t("content.no_more_pages")}>
             <Button
               disabled={!hasPreviousPage}
               onClick={() => handlePageChange(activePageIndex - 1)}
               className="flex-1 lg:flex-none"
             >
               <ArrowLeft className="size-5" />
-              Previous
+              {t("content.previous")}
             </Button>
           </WithTooltip>
-          <WithTooltip position="top" tip={hasNextPage ? null : "No more pages"}>
+          <WithTooltip position="top" tip={hasNextPage ? null : t("content.no_more_pages")}>
             <Button
               disabled={!hasNextPage}
               onClick={() => handlePageChange(activePageIndex + 1)}
               className="flex-1 lg:flex-none"
             >
-              Next
+              {t("content.next")}
               <ArrowRight className="size-5" />
             </Button>
           </WithTooltip>

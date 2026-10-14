@@ -3,6 +3,8 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { BundleContentUpdatedStatus } from "$app/components/BundleEdit/ContentTab/BundleContentUpdatedStatus";
 import { BundleProductItem } from "$app/components/BundleEdit/ContentTab/BundleProductItem";
 import { BundleProductSelector } from "$app/components/BundleEdit/ContentTab/BundleProductSelector";
@@ -48,6 +50,7 @@ type ContentFormData = {
 };
 
 export default function BundlesContentEdit() {
+  const { t } = useTranslation();
   const page = usePage();
   const props = typia.assert<ContentPageProps>(page.props);
   const {
@@ -206,7 +209,7 @@ export default function BundlesContentEdit() {
       preview={
         <div>
           <header>
-            <h1>Library</h1>
+            <h1>{t("navigation.library")}</h1>
           </header>
           <section>
             <ProductCardGrid>
@@ -236,7 +239,7 @@ export default function BundlesContentEdit() {
                   alignItems: "center",
                 }}
               >
-                <h2>Products</h2>
+                <h2>{t("seller.products.title")}</h2>
                 <Label>
                   <Checkbox
                     checked={form.data.products.length === products_count}
@@ -249,11 +252,11 @@ export default function BundlesContentEdit() {
                       }
                     }}
                   />
-                  All products
+                  {t("seller.products.all_products")}
                 </Label>
               </header>
               {form.data.products.length > 0 ? (
-                <CartItemList aria-label="Bundle products">
+                <CartItemList aria-label={t("seller.bundles.bundle_products_aria")}>
                   {form.data.products.map((bundleProduct, idx) => (
                     <BundleProductItem
                       key={bundleProduct.id}
@@ -266,7 +269,7 @@ export default function BundlesContentEdit() {
               ) : null}
               <div
                 className="grid gap-4 rounded-sm border border-border bg-background p-4"
-                aria-label="Product selector"
+                aria-label={t("seller.bundles.product_selector_aria")}
               >
                 <InputGroup>
                   <Search className="size-5 text-muted" />
@@ -274,7 +277,7 @@ export default function BundlesContentEdit() {
                     type="text"
                     value={query}
                     onChange={(evt) => setQuery(evt.target.value)}
-                    placeholder="Search products"
+                    placeholder={t("seller.bundles.search_products")}
                   />
                 </InputGroup>
                 {isSearchLoading && results.length === 0 ? (
@@ -296,17 +299,17 @@ export default function BundlesContentEdit() {
                     })}
                   </CartItemList>
                 ) : (
-                  <div style={{ justifySelf: "center" }}>No products found</div>
+                  <div style={{ justifySelf: "center" }}>{t("seller.bundles.no_products_found")}</div>
                 )}
               </div>
             </>
           ) : (
             <Placeholder>
-              <h2>Select products</h2>
-              <p>Choose the products you want to include in your bundle</p>
+              <h2>{t("seller.bundles.select_products_title")}</h2>
+              <p>{t("seller.bundles.select_products_desc")}</p>
               <Button color="primary" onClick={() => setIsSelecting(true)}>
                 <Plus className="size-5" />
-                Add products
+                {t("seller.bundles.add_products")}
               </Button>
             </Placeholder>
           )}

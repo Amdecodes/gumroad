@@ -29,7 +29,7 @@ module ProductsHelper
   end
 
   def view_content_button_text(product)
-    product.custom_view_content_button_text.presence || "View content"
+    product.custom_view_content_button_text.presence || I18n.t("mailers.common.view_content", default: "View content")
   end
 
   def variants_displayable(variants)

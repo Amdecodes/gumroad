@@ -3,6 +3,7 @@ import * as React from "react";
 import { fetchCartRecovery, updateCartRecovery, type MarketingCartRecovery } from "$app/data/marketing_cart_recovery";
 import emailStyles from "$app/entrypoints/email.scss?inline";
 import { classNames } from "$app/utils/classNames";
+import { useTranslation } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 import { sanitizeHtml } from "$app/utils/sanitize";
 
@@ -41,6 +42,7 @@ const EmailPreview = ({ message }: { message: string }) => {
 };
 
 export const CartRecoveryCard = ({ productPermalink }: { productPermalink: string }) => {
+  const { t } = useTranslation();
   const [state, setState] = React.useState<MarketingCartRecovery | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [failed, setFailed] = React.useState(false);
@@ -91,10 +93,10 @@ export const CartRecoveryCard = ({ productPermalink }: { productPermalink: strin
             <h2>
               {state?.can_toggle ? (
                 <label htmlFor={switchId} className="flex min-h-11 cursor-pointer items-center">
-                  Abandoned cart email
+                  {t("seller.productEdit.abandoned_cart_title", "Abandoned cart email")}
                 </label>
               ) : (
-                "Abandoned cart email"
+                t("seller.productEdit.abandoned_cart_title", "Abandoned cart email")
               )}
             </h2>
             {state?.can_toggle ? (
@@ -128,8 +130,11 @@ export const CartRecoveryCard = ({ productPermalink }: { productPermalink: strin
           ) : state.can_toggle ? (
             <>
               <p id={`${switchId}-description`}>
-                Reminders are scheduled daily at 14:00 UTC for carts inactive for at least {state.delay_hours} hours.
-                Enabling also includes eligible unsent carts from the past month.
+                {t(
+                  "seller.productEdit.abandoned_cart_desc",
+                  "Reminders are scheduled daily at 14:00 UTC for carts inactive for at least %{hours} hours. Enabling also includes eligible unsent carts from the past month.",
+                  { hours: state.delay_hours },
+                )}
               </p>
               {!state.available ? (
                 <p role="status" className="text-muted">
@@ -138,7 +143,9 @@ export const CartRecoveryCard = ({ productPermalink }: { productPermalink: strin
               ) : null}
               {state.message ? (
                 <Details>
-                  <DetailsToggle className="min-h-10">Preview email</DetailsToggle>
+                  <DetailsToggle className="min-h-10">
+                    {t("seller.productEdit.preview_email", "Preview email")}
+                  </DetailsToggle>
                   <div className="grid gap-4 rounded border border-border p-4">
                     <strong className="wrap-anywhere">{state.subject}</strong>
                     <EmailPreview message={state.message} />
@@ -147,11 +154,17 @@ export const CartRecoveryCard = ({ productPermalink }: { productPermalink: strin
               ) : null}
               <div className="flex min-h-10 items-center">
                 {busy ? (
-                  <span role="status">{state.enabled ? "Pausing…" : "Turning on…"}</span>
+                  <span role="status">
+                    {state.enabled
+                      ? t("seller.productEdit.pausing", "Pausing…")
+                      : t("seller.productEdit.turning_on", "Turning on…")}
+                  </span>
                 ) : workflow ? (
-                  <a href={workflow.url}>Edit email</a>
+                  <a href={workflow.url}>{t("seller.productEdit.edit_email", "Edit email")}</a>
                 ) : (
-                  <span className="text-muted">You can edit this email after enabling it.</span>
+                  <span className="text-muted">
+                    {t("seller.productEdit.edit_email_after_enabling", "You can edit this email after enabling it.")}
+                  </span>
                 )}
               </div>
             </>

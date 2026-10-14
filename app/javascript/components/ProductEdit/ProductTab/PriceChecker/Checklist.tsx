@@ -1,6 +1,8 @@
 import { Check, X } from "@boxicons/react";
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 const stripTags = (html: string) => html.replace(/<[^>]*>/gu, "").trim();
 
 type CheckRow = {
@@ -9,12 +11,14 @@ type CheckRow = {
   hint?: React.ReactNode;
 };
 
-const Icon = ({ passed }: { passed: boolean }) =>
-  passed ? (
-    <Check className="size-4 shrink-0 text-success" aria-label="Met" />
+const Icon = ({ passed }: { passed: boolean }) => {
+  const { t } = useTranslation();
+  return passed ? (
+    <Check className="size-4 shrink-0 text-success" aria-label={t("seller.productEdit.check_met", "Met")} />
   ) : (
-    <X className="size-4 shrink-0 text-danger" aria-label="Missing" />
+    <X className="size-4 shrink-0 text-danger" aria-label={t("seller.productEdit.check_missing", "Missing")} />
   );
+};
 
 export const Checklist = ({
   productNativeType,
@@ -31,32 +35,40 @@ export const Checklist = ({
   productTypeLabel: string;
   tagline?: React.ReactNode;
 }) => {
+  const { t } = useTranslation();
   const descriptionLength = stripTags(productDescription).length;
   const rows: CheckRow[] = [
     {
-      label: `Product type — ${productTypeLabel}`,
+      label: t("seller.productEdit.check_product_type", "Product type — %{productType}", {
+        productType: productTypeLabel,
+      }),
       passed: Boolean(productNativeType),
     },
     {
-      label: "Product name",
+      label: t("seller.productEdit.check_product_name", "Product name"),
       passed: productName.trim().length > 0,
     },
     {
-      label: "Description (50+ characters)",
+      label: t("seller.productEdit.check_description", "Description (50+ characters)"),
       passed: descriptionLength >= 50,
-      hint: descriptionLength > 0 ? `${descriptionLength} characters` : undefined,
+      hint: descriptionLength > 0 ? t("seller.productEdit.characters_count", { count: descriptionLength }) : undefined,
     },
     {
-      label: "Category",
+      label: t("seller.productEdit.check_category", "Category"),
       passed: taxonomyId != null,
-      hint: taxonomyId == null ? "Set in Share tab to refine matches" : undefined,
+      hint:
+        taxonomyId == null
+          ? t("seller.productEdit.check_category_hint", "Set in Share tab to refine matches")
+          : undefined,
     },
   ];
 
   return (
     <div className="grid gap-1.5 text-left">
       {tagline ? <div className="text-sm">{tagline}</div> : null}
-      <div className="text-xs tracking-wide uppercase opacity-70">Match accuracy</div>
+      <div className="text-xs tracking-wide uppercase opacity-70">
+        {t("seller.productEdit.match_accuracy", "Match accuracy")}
+      </div>
       <ul className="m-0 grid list-none gap-1.5 p-0">
         {rows.map((row) => (
           <li key={row.label} className="flex items-start gap-2 text-sm leading-tight">

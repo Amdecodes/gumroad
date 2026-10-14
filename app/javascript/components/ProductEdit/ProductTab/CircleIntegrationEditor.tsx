@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { CircleCommunity, CircleSpaceGroup, fetchCommunities, fetchSpaceGroups } from "$app/data/circle_integration";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -113,18 +114,17 @@ export const CircleIntegrationEditor = ({
           setEnabledForOptions(false);
         }
       }}
-      label="Invite your customers to a Circle community"
+      label={t("seller.productEdit.circle_invite_label")}
       dropdown={
         <div className="flex flex-col gap-4">
-          People who purchase your product will be automatically invited to your Circle community. To get your API
-          token, visit your-community.circle.so/settings/API.
+          {t("seller.productEdit.circle_invite_desc")}
           <Fieldset>
-            <Label htmlFor={`${uid}-api-key`}>API Token</Label>
+            <Label htmlFor={`${uid}-api-key`}>{t("seller.productEdit.circle_api_token")}</Label>
             <Input
               id={`${uid}-api-key`}
               value={apiKey}
               onChange={(evt) => setApiKey(evt.target.value)}
-              placeholder="Type or paste your API token"
+              placeholder={t("seller.productEdit.circle_api_token_placeholder")}
             />
           </Fieldset>
           <Button
@@ -137,7 +137,9 @@ export const CircleIntegrationEditor = ({
             }}
             disabled={communities?.status === "fetching"}
           >
-            {communities?.status === "success" ? "Update" : "Load communities"}
+            {communities?.status === "success"
+              ? t("seller.productEdit.circle_update")
+              : t("seller.productEdit.circle_load_communities")}
           </Button>
           {communities ? (
             communities.status === "fetching" ? (
@@ -149,7 +151,7 @@ export const CircleIntegrationEditor = ({
             ) : (
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}-community`}>Select a community</Label>
+                  <Label htmlFor={`${uid}-community`}>{t("seller.productEdit.circle_select_community")}</Label>
                 </FieldsetTitle>
                 <Select
                   id={`${uid}-community`}
@@ -157,7 +159,7 @@ export const CircleIntegrationEditor = ({
                   onChange={(ev) => setSelectedCommunityId(parseInt(ev.target.value, 10))}
                 >
                   <option value="select-community" disabled>
-                    Select a community
+                    {t("seller.productEdit.circle_select_community")}
                   </option>
                   {communities.data.map((community) => (
                     <option key={community.id} value={community.id}>
@@ -179,7 +181,7 @@ export const CircleIntegrationEditor = ({
               <>
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={`${uid}-space-group`}>Select a space group</Label>
+                    <Label htmlFor={`${uid}-space-group`}>{t("seller.productEdit.circle_select_space_group")}</Label>
                   </FieldsetTitle>
                   <Select
                     id={`${uid}-space-group`}
@@ -190,7 +192,7 @@ export const CircleIntegrationEditor = ({
                     }}
                   >
                     <option value="select-space-group" disabled>
-                      Select a space group
+                      {t("seller.productEdit.circle_select_space_group")}
                     </option>
                     {spaceGroups.data.map((spaceGroup) => (
                       <option key={spaceGroup.id} value={spaceGroup.id}>
@@ -207,7 +209,7 @@ export const CircleIntegrationEditor = ({
                         onChange({ ...integration, keep_inactive_members: !integration.keep_inactive_members })
                       }
                     />
-                    Do not remove Circle access when membership ends
+                    {t("seller.productEdit.circle_keep_inactive_label")}
                   </Label>
                 ) : null}
                 {product.variants.length > 0 ? (
@@ -215,14 +217,18 @@ export const CircleIntegrationEditor = ({
                     {product.variants.every(({ integrations }) => !integrations.circle) ? (
                       <Alert role="status" variant="warning">
                         {product.native_type === "membership"
-                          ? "Your integration is not assigned to any tier. Check your tiers' settings."
-                          : "Your integration is not assigned to any version. Check your versions' settings."}
+                          ? t("seller.productEdit.circle_unassigned_tier")
+                          : t("seller.productEdit.circle_unassigned_version")}
                       </Alert>
                     ) : null}
                     <Switch
                       checked={product.variants.every(({ integrations }) => integrations.circle)}
                       onChange={(e) => setEnabledForOptions(e.target.checked)}
-                      label={product.native_type === "membership" ? "Enable for all tiers" : "Enable for all versions"}
+                      label={
+                        product.native_type === "membership"
+                          ? t("seller.productEdit.circle_enable_all_tiers")
+                          : t("seller.productEdit.circle_enable_all_versions")
+                      }
                     />
                   </>
                 ) : null}

@@ -16,6 +16,7 @@ import {
   getLinearSectionRank,
   sanitizeSerializedEpubSection,
 } from "$app/pages/UrlRedirects/epub";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "$app/components/Popover";
@@ -333,7 +334,11 @@ const PdfReader = ({
       <div role="application" className="scoped-tailwind-preflight flex min-h-screen flex-col">
         <div role="menubar" className="flex text-sm md:text-base">
           <div className="border-r">
-            <button aria-label="Back" onClick={() => history.back()} className="cursor-pointer p-4 all-unset">
+            <button
+              aria-label={t("content.back")}
+              onClick={() => history.back()}
+              className="cursor-pointer p-4 all-unset"
+            >
               <X className="size-5" />
             </button>
           </div>
@@ -341,17 +346,17 @@ const PdfReader = ({
             <h1 className="truncate">{title}</h1>
           </div>
           <Popover>
-            <PopoverTrigger aria-label="Appearance" className="border-r p-4">
+            <PopoverTrigger aria-label={t("content.appearance")} className="border-r p-4">
               <SearchPlus className="size-5" />
             </PopoverTrigger>
             <PopoverContent>
               <Fieldset>
-                <FieldsetTitle>Appearance</FieldsetTitle>
+                <FieldsetTitle>{t("content.appearance")}</FieldsetTitle>
                 <div>
-                  <Button size="icon" className="mr-2" onClick={zoomOut}>
+                  <Button size="icon" className="mr-2" onClick={zoomOut} aria-label={t("content.decrease_text_size")}>
                     <SearchMinus className="size-5" />
                   </Button>
-                  <Button size="icon" onClick={zoomIn}>
+                  <Button size="icon" onClick={zoomIn} aria-label={t("content.increase_text_size")}>
                     <SearchPlus className="size-5" />
                   </Button>
                 </div>
@@ -359,12 +364,10 @@ const PdfReader = ({
             </PopoverContent>
           </Popover>
           <div className="flex items-center gap-1 p-4 whitespace-nowrap tabular-nums">
-            <div className="pagination">
-              {pageNumber} of {pageCount}
-            </div>
+            <div className="pagination">{t("content.pagination", { current: pageNumber, total: pageCount })}</div>
             <button
               className="cursor-pointer all-unset"
-              aria-label="Previous"
+              aria-label={t("content.previous")}
               onClick={() => updatePage("previous")}
               disabled={pageNumber === 1 || pageCount === 1}
             >
@@ -372,7 +375,7 @@ const PdfReader = ({
             </button>
             <button
               className="cursor-pointer all-unset"
-              aria-label="Next"
+              aria-label={t("content.next")}
               onClick={() => updatePage("next")}
               disabled={pageNumber === pageCount || pageCount === 1}
             >
@@ -382,7 +385,7 @@ const PdfReader = ({
         </div>
 
         <WithTooltip
-          tip={pageTooltip ? `Page ${pageTooltip.pageNumber}` : null}
+          tip={pageTooltip ? t("content.page_tooltip", { pageNumber: pageTooltip.pageNumber }) : null}
           className="z-20 grid"
           tooltipProps={{ style: { left: pageTooltip?.left, pointerEvents: "none" } }}
           onMouseMove={(e) => {
@@ -418,9 +421,27 @@ const PdfReader = ({
 // own text (inside the epub.js iframe), independently of the app's light/dark
 // mode, because readers often want e.g. a sepia book page in a dark app.
 const epubThemes = {
-  light: { label: "Light", background: "#ffffff", color: "#000000", link: "#146ef5", surface: "#f4f4f0" },
-  sepia: { label: "Sepia", background: "#f4ecd8", color: "#5b4636", link: "#754d24", surface: "#e8dcc0" },
-  dark: { label: "Dark", background: "#121212", color: "#e6e6e6", link: "#8ab4ff", surface: "#242424" },
+  light: {
+    labelKey: "content.theme_light" as const,
+    background: "#ffffff",
+    color: "#000000",
+    link: "#146ef5",
+    surface: "#f4f4f0",
+  },
+  sepia: {
+    labelKey: "content.theme_sepia" as const,
+    background: "#f4ecd8",
+    color: "#5b4636",
+    link: "#754d24",
+    surface: "#e8dcc0",
+  },
+  dark: {
+    labelKey: "content.theme_dark" as const,
+    background: "#121212",
+    color: "#e6e6e6",
+    link: "#8ab4ff",
+    surface: "#242424",
+  },
 } as const;
 type EpubThemeName = keyof typeof epubThemes;
 
@@ -741,16 +762,16 @@ const EpubReader = ({
             <h1 className="truncate">{title}</h1>
           </div>
           <Popover>
-            <PopoverTrigger aria-label="Appearance" className="border-r p-4">
+            <PopoverTrigger aria-label={t("content.appearance")} className="border-r p-4">
               <SearchPlus className="size-5" />
             </PopoverTrigger>
             <PopoverContent>
               <Fieldset>
-                <FieldsetTitle>Text size</FieldsetTitle>
+                <FieldsetTitle>{t("content.text_size")}</FieldsetTitle>
                 <div className="flex items-center gap-2">
                   <Button
                     size="icon"
-                    aria-label="Decrease text size"
+                    aria-label={t("content.decrease_text_size")}
                     onClick={() => updateFontSize(Math.max(epubFontSizeMin, fontSize - epubFontSizeStep))}
                   >
                     <SearchMinus className="size-5" />
@@ -758,7 +779,7 @@ const EpubReader = ({
                   <span className="tabular-nums">{fontSize}%</span>
                   <Button
                     size="icon"
-                    aria-label="Increase text size"
+                    aria-label={t("content.increase_text_size")}
                     onClick={() => updateFontSize(Math.min(epubFontSizeMax, fontSize + epubFontSizeStep))}
                   >
                     <SearchPlus className="size-5" />
@@ -766,38 +787,39 @@ const EpubReader = ({
                 </div>
               </Fieldset>
               <Fieldset>
-                <FieldsetTitle>Background</FieldsetTitle>
-                <div role="radiogroup" aria-label="Background" className="flex gap-2">
-                  {Object.entries(epubThemes).map(([name, { label, background, color }]) => (
-                    <button
-                      key={name}
-                      role="radio"
-                      aria-checked={theme === name}
-                      aria-label={label}
-                      onClick={() => updateTheme(typia.assert<EpubThemeName>(name))}
-                      className="cursor-pointer rounded border p-2 all-unset"
-                      style={{
-                        background,
-                        color,
-                        borderColor: theme === name ? "var(--accent)" : "var(--border)",
-                        borderWidth: theme === name ? 2 : 1,
-                        borderStyle: "solid",
-                      }}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                <FieldsetTitle>{t("content.background")}</FieldsetTitle>
+                <div role="radiogroup" aria-label={t("content.background")} className="flex gap-2">
+                  {Object.entries(epubThemes).map(([name, { labelKey, background, color }]) => {
+                    const label = t(labelKey);
+                    return (
+                      <button
+                        key={name}
+                        role="radio"
+                        aria-checked={theme === name}
+                        aria-label={label}
+                        onClick={() => updateTheme(typia.assert<EpubThemeName>(name))}
+                        className="cursor-pointer rounded border p-2 all-unset"
+                        style={{
+                          background,
+                          color,
+                          borderColor: theme === name ? "var(--accent)" : "var(--border)",
+                          borderWidth: theme === name ? 2 : 1,
+                          borderStyle: "solid",
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               </Fieldset>
             </PopoverContent>
           </Popover>
           <div className="flex items-center gap-1 p-4 whitespace-nowrap tabular-nums">
-            <div className="pagination">
-              {sectionNumber} of {sectionCount}
-            </div>
+            <div className="pagination">{t("content.pagination", { current: sectionNumber, total: sectionCount })}</div>
             <button
               className="cursor-pointer all-unset"
-              aria-label="Previous"
+              aria-label={t("content.previous")}
               onClick={() => turnPage("previous")}
               disabled={sectionCount === 0}
             >
@@ -805,7 +827,7 @@ const EpubReader = ({
             </button>
             <button
               className="cursor-pointer all-unset"
-              aria-label="Next"
+              aria-label={t("content.next")}
               onClick={() => turnPage("next")}
               disabled={sectionCount === 0}
             >
@@ -820,7 +842,7 @@ const EpubReader = ({
               min={1}
               max={sectionCount}
               value={sectionNumber}
-              aria-label="Section"
+              aria-label={t("content.section_aria")}
               onChange={(e) => goToSection(parseInt(e.target.value, 10))}
               progress={((sectionNumber - 1) / (sectionCount - 1)) * 100}
             />
@@ -855,7 +877,7 @@ const ReaderLoadingOverlay = () => (
       textAlign: "center",
     }}
   >
-    <h3>One moment while we prepare your reading experience</h3>
+    <h3>{t("content.loading_reader")}</h3>
   </div>
 );
 
@@ -865,12 +887,12 @@ const ReaderErrorOverlay = () => (
     className="scoped-tailwind-preflight absolute flex size-full flex-col items-center justify-center gap-4 bg-background p-6 text-center"
     style={{ zIndex: "var(--z-index-tooltip)" }}
   >
-    <h3>We couldn&apos;t open this EPUB</h3>
-    <p>You can try loading it again or go back to your files.</p>
+    <h3>{t("content.reader_error_title")}</h3>
+    <p>{t("content.reader_error_desc")}</p>
     <div className="flex gap-3">
-      <Button onClick={() => history.back()}>Back</Button>
+      <Button onClick={() => history.back()}>{t("content.back")}</Button>
       <Button color="primary" onClick={() => location.reload()}>
-        Try again
+        {t("content.try_again")}
       </Button>
     </div>
   </div>

@@ -8,6 +8,7 @@ import { RecurringProductType } from "$app/data/products";
 import { ProductNativeType, ProductServiceType } from "$app/parsers/product";
 import { classNames } from "$app/utils/classNames";
 import { CurrencyCode, findCurrencyByCode } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 import {
   RecurrenceId,
   durationInMonthsToRecurrenceId,
@@ -153,16 +154,13 @@ const NewProductPage = () => {
       setAiPromoVisible(false);
     } catch (e) {
       assertResponseError(e);
-      showAlert("Failed to dismiss promo", "error");
+      showAlert(t("seller.products.ai_dismiss_failed"), "error");
     }
   };
 
   const generateWithAi = async () => {
     if (form.data.link.ai_prompt.trim().length < MIN_AI_PROMPT_LENGTH) {
-      showAlert(
-        `Please enter a detailed prompt for your product idea (minimum ${MIN_AI_PROMPT_LENGTH} characters)`,
-        "error",
-      );
+      showAlert(t("seller.products.ai_min_chars", { count: MIN_AI_PROMPT_LENGTH }), "error");
       return;
     }
 
@@ -221,7 +219,7 @@ const NewProductPage = () => {
         setAiPopoverOpen(false);
         setAiPromoVisible(false);
 
-        showAlert("All set! Review the form below and hit 'Next: customize' to continue.", "success");
+        showAlert(t("seller.products.ai_success"), "success");
       } else {
         showAlert(result.error, "error");
       }
@@ -230,7 +228,7 @@ const NewProductPage = () => {
       if (e instanceof RateLimitError) {
         showAlert(e.message, "warning");
       } else {
-        showAlert("Failed to generate product details", "error");
+        showAlert(t("seller.products.ai_generate_failed"), "error");
       }
     } finally {
       setIsGeneratingUsingAi(false);
@@ -273,20 +271,22 @@ const NewProductPage = () => {
     <>
       <PageHeader
         className="sticky-top"
-        title={show_orientation_text ? "Publish your first product" : "What are you creating?"}
+        title={
+          show_orientation_text ? t("seller.products.new_header_first") : t("seller.products.new_header_subsequent")
+        }
         actions={
           <>
             {isMobileAppWebView ? null : (
               <Button asChild>
                 <Link href={Routes.products_path()}>
-                  <span>Cancel</span>
+                  <span>{t("seller.products.cancel")}</span>
                 </Link>
               </Button>
             )}
             {ai_generation_enabled ? (
               <Popover open={aiPopoverOpen} onOpenChange={setAiPopoverOpen}>
                 <PopoverAnchor>
-                  <PopoverTrigger aria-label="Create a product with AI" asChild>
+                  <PopoverTrigger aria-label={t("seller.products.ai_modal_title")} asChild>
                     <Button size="icon" color="primary" outline>
                       <Sparkle className="size-5" />
                     </Button>
@@ -296,15 +296,12 @@ const NewProductPage = () => {
                   <div className="w-96 max-w-full">
                     <Fieldset>
                       <FieldsetTitle>
-                        <Label htmlFor={`ai-prompt-${formUID}`}>Create a product with AI</Label>
+                        <Label htmlFor={`ai-prompt-${formUID}`}>{t("seller.products.ai_modal_title")}</Label>
                       </FieldsetTitle>
-                      <p>
-                        Got an idea? Give clear instructions, and let AI create your product—quick and easy! Customize
-                        it to make it yours.
-                      </p>
+                      <p>{t("seller.products.ai_modal_description")}</p>
                       <Textarea
                         id={`ai-prompt-${formUID}`}
-                        placeholder="e.g., a 'Coding with AI using Cursor for Designers' ebook with 5 chapters for $35'."
+                        placeholder={t("seller.products.ai_prompt_placeholder")}
                         value={form.data.link.ai_prompt}
                         onChange={(e) => form.setData("link.ai_prompt", e.target.value)}
                         rows={4}
@@ -315,14 +312,14 @@ const NewProductPage = () => {
                     </Fieldset>
                     <div className="mt-3 flex justify-end gap-2">
                       <Button onClick={() => setAiPopoverOpen(false)} disabled={isGeneratingUsingAi}>
-                        Cancel
+                        {t("seller.products.cancel")}
                       </Button>
                       <Button
                         color="primary"
                         onClick={() => void generateWithAi()}
                         disabled={isGeneratingUsingAi || !form.data.link.ai_prompt.trim()}
                       >
-                        {isGeneratingUsingAi ? "Generating..." : "Generate"}
+                        {isGeneratingUsingAi ? t("seller.products.ai_generating") : t("seller.products.ai_generate")}
                       </Button>
                     </div>
                   </div>
@@ -330,7 +327,7 @@ const NewProductPage = () => {
               </Popover>
             ) : null}
             <Button color="accent" type="submit" form={`new-product-form-${formUID}`} disabled={form.processing}>
-              {form.processing ? "Adding..." : "Next: Customize"}
+              {form.processing ? t("seller.products.adding") : t("seller.products.next_customize")}
             </Button>
           </>
         }
@@ -341,12 +338,11 @@ const NewProductPage = () => {
             <FormSection
               header={
                 <p>
-                  Turn your idea into a live product in minutes. No fuss, just a few quick selections and you're ready
-                  to start selling. Whether it's digital downloads, online courses, or memberships — see what sticks.
+                  {t("seller.products.intro_text")}
                   <br />
                   <br />
                   <a href="/help/article/64-is-gumroad-for-me" target="_blank" rel="noreferrer">
-                    Need help adding a product?
+                    {t("seller.products.need_help")}
                   </a>
                 </p>
               }
@@ -356,15 +352,15 @@ const NewProductPage = () => {
                   <div className="flex items-center gap-4">
                     <img src={hands} alt="Hands" className="size-12" />
                     <div className="flex-1">
-                      <strong>New.</strong> You can create your product using AI now. Click the sparks button in the
-                      header to get started.
+                      <strong>{t("seller.products.ai_banner_title")}</strong>{" "}
+                      {t("seller.products.ai_banner_description")}
                       <br />
                       <a href="/help/article/149-adding-a-product" target="_blank" rel="noreferrer">
-                        Learn more
+                        {t("seller.productEdit.learn_more")}
                       </a>
                     </div>
                     <button className="underline" onClick={() => void dismissAiPromo()}>
-                      close
+                      {t("seller.productEdit.close")}
                     </button>
                   </div>
                 </Alert>
@@ -372,7 +368,7 @@ const NewProductPage = () => {
 
               <Fieldset state={errors["link.name"] ? "danger" : undefined}>
                 <FieldsetTitle>
-                  <Label htmlFor={`name-${formUID}`}>Name</Label>
+                  <Label htmlFor={`name-${formUID}`}>{t("seller.products.field_name")}</Label>
                 </FieldsetTitle>
 
                 <Input
@@ -384,11 +380,11 @@ const NewProductPage = () => {
                   ref={nameInputRef}
                   className="border-foreground/40"
                 />
-                <Errors errors={errors["link.name"]} label="Name" />
+                <Errors errors={errors["link.name"]} label={t("seller.products.field_name")} />
               </Fieldset>
 
               <Fieldset>
-                <FieldsetTitle>Products</FieldsetTitle>
+                <FieldsetTitle>{t("seller.products.field_products")}</FieldsetTitle>
                 <ProductTypeSelector
                   selectedType={form.data.link.native_type}
                   types={native_product_types}
@@ -397,7 +393,7 @@ const NewProductPage = () => {
               </Fieldset>
               {service_product_types.length > 0 ? (
                 <Fieldset>
-                  <FieldsetTitle>Services</FieldsetTitle>
+                  <FieldsetTitle>{t("seller.products.field_services")}</FieldsetTitle>
                   <ProductTypeSelector
                     selectedType={form.data.link.native_type}
                     types={service_product_types}
@@ -410,7 +406,9 @@ const NewProductPage = () => {
               <Fieldset state={errors["link.price_range"] || errors["link.base"] ? "danger" : undefined}>
                 <FieldsetTitle>
                   <Label htmlFor={`price-${formUID}`}>
-                    {form.data.link.native_type === "coffee" ? "Suggested amount" : "Price"}
+                    {form.data.link.native_type === "coffee"
+                      ? t("seller.products.field_suggested_amount")
+                      : t("seller.products.field_price")}
                   </Label>
                 </FieldsetTitle>
 
@@ -451,7 +449,7 @@ const NewProductPage = () => {
                             form.setData("link.subscription_duration", newSubscriptionDuration);
                           }}
                           value={form.data.link.subscription_duration || defaultRecurrence}
-                          aria-label="Default subscription duration"
+                          aria-label={t("seller.products.default_subscription_duration")}
                           options={recurrenceIds.map((recurrence) => ({
                             id: recurrence,
                             label: recurrenceLabels[recurrence],
@@ -463,7 +461,7 @@ const NewProductPage = () => {
                     </Pill>
                   ) : null}
                 </InputGroup>
-                <Errors errors={errors["link.price_range"]} label="Price" />
+                <Errors errors={errors["link.price_range"]} label={t("seller.products.field_price")} />
                 <Errors errors={errors["link.base"]} label="" />
               </Fieldset>
             </FormSection>
@@ -474,54 +472,102 @@ const NewProductPage = () => {
   );
 };
 
-const PRODUCT_TYPES = {
+const PRODUCT_TYPES: Record<ProductNativeType, { title: string; description: string }> = {
   audiobook: {
-    description: "Let customers listen to your audio content.",
-    title: "Audiobook",
+    get description() {
+      return t("seller.products.type_audiobook_desc");
+    },
+    get title() {
+      return t("seller.products.type_audiobook_title");
+    },
   },
   bundle: {
-    description: "Sell two or more existing products for a new price",
-    title: "Bundle",
+    get description() {
+      return t("seller.products.type_bundle_desc");
+    },
+    get title() {
+      return t("seller.products.type_bundle_title");
+    },
   },
   call: {
-    description: "Offer scheduled calls with your customers.",
-    title: "Call",
+    get description() {
+      return t("seller.products.type_call_desc");
+    },
+    get title() {
+      return t("seller.products.type_call_title");
+    },
   },
   coffee: {
-    description: "Boost your support and accept tips from customers.",
-    title: "Coffee",
+    get description() {
+      return t("seller.products.type_coffee_desc");
+    },
+    get title() {
+      return t("seller.products.type_coffee_title");
+    },
   },
   commission: {
-    description: "Sell custom services with 50% deposit upfront, 50% upon completion.",
-    title: "Commission",
+    get description() {
+      return t("seller.products.type_commission_desc");
+    },
+    get title() {
+      return t("seller.products.type_commission_title");
+    },
   },
   course: {
-    description: "Sell a single lesson or teach a whole cohort of students.",
-    title: "Course or tutorial",
+    get description() {
+      return t("seller.products.type_course_desc");
+    },
+    get title() {
+      return t("seller.products.type_course_title");
+    },
   },
   digital: {
-    description: "Any set of files to download or stream.",
-    title: "Digital product",
+    get description() {
+      return t("seller.products.type_digital_desc");
+    },
+    get title() {
+      return t("seller.products.type_digital_title");
+    },
   },
   ebook: {
-    description: "Offer a book or comic in PDF, ePub, and Mobi formats.",
-    title: "E-book",
+    get description() {
+      return t("seller.products.type_ebook_desc");
+    },
+    get title() {
+      return t("seller.products.type_ebook_title");
+    },
   },
   membership: {
-    description: "Start a membership business around your fans.",
-    title: "Membership",
+    get description() {
+      return t("seller.products.type_membership_desc");
+    },
+    get title() {
+      return t("seller.products.type_membership_title");
+    },
   },
   newsletter: {
-    description: "Deliver recurring content through email.",
-    title: "Newsletter",
+    get description() {
+      return t("seller.products.type_newsletter_desc");
+    },
+    get title() {
+      return t("seller.products.type_newsletter_title");
+    },
   },
   physical: {
-    description: "Sell anything that requires shipping something.",
-    title: "Physical good",
+    get description() {
+      return t("seller.products.type_physical_desc");
+    },
+    get title() {
+      return t("seller.products.type_physical_title");
+    },
   },
   podcast: {
-    description: "Make episodes available for streaming and direct downloads.",
-    title: "Podcast",
+    get description() {
+      return t("seller.products.type_podcast_desc");
+    },
+    get title() {
+      return t("seller.products.type_podcast_title");
+    },
   },
 };
 
@@ -573,7 +619,7 @@ const ProductTypeSelector = ({
         </Tab>
       );
       return disabled ? (
-        <WithTooltip tip="Service products are disabled until your account is 30 days old." key={type}>
+        <WithTooltip tip={t("seller.products.service_tooltip")} key={type}>
           {typeButton}
         </WithTooltip>
       ) : (

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { CurrencyCode, formatPriceCentsWithoutCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { Dropdown } from "$app/components/Dropdown";
 import { PriceInput } from "$app/components/PriceInput";
@@ -85,7 +86,7 @@ export const PriceEditor = ({
 
   return (
     <Fieldset>
-      <Label htmlFor={`${uid}-price-cents`}>Amount</Label>
+      <Label htmlFor={`${uid}-price-cents`}>{t("seller.productEdit.amount")}</Label>
       <PriceInput
         id={`${uid}-price-cents`}
         currencyCode={currencyType}
@@ -93,7 +94,7 @@ export const PriceEditor = ({
         onChange={(newAmount) => setPriceCents(newAmount ?? 0)}
         currencyCodeSelector={currencyCodeSelector}
       />
-      {mustBePWYW ? <Alert variant="info">Free products require a pay what they want price.</Alert> : null}
+      {mustBePWYW ? <Alert variant="info">{t("seller.productEdit.free_product_pwyw_alert")}</Alert> : null}
       <Details open={pwywOn}>
         <DetailsToggle chevronPosition="none" className="mb-0">
           <Switch
@@ -102,18 +103,18 @@ export const PriceEditor = ({
             disabled={mustBePWYW}
             label={
               <a href="/help/article/133-pay-what-you-want-pricing" target="_blank" rel="noreferrer">
-                Allow customers to pay what they want
+                {t("seller.productEdit.allow_pwyw")}
               </a>
             }
           />
         </DetailsToggle>
         <Dropdown className="gap-4 lg:grid-cols-2">
           <Fieldset>
-            <Label htmlFor={`${uid}-minimum-amount`}>Minimum amount</Label>
+            <Label htmlFor={`${uid}-minimum-amount`}>{t("seller.productEdit.minimum_amount")}</Label>
             <PriceInput id={`${uid}-minimum-amount`} currencyCode={currencyType} cents={priceCents} disabled />
           </Fieldset>
           <Fieldset>
-            <Label htmlFor={`${uid}-suggested-price-cents`}>Suggested amount</Label>
+            <Label htmlFor={`${uid}-suggested-price-cents`}>{t("seller.productEdit.suggested_amount")}</Label>
             <PriceInput
               id={`${uid}-suggested-price-cents`}
               placeholder={formatPriceCentsWithoutCurrencySymbol(currencyType, priceCents)}

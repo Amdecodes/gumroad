@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { CardProduct } from "$app/parsers/product";
 import { formatPriceCentsWithCurrencySymbol, CurrencyCode } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 
 import { computeStandalonePrice } from "$app/components/BundleEdit/utils";
 import { NavigationButton } from "$app/components/Button";
@@ -42,6 +43,7 @@ export const MarketingEmailStatus = ({
   products = [],
   currencyType = "usd",
 }: MarketingEmailStatusProps) => {
+  const { t } = useTranslation();
   // Only show for published bundles with products
   if (!isPublished || products.length === 0) return null;
 
@@ -65,17 +67,15 @@ export const MarketingEmailStatus = ({
   return (
     <Alert role="status" variant="info">
       <div className="flex flex-col gap-4">
-        <strong>
-          Your product bundle is ready. Would you like to send an email about this offer to existing customers?
-        </strong>
+        <strong>{t("seller.bundles.marketing_email_ready_title")}</strong>
         <Fieldset>
           <Label>
             <Radio checked={!sendToAllCustomers} onChange={(evt) => setSendToAllCustomers(!evt.target.checked)} />
-            Customers who have purchased at least one product in the bundle
+            {t("seller.bundles.marketing_email_purchased_bundle")}
           </Label>
           <Label>
             <Radio checked={sendToAllCustomers} onChange={(evt) => setSendToAllCustomers(evt.target.checked)} />
-            All customers
+            {t("seller.bundles.marketing_email_all_customers")}
           </Label>
         </Fieldset>
         <NavigationButton
@@ -84,7 +84,7 @@ export const MarketingEmailStatus = ({
           target="_blank"
           rel="noopener noreferrer"
         >
-          Draft and send
+          {t("seller.bundles.draft_and_send")}
         </NavigationButton>
       </div>
     </Alert>

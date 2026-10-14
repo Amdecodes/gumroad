@@ -2,6 +2,7 @@ import { Discord } from "@boxicons/react";
 import * as React from "react";
 
 import { fetchServerInfo } from "$app/data/discord_integration";
+import { t } from "$app/utils/i18n";
 import { DISCORD_CLIENT_ID, DISCORD_OAUTH_URL } from "$app/utils/integrations";
 import { startOauthRedirectChecker } from "$app/utils/oauth";
 
@@ -61,10 +62,10 @@ export const DiscordIntegrationEditor = ({
           setEnabledForOptions(false);
         }
       }}
-      label="Invite your customers to a Discord server"
+      label={t("seller.productEdit.discord_invite_label")}
       dropdown={
         <div className="flex flex-col gap-4">
-          People who purchase your product will be automatically invited to your Discord server.
+          {t("seller.productEdit.discord_invite_desc")}
           {isLoading ? (
             <LoadingSpinner className="size-6" />
           ) : !integration ? (
@@ -102,14 +103,20 @@ export const DiscordIntegrationEditor = ({
                 }}
               >
                 <Discord pack="brands" className="size-5" />
-                Connect to Discord
+                {t("seller.productEdit.discord_connect")}
               </Button>
             </div>
           ) : (
             <>
               <div>
-                <b>Discord account #{integration.integration_details.username} connected</b>
-                <div>Server name: {integration.integration_details.server_name}</div>
+                <b>
+                  {t("seller.productEdit.discord_account_connected", {
+                    username: integration.integration_details.username,
+                  })}
+                </b>
+                <div>
+                  {t("seller.productEdit.discord_server_name", { name: integration.integration_details.server_name })}
+                </div>
               </div>
               <div>
                 <Button
@@ -121,7 +128,7 @@ export const DiscordIntegrationEditor = ({
                   }}
                 >
                   <Discord pack="brands" className="size-5" />
-                  Disconnect Discord
+                  {t("seller.productEdit.discord_disconnect")}
                 </Button>
               </div>
               {product.variants.length > 0 ? (
@@ -129,14 +136,18 @@ export const DiscordIntegrationEditor = ({
                   {product.variants.every(({ integrations }) => !integrations.discord) ? (
                     <Alert role="status" variant="warning">
                       {product.native_type === "membership"
-                        ? "Your integration is not assigned to any tier. Check your tiers' settings."
-                        : "Your integration is not assigned to any version. Check your versions' settings."}
+                        ? t("seller.productEdit.circle_unassigned_tier")
+                        : t("seller.productEdit.circle_unassigned_version")}
                     </Alert>
                   ) : null}
                   <Switch
                     checked={product.variants.every(({ integrations }) => integrations.discord)}
                     onChange={(e) => setEnabledForOptions(e.target.checked)}
-                    label={product.native_type === "membership" ? "Enable for all tiers" : "Enable for all versions"}
+                    label={
+                      product.native_type === "membership"
+                        ? t("seller.productEdit.circle_enable_all_tiers")
+                        : t("seller.productEdit.circle_enable_all_versions")
+                    }
                   />
                 </>
               ) : null}
@@ -148,7 +159,7 @@ export const DiscordIntegrationEditor = ({
                       onChange({ ...integration, keep_inactive_members: !integration.keep_inactive_members })
                     }
                   />
-                  Do not remove Discord access when membership ends
+                  {t("seller.productEdit.discord_keep_inactive_label")}
                 </Label>
               ) : null}
             </>

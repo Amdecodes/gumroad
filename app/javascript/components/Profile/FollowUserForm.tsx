@@ -4,6 +4,7 @@ import * as React from "react";
 import { CreatorProfile } from "$app/parsers/profile";
 import { classNames } from "$app/utils/classNames";
 import { isValidEmail } from "$app/utils/email";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { ButtonColor } from "$app/components/design";
@@ -47,15 +48,14 @@ export const FollowUserForm = ({
   const followUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidEmail(form.data.email)) {
-      const message =
-        form.data.email.trim() === "" ? "Please enter your email address." : "Please enter a valid email address.";
+      const message = form.data.email.trim() === "" ? t("profile.enter_email") : t("profile.enter_valid_email");
       form.setError("email", message);
       emailInputRef.current?.focus();
       showAlert(message, "error");
       return;
     }
     if (isOwnProfile) {
-      showAlert("As the creator of this profile, you can't follow yourself!", "warning");
+      showAlert(t("profile.cannot_follow_self"), "warning");
       return;
     }
 
@@ -92,16 +92,16 @@ export const FollowUserForm = ({
               form.setData("email", e.target.value);
               form.clearErrors("email");
             }}
-            placeholder="Your email address"
+            placeholder={t("profile.your_email_address")}
           />
           <Button color={buttonColor} disabled={form.processing || form.recentlySuccessful} type="submit">
             {buttonLabel && buttonLabel !== "Subscribe"
               ? buttonLabel
               : form.recentlySuccessful
-                ? "Subscribed"
+                ? t("profile.subscribed")
                 : form.processing
-                  ? "Subscribing..."
-                  : "Subscribe"}
+                  ? t("profile.subscribing")
+                  : t("profile.subscribe")}
           </Button>
         </div>
         {recaptcha.container}
@@ -120,7 +120,7 @@ export const FollowUserFormBlock = ({
 }) => (
   <div className={classNames("flex grow flex-col justify-center", className)}>
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
-      <h1>Subscribe to receive email updates from {creatorProfile.name}.</h1>
+      <h1>{t("profile.subscribe_updates_from", { name: creatorProfile.name })}</h1>
       <div className="max-w-lg">
         <FollowUserForm creatorProfile={creatorProfile} buttonColor="primary" />
       </div>

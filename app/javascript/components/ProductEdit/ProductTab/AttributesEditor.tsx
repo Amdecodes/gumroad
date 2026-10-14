@@ -1,6 +1,8 @@
 import { Plus, Trash } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { Fieldset, FieldsetTitle } from "$app/components/ui/Fieldset";
 import { Input } from "$app/components/ui/Input";
@@ -32,13 +34,13 @@ export const AttributesEditor = ({
   const addButton = (
     <Button color="primary" onClick={() => setCustomAttributes([...customAttributes, { name: "", value: "" }])}>
       <Plus className="size-5" />
-      Add detail
+      {t("seller.productEdit.add_detail")}
     </Button>
   );
 
   return (
     <Fieldset>
-      <FieldsetTitle>Additional details</FieldsetTitle>
+      <FieldsetTitle>{t("seller.productEdit.additional_details")}</FieldsetTitle>
       {(fileAttributes?.length ?? 0) > 0 || customAttributes.length > 0 ? (
         <>
           {fileAttributes?.map((attribute, idx) => (
@@ -60,8 +62,8 @@ export const AttributesEditor = ({
         </>
       ) : (
         <Placeholder>
-          <h2>Add details</h2>
-          Call out important features of your product that help your customers decide to buy
+          <h2>{t("seller.productEdit.add_details_title")}</h2>
+          {t("seller.productEdit.add_details_desc")}
           {addButton}
         </Placeholder>
       )}

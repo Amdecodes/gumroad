@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 export const TierSubhead = ({
   matchCount,
   tier,
@@ -11,14 +13,26 @@ export const TierSubhead = ({
   taxonomyLabel: string | null;
   productTypeLabel: string;
 }) => {
+  const { t } = useTranslation();
   const text = (() => {
     if (tier === "with_taxonomy" && taxonomyLabel) {
-      return `Based on ${matchCount} ${productTypeLabel} in ${taxonomyLabel}.`;
+      return t("seller.productEdit.based_on_taxonomy", "Based on %{count} %{productType} in %{taxonomy}.", {
+        count: matchCount,
+        productType: productTypeLabel,
+        taxonomy: taxonomyLabel,
+      });
     }
     if (tier === "with_taxonomy") {
-      return `Based on ${matchCount} ${productTypeLabel} on Gumroad.`;
+      return t("seller.productEdit.based_on_general", "Based on %{count} %{productType} on Gumroad.", {
+        count: matchCount,
+        productType: productTypeLabel,
+      });
     }
-    return `Based on ${matchCount} ${productTypeLabel} (broadened — set a category to refine).`;
+    return t(
+      "seller.productEdit.based_on_broadened",
+      "Based on %{count} %{productType} (broadened — set a category to refine).",
+      { count: matchCount, productType: productTypeLabel },
+    );
   })();
 
   return <small className="block text-muted">{text}</small>;

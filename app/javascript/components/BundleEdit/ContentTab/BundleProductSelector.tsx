@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { BundleProduct } from "$app/components/BundleEdit/types";
 import {
   CartItem,
@@ -22,6 +24,7 @@ export const BundleProductSelector = ({
   selected?: boolean;
   onToggle: () => void;
 }) => {
+  const { t } = useTranslation();
   const { locale } = useUserAgentInfo();
 
   const formatCreatedAt = (isoDate: string): string => {
@@ -51,8 +54,7 @@ export const BundleProductSelector = ({
             {bundleProduct.variants ? (
               <>
                 {" · "}
-                {bundleProduct.variants.list.length} {bundleProduct.variants.list.length === 1 ? "version" : "versions"}{" "}
-                available
+                {t("seller.bundles.versions_available", { count: bundleProduct.variants.list.length })}
               </>
             ) : null}
           </span>

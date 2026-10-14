@@ -29,6 +29,7 @@ import {
 } from "$app/utils/currency";
 import { formatDate } from "$app/utils/date";
 import { formatOrderOfMagnitude } from "$app/utils/formatOrderOfMagnitude";
+import { t } from "$app/utils/i18n";
 import { variantLabel } from "$app/utils/labels";
 import { assertResponseError } from "$app/utils/request";
 import { startTrackingForSeller, trackBuyerCurrencyDisplayView, trackProductEvent } from "$app/utils/user_analytics";
@@ -213,11 +214,11 @@ export type ProductDiscount =
 
 export const getNotForSaleMessage = (product: Product) =>
   product.is_compliance_blocked
-    ? "Sorry, this item is not available in your location."
+    ? t("storefront.not_available_location")
     : product.quantity_remaining === 0
-      ? "Sold out, please go back and pick another option."
+      ? t("storefront.sold_out_pick_another")
       : !product.is_published
-        ? "This product is not currently for sale."
+        ? t("storefront.not_currently_for_sale")
         : null;
 
 export type WishlistForProduct = Wishlist & {
@@ -597,12 +598,12 @@ export const Product = ({
             ) : (
               <Alert role="status" variant="danger">
                 {discountCode.error_code === "sold_out"
-                  ? "Sorry, the discount code you wish to use has reached its usage limit."
+                  ? t("storefront.discount_code_limit_reached")
                   : discountCode.error_code === "invalid_offer"
-                    ? "Sorry, the discount code you wish to use is invalid."
+                    ? t("storefront.discount_code_invalid")
                     : discountCode.error_code === "not_existing_customer"
-                      ? "Sorry, this discount code is only for existing customers."
-                      : "Sorry, the discount code you wish to use is inactive."}
+                      ? t("storefront.discount_code_existing_customers_only")
+                      : t("storefront.discount_code_inactive")}
               </Alert>
             )
           ) : null}
@@ -769,7 +770,7 @@ const ExistingPurchaseCard = ({
 
   const viewContentButton = purchase.show_view_content_button_on_product_page ? (
     <NavigationButton color="primary" href={purchase.content_url ?? ""} target="_blank" onClick={handleViewClick}>
-      {customViewContentButtonText ?? "View content"}
+      {customViewContentButtonText ?? t("storefront.view_content")}
     </NavigationButton>
   ) : null;
 
@@ -798,7 +799,9 @@ const ExistingPurchaseCard = ({
                 }
                 className="grow basis-0"
               >
-                {purchase.subscription_has_lapsed ? "Restart membership" : "Manage membership"}
+                {purchase.subscription_has_lapsed
+                  ? t("storefront.restart_membership")
+                  : t("storefront.manage_membership")}
               </NavigationButton>
               {viewContentButton}
             </CardContent>
@@ -809,15 +812,15 @@ const ExistingPurchaseCard = ({
               <h3 className="grow">
                 {isBundle
                   ? purchase.is_gift_receiver_purchase
-                    ? "You've received this bundle as a gift"
+                    ? t("storefront.received_bundle_gift")
                     : purchase.was_paid
-                      ? "You've purchased this bundle"
-                      : "You already own this bundle"
+                      ? t("storefront.purchased_bundle")
+                      : t("storefront.already_own_bundle")
                   : purchase.is_gift_receiver_purchase
-                    ? "You've received this product as a gift"
+                    ? t("storefront.received_product_gift")
                     : purchase.was_paid
-                      ? "You've purchased this product"
-                      : "You already own this product"}
+                      ? t("storefront.purchased_product")
+                      : t("storefront.already_own_product")}
               </h3>
               {viewContentButton}
             </li>
@@ -845,11 +848,11 @@ const ExistingPurchaseCard = ({
 const LicenseKeyRow = ({ licenseKey }: { licenseKey: string }) => (
   <CardContent>
     <div className="grid grow gap-1">
-      <h5 className="font-bold">License key</h5>
+      <h5 className="font-bold">{t("storefront.license_key")}</h5>
       <div className="break-all">{licenseKey}</div>
     </div>
     <CopyToClipboard text={licenseKey}>
-      <Button>Copy</Button>
+      <Button>{t("storefront.copy")}</Button>
     </CopyToClipboard>
   </CardContent>
 );
@@ -870,7 +873,7 @@ const PurchaseRecoveryLink = ({
 
   return (
     <p className="text-center text-sm">
-      Already bought this?{" "}
+      {t("storefront.already_bought_this")}{" "}
       <a
         href={Routes.license_key_lookup_url({ protocol: scheme, host: rootDomain })}
         className="relative inline-block underline after:absolute after:inset-x-0 after:top-1/2 after:h-10 after:-translate-y-1/2"
@@ -881,7 +884,11 @@ const PurchaseRecoveryLink = ({
             );
         }}
       >
-        {isLicensed ? "View your information" : hasDownload ? "Get your download link" : "Resend your receipt"}
+        {isLicensed
+          ? t("storefront.view_your_information")
+          : hasDownload
+            ? t("storefront.get_download_link")
+            : t("storefront.resend_receipt")}
       </a>
     </p>
   );
@@ -889,7 +896,7 @@ const PurchaseRecoveryLink = ({
 
 export const RatingsHistogramRow = ({ rating, percentage }: { rating: number; percentage: number }) => {
   const formattedPercentage = `${percentage}%`;
-  const label = `${rating} ${rating === 1 ? "star" : "stars"}`;
+  const label = t("storefront.star_count", { count: rating });
   return (
     <>
       <div>{label}</div>
@@ -937,11 +944,11 @@ const Reviews = ({
   return (
     <section className="grid gap-4 p-6 not-first:border-t">
       <header className="flex items-center justify-between">
-        <h3>Ratings</h3>
+        <h3>{t("storefront.ratings")}</h3>
         <div className="flex shrink-0 items-center gap-1">
           <Star pack="filled" className="size-5" />
           <div className="rating-average">{ratings.average}</div>(
-          {`${formatOrderOfMagnitude(ratings.count, 1)} ${ratings.count === 1 ? "rating" : "ratings"}`})
+          {t("storefront.ratings_count", { count: formatOrderOfMagnitude(ratings.count, 1) })})
         </div>
       </header>
       {/* Rating markup lives in the page's JSON-LD (Product::StructuredData), where the
@@ -949,7 +956,7 @@ const Reviews = ({
           has no itemscope Product ancestor, so an itemscope block becomes a standalone
           top-level AggregateRating that Google's Rich Results Test flags as
           "Missing field itemReviewed" (gumroad-private#1875). */}
-      <section className="grid grid-cols-[auto_1fr_auto] gap-3" aria-label="Ratings histogram">
+      <section className="grid grid-cols-[auto_1fr_auto] gap-3" aria-label={t("storefront.ratings_histogram")}>
         {([4, 3, 2, 1, 0] as const).map((rating) => (
           <RatingsHistogramRow rating={rating + 1} percentage={ratings.percentages[rating]} key={rating} />
         ))}
@@ -967,7 +974,7 @@ const Reviews = ({
           ))}
           {state.pagination.page < state.pagination.pages ? (
             <LinkButton onClick={() => void loadNextPage()} disabled={isLoading}>
-              Load more
+              {t("storefront.load_more")}
             </LinkButton>
           ) : null}
         </section>
@@ -1004,32 +1011,34 @@ const SellerReputationSection = ({
   reputation: SellerReputation;
   hasOwnReviews: boolean;
   seller: Seller | null;
-}) => (
-  <section className="grid gap-2 p-6 not-first:border-t" aria-label="Creator rating">
-    {!hasOwnReviews ? <div>This product has no reviews yet.</div> : null}
-    <div className="flex flex-wrap items-center gap-1">
-      <RatingStars rating={reputation.average} />
-      <span>
-        Creator rating: {reputation.average} from{" "}
-        {seller ? (
-          <a href={seller.profile_url}>
-            {reputation.count} verified {reputation.count === 1 ? "review" : "reviews"}
-          </a>
-        ) : (
-          `${reputation.count} verified ${reputation.count === 1 ? "review" : "reviews"}`
-        )}{" "}
-        across {reputation.products_count} other products.
-      </span>
-    </div>
-  </section>
-);
+}) => {
+  const verifiedReviewsText = t("storefront.verified_reviews_count", { count: reputation.count });
+  const renderedText = t("storefront.creator_rating_from", {
+    average: reputation.average,
+    count_reviews: "___COUNT_REVIEWS___",
+    products_count: reputation.products_count,
+  });
+  const [before, after] = renderedText.split("___COUNT_REVIEWS___");
+
+  return (
+    <section className="grid gap-2 p-6 not-first:border-t" aria-label={t("profile.creator_rating")}>
+      {!hasOwnReviews ? <div>{t("storefront.no_reviews_yet")}</div> : null}
+      <div className="flex flex-wrap items-center gap-1">
+        <RatingStars rating={reputation.average} />
+        <span>
+          {before}
+          {seller ? <a href={seller.profile_url}>{verifiedReviewsText}</a> : verifiedReviewsText}
+          {after}
+        </span>
+      </div>
+    </section>
+  );
+};
 
 export const RatingsSummary = ({ ratings, className }: { ratings: Ratings; className?: string }) => (
   <div className={classNames("flex shrink-0 items-center", className)}>
     <RatingStars rating={ratings.average} />
-    <span className="rating-number ml-1">
-      {ratings.count} {ratings.count === 1 ? "rating" : "ratings"}
-    </span>
+    <span className="rating-number ml-1">{t("storefront.ratings_count", { count: ratings.count })}</span>
   </div>
 );
 
@@ -1053,7 +1062,7 @@ const RefundPolicyInfo = ({ refundPolicy, permalink }: { refundPolicy: RefundPol
   }, [viewingRefundPolicy]);
 
   const formattedDate = parseISO(refundPolicy.updated_at).toLocaleString(userAgentInfo.locale, { dateStyle: "medium" });
-  const lastUpdated = `Last updated ${formattedDate}`;
+  const lastUpdated = t("storefront.last_updated", { date: formattedDate });
 
   const handleCloseModal = () => {
     setViewingRefundPolicy(false);

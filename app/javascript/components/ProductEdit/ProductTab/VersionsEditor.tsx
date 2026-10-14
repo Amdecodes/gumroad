@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, LayersAlt, Plus, Trash } from "@boxicons/react"
 import * as React from "react";
 
 import { confirmRemovedVariantPageDeletions, reorderPreservingMembership } from "$app/data/product_save_contract";
+import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -29,6 +30,7 @@ export const VersionsEditor = ({
   versions: Version[];
   onChange: (versions: Version[]) => void;
 }) => {
+  const { t } = useTranslation();
   const { updateProduct } = useProductEditContext();
   const updateVersion = (id: string, update: Partial<Version>) => {
     onChange(versions.map((version) => (version.id === id ? { ...version, ...update } : version)));
@@ -81,14 +83,17 @@ export const VersionsEditor = ({
       }}
     >
       <Plus className="size-5" />
-      Add version
+      {t("seller.productEdit.add_version", "Add version")}
     </Button>
   );
 
   return versions.length === 0 ? (
     <Placeholder>
-      <h2>Offer variations of this product</h2>
-      Sweeten the deal for your customers with different options for format, version, etc
+      <h2>{t("seller.productEdit.versions_empty_title", "Offer variations of this product")}</h2>
+      {t(
+        "seller.productEdit.versions_empty_desc",
+        "Sweeten the deal for your customers with different options for format, version, etc",
+      )}
       {addButton}
     </Placeholder>
   ) : (
@@ -97,19 +102,24 @@ export const VersionsEditor = ({
         <Modal
           open={!!deletionModalVersion}
           onClose={() => setDeletionModalVersionId(null)}
-          title={`Remove ${deletionModalVersion.name}?`}
+          title={t("seller.productEdit.remove_version_modal_title", "Remove %{name}?", {
+            name: deletionModalVersion.name,
+          })}
           footer={
             <>
-              <Button onClick={() => setDeletionModalVersionId(null)}>No, cancel</Button>
+              <Button onClick={() => setDeletionModalVersionId(null)}>
+                {t("seller.productEdit.no_cancel", "No, cancel")}
+              </Button>
               <Button color="accent" onClick={() => confirmRemoval(deletionModalVersion)}>
-                Yes, remove
+                {t("seller.productEdit.yes_remove", "Yes, remove")}
               </Button>
             </>
           }
         >
-          If you delete this version, its associated content will be removed as well. Your existing customers who
-          purchased it will see the content from the current cheapest version as a fallback. If no version exists, they
-          will see the product-level content.
+          {t(
+            "seller.productEdit.remove_version_modal_desc",
+            "If you delete this version, its associated content will be removed as well. Your existing customers who purchased it will see the content from the current cheapest version as a fallback. If no version exists, they will see the product-level content.",
+          )}
         </Modal>
       ) : null}
       <SortableList
@@ -140,6 +150,7 @@ const VersionEditor = ({
   updateVersion: (update: Partial<Version>) => void;
   onDelete: () => void;
 }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
   const { product, currencyType } = useProductEditContext();
 
@@ -156,16 +167,22 @@ const VersionEditor = ({
       <RowContent>
         <ReorderingHandle />
         <LayersAlt pack="filled" className="size-5" />
-        <h3>{version.name || "Untitled"}</h3>
+        <h3>{version.name || t("seller.productEdit.untitled", "Untitled")}</h3>
       </RowContent>
       <RowActions>
-        <WithTooltip tip={isOpen ? "Close drawer" : "Open drawer"}>
+        <WithTooltip
+          tip={
+            isOpen
+              ? t("seller.productEdit.close_drawer", "Close drawer")
+              : t("seller.productEdit.open_drawer", "Open drawer")
+          }
+        >
           <Button size="icon" onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}>
             {isOpen ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
           </Button>
         </WithTooltip>
-        <WithTooltip tip="Remove">
-          <Button size="icon" onClick={onDelete} aria-label="Remove version">
+        <WithTooltip tip={t("seller.productEdit.remove_version", "Remove version")}>
+          <Button size="icon" onClick={onDelete} aria-label={t("seller.productEdit.remove_version", "Remove version")}>
             <Trash className="size-5" />
           </Button>
         </WithTooltip>
@@ -174,7 +191,7 @@ const VersionEditor = ({
         <RowDetails asChild>
           <Drawer className="grid gap-6">
             <Fieldset>
-              <Label htmlFor={`${uid}-name`}>Name</Label>
+              <Label htmlFor={`${uid}-name`}>{t("seller.productEdit.field_name", "Name")}</Label>
               <InputGroup>
                 <Input
                   id={`${uid}-name`}
@@ -183,12 +200,12 @@ const VersionEditor = ({
                   onChange={(evt) => updateVersion({ name: evt.target.value })}
                 />
                 <a href={url} target="_blank" rel="noreferrer">
-                  Share
+                  {t("seller.productEdit.share_title", "Share")}
                 </a>
               </InputGroup>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={`${uid}-description`}>Description</Label>
+              <Label htmlFor={`${uid}-description`}>{t("seller.productEdit.field_description", "Description")}</Label>
               <Textarea
                 id={`${uid}-description`}
                 value={version.description}
@@ -197,7 +214,7 @@ const VersionEditor = ({
             </Fieldset>
             <section className="grid grid-flow-col items-end gap-6">
               <Fieldset>
-                <Label htmlFor={`${uid}-price`}>Additional amount</Label>
+                <Label htmlFor={`${uid}-price`}>{t("seller.productEdit.additional_amount", "Additional amount")}</Label>
                 <PriceInput
                   id={`${uid}-price`}
                   currencyCode={currencyType}
@@ -207,7 +224,9 @@ const VersionEditor = ({
                 />
               </Fieldset>
               <Fieldset>
-                <Label htmlFor={`${uid}-max-purchase-count`}>Maximum number of purchases</Label>
+                <Label htmlFor={`${uid}-max-purchase-count`}>
+                  {t("seller.productEdit.max_number_of_purchases", "Maximum number of purchases")}
+                </Label>
                 <NumberInput
                   onChange={(value) => updateVersion({ max_purchase_count: value })}
                   value={version.max_purchase_count}
@@ -220,7 +239,7 @@ const VersionEditor = ({
             </section>
             {integrations.length > 0 ? (
               <Fieldset>
-                <FieldsetTitle>Integrations</FieldsetTitle>
+                <FieldsetTitle>{t("seller.productEdit.integrations_section", "Integrations")}</FieldsetTitle>
                 {integrations.map((integration) => (
                   <Switch
                     checked={version.integrations[integration]}
@@ -229,7 +248,9 @@ const VersionEditor = ({
                     }
                     key={integration}
                     label={
-                      integration === "circle" ? "Enable access to Circle community" : "Enable access to Discord server"
+                      integration === "circle"
+                        ? t("seller.productEdit.circle_enable_access", "Enable access to Circle community")
+                        : t("seller.productEdit.discord_enable_access", "Enable access to Discord server")
                     }
                   />
                 ))}

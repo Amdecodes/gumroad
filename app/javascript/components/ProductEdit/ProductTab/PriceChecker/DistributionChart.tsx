@@ -2,8 +2,8 @@ import * as React from "react";
 import { Bar, BarChart, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import type { PriceDistributionHistogram, PriceDistributionSummary } from "$app/data/price_distribution";
-import type { CurrencyCode } from "$app/utils/currency";
-import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { type CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 
 const MAX_X_TICKS = 6;
 const LABEL_FONT_SIZE = 13;
@@ -50,6 +50,7 @@ const ChartTooltip = ({
   payload?: TooltipPayload[];
   currencyCode: CurrencyCode;
 }) => {
+  const { t } = useTranslation();
   const row = payload?.[0]?.payload;
   if (!active || !row) return null;
   return (
@@ -57,9 +58,7 @@ const ChartTooltip = ({
       <div className="font-semibold">
         {fmtShort(currencyCode, row.fromCents)} – {fmtShort(currencyCode, row.toCents)}
       </div>
-      <div className="text-muted">
-        {row.count} {row.count === 1 ? "product" : "products"}
-      </div>
+      <div className="text-muted">{t("seller.productEdit.products_count", { count: row.count })}</div>
     </div>
   );
 };
@@ -264,6 +263,7 @@ export const DistributionChart = ({
 
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
+  const { t } = useTranslation();
   const data: ChartRow[] = buildRealData(histogram);
   const ticks: number[] = computeTicks(data);
 
@@ -271,11 +271,11 @@ export const DistributionChart = ({
   const maxBin = data[data.length - 1]?.toCents ?? 0;
   const domain: [number, number] = [minBin, maxBin];
 
-  const sampleMarkerLines = ["Your price"];
+  const sampleMarkerLines = [t("seller.productEdit.your_price", "Your price")];
   const markerLabelHeight = labelHeight(sampleMarkerLines.length);
 
   const medianValueText = fmtPrecise(currencyCode, summary.median_cents);
-  const medianLines = ["Median", medianValueText];
+  const medianLines = [t("seller.productEdit.median", "Median"), medianValueText];
   const medianHeight = labelHeight(medianLines.length);
   const medianWidth = approxLabelWidth(medianLines, PAD_X_COMFORTABLE);
   const medianShift = computeXShift(summary.median_cents, minBin, maxBin, medianWidth / 2);
@@ -371,7 +371,7 @@ export const DistributionChart = ({
           isFront
           label={
             <RefLineLabel
-              title="Median"
+              title={t("seller.productEdit.median", "Median")}
               value={medianValueText}
               fillColor="var(--color-foreground)"
               textColor="var(--color-background)"

@@ -2,6 +2,8 @@ import { Plus, Trash } from "@boxicons/react";
 import { fromZonedTime, toZonedTime, format } from "date-fns-tz";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
 import { DateInput } from "$app/components/DateInput";
@@ -93,9 +95,9 @@ export const AvailabilityEditor = ({
   return availabilities.length ? (
     <>
       <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr auto auto", gap: "var(--spacer-2)" }}>
-        <b>Date</b>
-        <b>From</b>
-        <b>To</b>
+        <b>{t("seller.productEdit.date")}</b>
+        <b>{t("seller.productEdit.from")}</b>
+        <b>{t("seller.productEdit.to")}</b>
         <span />
         <span />
         {groupedAvailabilities.map((group, idx) => {
@@ -121,7 +123,7 @@ export const AvailabilityEditor = ({
                           });
                         }
                       }}
-                      aria-label="Date"
+                      aria-label={t("seller.productEdit.date")}
                     />
                   ) : (
                     <span />
@@ -134,7 +136,7 @@ export const AvailabilityEditor = ({
                         start_time: setTime(availability.start_time, evt.target.value),
                       })
                     }
-                    aria-label="From"
+                    aria-label={t("seller.productEdit.from")}
                   />
                   <Input
                     type="time"
@@ -144,16 +146,19 @@ export const AvailabilityEditor = ({
                         end_time: setTime(availability.end_time, evt.target.value),
                       })
                     }
-                    aria-label="To"
+                    aria-label={t("seller.productEdit.to")}
                   />
                   <Button
                     onClick={() => onChange(serializedAvailabilities.filter(({ id }) => availability.id !== id))}
-                    aria-label="Delete hours"
+                    aria-label={t("seller.productEdit.delete_hours")}
                   >
                     <Trash className="size-5" />
                   </Button>
                   {idx === 0 ? (
-                    <Button onClick={() => addAvailability(lastGroupEndTime ?? new Date())} aria-label="Add hours">
+                    <Button
+                      onClick={() => addAvailability(lastGroupEndTime ?? new Date())}
+                      aria-label={t("seller.productEdit.add_hours")}
+                    >
                       <Plus className="size-5" />
                     </Button>
                   ) : (
@@ -179,8 +184,8 @@ export const AvailabilityEditor = ({
     </>
   ) : (
     <Placeholder>
-      <h2>Add day of availability</h2>
-      Adjust your availability to reflect specific dates and times
+      <h2>{t("seller.productEdit.add_day_of_availability")}</h2>
+      {t("seller.productEdit.adjust_availability_desc")}
       <AddButton
         onClick={() => {
           const date = new Date();
@@ -195,6 +200,6 @@ export const AvailabilityEditor = ({
 const AddButton = ({ onClick }: { onClick: () => void }) => (
   <Button color="primary" onClick={onClick}>
     <Plus className="size-5" />
-    Add day of availability
+    {t("seller.productEdit.add_day_of_availability")}
   </Button>
 );

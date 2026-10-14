@@ -395,7 +395,11 @@ export const OptionRadioButton = ({
         )}
         <div>
           <h4>{name}</h4>
-          {quantityLeft != null ? <small id={quantityLeftId} className="block">{`${quantityLeft} left`}</small> : null}
+          {quantityLeft != null ? (
+            <small id={quantityLeftId} className="block">
+              {t("storefront.quantity_left", { count: quantityLeft })}
+            </small>
+          ) : null}
           {description ? (
             <div id={descriptionId}>
               <Breaklines text={description} />
@@ -538,7 +542,7 @@ const CallDateAndTimeSelector = ({
   if (firstAvailableStartTime === null && !isLoading) {
     return (
       <Alert role="status" variant="warning">
-        {product.options.length > 1 ? "There are no available times for this option." : "There are no available times."}
+        {product.options.length > 1 ? t("storefront.no_available_times_option") : t("storefront.no_available_times")}
       </Alert>
     );
   }
@@ -554,7 +558,7 @@ const CallDateAndTimeSelector = ({
             justifyContent: "space-between",
           }}
         >
-          <label htmlFor={dateSelectId}>Select a date</label>
+          <label htmlFor={dateSelectId}>{t("storefront.select_date")}</label>
           {isLoading ? <LoadingSpinner /> : null}
         </h4>
         <Fieldset>
@@ -600,13 +604,13 @@ const CallDateAndTimeSelector = ({
               marginBottom: "var(--spacer-2)",
             }}
           >
-            <span>Select a time</span>
+            <span>{t("storefront.select_time")}</span>
             <span title={clientTimeZone.longFormattedName} suppressHydrationWarning>
               {clientTimeZone.shortFormattedName}
             </span>
           </h4>
           <fieldset className="grid grid-cols-2 gap-3 md:grid-flow-row">
-            <legend className="sr-only">Select a time</legend>
+            <legend className="sr-only">{t("storefront.select_time")}</legend>
             {getAvailableStartTimesByDate(selectedStartTime).map((time) => {
               const isSelected = isEqual(selectedStartTime, time);
               const label = formatCallDate(time, { date: { hidden: true }, timeZone: { hidden: true } });
@@ -635,7 +639,7 @@ const CallDateAndTimeSelector = ({
       {selectedStartTime ? (
         <div role="status" aria-live="polite">
           <h4>
-            You selected{" "}
+            {t("storefront.you_selected")}{" "}
             <strong>
               {formatCallDate(selectedStartTime, { date: { hideYear: true }, timeZone: { hidden: true } })}
             </strong>
@@ -661,7 +665,7 @@ const PaymentOptionSelector = ({
 
   return (
     <section>
-      <h4 className="mb-2">Payment option</h4>
+      <h4 className="mb-2">{t("storefront.payment_option")}</h4>
       <Tabs variant="buttons" role="radiogroup">
         <Tab isSelected={!selection.payInInstallments} asChild>
           <Button
@@ -671,8 +675,8 @@ const PaymentOptionSelector = ({
             className="items-start justify-start text-left"
           >
             <div>
-              <strong>Pay in full</strong>
-              <p>One-time payment</p>
+              <strong>{t("storefront.pay_in_full")}</strong>
+              <p>{t("storefront.one_time_payment")}</p>
             </div>
           </Button>
         </Tab>
@@ -685,7 +689,9 @@ const PaymentOptionSelector = ({
             className="items-start justify-start text-left"
           >
             <div>
-              <strong>Pay in {product.installment_plan.number_of_installments} installments</strong>
+              <strong>
+                {t("storefront.pay_in_count_installments", { count: product.installment_plan.number_of_installments })}
+              </strong>
               <p>
                 {formatInstallmentPaymentSchedule(
                   fullPriceCents,
@@ -857,7 +863,7 @@ export const ConfigurationSelector = React.forwardRef<
               onClick={() => setSelection?.({ ...selection, optionId: null, price: { value: null, error: false } })}
               className="justify-center"
             >
-              Other
+              {t("common.other")}
             </Button>
           </Tab>
         </Tabs>
@@ -886,7 +892,7 @@ export const ConfigurationSelector = React.forwardRef<
     <div ref={rootRef} className="contents">
       {hasMultipleRecurrences && product.recurrences ? (
         <TypeSafeOptionSelect
-          aria-label="Recurrence"
+          aria-label={t("storefront.recurrence")}
           value={selection.recurrence ?? ""}
           onChange={(recurrence) => update({ recurrence: recurrence || null, price: { value: null, error: false } })}
           options={product.recurrences.enabled.map(({ recurrence }) => ({
@@ -909,8 +915,8 @@ export const ConfigurationSelector = React.forwardRef<
             selected={selection.rent}
             onClick={() => update({ rent: true })}
             priceCents={hasOptions ? null : product.rental.price_cents}
-            name="Rent"
-            description="Your rental will be available for 30 days. Once started, you’ll have 72 hours to watch it as much as you’d like!"
+            name={t("storefront.rent")}
+            description={t("storefront.rent_description")}
             currencyCode={product.currency_code}
             isPWYW={!!product.pwyw}
             discount={previewDiscount({ ...selection, rent: true })}
@@ -922,8 +928,8 @@ export const ConfigurationSelector = React.forwardRef<
             selected={!selection.rent}
             onClick={() => update({ rent: false })}
             priceCents={hasOptions ? null : product.price_cents}
-            name="Buy"
-            description="Watch as many times as you want, forever."
+            name={t("storefront.buy")}
+            description={t("storefront.buy_description")}
             currencyCode={product.currency_code}
             isPWYW={!!product.pwyw}
             discount={previewDiscount({ ...selection, rent: false })}
@@ -1018,7 +1024,9 @@ export const ConfigurationSelector = React.forwardRef<
       {hasConfigurableQuantity ? (
         <Fieldset>
           <FieldsetTitle>
-            <Label htmlFor={quantityInputUID}>{product.is_multiseat_license ? "Seats" : "Quantity"}</Label>
+            <Label htmlFor={quantityInputUID}>
+              {product.is_multiseat_license ? t("storefront.seats") : t("storefront.quantity")}
+            </Label>
           </FieldsetTitle>
           <NumberInput onChange={(quantity) => update({ quantity: quantity ?? 0 })} value={selection.quantity}>
             {(props) => <Input type="number" id={quantityInputUID} {...props} min={1} max={maxQuantity ?? undefined} />}

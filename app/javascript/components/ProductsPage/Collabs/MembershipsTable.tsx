@@ -4,6 +4,7 @@ import * as React from "react";
 import { Membership } from "$app/data/collabs";
 import { classNames } from "$app/utils/classNames";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { Pagination, PaginationProps } from "$app/components/Pagination";
 import { ProductIconCell } from "$app/components/ProductsPage/ProductIconCell";
@@ -42,25 +43,25 @@ export const CollabsMembershipsTable = (props: { entries: Membership[]; paginati
   return (
     <section className="flex flex-col gap-4">
       <Table ref={tableRef} aria-live="polite" className={classNames(isLoading && "pointer-events-none opacity-50")}>
-        <TableCaption>Memberships</TableCaption>
+        <TableCaption>{t("seller.products.memberships_caption")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead />
-            <TableHead {...thProps("name")} title="Sort by Name">
-              Name
+            <TableHead {...thProps("name")} title={t("seller.products.sort_by_name")}>
+              {t("seller.products.name")}
             </TableHead>
 
-            <TableHead {...thProps("display_price_cents")} title="Sort by Price">
-              Price
+            <TableHead {...thProps("display_price_cents")} title={t("seller.products.sort_by_price")}>
+              {t("seller.products.price")}
             </TableHead>
-            <TableHead {...thProps("cut")} title="Sort by Cut">
-              Cut
+            <TableHead {...thProps("cut")} title={t("seller.products.sort_by_cut")}>
+              {t("seller.products.cut")}
             </TableHead>
-            <TableHead {...thProps("successful_sales_count")} title="Sort by Members">
-              Members
+            <TableHead {...thProps("successful_sales_count")} title={t("seller.products.sort_by_members")}>
+              {t("seller.products.members")}
             </TableHead>
-            <TableHead {...thProps("revenue")} title="Sort by Revenue">
-              Revenue
+            <TableHead {...thProps("revenue")} title={t("seller.products.sort_by_revenue")}>
+              {t("seller.products.revenue")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -106,7 +107,7 @@ export const CollabsMembershipsTable = (props: { entries: Membership[]; paginati
 
                 {membership.remaining_for_sale_count ? (
                   <small className="block">
-                    {membership.remaining_for_sale_count.toLocaleString(locale)} remaining
+                    {t("seller.products.remaining", { count: membership.remaining_for_sale_count })}
                   </small>
                 ) : null}
               </TableCell>
@@ -116,20 +117,24 @@ export const CollabsMembershipsTable = (props: { entries: Membership[]; paginati
 
                 <small className="block">
                   {membership.has_duration
-                    ? `Including pending payments: ${formatPriceCentsWithCurrencySymbol(
-                        "usd",
-                        membership.revenue_pending * (membership.cut / 100.0),
-                        {
-                          symbolFormat: "short",
-                        },
-                      )}`
-                    : `${formatPriceCentsWithCurrencySymbol(
-                        "usd",
-                        membership.monthly_recurring_revenue * (membership.cut / 100.0),
-                        {
-                          symbolFormat: "short",
-                        },
-                      )} /mo`}
+                    ? t("seller.products.including_pending_payments", {
+                        amount: formatPriceCentsWithCurrencySymbol(
+                          "usd",
+                          membership.revenue_pending * (membership.cut / 100.0),
+                          {
+                            symbolFormat: "short",
+                          },
+                        ),
+                      })
+                    : t("seller.products.monthly_recurring_revenue", {
+                        amount: formatPriceCentsWithCurrencySymbol(
+                          "usd",
+                          membership.monthly_recurring_revenue * (membership.cut / 100.0),
+                          {
+                            symbolFormat: "short",
+                          },
+                        ),
+                      })}
                 </small>
               </TableCell>
             </TableRow>
@@ -138,15 +143,15 @@ export const CollabsMembershipsTable = (props: { entries: Membership[]; paginati
 
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={4}>Totals</TableCell>
+            <TableCell colSpan={4}>{t("seller.products.totals")}</TableCell>
 
-            <TableCell label="Members">
+            <TableCell label={t("seller.products.members")}>
               {memberships
                 .reduce((sum, membership) => sum + membership.successful_sales_count, 0)
                 .toLocaleString(locale)}
             </TableCell>
 
-            <TableCell label="Revenue">
+            <TableCell label={t("seller.products.revenue")}>
               {formatPriceCentsWithCurrencySymbol(
                 "usd",
                 memberships.reduce((sum, membership) => sum + membership.revenue, 0),

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Taxonomy } from "$app/utils/discover";
+import { useTranslation } from "$app/utils/i18n";
 
 import { Select } from "$app/components/Select";
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -15,6 +16,7 @@ export const TaxonomyEditor = ({
   onChange: (taxonomyId: string | null) => void;
   taxonomies: Taxonomy[];
 }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
   const options = React.useMemo(() => {
     const taxonomyMap = new Map(taxonomies.map((item) => [item.key, item]));
@@ -29,18 +31,18 @@ export const TaxonomyEditor = ({
   return (
     <Fieldset>
       <FieldsetTitle>
-        <Label htmlFor={uid}>Category</Label>
+        <Label htmlFor={uid}>{t("seller.productEdit.category")}</Label>
       </FieldsetTitle>
       <Select
         inputId={uid}
-        placeholder="Begin typing to select a category"
+        placeholder={t("seller.productEdit.category_placeholder")}
         options={options}
         onChange={(taxonomy) => onChange(taxonomy?.id ?? null)}
         isMulti={false}
         isClearable
         value={options.find(({ id }) => id === taxonomyId) ?? null}
       />
-      <FieldsetDescription>Select a category to show your product on Gumroad Discover.</FieldsetDescription>
+      <FieldsetDescription>{t("seller.productEdit.category_description")}</FieldsetDescription>
     </Fieldset>
   );
 };

@@ -14,6 +14,7 @@ import {
   cancellationRebuttalOptionKeys,
 } from "$app/data/purchase/dispute_evidence_data";
 import FileUtils from "$app/utils/file";
+import { t } from "$app/utils/i18n";
 
 import { Button, NavigationButton } from "$app/components/Button";
 import { LoadingSpinner } from "$app/components/LoadingSpinner";
@@ -276,16 +277,20 @@ export default function Show() {
     <Card className="mx-auto my-8 max-w-2xl">
       <CardContent asChild>
         <header>
-          Dispute evidence
-          <h2 className="grow">Submit additional information</h2>
+          {t("disputes.title")}
+          <h2 className="grow">{t("disputes.submit_additional_info")}</h2>
         </header>
       </CardContent>
       <CardContent>
         {products.length > 1 ? (
           <div className="grow">
             <p>
-              A customer of yours ({dispute_evidence.customer_email}) has disputed their purchase made on {purchaseDate}{" "}
-              of the following {products.length} items for {disputable.formatted_display_price}.
+              {t("disputes.customer_disputed_multiple", {
+                email: dispute_evidence.customer_email,
+                date: purchaseDate,
+                count: products.length,
+                amount: disputable.formatted_display_price,
+              })}
             </p>
             <br />
             <ul>
@@ -299,14 +304,24 @@ export default function Show() {
             </ul>
           </div>
         ) : (
-          <p className="grow">
-            A customer of yours ({dispute_evidence.customer_email}) has disputed their purchase made on {purchaseDate}{" "}
-            of{" "}
-            <a href={products[0]?.url} target="_blank" rel="noreferrer">
-              {products[0]?.name}
-            </a>{" "}
-            for {disputable.formatted_display_price}.
-          </p>
+          (() => {
+            const text = t("disputes.customer_disputed_single", {
+              email: dispute_evidence.customer_email,
+              date: purchaseDate,
+              product: "___PRODUCT___",
+              amount: disputable.formatted_display_price,
+            });
+            const [before, after] = text.split("___PRODUCT___");
+            return (
+              <p className="grow">
+                {before}
+                <a href={products[0]?.url} target="_blank" rel="noreferrer">
+                  {products[0]?.name}
+                </a>
+                {after}
+              </p>
+            );
+          })()
         )}
         <p>
           <strong>{disputeReason.message}</strong>
@@ -318,22 +333,13 @@ export default function Show() {
               : `Any additional information you can provide in the next ${dispute_evidence.duration_left_to_submit_evidence_formatted} will help us win on your behalf.`}
           </strong>
         </p>
-        <Alert variant="warning">
-          <strong>You can keep adding to this until the deadline.</strong> Our payment processor accepts one submission
-          per dispute, so we hold your response and send it at the deadline. Come back any time before then to add files
-          or revise what you wrote — after the deadline nothing more can be added, not even by contacting support.
-        </Alert>
-        {hasSavedResponse ? (
-          <Alert variant="info">
-            <strong>Your saved response is filled in below.</strong> Change whatever you want and save again — saving
-            replaces the fields you fill in and leaves the rest as they are.
-          </Alert>
-        ) : null}
+        <Alert variant="warning">{t("disputes.deadline_note")}</Alert>
+        {hasSavedResponse ? <Alert variant="info">{t("disputes.saved_response_note")}</Alert> : null}
       </CardContent>
       <CardContent>
         <Fieldset className="grow basis-0">
           <FieldsetTitle>
-            <Label htmlFor={reasonForWinningUID}>Why should you win this dispute?</Label>
+            <Label htmlFor={reasonForWinningUID}>{t("disputes.why_win")}</Label>
           </FieldsetTitle>
           {disputeReason.reasonsForWinning.map((option) => (
             <Label key={option}>
@@ -361,7 +367,7 @@ export default function Show() {
         <CardContent>
           <Fieldset className="grow basis-0">
             <FieldsetTitle>
-              <Label htmlFor={cancellationRebuttalUID}>Why was the customer's subscription not canceled?</Label>
+              <Label htmlFor={cancellationRebuttalUID}>{t("disputes.why_sub_not_cancelled")}</Label>
             </FieldsetTitle>
             {Object.entries(cancellationRebuttalOptions).map(([option, message]) => (
               <Label key={option}>
@@ -392,7 +398,7 @@ export default function Show() {
         <CardContent>
           <Fieldset className="grow basis-0">
             <FieldsetTitle>
-              <Label htmlFor={refundRefusalExplanationUID}>Why is the customer not entitled to a refund?</Label>
+              <Label htmlFor={refundRefusalExplanationUID}>{t("disputes.why_not_entitled_refund")}</Label>
             </FieldsetTitle>
             <Textarea
               id={refundRefusalExplanationUID}
@@ -407,7 +413,7 @@ export default function Show() {
       <CardContent>
         <Fieldset className="grow basis-0">
           <FieldsetTitle>
-            <Label>Do you have additional evidence you'd like to provide?</Label>
+            <Label>{t("disputes.additional_evidence_prompt")}</Label>
           </FieldsetTitle>
 
           <Files
@@ -431,20 +437,19 @@ export default function Show() {
               <Button outline disabled={isUploading || form.processing} onClick={() => fileInputRef.current?.click()}>
                 {isUploading ? (
                   <>
-                    <LoadingSpinner /> Uploading...
+                    <LoadingSpinner /> {t("actions.uploading")}
                   </>
                 ) : (
                   <>
-                    <Paperclip className="size-5" /> Upload customer communication
+                    <Paperclip className="size-5" /> {t("disputes.upload_communication")}
                   </>
                 )}
               </Button>
               <p>
-                Any communication with the customer that you feel is relevant to your case (emails, chats, etc. proving
-                that they received the product or service, or screenshots demonstrating their use of or satisfaction
-                with the product or service). You can attach up to {maxFileCount} JPG, PNG, or PDF files, each under{" "}
-                {FileUtils.getReadableFileSize(dispute_evidence.customer_communication_file_max_size)}. We combine them
-                into a single PDF in the order shown, so pick them in the order you want them read.
+                {t("disputes.upload_help", {
+                  maxFiles: maxFileCount,
+                  maxSize: FileUtils.getReadableFileSize(dispute_evidence.customer_communication_file_max_size),
+                })}
               </p>
             </>
           ) : null}
@@ -459,38 +464,33 @@ export default function Show() {
         >
           {form.processing ? (
             <>
-              <LoadingSpinner /> Saving...
+              <LoadingSpinner /> {t("actions.saving")}
             </>
           ) : (
-            "Save response"
+            t("disputes.save_response")
           )}
         </Button>
       </CardContent>
       <Modal
         open={isConfirming}
-        title="Save your response?"
+        title={t("disputes.confirm_save_title")}
         onClose={() => setIsConfirming(false)}
         footer={
           <>
-            <Button onClick={() => setIsConfirming(false)}>Cancel</Button>
+            <Button onClick={() => setIsConfirming(false)}>{t("actions.cancel")}</Button>
             <Button color="primary" disabled={isUploading || form.processing} onClick={submitDisputeEvidence}>
-              Confirm and save
+              {t("disputes.confirm_and_save")}
             </Button>
           </>
         }
       >
-        <p>
-          We send this to our payment processor at the deadline, not now, so you can come back and add to it until then.
-        </p>
+        <p>{t("disputes.deadline_reminder")}</p>
         {uploadedFiles.length > 0 ? (
-          <p>
-            You are attaching {uploadedFiles.length} {uploadedFiles.length === 1 ? "file" : "files"}
-            {savedFileCount > 0 ? ", in addition to the file you already saved" : ""}.
-          </p>
+          <p>{t("disputes.attaching_files", { count: uploadedFiles.length })}</p>
         ) : savedFileCount > 0 ? (
-          <p>Your previously saved file stays attached. You can add more here any time before the deadline.</p>
+          <p>{t("disputes.saved_file_stays")}</p>
         ) : (
-          <p>You have not attached any files. You can add them here any time before the deadline.</p>
+          <p>{t("disputes.no_files_attached")}</p>
         )}
       </Modal>
     </Card>
@@ -527,7 +527,7 @@ const Files = ({
           </RowContent>
           <RowActions>
             <NavigationButton outline href={Routes.s3_utility_cdn_url_for_blob_path({ key: blob.key })} target="_blank">
-              View
+              {t("actions.view")}
             </NavigationButton>
           </RowActions>
         </Row>
@@ -549,13 +549,13 @@ const Files = ({
           </RowContent>
           <RowActions>
             <NavigationButton outline href={Routes.s3_utility_cdn_url_for_blob_path({ key: file.key })} target="_blank">
-              View
+              {t("actions.view")}
             </NavigationButton>
             <Button
               size="icon"
               color="danger"
               outline
-              aria-label="Remove"
+              aria-label={t("actions.remove")}
               disabled={isSubmitting}
               onClick={() => onRemoveFile(file.key)}
             >

@@ -3,6 +3,8 @@ import { isEqual } from "lodash-es";
 import * as React from "react";
 import typia from "typia";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { PoweredByFooter } from "$app/components/PoweredByFooter";
 import { Card, CardContent } from "$app/components/ui/Card";
@@ -118,7 +120,7 @@ const PurchaseNewInvoicePage = () => {
             <CardContent>
               {payments.length > 0 ? (
                 <Fieldset>
-                  <Label htmlFor="payment">Payment</Label>
+                  <Label htmlFor="payment">{t("receipt.invoices.payment")}</Label>
                   <Select
                     id="payment"
                     value={payment_id}
@@ -144,7 +146,7 @@ const PurchaseNewInvoicePage = () => {
                 </Fieldset>
               ) : null}
               <Fieldset state={form.errors["address_fields.full_name"] ? "danger" : undefined} className="grow basis-0">
-                <Label htmlFor="full_name">Full name</Label>
+                <Label htmlFor="full_name">{t("receipt.invoices.full_name")}</Label>
                 <Input
                   id="full_name"
                   type="text"
@@ -153,7 +155,7 @@ const PurchaseNewInvoicePage = () => {
                 />
               </Fieldset>
               <Fieldset className="flex-1">
-                <Label htmlFor="business_name">Business name (optional)</Label>
+                <Label htmlFor="business_name">{t("receipt.invoices.business_name_optional")}</Label>
                 <Input
                   id="business_name"
                   type="text"
@@ -175,7 +177,7 @@ const PurchaseNewInvoicePage = () => {
                 </Fieldset>
               ) : null}
               <Fieldset state={form.errors["address_fields.street_address"] ? "danger" : undefined} className="flex-1">
-                <Label htmlFor="street_address">Street address</Label>
+                <Label htmlFor="street_address">{t("receipt.invoices.street_address")}</Label>
                 <Input
                   id="street_address"
                   type="text"
@@ -191,7 +193,7 @@ const PurchaseNewInvoicePage = () => {
                 }}
               >
                 <Fieldset state={form.errors["address_fields.city"] ? "danger" : undefined}>
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">{t("receipt.invoices.city")}</Label>
                   <Input
                     id="city"
                     type="text"
@@ -201,7 +203,7 @@ const PurchaseNewInvoicePage = () => {
                 </Fieldset>
                 {showStateField ? (
                   <Fieldset state={form.errors["address_fields.state"] ? "danger" : undefined}>
-                    <Label htmlFor="state">State</Label>
+                    <Label htmlFor="state">{t("receipt.invoices.state")}</Label>
                     <Input
                       id="state"
                       type="text"
@@ -211,7 +213,7 @@ const PurchaseNewInvoicePage = () => {
                   </Fieldset>
                 ) : null}
                 <Fieldset state={form.errors["address_fields.zip_code"] ? "danger" : undefined}>
-                  <Label htmlFor="zip_code">ZIP code</Label>
+                  <Label htmlFor="zip_code">{t("receipt.invoices.zip_code")}</Label>
                   <Input
                     id="zip_code"
                     type="text"
@@ -221,13 +223,13 @@ const PurchaseNewInvoicePage = () => {
                 </Fieldset>
               </div>
               <Fieldset state={form.errors["address_fields.country_code"] ? "danger" : undefined}>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">{t("receipt.invoices.country")}</Label>
                 <Select
                   id="country"
                   value={form.data.address_fields.country_code}
                   onChange={(e) => form.setData("address_fields.country_code", e.target.value)}
                 >
-                  <option value="">Select country</option>
+                  <option value="">{t("receipt.invoices.select_country")}</option>
                   {Object.entries(countries).map(([code, name]) => (
                     <option key={code} value={code}>
                       {name}
@@ -237,7 +239,7 @@ const PurchaseNewInvoicePage = () => {
               </Fieldset>
               <Fieldset className="flex-1">
                 <FieldsetTitle>
-                  <Label htmlFor="additional_notes">Additional notes</Label>
+                  <Label htmlFor="additional_notes">{t("receipt.invoices.additional_notes")}</Label>
                 </FieldsetTitle>
                 <Textarea
                   id="additional_notes"
@@ -270,7 +272,7 @@ const PurchaseNewInvoicePage = () => {
                 <span>{order_info.invoice_date_attribute.value}</span>
               </div>
               <div>
-                <h6 className="font-bold">To</h6>
+                <h6 className="font-bold">{t("receipt.invoices.to")}</h6>
                 <div
                   style={{ opacity: form.data.address_fields.full_name.length ? undefined : "var(--disabled-opacity)" }}
                 >
@@ -321,7 +323,7 @@ const PurchaseNewInvoicePage = () => {
               </div>
               {form.data.additional_notes.length ? (
                 <div>
-                  <h6 className="font-bold">Additional notes</h6>
+                  <h6 className="font-bold">{t("receipt.invoices.additional_notes")}</h6>
                   {form.data.additional_notes}
                 </div>
               ) : null}
@@ -336,17 +338,26 @@ const PurchaseNewInvoicePage = () => {
               <footer className="text-center">
                 {invoice_file_url ? (
                   <span className="grow">
-                    Right-click{" "}
-                    <a href={invoice_file_url} download>
-                      here
-                    </a>{" "}
-                    and "Save as..." if the PDF hasn't been automatically downloaded to your computer.
+                    {(() => {
+                      const [before, after] = t("receipt.invoices.save_as_help", { here: "@@HERE@@" }).split(
+                        "@@HERE@@",
+                      );
+                      return (
+                        <>
+                          {before}
+                          <a href={invoice_file_url} download>
+                            {t("common.here")}
+                          </a>
+                          {after}
+                        </>
+                      );
+                    })()}
                   </span>
                 ) : (
-                  <span className="grow">This invoice will be downloaded as a PDF to your computer.</span>
+                  <span className="grow">{t("receipt.invoices.download_notice")}</span>
                 )}
                 <Button color="accent" onClick={downloadInvoice} disabled={form.processing}>
-                  Download
+                  {t("actions.download")}
                 </Button>
               </footer>
             </CardContent>

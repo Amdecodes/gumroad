@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, Clock, Plus, Trash } from "@boxicons/react";
 import * as React from "react";
 
 import { confirmRemovedVariantPageDeletions, reorderPreservingMembership } from "$app/data/product_save_contract";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -81,14 +82,14 @@ export const DurationsEditor = ({
       }}
     >
       <Plus className="size-5" />
-      Add duration
+      {t("seller.productEdit.add_duration")}
     </Button>
   );
 
   return durations.length === 0 ? (
     <Placeholder>
-      <h2>Add duration</h2>
-      Create one or more call durations for customers to choose from.
+      <h2>{t("seller.productEdit.add_duration")}</h2>
+      {t("seller.productEdit.add_duration_desc")}
       {addButton}
     </Placeholder>
   ) : (
@@ -97,19 +98,17 @@ export const DurationsEditor = ({
         <Modal
           open={!!deletionModalDuration}
           onClose={() => setDeletionModalDurationId(null)}
-          title={`Remove ${deletionModalDuration.name}?`}
+          title={t("seller.productEdit.remove_version_modal_title", { name: deletionModalDuration.name })}
           footer={
             <>
-              <Button onClick={() => setDeletionModalDurationId(null)}>No, cancel</Button>
+              <Button onClick={() => setDeletionModalDurationId(null)}>{t("seller.productEdit.no_cancel")}</Button>
               <Button color="accent" onClick={() => confirmRemoval(deletionModalDuration)}>
-                Yes, remove
+                {t("seller.productEdit.yes_remove")}
               </Button>
             </>
           }
         >
-          If you delete this version, its associated content will be removed as well. Your existing customers who
-          purchased it will see the content from the current cheapest version as a fallback. If no version exists, they
-          will see the product-level content.
+          {t("seller.productEdit.remove_version_modal_desc")}
         </Modal>
       ) : null}
       <SortableList
@@ -169,7 +168,7 @@ const DurationEditor = ({
           <Drawer className="grid gap-6">
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-duration`}>Duration</Label>
+                <Label htmlFor={`${uid}-duration`}>{t("seller.productEdit.duration_field")}</Label>
               </FieldsetTitle>
               <InputGroup>
                 <NumberInput
@@ -185,7 +184,7 @@ const DurationEditor = ({
                 >
                   {(props) => <Input id={`${uid}-duration`} {...props} />}
                 </NumberInput>
-                <Pill className="-mr-2 shrink-0">minutes</Pill>
+                <Pill className="-mr-2 shrink-0">{t("seller.productEdit.duration_minutes_suffix")}</Pill>
               </InputGroup>
             </Fieldset>
             <Fieldset>
@@ -200,7 +199,7 @@ const DurationEditor = ({
               style={{ display: "grid", gap: "var(--spacer-5)", gridAutoFlow: "column", alignItems: "flex-end" }}
             >
               <Fieldset>
-                <Label htmlFor={`${uid}-price`}>Additional amount</Label>
+                <Label htmlFor={`${uid}-price`}>{t("seller.productEdit.additional_amount")}</Label>
                 <PriceInput
                   id={`${uid}-price`}
                   currencyCode={currencyType}
@@ -210,7 +209,7 @@ const DurationEditor = ({
                 />
               </Fieldset>
               <Fieldset>
-                <Label htmlFor={`${uid}-max-purchase-count`}>Maximum number of purchases</Label>
+                <Label htmlFor={`${uid}-max-purchase-count`}>{t("seller.productEdit.max_number_of_purchases")}</Label>
                 <NumberInput
                   onChange={(value) => updateDuration({ max_purchase_count: value })}
                   value={duration.max_purchase_count}

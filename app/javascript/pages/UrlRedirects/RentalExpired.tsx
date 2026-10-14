@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { UnavailablePageLayout, useUnavailablePageProps, withStandaloneLayout } from "./UnavailablePageLayout";
 
 function RentalExpiredPage() {
@@ -7,8 +9,8 @@ function RentalExpiredPage() {
 
   return (
     <UnavailablePageLayout pageProps={pageProps}>
-      <h2>Your rental has expired</h2>
-      <p>Rentals expire 30 days after purchase or 72 hours after you've begun watching it.</p>
+      <h2>{t("content.rental_expired_title")}</h2>
+      <p>{t("content.rental_expired_desc")}</p>
     </UnavailablePageLayout>
   );
 }

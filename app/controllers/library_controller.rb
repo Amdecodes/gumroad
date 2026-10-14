@@ -38,7 +38,7 @@ class LibraryController < Sellers::BaseController
 
     @purchase.update!(is_archived: true)
 
-    redirect_to library_path, notice: "Product archived!", status: :see_other
+    redirect_to library_path, notice: t("flash.library.product_archived"), status: :see_other
   end
 
   def unarchive
@@ -46,7 +46,7 @@ class LibraryController < Sellers::BaseController
 
     @purchase.update!(is_archived: false)
 
-    redirect_to library_path, notice: "Product unarchived!", status: :see_other
+    redirect_to library_path, notice: t("flash.library.product_unarchived"), status: :see_other
   end
 
   def delete
@@ -54,7 +54,7 @@ class LibraryController < Sellers::BaseController
 
     @purchase.update!(is_deleted_by_buyer: true)
 
-    redirect_to library_path, notice: "Removed from your library!", status: :see_other
+    redirect_to library_path, notice: t("flash.library.product_removed"), status: :see_other
   end
 
   private
@@ -95,7 +95,7 @@ class LibraryController < Sellers::BaseController
         logged_in_user.resend_confirmation_instructions
       end
 
-      flash[:warning] = "Please check your email to confirm your address before you can see that."
+      flash[:warning] = t("flash.library.confirm_email_warning")
 
       redirect_to settings_main_path
     end

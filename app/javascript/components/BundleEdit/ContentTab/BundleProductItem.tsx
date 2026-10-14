@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
 import { variantLabel } from "$app/utils/labels";
 
 import { BundleProduct } from "$app/components/BundleEdit/types";
@@ -26,6 +27,7 @@ export const BundleProductItem = ({
   updateBundleProduct: (update: Partial<BundleProduct>) => void;
   removeBundleProduct: () => void;
 }) => {
+  const { t } = useTranslation();
   const selectedVariant = bundleProduct.variants?.list.find(
     (variant) => variant.id === bundleProduct.variants?.selected_id,
   );
@@ -46,7 +48,7 @@ export const BundleProductItem = ({
       </CartItemMedia>
       <CartItemMain className="h-20">
         <CartItemTitle>{bundleProduct.name}</CartItemTitle>
-        <span className="sr-only">Qty: {bundleProduct.quantity}</span>
+        <span className="sr-only">{t("seller.bundles.item_qty", { count: bundleProduct.quantity })}</span>
         {selectedVariant ? (
           <CartItemFooter>
             <span className="line-clamp-1">
@@ -58,7 +60,7 @@ export const BundleProductItem = ({
       <CartItemEnd className="flex-row items-center gap-4 p-4">
         {bundleProduct.is_quantity_enabled || bundleProduct.variants ? (
           <Popover>
-            <PopoverTrigger className="underline">Configure</PopoverTrigger>
+            <PopoverTrigger className="underline">{t("seller.bundles.configure")}</PopoverTrigger>
             <PopoverContent>
               <div className="flex w-96 flex-col gap-4">
                 <ConfigurationSelector
@@ -108,14 +110,14 @@ export const BundleProductItem = ({
                       });
                     }}
                   >
-                    Apply
+                    {t("seller.bundles.apply")}
                   </Button>
                 </PopoverClose>
               </div>
             </PopoverContent>
           </Popover>
         ) : null}
-        <LinkButton onClick={removeBundleProduct}>Remove</LinkButton>
+        <LinkButton onClick={removeBundleProduct}>{t("seller.bundles.remove")}</LinkButton>
       </CartItemEnd>
     </CartItem>
   );

@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { StandaloneLayout } from "$app/inertia/layout";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Layout, LayoutProps } from "$app/components/DownloadPage/Layout";
@@ -62,16 +63,16 @@ const MembershipInactiveContent = ({
 }) => (
   <Placeholder className={fullHeightPlaceholderClassName}>
     <PlaceholderImage src={placeholderImage} />
-    <h2>Your membership is inactive</h2>
-    <p>You cannot access the content of {product_name} because your membership is no longer active.</p>
+    <h2>{t("content.membership_inactive_title")}</h2>
+    <p>{t("content.membership_inactive_desc", { product: product_name })}</p>
     {membership ? (
       membership.is_alive_or_restartable ? (
         <Button asChild color="primary">
-          <a href={Routes.manage_subscription_url(membership.subscription_id)}>Manage membership</a>
+          <a href={Routes.manage_subscription_url(membership.subscription_id)}>{t("storefront.manage_membership")}</a>
         </Button>
       ) : product_long_url ? (
         <Button asChild color="primary">
-          <a href={product_long_url}>Resubscribe</a>
+          <a href={product_long_url}>{t("content.resubscribe")}</a>
         </Button>
       ) : null
     ) : null}
@@ -90,16 +91,18 @@ const InstallmentPlanFailedOrCancelled = ({
 }) => (
   <Placeholder className={fullHeightPlaceholderClassName}>
     <PlaceholderImage src={placeholderImage} />
-    <h2>Your installment plan is inactive</h2>
+    <h2>{t("content.installment_inactive_title")}</h2>
     {installment_plan.is_alive_or_restartable ? (
       <>
-        <p>Please update your payment method to continue accessing the content of {product_name}.</p>
+        <p>{t("content.installment_update_payment_desc", { product: product_name })}</p>
         <Button asChild color="primary">
-          <a href={Routes.manage_subscription_url(installment_plan.subscription_id)}>Update payment method</a>
+          <a href={Routes.manage_subscription_url(installment_plan.subscription_id)}>
+            {t("content.update_payment_method")}
+          </a>
         </Button>
       </>
     ) : (
-      <p>You cannot access the content of {product_name} because your installment plan is no longer active.</p>
+      <p>{t("content.installment_inactive_desc", { product: product_name })}</p>
     )}
   </Placeholder>
 );

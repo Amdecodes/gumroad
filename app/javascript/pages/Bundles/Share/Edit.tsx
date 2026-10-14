@@ -6,6 +6,7 @@ import typia from "typia";
 import { AssetPreview, CustomButtonTextOption, RatingsWithPercentages } from "$app/parsers/product";
 import { CurrencyCode } from "$app/utils/currency";
 import { Taxonomy } from "$app/utils/discover";
+import { useTranslation } from "$app/utils/i18n";
 
 import { BundleEditLayout, useProductUrl } from "$app/components/BundleEdit/Layout";
 import { ProductPreview } from "$app/components/BundleEdit/ProductPreview";
@@ -77,6 +78,7 @@ type ShareFormData = {
 };
 
 export default function BundlesShareEdit() {
+  const { t } = useTranslation();
   const page = usePage();
   const props = typia.assert<SharePageProps>(page.props);
   const {
@@ -145,15 +147,15 @@ export default function BundlesShareEdit() {
       <form>
         <section className="grid gap-8 p-4! md:p-8!">
           <header>
-            <h2>Share</h2>
+            <h2>{t("seller.productEdit.share_title")}</h2>
           </header>
           <div className="flex flex-wrap gap-2">
-            <TwitterShareButton url={url} text={`Buy ${bundle.name} on @Gumroad`} />
+            <TwitterShareButton url={url} text={t("seller.productEdit.share_twitter_text", { name: bundle.name })} />
             <FacebookShareButton url={url} text={bundle.name} />
             <CopyToClipboard text={url} tooltipPosition="top">
               <Button color="primary">
                 <Link className="size-5" />
-                Copy URL
+                {t("seller.productEdit.copy_url")}
               </Button>
             </CopyToClipboard>
           </div>
@@ -176,17 +178,14 @@ export default function BundlesShareEdit() {
         />
         <section className="grid gap-8 border-t border-border p-4 md:p-8">
           <header className="flex items-center justify-between">
-            <h2>Gumroad Discover</h2>
+            <h2>{t("seller.productEdit.discover_title")}</h2>
             <a href="/help/article/79-gumroad-discover" target="_blank" rel="noreferrer">
-              Learn more
+              {t("seller.productEdit.learn_more")}
             </a>
           </header>
           <div className="flex flex-col gap-4">
-            <p>
-              Gumroad Discover recommends your products to prospective customers for a flat 30% fee on each sale,
-              helping you grow beyond your existing following and find even more people who care about your work.
-            </p>
-            <p>When enabled, the product will also become part of the Gumroad affiliate program.</p>
+            <p>{t("seller.productEdit.discover_fee_info")}</p>
+            <p>{t("seller.productEdit.discover_affiliate_info")}</p>
           </div>
           <TaxonomyEditor
             taxonomyId={form.data.taxonomy_id}
@@ -198,17 +197,17 @@ export default function BundlesShareEdit() {
             <Switch
               checked={form.data.display_product_reviews}
               onChange={(e) => form.setData("display_product_reviews", e.target.checked)}
-              label="Display your product's 1-5 star rating to prospective customers"
+              label={t("seller.productEdit.display_reviews_label")}
             />
             <Switch
               checked={form.data.hide_bundle_product_reviews}
               onChange={(e) => form.setData("hide_bundle_product_reviews", e.target.checked)}
-              label="Hide ratings of included products on this bundle page"
+              label={t("seller.productEdit.hide_bundle_product_reviews_label")}
             />
             <Switch
               checked={form.data.is_adult}
               onChange={(e) => form.setData("is_adult", e.target.checked)}
-              label="This product contains content meant only for adults, including the preview"
+              label={t("seller.productEdit.adult_content_label")}
             />
           </Fieldset>
         </section>

@@ -7,6 +7,7 @@ import { deletePurchasedProduct, setPurchaseArchived } from "$app/data/library";
 import { ProductNativeType } from "$app/parsers/product";
 import { assertDefined } from "$app/utils/assert";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError } from "$app/utils/request";
 import { SellerAnalyticsProps, trackSellerPurchaseEvent } from "$app/utils/user_analytics";
@@ -74,11 +75,14 @@ export const Card = ({
     try {
       await setPurchaseArchived(data);
       onArchive();
-      showAlert(result.purchase.is_archived ? "Product unarchived!" : "Product archived!", "success");
+      showAlert(
+        result.purchase.is_archived ? t("library.product_unarchived") : t("library.product_archived"),
+        "success",
+      );
       setIsPopoverOpen(false);
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong.", "error");
+      showAlert(t("common.something_went_wrong"), "error");
     }
   });
 
@@ -117,11 +121,11 @@ export const Card = ({
               <Menu>
                 <MenuItem onClick={toggleArchived}>
                   <Archive className="size-5" />
-                  {purchase.is_archived ? "Unarchive" : "Archive"}
+                  {purchase.is_archived ? t("library.unarchive") : t("library.archive")}
                 </MenuItem>
                 <MenuItem variant="danger" onClick={() => onDelete()}>
                   <Trash className="size-5" />
-                  Remove from library
+                  {t("library.remove_from_library")}
                 </MenuItem>
               </Menu>
             </PopoverContent>
@@ -145,10 +149,10 @@ export const DeleteProductModal = ({
     try {
       await deletePurchasedProduct({ purchase_id: result.purchase.id });
       onDelete(result);
-      showAlert("Removed from your library!", "success");
+      showAlert(t("library.removed_from_library"), "success");
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong.", "error");
+      showAlert(t("common.something_went_wrong"), "error");
     }
   });
 
@@ -156,21 +160,18 @@ export const DeleteProductModal = ({
     <Modal
       open={!!deleting}
       onClose={onCancel}
-      title="Remove from library"
+      title={t("library.remove_from_library")}
       footer={
         <>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>{t("actions.cancel")}</Button>
           <Button color="danger" onClick={() => deletePurchase(assertDefined(deleting, "Invalid state"))}>
-            Confirm
+            {t("actions.confirm")}
           </Button>
         </>
       }
     >
-      <h4>Remove {deleting?.product.name ?? ""} from your library?</h4>
-      <p>
-        You keep access through your original download link, and our support team can put the card back if you change
-        your mind.
-      </p>
+      <h4>{t("library.remove_confirm_title", { name: deleting?.product.name ?? "" })}</h4>
+      <p>{t("library.remove_confirm_desc")}</p>
     </Modal>
   );
 };
@@ -298,10 +299,10 @@ export default function LibraryPage() {
     try {
       await deletePurchasedProduct({ purchase_id: result.purchase.id });
       router.reload();
-      showAlert("Removed from your library!", "success");
+      showAlert(t("library.removed_from_library"), "success");
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong.", "error");
+      showAlert(t("common.something_went_wrong"), "error");
     }
   });
 
@@ -318,7 +319,7 @@ export default function LibraryPage() {
     router.replace({ url: url.pathname + url.search, preserveState: true, preserveScroll: true });
 
     const email = receipt_purchases.find((purchase) => purchase.id === purchaseIds[0])?.email;
-    if (email) showAlert(`Your purchase was successful! We sent a receipt to ${email}.`, "success");
+    if (email) showAlert(t("library.purchase_successful_receipt_sent", { email }), "success");
 
     for (const purchaseId of purchaseIds) {
       const analytics = purchase_analytics[purchaseId];
@@ -353,15 +354,15 @@ export default function LibraryPage() {
             {isLibraryEmpty ? (
               <>
                 <PlaceholderImage src={placeholder} />
-                <h2 className="library-header">You haven't bought anything... yet!</h2>
-                Once you do, it'll show up here so you can download, watch, read, or listen to all your purchases.
+                <h2 className="library-header">{t("library.empty_header")}</h2>
+                {t("library.empty_desc")}
                 <Button asChild color="accent">
-                  <a href={discoverUrl}>Discover products</a>
+                  <a href={discoverUrl}>{t("library.discover_products")}</a>
                 </Button>
               </>
             ) : (
               <>
-                <h2 className="library-header">You've archived all your products.</h2>
+                <h2 className="library-header">{t("library.all_archived_header")}</h2>
                 <Button
                   color="accent"
                   onClick={(e) => {
@@ -369,7 +370,7 @@ export default function LibraryPage() {
                     navigate({ show_archived_only: true });
                   }}
                 >
-                  See archive
+                  {t("library.see_archive")}
                 </Button>
               </>
             )}
@@ -377,40 +378,72 @@ export default function LibraryPage() {
         ) : null}
         {archivedCount > 0 && !activeSearch.show_archived_only && !showArchivedNotice ? (
           <Alert role="status" variant="info" className="mb-5">
-            You have {archivedCount} archived purchase{archivedCount === 1 ? "" : "s"}.{" "}
-            <LinkButton onClick={() => navigate({ show_archived_only: true })}>Click here to view</LinkButton>
+            {(() => {
+              const notice = t("library.archived_notice", { count: archivedCount, click_here: "___LINK___" });
+              const [before, after] = notice.split("___LINK___");
+              return (
+                <>
+                  {before}
+                  <LinkButton onClick={() => navigate({ show_archived_only: true })}>
+                    {t("library.click_here_to_view")}
+                  </LinkButton>
+                  {after}
+                </>
+              );
+            })()}
           </Alert>
         ) : null}
         {bundleDownloads.map((bundleDownload) => (
           <Alert key={bundleDownload.id} role="status" variant="info" className="mb-5 flex items-center gap-4">
             <div className="grow">
-              {bundleDownload.zip_unavailable_reason === "too_large" ? (
-                <>
-                  <strong>{bundleDownload.label}</strong> is too large to download as one ZIP file. Download the
-                  products below individually.
-                </>
-              ) : bundleDownload.zip_unavailable_reason === "failed" ? (
-                <>
-                  We could not prepare a ZIP file for <strong>{bundleDownload.label}</strong>. Download the products
-                  below individually.
-                </>
-              ) : (
-                <>
-                  Download everything included in <strong>{bundleDownload.label}</strong> as one ZIP file.
-                </>
-              )}
+              {bundleDownload.zip_unavailable_reason === "too_large"
+                ? (() => {
+                    const [before, after] = t("library.bundle_too_large", { label: "___LABEL___" }).split(
+                      "___LABEL___",
+                    );
+                    return (
+                      <>
+                        {before}
+                        <strong>{bundleDownload.label}</strong>
+                        {after}
+                      </>
+                    );
+                  })()
+                : bundleDownload.zip_unavailable_reason === "failed"
+                  ? (() => {
+                      const [before, after] = t("library.bundle_failed", { label: "___LABEL___" }).split("___LABEL___");
+                      return (
+                        <>
+                          {before}
+                          <strong>{bundleDownload.label}</strong>
+                          {after}
+                        </>
+                      );
+                    })()
+                  : (() => {
+                      const [before, after] = t("library.bundle_download_all_zip", { label: "___LABEL___" }).split(
+                        "___LABEL___",
+                      );
+                      return (
+                        <>
+                          {before}
+                          <strong>{bundleDownload.label}</strong>
+                          {after}
+                        </>
+                      );
+                    })()}
             </div>
             {bundleDownload.download_url ? (
               <Button asChild color="accent">
                 <a href={bundleDownload.download_url}>
                   <FileCode pack="filled" className="size-5" />
-                  Download all
+                  {t("library.download_all")}
                 </a>
               </Button>
             ) : bundleDownload.zip_unavailable_reason ? null : (
               <Button disabled>
                 <FileCode pack="filled" className="size-5" />
-                Preparing ZIP
+                {t("library.preparing_zip")}
               </Button>
             )}
           </Alert>
@@ -422,16 +455,25 @@ export default function LibraryPage() {
           )}
         >
           {shouldShowFilter ? (
-            <UICard className="overflow-y-auto lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]" aria-label="Filters">
+            <UICard
+              className="overflow-y-auto lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]"
+              aria-label={t("discover.filters")}
+            >
               <CardContent asChild>
                 <header>
                   <div className="grow">
                     {pagination.count
-                      ? `Showing ${pagination.from}-${pagination.to} of ${pagination.count} products`
-                      : "No products found"}
+                      ? t("library.showing_products", {
+                          from: pagination.from,
+                          to: pagination.to,
+                          count: pagination.count,
+                        })
+                      : t("library.no_products_found")}
                   </div>
                   {isDesktop ? null : (
-                    <LinkButton onClick={() => setMobileFiltersExpanded(!mobileFiltersExpanded)}>Filter</LinkButton>
+                    <LinkButton onClick={() => setMobileFiltersExpanded(!mobileFiltersExpanded)}>
+                      {t("discover.filters")}
+                    </LinkButton>
                   )}
                 </header>
               </CardContent>
@@ -442,7 +484,7 @@ export default function LibraryPage() {
                       <Search className="size-5 text-muted" />
                       <Input
                         className="search-products"
-                        placeholder="Search products"
+                        placeholder={t("library.search_products")}
                         value={enteredQuery}
                         onChange={(e) => setEnteredQuery(e.target.value)}
                         onBlur={commitQuery}
@@ -454,7 +496,7 @@ export default function LibraryPage() {
                     <Fieldset className="grow basis-0">
                       <FieldsetTitle>
                         <Label className="filter-header" htmlFor={sortUid}>
-                          Sort by
+                          {t("library.sort_by")}
                         </Label>
                       </FieldsetTitle>
                       <FormSelect
@@ -464,8 +506,8 @@ export default function LibraryPage() {
                           navigate({ sort: e.target.value === "purchase_date" ? "purchase_date" : "recently_updated" })
                         }
                       >
-                        <option value="recently_updated">Recently Updated</option>
-                        <option value="purchase_date">Purchase Date</option>
+                        <option value="recently_updated">{t("library.recently_updated")}</option>
+                        <option value="purchase_date">{t("library.purchase_date")}</option>
                       </FormSelect>
                     </Fieldset>
                   </CardContent>
@@ -473,7 +515,7 @@ export default function LibraryPage() {
                     <CardContent>
                       <Fieldset className="grow basis-0">
                         <FieldsetTitle>
-                          <Label htmlFor={bundlesUid}>Bundles</Label>
+                          <Label htmlFor={bundlesUid}>{t("library.bundles")}</Label>
                         </FieldsetTitle>
                         <Select
                           inputId={bundlesUid}
@@ -489,9 +531,9 @@ export default function LibraryPage() {
                   ) : null}
                   <CardContent className="creator">
                     <Fieldset role="group" className="grow basis-0">
-                      <FieldsetTitle className="filter-header">Creator</FieldsetTitle>
+                      <FieldsetTitle className="filter-header">{t("library.creator")}</FieldsetTitle>
                       <Label className="w-full">
-                        All Creators
+                        {t("library.all_creators")}
                         <Checkbox
                           wrapperClassName="ml-auto"
                           checked={activeSearch.creators.length === 0}
@@ -519,7 +561,7 @@ export default function LibraryPage() {
                       ))}
                       <div>
                         {creatorsSortedByName.length > 5 && !showingAllCreators ? (
-                          <LinkButton onClick={() => setShowingAllCreators(true)}>Show more</LinkButton>
+                          <LinkButton onClick={() => setShowingAllCreators(true)}>{t("library.show_more")}</LinkButton>
                         ) : null}
                       </div>
                     </Fieldset>
@@ -528,7 +570,7 @@ export default function LibraryPage() {
                     <CardContent className="archived">
                       <Fieldset role="group" className="grow basis-0">
                         <Label className="justify-between">
-                          Show archived only
+                          {t("library.show_archived_only")}
                           <Checkbox
                             checked={activeSearch.show_archived_only}
                             readOnly

@@ -5,6 +5,7 @@ import * as React from "react";
 import { addPurchaseToLibrary } from "$app/data/account";
 import { deletePurchasedProduct } from "$app/data/library";
 import { signupAndAddPurchaseToLibrary } from "$app/data/open_in_app";
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError, request } from "$app/utils/request";
 
@@ -98,10 +99,10 @@ export const Layout = ({
         url: Routes.resend_receipt_purchase_path(purchaseId),
         accept: "json",
       });
-      showAlert("Receipt resent", "success");
+      showAlert(t("content.receipt_resent"), "success");
     } catch (e) {
       assertResponseError(e);
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("checkout.something_went_wrong_retry"), "error");
     }
     setIsResendingReceipt(false);
   });
@@ -113,13 +114,13 @@ export const Layout = ({
 
   const disabledStatus =
     purchase && !purchase.product_available
-      ? "Removed by the seller"
+      ? t("content.removed_by_seller")
       : purchase &&
           differenceInYears(new Date(), parseISO(purchase.created_at)) >= 1 &&
           purchase.disable_reviews_after_year
-        ? "Reviews may not be created or modified for this product 1 year after purchase."
+        ? t("content.reviews_disabled_after_year")
         : purchase?.membership?.in_free_trial
-          ? "Reviews are not allowed during the free trial period."
+          ? t("content.reviews_not_allowed_free_trial")
           : null;
 
   const settings = is_mobile_app_web_view ? null : (
@@ -154,13 +155,13 @@ export const Layout = ({
                   <CardContent asChild details>
                     <Details>
                       <DetailsToggle chevronPosition="right" className="grow">
-                        Installment plan
+                        {t("content.installment_plan")}
                       </DetailsToggle>
                       {purchase.membership.is_installment_plan_completed ? (
-                        "This installment plan has been paid in full."
+                        t("content.installment_plan_paid_full")
                       ) : (
                         <NavigationButton href={Routes.manage_subscription_url(purchase.membership.subscription_id)}>
-                          Manage
+                          {t("content.manage")}
                         </NavigationButton>
                       )}
                     </Details>
@@ -169,18 +170,18 @@ export const Layout = ({
                   <CardContent asChild details>
                     <Details>
                       <DetailsToggle chevronPosition="right" className="grow">
-                        Membership
+                        {t("content.membership")}
                       </DetailsToggle>
                       <div style={{ display: "grid" }}>
                         {purchase.membership.has_active_subscription ? (
                           <NavigationButton href={Routes.manage_subscription_url(purchase.membership.subscription_id)}>
-                            Manage
+                            {t("content.manage")}
                           </NavigationButton>
                         ) : purchase.membership.is_subscription_ended ? (
-                          "This subscription has ended."
+                          t("content.subscription_ended")
                         ) : purchase.membership.is_subscription_cancelled_or_failed ? (
                           <NavigationButton href={Routes.manage_subscription_url(purchase.membership.subscription_id)}>
-                            Restart
+                            {t("content.restart")}
                           </NavigationButton>
                         ) : null}
                       </div>
@@ -192,7 +193,7 @@ export const Layout = ({
                 <CardContent asChild details>
                   <Details>
                     <DetailsToggle chevronPosition="right" className="grow">
-                      Receipt
+                      {t("content.receipt")}
                     </DetailsToggle>
                     <div className="flex flex-col gap-4">
                       <NavigationButton
@@ -202,10 +203,10 @@ export const Layout = ({
                             : Routes.receipt_purchase_url(receiptPurchaseId)
                         }
                       >
-                        View receipt
+                        {t("content.view_receipt")}
                       </NavigationButton>
                       <Button onClick={() => handleResendReceipt(receiptPurchaseId)} disabled={isResendingReceipt}>
-                        {isResendingReceipt ? "Resending receipt..." : "Resend receipt"}
+                        {isResendingReceipt ? t("content.resending_receipt") : t("content.resend_receipt")}
                       </Button>
                       {/*
                         Buyers could always reach their invoice, but only by going Receipt →
@@ -225,7 +226,7 @@ export const Layout = ({
                               : Routes.new_purchase_invoice_url(receiptPurchaseId)
                           }
                         >
-                          Generate invoice
+                          {t("content.generate_invoice")}
                         </NavigationButton>
                       ) : null}
                     </div>
@@ -236,7 +237,7 @@ export const Layout = ({
                 <CardContent asChild details>
                   <Details>
                     <DetailsToggle chevronPosition="right" className="grow">
-                      Library
+                      {t("content.library")}
                     </DetailsToggle>
                     <div className="flex flex-col gap-4">
                       <PurchaseArchiveButton purchase_id={purchase.id} initial_is_archived={purchase.is_archived} />
@@ -260,8 +261,8 @@ export const Layout = ({
           {loggedInUser ? (
             <a
               href={Routes.library_url()}
-              title="Back to Library"
-              aria-label="Back to Library"
+              title={t("content.back_to_library")}
+              aria-label={t("content.back_to_library")}
               className="flex shrink-0 items-center justify-center border-r border-border px-6 no-underline transition-colors hover:bg-active-bg"
             >
               <X className="size-6" />
@@ -332,7 +333,7 @@ const CallDetails = ({ call }: { call: Call }) => {
       </CardContent>
       {call.url ? (
         <CardContent>
-          <strong className="grow">Call link</strong>
+          <strong className="grow">{t("content.call_link")}</strong>
           <a href={call.url} target="_blank" rel="noopener noreferrer">
             {call.url}
           </a>
@@ -357,11 +358,11 @@ const PurchaseDeleteButton = ({
     setIsDeleting(true);
     try {
       await deletePurchasedProduct({ purchase_id });
-      showAlert("Removed from your library!", "success");
+      showAlert(t("library.removed_from_library"), "success");
       window.location.href = Routes.library_path();
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong.", "error");
+      showAlert(t("checkout.something_went_wrong_retry"), "error");
     }
     setIsDeleting(false);
   });
@@ -369,29 +370,24 @@ const PurchaseDeleteButton = ({
   return (
     <>
       <Button color="danger" onClick={() => setIsDeleteModalOpen(true)}>
-        Remove from library
+        {t("library.remove_from_library")}
       </Button>
       <Modal
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Remove from library"
+        title={t("library.remove_from_library")}
         footer={
           <>
-            <Button onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button onClick={() => setIsDeleteModalOpen(false)}>{t("actions.cancel")}</Button>
             <Button color="danger" onClick={handleDelete}>
-              {isDeleting ? "Removing..." : "Confirm"}
+              {isDeleting ? t("library.removing") : t("actions.confirm_and_save")}
             </Button>
           </>
         }
       >
         <div>
-          <span className="inline">
-            Remove <b>{product_name ?? ""}</b> from your library?
-          </span>
-          <p>
-            You keep access through this page's link, and our support team can put the card back if you change your
-            mind.
-          </p>
+          <span className="inline">{t("library.remove_confirm_title", { name: product_name ?? "" })}</span>
+          <p>{t("library.remove_modal_body")}</p>
         </div>
       </Modal>
     </>
@@ -448,12 +444,12 @@ const AddToLibrary = ({ add_to_library_option, terms_page_url, purchase_id, purc
       {add_to_library_option === "add_to_library_button" ? (
         <>
           <CardContent asChild>
-            <span>Access this product from anywhere, forever:</span>
+            <span>{t("content.add_to_library_prompt")}</span>
           </CardContent>
           <CardContent>
             <div style={{ display: "grid" }} className="grow">
               <Button color="primary" onClick={handleAddPurchaseToLibrary} disabled={isSubmitting}>
-                {isSubmitting ? "Adding..." : "Add to library"}
+                {isSubmitting ? t("content.adding_to_library") : t("content.add_to_library")}
               </Button>
             </div>
           </CardContent>
@@ -461,7 +457,7 @@ const AddToLibrary = ({ add_to_library_option, terms_page_url, purchase_id, purc
       ) : (
         <>
           <CardContent asChild>
-            <span>Create an account to access all of your purchases anytime.</span>
+            <span>{t("content.create_account_prompt")}</span>
           </CardContent>
           <CardContent>
             <form autoComplete="off" onSubmit={handleSignupAndAddPurchaseToLibrary} className="grid grow gap-4">
@@ -470,14 +466,25 @@ const AddToLibrary = ({ add_to_library_option, terms_page_url, purchase_id, purc
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Your password"
+                  placeholder={t("content.your_password")}
                 />
                 <FieldsetDescription>
-                  You agree to our <a href={terms_page_url}>Terms Of Use</a>.
+                  {t("content.terms_agreement", { terms_of_use: "___TERMS___" })
+                    .split("___TERMS___")
+                    .reduce<React.ReactNode[]>((acc, part, idx) => {
+                      if (idx === 0) return [part];
+                      return [
+                        ...acc,
+                        <a key="terms" href={terms_page_url}>
+                          {t("content.terms_of_use")}
+                        </a>,
+                        part,
+                      ];
+                    }, [])}
                 </FieldsetDescription>
               </Fieldset>
               <Button color="primary" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create"}
+                {isSubmitting ? t("content.creating_account") : t("content.create_account")}
               </Button>
             </form>
           </CardContent>

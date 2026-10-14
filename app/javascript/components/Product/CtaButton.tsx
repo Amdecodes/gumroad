@@ -3,6 +3,7 @@ import * as React from "react";
 import { trackUserProductAction } from "$app/data/user_action_event";
 import type { Discount } from "$app/parsers/checkout";
 import { CustomButtonTextOption } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 import { formatInstallmentPaymentSchedule } from "$app/utils/price";
 import { assertResponseError } from "$app/utils/request";
 import { trackProductEvent } from "$app/utils/user_analytics";
@@ -16,7 +17,7 @@ import {
   PriceSelection,
   withConfiguredOncePerCartAmount,
 } from "$app/components/Product/ConfigurationSelector";
-import { INCOMPLETE_PURCHASE_CTA_LABEL, needsOptionChoice } from "$app/components/Product/purchaseReadiness";
+import { needsOptionChoice } from "$app/components/Product/purchaseReadiness";
 import { useOriginalLocation } from "$app/components/useOriginalLocation";
 import { useRunOnce } from "$app/components/useRunOnce";
 
@@ -51,16 +52,15 @@ export const trackCtaClick = ({
   }).catch(assertResponseError);
 };
 
-// TODO replace this with a free-form input
-const ctaNames = {
-  i_want_this_prompt: "I want this!",
-  buy_this_prompt: "Buy this",
-  pay_prompt: "Pay",
-  donate_prompt: "Donate",
-  support_prompt: "Support",
-  tip_prompt: "Tip",
+const ctaKeys: Record<CustomButtonTextOption, string> = {
+  i_want_this_prompt: "i_want_this",
+  buy_this_prompt: "buy_this",
+  pay_prompt: "pay",
+  donate_prompt: "donate",
+  support_prompt: "support",
+  tip_prompt: "tip",
 };
-export const getCtaName = (cta: CustomButtonTextOption) => ctaNames[cta];
+export const getCtaName = (cta: CustomButtonTextOption) => t(`storefront.${ctaKeys[cta]}`);
 
 export const getUndiscountedPWYWPrice = (
   discountedPrice: number,
@@ -174,17 +174,17 @@ export const CtaButton = React.forwardRef<HTMLAnchorElement, Props>(
           {...buttonCommonProps}
         >
           {needsOptionChoice(product, selection)
-            ? INCOMPLETE_PURCHASE_CTA_LABEL
+            ? t("storefront.choose_an_option")
             : (label ??
               (purchase && (purchase.was_paid || product.recurrences)
-                ? "Purchase again"
+                ? t("storefront.purchase_again")
                 : product.recurrences
-                  ? "Subscribe"
+                  ? t("storefront.subscribe")
                   : selection.rent
-                    ? "Rent"
+                    ? t("storefront.rent")
                     : product.custom_button_text_option
                       ? getCtaName(product.custom_button_text_option)
-                      : "I want this!"))}
+                      : t("storefront.i_want_this")))}
         </NavigationButton>
 
         {product.installment_plan && product.installment_plan.number_of_installments > 1 && discountedPriceCents > 0 ? (
@@ -195,7 +195,7 @@ export const CtaButton = React.forwardRef<HTMLAnchorElement, Props>(
               className={compactOnMobile}
               {...buttonCommonProps}
             >
-              Pay in {product.installment_plan.number_of_installments} installments
+              {t("storefront.pay_in_count_installments", { count: product.installment_plan.number_of_installments })}
             </NavigationButton>
             {showInstallmentPlanNotes ? (
               <small className="block text-center">
@@ -210,7 +210,7 @@ export const CtaButton = React.forwardRef<HTMLAnchorElement, Props>(
         ) : null}
 
         {purchase && !purchase.was_paid && !product.recurrences ? (
-          <small className="block text-center">You already own this</small>
+          <small className="block text-center">{t("storefront.you_already_own_this")}</small>
         ) : null}
       </>
     );

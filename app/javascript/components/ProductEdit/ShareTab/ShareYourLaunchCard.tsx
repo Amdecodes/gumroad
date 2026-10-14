@@ -10,6 +10,7 @@ import {
   type MarketingChannel,
 } from "$app/data/marketing_actions";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
@@ -27,16 +28,6 @@ const CHANNEL_ICONS: Record<string, React.ComponentType<{ className?: string }>>
   youtube: Youtube,
   tiktok: Tiktok,
   email: Envelope,
-};
-
-const EMAIL_DRAFT_STATE_LABELS: Record<NonNullable<MarketingChannel["draft"]>["state"], string> = {
-  draft: "Draft",
-  scheduled: "Scheduled",
-  published: "Published",
-  sending: "Sending",
-  waiting: "Waiting",
-  incomplete: "Incomplete",
-  sent: "Send complete",
 };
 
 // Blast completion records processing by the email provider, not inbox delivery.
@@ -78,6 +69,7 @@ const NetworkIcon = ({ channel }: { channel: string }) => {
 };
 
 const LaunchComposer = ({ productPermalink }: { productPermalink: string }) => {
+  const { t } = useTranslation();
   const [channels, setChannels] = React.useState<MarketingChannel[] | null>(null);
   const [selectedChannel, setSelectedChannel] = React.useState<string | null>(null);
   const [drafts, setDrafts] = React.useState<Record<string, string>>({});
@@ -109,8 +101,8 @@ const LaunchComposer = ({ productPermalink }: { productPermalink: string }) => {
   return (
     <section className="grid gap-4">
       <header>
-        <h2>Share your launch</h2>
-        <p className="text-muted">Review your post before sharing it.</p>
+        <h2>{t("seller.productEdit.share_launch_title")}</h2>
+        <p className="text-muted">{t("seller.productEdit.share_launch_desc")}</p>
       </header>
       <Card>
         {channel && action ? (
@@ -118,7 +110,7 @@ const LaunchComposer = ({ productPermalink }: { productPermalink: string }) => {
             {liveChannels.length > 1 ? (
               <CardContent details>
                 <fieldset>
-                  <legend className="mb-2">Post to</legend>
+                  <legend className="mb-2">{t("seller.productEdit.post_to")}</legend>
                   <div className="flex flex-wrap gap-2">
                     {liveChannels.map((item) => (
                       <label key={item.channel} className="cursor-pointer">
@@ -174,8 +166,19 @@ const ChannelIcon = ({ channel, className }: { channel: string; className: strin
 };
 
 const EmailChannelRow = ({ channel }: { channel: MarketingChannel }) => {
+  const { t } = useTranslation();
   const counts = channel.counts;
   const draft = channel.draft;
+
+  const emailDraftStateLabels: Record<NonNullable<MarketingChannel["draft"]>["state"], string> = {
+    draft: t("seller.productEdit.email_draft_state_draft"),
+    scheduled: t("seller.productEdit.email_draft_state_scheduled"),
+    published: t("seller.productEdit.email_draft_state_published"),
+    sending: t("seller.productEdit.email_draft_state_sending"),
+    waiting: t("seller.productEdit.email_draft_state_waiting"),
+    incomplete: t("seller.productEdit.email_draft_state_incomplete"),
+    sent: t("seller.productEdit.email_draft_state_sent"),
+  };
 
   return (
     <CardContent details className="grid gap-4">
@@ -184,7 +187,7 @@ const EmailChannelRow = ({ channel }: { channel: MarketingChannel }) => {
           <ChannelIcon channel="email" className="size-6" />
           <span className="font-semibold">{channel.label}</span>
         </div>
-        {draft ? <Pill size="small">{EMAIL_DRAFT_STATE_LABELS[draft.state]}</Pill> : null}
+        {draft ? <Pill size="small">{emailDraftStateLabels[draft.state]}</Pill> : null}
       </div>
 
       {channel.eligible === false ? (
@@ -199,7 +202,7 @@ const EmailChannelRow = ({ channel }: { channel: MarketingChannel }) => {
         </Alert>
       ) : channel.declined ? (
         <Alert role="status">
-          <span>You deleted the launch email for this product, so we won&apos;t create another one.</span>
+          <span>{t("seller.productEdit.email_draft_declined_alert")}</span>
         </Alert>
       ) : draft ? (
         <>
@@ -208,13 +211,13 @@ const EmailChannelRow = ({ channel }: { channel: MarketingChannel }) => {
           </span>
           <div className="flex flex-wrap gap-2">
             <NavigationButton href={draft.edit_url}>
-              {draft.state === "draft" ? "Review the draft" : "Open in Emails"}
+              {draft.state === "draft" ? t("seller.productEdit.review_draft") : t("seller.productEdit.open_in_emails")}
             </NavigationButton>
           </div>
         </>
       ) : (
         <Alert role="status">
-          <span>We couldn&apos;t prepare the draft. You can still write one yourself in Emails.</span>
+          <span>{t("seller.productEdit.email_draft_error_alert")}</span>
         </Alert>
       )}
     </CardContent>
@@ -242,6 +245,7 @@ const ChannelComposer = ({
   busy: boolean;
   onBusyChange: (busy: boolean) => void;
 }) => {
+  const { t } = useTranslation();
   const [confirming, setConfirming] = React.useState(false);
   const [intentUrl, setIntentUrl] = React.useState<string | undefined>(channel.intent_url);
   const edited = copy !== action.copy;
@@ -270,7 +274,8 @@ const ChannelComposer = ({
       setIntentUrl(result.intent_url ?? undefined);
       onChange(result.action);
       setConfirming(false);
-      if (result.action.status === "posted") showAlert(`Posted on ${channel.label}!`, "success");
+      if (result.action.status === "posted")
+        showAlert(t("seller.productEdit.posted_on", { channel: channel.label }), "success");
     });
 
   return (
@@ -285,15 +290,15 @@ const ChannelComposer = ({
               </>
             ) : null}
             {channel.connected && channel.handle ? (
-              <span className="text-muted">Posting as @{channel.handle}</span>
+              <span className="text-muted">{t("seller.productEdit.posting_as", { handle: channel.handle })}</span>
             ) : null}
           </div>
           {action.status === "posted" ? (
             <Pill color="success" size="small">
-              Posted
+              {t("seller.productEdit.posted_badge")}
             </Pill>
           ) : action.status === "cancelled" ? (
-            <Pill size="small">Cancelled</Pill>
+            <Pill size="small">{t("seller.productEdit.cancelled_badge")}</Pill>
           ) : null}
         </div>
       ) : null}
@@ -301,10 +306,10 @@ const ChannelComposer = ({
       {action.status === "posted" ? (
         <Alert role="status" variant="success">
           <div className="flex flex-col justify-between gap-2 sm:flex-row">
-            <span>Your launch post is live.</span>
+            <span>{t("seller.productEdit.post_live_alert")}</span>
             {action.external_url ? (
               <a href={action.external_url} target="_blank" rel="noreferrer">
-                View post on {channel.label}
+                {t("seller.productEdit.view_post_on", { channel: channel.label })}
               </a>
             ) : null}
           </div>
@@ -314,28 +319,26 @@ const ChannelComposer = ({
       {action.error_code === "x_write_permission_missing" && channel.connected ? (
         <Alert role="status" variant="warning">
           <div className="grid gap-2">
-            <span>
-              Gumroad can't post for you yet: your connected X account only allows reading. Post it yourself, or
-              reconnect X to let Gumroad post for you. X now asks you to select “I trust this app” before it enables the
-              Authorize button.
-            </span>
+            <span>{t("seller.productEdit.x_read_only_alert")}</span>
             <div className="flex flex-wrap gap-2">
               <TwitterShareButton url={action.link_url ?? ""} text={action.copy} />
-              <NavigationButton href={channel.connect_path}>Reconnect X</NavigationButton>
+              <NavigationButton href={channel.connect_path}>
+                {t("seller.productEdit.reconnect_channel", { channel: "X" })}
+              </NavigationButton>
             </div>
           </div>
         </Alert>
       ) : action.error_code === "x_post_result_unknown" ? (
         <Alert role="status" variant="warning">
           <div className="flex flex-col justify-between gap-2 sm:flex-row">
-            <span>We couldn't confirm whether this post went through. Check your X account before posting again.</span>
+            <span>{t("seller.productEdit.x_unknown_alert")}</span>
             <TwitterShareButton url={action.link_url ?? ""} text={action.copy} />
           </div>
         </Alert>
       ) : action.status === "failed" ? (
         <Alert role="status" variant="danger">
           <div className="flex flex-col justify-between gap-2 sm:flex-row">
-            <span>The post didn't go through ({action.error_code}). You can still post it yourself.</span>
+            <span>{t("seller.productEdit.post_failed_alert", { errorCode: action.error_code ?? "" })}</span>
             {channel.channel === "x" ? <TwitterShareButton url={action.link_url ?? ""} text={action.copy} /> : null}
           </div>
         </Alert>
@@ -344,7 +347,7 @@ const ChannelComposer = ({
       {!terminal ? (
         <>
           <fieldset>
-            <label htmlFor={`marketing-copy-${action.id}`}>Post text</label>
+            <label htmlFor={`marketing-copy-${action.id}`}>{t("seller.productEdit.post_text")}</label>
             <Textarea
               id={`marketing-copy-${action.id}`}
               value={copy}
@@ -352,9 +355,7 @@ const ChannelComposer = ({
               maxLength={255}
               rows={3}
             />
-            <small className="text-muted">
-              Your product link is added automatically. Sales from this post appear in your analytics.
-            </small>
+            <small className="text-muted">{t("seller.productEdit.post_text_help")}</small>
           </fieldset>
 
           {channel.connected ? (
@@ -364,7 +365,7 @@ const ChannelComposer = ({
                 disabled={busy || readOnlyToken || copy.trim() === ""}
                 onClick={() => setConfirming(true)}
               >
-                Post on {channel.label}
+                {t("seller.productEdit.post_on", { channel: channel.label })}
               </Button>
               <Button
                 disabled={busy}
@@ -374,18 +375,18 @@ const ChannelComposer = ({
                   })
                 }
               >
-                Dismiss
+                {t("seller.productEdit.dismiss")}
               </Button>
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               {channel.channel === "x" && intentUrl ? (
                 <TwitterShareButton url={action.link_url ?? ""} text={copy}>
-                  Continue on X
+                  {t("seller.productEdit.continue_on_x")}
                 </TwitterShareButton>
               ) : null}
               <a href={channel.connect_path} className="flex min-h-11 items-center">
-                Connect {channel.label} for direct posting
+                {t("seller.productEdit.connect_channel", { channel: channel.label })}
               </a>
             </div>
           )}
@@ -399,23 +400,20 @@ const ChannelComposer = ({
             if (!busy) setConfirming(false);
           }}
           allowClose={!busy}
-          title={`Post on ${channel.label}?`}
+          title={t("seller.productEdit.confirm_post_modal_title", { channel: channel.label })}
           footer={
             <>
               <Button disabled={busy} onClick={() => setConfirming(false)}>
-                Cancel
+                {t("seller.products.cancel")}
               </Button>
               <Button color="primary" disabled={busy} onClick={() => void confirmAndPost()}>
-                {busy ? "Posting..." : "Post now"}
+                {busy ? t("seller.productEdit.posting") : t("seller.productEdit.post_now")}
               </Button>
             </>
           }
         >
           <div className="grid gap-3">
-            <p>
-              This will post from <strong>@{channel.handle}</strong> right away. Published posts can't be recalled from
-              here.
-            </p>
+            <p>{t("seller.productEdit.confirm_post_modal_desc", { handle: channel.handle ?? "" })}</p>
             <blockquote className="rounded border border-border p-3 whitespace-pre-wrap">
               {copy}
               {"\n\n"}

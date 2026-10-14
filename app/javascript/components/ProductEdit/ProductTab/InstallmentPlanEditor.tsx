@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { NumberInput } from "$app/components/NumberInput";
 import { ToggleSettingRow } from "$app/components/SettingRow";
 import { Fieldset, FieldsetDescription } from "$app/components/ui/Fieldset";
@@ -45,14 +47,19 @@ export const InstallmentPlanEditor = ({
         describedById={isPWYW ? noteId : undefined}
         value={allowInstallmentPayments}
         onChange={onAllowInstallmentPaymentsChange}
-        label="Allow customers to pay in installments"
+        label={t("seller.productEdit.allow_installments")}
         dropdown={
           <Fieldset>
             <NumberInput value={numberOfInstallments} onChange={(value) => onNumberOfInstallmentsChange(value || 0)}>
               {(props) => (
                 <InputGroup>
-                  <Input {...props} type="number" min={2} aria-label="Number of installments" />
-                  <Label>equal monthly payments</Label>
+                  <Input
+                    {...props}
+                    type="number"
+                    min={2}
+                    aria-label={t("seller.productEdit.installments_number_label")}
+                  />
+                  <Label>{t("seller.productEdit.equal_monthly_payments")}</Label>
                 </InputGroup>
               )}
             </NumberInput>
@@ -60,9 +67,7 @@ export const InstallmentPlanEditor = ({
         }
       />
       {isPWYW ? (
-        <FieldsetDescription id={noteId}>
-          Installments aren&apos;t available with pay what you want.
-        </FieldsetDescription>
+        <FieldsetDescription id={noteId}>{t("seller.productEdit.installments_pwyw_disabled")}</FieldsetDescription>
       ) : null}
     </>
   );

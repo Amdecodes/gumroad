@@ -1,6 +1,8 @@
 import { usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { NavigationButton } from "$app/components/Button";
 import { Card, CardContent } from "$app/components/ui/Card";
 
@@ -16,19 +18,19 @@ export default function Success() {
     <Card className="mx-auto my-8 max-w-2xl">
       <CardContent asChild>
         <header>
-          Dispute evidence
-          <h2 className="grow">Submit additional information</h2>
+          {t("disputes.title")}
+          <h2 className="grow">{t("disputes.submit_additional_info")}</h2>
         </header>
       </CardContent>
       <CardContent>
-        <p>Thank you! We've saved your response.</p>
+        <p>{t("disputes.saved_success")}</p>
         <p>
           {seller_response_due_at_formatted !== null
-            ? `We send it to our payment processor at the deadline, ${seller_response_due_at_formatted}. Until then you can come back and add files or revise what you wrote.`
-            : "We send it to our payment processor at the deadline. Until then you can come back and add files or revise what you wrote."}
+            ? t("disputes.sent_at_deadline_date", { date: seller_response_due_at_formatted })
+            : t("disputes.sent_at_deadline")}
         </p>
         <NavigationButton href={Routes.purchase_dispute_evidence_path(purchase_for_dispute_evidence_id)}>
-          Add to your response
+          {t("disputes.add_to_response")}
         </NavigationButton>
       </CardContent>
     </Card>

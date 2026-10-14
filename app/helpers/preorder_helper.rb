@@ -3,7 +3,7 @@
 module PreorderHelper
   def displayable_release_at_date(release_at, seller_timezone)
     release_at_seller_time = release_at_seller_time(release_at, seller_timezone)
-    release_at_seller_time.to_fs(:formatted_date_full_month)
+    I18n.l(release_at_seller_time.to_date, format: :full_month)
   end
 
   def displayable_release_at_time(release_at, seller_timezone)
@@ -16,11 +16,10 @@ module PreorderHelper
     release_at_seller_time = release_at_seller_time(release_at, seller_timezone)
     short_timezone = release_at_short_timezone(release_at, seller_timezone)
     minute = release_at_seller_time.strftime("%M")
-    if minute == "00"
-      release_at_seller_time.strftime("%B #{release_at_seller_time.day.ordinalize}, %l%p #{short_timezone}")
-    else
-      release_at_seller_time.strftime("%B #{release_at_seller_time.day.ordinalize}, %l:%M%p #{short_timezone}")
-    end
+    time_str = (minute == "00" ? release_at_seller_time.strftime("%l%p") : release_at_seller_time.strftime("%l:%M%p")).strip
+    month_name = I18n.t("date.month_names")[release_at_seller_time.month]
+    day_str = I18n.locale == :en ? release_at_seller_time.day.ordinalize : release_at_seller_time.day.to_s
+    "#{month_name} #{day_str}, #{time_str} #{short_timezone}"
   end
 
   def release_at_seller_time(release_at, seller_timezone)

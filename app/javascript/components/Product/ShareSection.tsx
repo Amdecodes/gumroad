@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { Wishlist, addToWishlist, createWishlist } from "$app/data/wishlists";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -103,14 +104,14 @@ export const ShareSection = ({
                 "flex cursor-pointer items-center rounded border border-border bg-background px-4 py-3",
                 dropdownState.state !== "closed" && "rounded-b-none",
               )}
-              aria-label="Add to wishlist"
+              aria-label={t("storefront.add_to_wishlist")}
             >
               <span className="flex-1 truncate">
                 {saveState.type === "success"
                   ? saveState.wishlist.name
                   : saveState.type === "saving"
-                    ? "Adding to wishlist..."
-                    : "Add to wishlist"}
+                    ? t("storefront.adding_to_wishlist")
+                    : t("storefront.add_to_wishlist")}
               </span>
               <ChevronDown className="size-5" />
             </div>
@@ -139,7 +140,7 @@ export const ShareSection = ({
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (!dropdownState.newWishlistName.trim()) {
-                    showAlert("Please enter a wishlist name", "error");
+                    showAlert(t("storefront.please_enter_wishlist_name"), "error");
                     return;
                   }
                   void addProduct(newWishlist(dropdownState.newWishlistName));
@@ -148,19 +149,19 @@ export const ShareSection = ({
                 <Input
                   type="text"
                   autoFocus
-                  placeholder="Wishlist name"
+                  placeholder={t("storefront.wishlist_name")}
                   value={dropdownState.newWishlistName}
                   onChange={(e) => setDropdownState({ state: "creating", newWishlistName: e.target.value })}
-                  aria-label="Wishlist name"
+                  aria-label={t("storefront.wishlist_name")}
                 />
-                <Button type="submit" size="icon" aria-label="Create wishlist" color="primary">
+                <Button type="submit" size="icon" aria-label={t("storefront.create_wishlist")} color="primary">
                   <Check className="size-5" />
                 </Button>
               </form>
             ) : (
               <div {...props} onClick={() => setDropdownState({ state: "creating", newWishlistName: "" })}>
                 <div>
-                  <Plus className="size-5" /> New wishlist
+                  <Plus className="size-5" /> {t("storefront.new_wishlist")}
                 </div>
               </div>
             )
@@ -181,9 +182,9 @@ export const ShareSection = ({
 
         <Popover>
           <PopoverAnchor>
-            <PopoverTrigger aria-label="Share" asChild>
+            <PopoverTrigger aria-label={t("storefront.share")} asChild>
               <Button>
-                <Share className="size-5" /> Share
+                <Share className="size-5" /> {t("storefront.share")}
               </Button>
             </PopoverTrigger>
           </PopoverAnchor>
@@ -191,9 +192,9 @@ export const ShareSection = ({
             <div className="grid grid-cols-1 gap-4">
               <TwitterShareButton url={product.long_url} text={`Buy ${product.name} on @Gumroad`} />
               <FacebookShareButton url={product.long_url} text={product.name} />
-              <CopyToClipboard text={product.long_url} copyTooltip="Copy product URL">
-                <Button aria-label="Copy product URL">
-                  <Link className="size-5" /> Copy link
+              <CopyToClipboard text={product.long_url} copyTooltip={t("storefront.copy_product_url")}>
+                <Button aria-label={t("storefront.copy_product_url")}>
+                  <Link className="size-5" /> {t("storefront.copy_link")}
                 </Button>
               </CopyToClipboard>
             </div>
@@ -204,10 +205,10 @@ export const ShareSection = ({
         <Alert variant="success">
           {saveState.newlyCreated ? (
             <>
-              Wishlist created! <a href={Routes.wishlists_url()}>Edit it here.</a>
+              {t("storefront.wishlist_created")} <a href={Routes.wishlists_url()}>{t("storefront.edit_it_here")}</a>
             </>
           ) : (
-            "Added to wishlist!"
+            t("storefront.added_to_wishlist")
           )}
         </Alert>
       ) : null}

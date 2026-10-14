@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button, NavigationButton } from "$app/components/Button";
 
 // Catches the case where the product editor's code cannot be downloaded at all.
@@ -27,12 +29,14 @@ import { Button, NavigationButton } from "$app/components/Button";
 // useful, and it behaves like a link should — middle-click, open in a new tab, copy the address.
 const ProductEditLoadFailed = () => (
   <div role="alert" className="flex flex-col items-center gap-4 p-8 text-center">
-    <h2>We couldn&apos;t open this product</h2>
-    <p>Something went wrong loading the editor. Your product and its settings are unaffected.</p>
+    <h2>{t("seller.productEdit.load_failed_title")}</h2>
+    <p>{t("seller.productEdit.load_failed_desc")}</p>
     <div className="flex gap-3">
-      <NavigationButton href={Routes.products_path()}>Back to products</NavigationButton>
+      <NavigationButton href={Routes.products_path()}>
+        {t("seller.productEdit.back_to_products", "Back to products")}
+      </NavigationButton>
       <Button color="primary" onClick={() => location.reload()}>
-        Try again
+        {t("seller.productEdit.try_again", "Try again")}
       </Button>
     </div>
   </div>

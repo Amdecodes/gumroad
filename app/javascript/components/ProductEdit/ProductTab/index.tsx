@@ -2,6 +2,7 @@ import { Sparkle } from "@boxicons/react";
 import * as React from "react";
 
 import { COFFEE_CUSTOM_BUTTON_TEXT_OPTIONS, CUSTOM_BUTTON_TEXT_OPTIONS } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 import { recurrenceIds, recurrenceLabels } from "$app/utils/recurringPricing";
 
 import { CopyToClipboard } from "$app/components/CopyToClipboard";
@@ -89,18 +90,19 @@ export const ProductTab = () => {
                 <div className="flex items-center gap-4">
                   <Sparkle className="size-5 text-lg" />
                   <div className="flex-1">
-                    <strong>Your AI product is ready!</strong> Take a moment to check out the product and content tabs.
-                    Tweak things and make it your own—this is your time to shine!
+                    <strong>{t("seller.productEdit.ai_ready_title")}</strong> {t("seller.productEdit.ai_ready_desc")}
                   </div>
                   <LinkButton className="self-center" onClick={() => setShowAiNotification(false)}>
-                    close
+                    {t("seller.productEdit.close")}
                   </LinkButton>
                 </div>
               </Alert>
             ) : null}
             <BundleConversionNotice />
             <Fieldset>
-              <Label htmlFor={`${uid}-name`}>{isCoffee ? "Header" : "Name"}</Label>
+              <Label htmlFor={`${uid}-name`}>
+                {isCoffee ? t("seller.productEdit.header") : t("seller.productEdit.name")}
+              </Label>
               <Input
                 id={`${uid}-name`}
                 type="text"
@@ -110,25 +112,25 @@ export const ProductTab = () => {
                 onChange={(evt) => updateProduct({ name: evt.target.value })}
               />
               <FieldsetDescription id={`${uid}-name-description`}>
-                Shown as the title at the top of your product page.
+                {t("seller.productEdit.name_description")}
               </FieldsetDescription>
             </Fieldset>
             {isCoffee ? (
               <>
                 <Fieldset>
-                  <Label htmlFor={`${uid}-body`}>Body</Label>
+                  <Label htmlFor={`${uid}-body`}>{t("seller.productEdit.body")}</Label>
                   <Textarea
                     id={`${uid}-body`}
                     value={product.description}
-                    placeholder="Add a short inspiring message"
+                    placeholder={t("seller.productEdit.body_placeholder")}
                     onChange={(evt) => updateProduct({ description: evt.target.value, description_changed: true })}
                   />
                 </Fieldset>
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={`${uid}-url`}>URL</Label>
+                    <Label htmlFor={`${uid}-url`}>{t("seller.productEdit.url")}</Label>
                     <CopyToClipboard text={url}>
-                      <LinkButton className="font-normal">Copy URL</LinkButton>
+                      <LinkButton className="font-normal">{t("seller.productEdit.copy_url")}</LinkButton>
                     </CopyToClipboard>
                   </FieldsetTitle>
                   <Input id={`${uid}-url`} type="text" value={url} disabled />
@@ -156,14 +158,14 @@ export const ProductTab = () => {
           {isCoffee ? (
             <>
               <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                <h2>Pricing</h2>
+                <h2>{t("seller.productEdit.pricing_section")}</h2>
                 <SuggestedAmountsEditor
                   versions={product.variants}
                   onChange={(variants) => updateProduct({ variants })}
                 />
               </section>
               <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                <h2>Settings</h2>
+                <h2>{t("seller.productEdit.settings_section")}</h2>
                 <CustomButtonTextOptionInput
                   value={product.custom_button_text_option}
                   onChange={(value) => updateProduct({ custom_button_text_option: value })}
@@ -186,7 +188,7 @@ export const ProductTab = () => {
                 nativeType={product.native_type}
               />
               <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                <h2>Product info</h2>
+                <h2>{t("seller.productEdit.product_info_section")}</h2>
                 {product.native_type !== "membership" ? (
                   <CustomButtonTextOptionInput
                     value={product.custom_button_text_option}
@@ -206,14 +208,14 @@ export const ProductTab = () => {
                 />
               </section>
               <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                <h2>Integrations</h2>
+                <h2>{t("seller.productEdit.integrations_section")}</h2>
                 <Fieldset>
                   <ToggleSettingRow
-                    label="Invite your customers to your Gumroad community chat"
+                    label={t("seller.productEdit.community_chat_label")}
                     value={product.community_chat_enabled}
                     onChange={(newValue) => updateProduct({ community_chat_enabled: newValue })}
                     help={{
-                      label: "Learn more",
+                      label: t("seller.productEdit.learn_more"),
                       url: "/help/article/347-gumroad-community",
                     }}
                   />
@@ -256,14 +258,14 @@ export const ProductTab = () => {
               </section>
               {product.native_type === "membership" ? (
                 <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                  <h2>Tiers</h2>
+                  <h2>{t("seller.productEdit.tiers_section")}</h2>
                   <TiersEditor tiers={product.variants} onChange={(variants) => updateProduct({ variants })} />
                 </section>
               ) : (
                 <>
                   <section className="flex flex-col gap-8 border-t border-border p-4 md:p-8 xl:flex-row xl:items-start">
                     <div className="grid gap-4 xl:flex-1">
-                      <h2>Pricing</h2>
+                      <h2>{t("seller.productEdit.pricing_section")}</h2>
                       <PriceEditor
                         priceCents={product.price_cents}
                         suggestedPriceCents={product.suggested_price_cents}
@@ -301,7 +303,7 @@ export const ProductTab = () => {
                             color: "var(--color-text-secondary)",
                           }}
                         >
-                          Commission products use a 50% deposit upfront, 50% upon completion payment split.
+                          {t("seller.productEdit.commission_deposit_notice")}
                         </p>
                       ) : null}
                     </div>
@@ -315,13 +317,13 @@ export const ProductTab = () => {
                     <>
                       <section className="grid gap-8 border-t border-border p-4 md:p-8">
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <h2>Durations</h2>
+                          <h2>{t("seller.productEdit.durations_section")}</h2>
                           <a
                             href="https://gumroad.com/help/article/70-can-i-sell-services#call"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            Learn more
+                            {t("seller.productEdit.learn_more")}
                           </a>
                         </div>
                         <DurationsEditor
@@ -330,7 +332,7 @@ export const ProductTab = () => {
                         />
                       </section>
                       <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                        <h2>Available hours</h2>
+                        <h2>{t("seller.productEdit.available_hours_section")}</h2>
                         <AvailabilityEditor
                           availabilities={product.availabilities}
                           onChange={(availabilities) => updateProduct({ availabilities })}
@@ -338,7 +340,7 @@ export const ProductTab = () => {
                       </section>
                       {product.call_limitation_info ? (
                         <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                          <h2>Call limitations</h2>
+                          <h2>{t("seller.productEdit.call_limitations_section")}</h2>
                           <CallLimitationsEditor
                             callLimitations={product.call_limitation_info}
                             onChange={(call_limitation_info) => updateProduct({ call_limitation_info })}
@@ -349,13 +351,17 @@ export const ProductTab = () => {
                   ) : (
                     <section aria-label="Version editor" className="grid gap-8 border-t border-border p-4 md:p-8">
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <h2>{product.native_type === "physical" ? "Variants" : "Versions"}</h2>
+                        <h2>
+                          {product.native_type === "physical"
+                            ? t("seller.productEdit.variants_section")
+                            : t("seller.productEdit.versions_section")}
+                        </h2>
                         <a
                           href="/help/article/126-setting-up-versions-on-a-digital-product"
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Learn more
+                          {t("seller.productEdit.learn_more")}
                         </a>
                       </div>
                       <VersionsEditor
@@ -373,7 +379,7 @@ export const ProductTab = () => {
                 />
               ) : null}
               <section className="grid gap-8 border-t border-border p-4 md:p-8">
-                <h2>Settings</h2>
+                <h2>{t("seller.productEdit.settings_section")}</h2>
                 <Fieldset>
                   {product.native_type === "membership" ? (
                     <>
@@ -382,19 +388,19 @@ export const ProductTab = () => {
                       <Switch
                         checked={product.should_include_last_post}
                         onChange={(e) => updateProduct({ should_include_last_post: e.target.checked })}
-                        label="New members will be emailed this product's last published post"
+                        label={t("seller.productEdit.membership_last_post_label")}
                       />
                       <Switch
                         checked={product.should_show_all_posts}
                         onChange={(e) => updateProduct({ should_show_all_posts: e.target.checked })}
-                        label="New members will get access to all posts you have published"
+                        label={t("seller.productEdit.membership_all_posts_label")}
                       />
                       <Switch
                         checked={product.block_access_after_membership_cancellation}
                         onChange={(e) =>
                           updateProduct({ block_access_after_membership_cancellation: e.target.checked })
                         }
-                        label="Members will lose access when their memberships end"
+                        label={t("seller.productEdit.membership_block_access_label")}
                       />
                       <DurationEditor />
                     </>
@@ -408,7 +414,7 @@ export const ProductTab = () => {
                       <Switch
                         checked={product.quantity_enabled}
                         onChange={(e) => updateProduct({ quantity_enabled: e.target.checked })}
-                        label="Allow customers to choose a quantity"
+                        label={t("seller.productEdit.quantity_enabled_label")}
                       />
                     </>
                   ) : null}
@@ -416,7 +422,7 @@ export const ProductTab = () => {
                     <Switch
                       checked={product.hide_sold_out_variants}
                       onChange={(e) => updateProduct({ hide_sold_out_variants: e.target.checked })}
-                      label="Hide sold out versions"
+                      label={t("seller.productEdit.hide_sold_out_label")}
                     />
                   ) : null}
                   <Switch
@@ -424,8 +430,8 @@ export const ProductTab = () => {
                     onChange={(e) => updateProduct({ should_show_sales_count: e.target.checked })}
                     label={
                       product.native_type === "membership"
-                        ? "Publicly show the number of members on your product page"
-                        : "Publicly show the number of sales on your product page"
+                        ? t("seller.productEdit.sales_count_membership_label")
+                        : t("seller.productEdit.sales_count_product_label")
                     }
                   />
                   {product.native_type !== "physical" ? (
@@ -434,9 +440,9 @@ export const ProductTab = () => {
                       onChange={(e) => updateProduct({ is_epublication: e.target.checked })}
                       label={
                         <>
-                          Mark product as e-publication for VAT purposes{" "}
+                          {t("seller.productEdit.epublication_label")}{" "}
                           <a href="/help/article/10-dealing-with-vat" target="_blank" rel="noreferrer">
-                            Learn more
+                            {t("seller.productEdit.learn_more")}
                           </a>
                         </>
                       }
@@ -456,14 +462,16 @@ export const ProductTab = () => {
                     <Switch
                       checked={product.require_shipping}
                       onChange={(e) => updateProduct({ require_shipping: e.target.checked })}
-                      label="Require shipping information"
+                      label={t("seller.productEdit.require_shipping_label")}
                     />
                   ) : null}
                 </Fieldset>
                 {product.native_type === "membership" ? (
                   <Fieldset>
                     <FieldsetTitle>
-                      <Label htmlFor={`${uid}-subscription-duration`}>Default payment frequency</Label>
+                      <Label htmlFor={`${uid}-subscription-duration`}>
+                        {t("seller.productEdit.default_payment_frequency")}
+                      </Label>
                     </FieldsetTitle>
                     <TypeSafeOptionSelect
                       id={`${uid}-subscription-duration`}
@@ -480,7 +488,7 @@ export const ProductTab = () => {
                   verificationStatus={customDomainVerificationStatus}
                   customDomain={product.custom_domain}
                   setCustomDomain={(custom_domain) => updateProduct({ custom_domain })}
-                  label="Custom domain"
+                  label={t("seller.productEdit.custom_domain")}
                   productId={id}
                   includeLearnMoreLink
                 />

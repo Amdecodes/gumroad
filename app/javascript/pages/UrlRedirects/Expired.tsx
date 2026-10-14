@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { UnavailablePageLayout, useUnavailablePageProps, withStandaloneLayout } from "./UnavailablePageLayout";
 
 function ExpiredPage() {
@@ -7,8 +9,8 @@ function ExpiredPage() {
 
   return (
     <UnavailablePageLayout pageProps={pageProps}>
-      <h2>Access expired</h2>
-      <p>It looks like your access to this product has expired. Please contact the creator for further assistance.</p>
+      <h2>{t("content.access_expired_title")}</h2>
+      <p>{t("content.access_expired_desc")}</p>
     </UnavailablePageLayout>
   );
 }

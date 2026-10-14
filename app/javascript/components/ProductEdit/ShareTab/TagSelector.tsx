@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Tag, getProductTags } from "$app/data/product_tags";
+import { useTranslation } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { showAlert } from "$app/components/server-components/Alert";
@@ -16,6 +17,7 @@ const MAX_TAG_LENGTH = 20;
 const clean = (tag: string) => tag.toLowerCase().replace(/^[#\s]+|,/gu, "");
 
 export const TagSelector = ({ tags, onChange }: { tags: string[]; onChange: (tags: string[]) => void }) => {
+  const { t } = useTranslation();
   const uid = React.useId();
 
   const [query, setQuery] = React.useState("");
@@ -44,7 +46,7 @@ export const TagSelector = ({ tags, onChange }: { tags: string[]; onChange: (tag
   return (
     <Fieldset>
       <FieldsetTitle>
-        <Label htmlFor={uid}>Tags</Label>
+        <Label htmlFor={uid}>{t("seller.productEdit.tags")}</Label>
       </FieldsetTitle>
       <TagInput
         inputId={uid}
@@ -64,15 +66,18 @@ export const TagSelector = ({ tags, onChange }: { tags: string[]; onChange: (tag
             : []),
         ]}
         onKeyDown={handleKeyDown}
-        placeholder="Begin typing to add a tag..."
+        placeholder={t("seller.productEdit.tags_placeholder")}
         inputValue={query}
         onInputChange={setQuery}
         maxLength={MAX_TAG_LENGTH}
         maxTags={MAX_ALLOWED_TAGS}
       />
       <FieldsetDescription>
-        The editor supports up to {MAX_ALLOWED_TAGS} tags. Tags must be {MIN_TAG_LENGTH}-{MAX_TAG_LENGTH} characters
-        each.
+        {t("seller.productEdit.tags_description", {
+          max: MAX_ALLOWED_TAGS,
+          min: MIN_TAG_LENGTH,
+          maxChars: MAX_TAG_LENGTH,
+        })}
       </FieldsetDescription>
     </Fieldset>
   );

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { CustomButtonTextOption } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 
 import { getCtaName } from "$app/components/Product/CtaButton";
 import { TypeSafeOptionSelect } from "$app/components/TypeSafeOptionSelect";
@@ -22,7 +23,7 @@ export const CustomButtonTextOptionInput = <T extends CustomButtonTextOption>({
 
   return (
     <Fieldset>
-      <Label htmlFor={uid}>Call to action</Label>
+      <Label htmlFor={uid}>{t("seller.productEdit.call_to_action")}</Label>
       <TypeSafeOptionSelect
         id={uid}
         aria-describedby={`${uid}-description`}
@@ -30,10 +31,7 @@ export const CustomButtonTextOptionInput = <T extends CustomButtonTextOption>({
         onChange={onChange}
         options={options.map((option) => ({ id: option, label: getCtaName(option) }))}
       />
-      <FieldsetDescription id={`${uid}-description`}>
-        The text on the buy button of your product page. The button shows other text at times, such as “Choose an
-        option”.
-      </FieldsetDescription>
+      <FieldsetDescription id={`${uid}-description`}>{t("seller.productEdit.call_to_action_desc")}</FieldsetDescription>
     </Fieldset>
   );
 };

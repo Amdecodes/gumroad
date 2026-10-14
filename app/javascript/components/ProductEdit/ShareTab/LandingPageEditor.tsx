@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -13,6 +14,7 @@ import { Alert } from "$app/components/ui/Alert";
 import { Details, DetailsToggle } from "$app/components/ui/Details";
 
 export const LandingPageEditor = () => {
+  const { t } = useTranslation();
   const { product, uniquePermalink, customHtmlPagesEnabled, updateProduct } = useProductEditContext();
   const url = useProductUrl();
   const hasLandingPage = !!product.custom_html?.trim();
@@ -80,7 +82,7 @@ If the gumroad CLI isn't installed: brew install antiwork/cli/gumroad (or curl -
       if (!response.ok || json.success === false) throw new ResponseError(json.message ?? json.error_message);
 
       setIsRemoveOpen(false);
-      showAlert("Landing page removed.", "success");
+      showAlert(t("seller.productEdit.landing_page_removed"), "success");
     } catch (e) {
       assertResponseError(e);
       updateProduct({ custom_html: previousCustomHtml });
@@ -93,39 +95,35 @@ If the gumroad CLI isn't installed: brew install antiwork/cli/gumroad (or curl -
   return (
     <section className="grid gap-8 border-t border-border p-4 md:p-8">
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <h2>Landing page</h2>
+        <h2>{t("seller.productEdit.landing_page_title")}</h2>
         <a href="/api#custom-html" target="_blank" rel="noreferrer">
-          Learn more
+          {t("seller.productEdit.learn_more")}
         </a>
       </header>
       {hasLandingPage ? (
         <Alert role="status" variant="success">
           <div className="flex flex-col justify-between sm:flex-row">
-            A custom landing page is live on this product.
+            {t("seller.productEdit.landing_page_live")}
             <a href={url} target="_blank" rel="noreferrer">
-              View
+              {t("seller.productEdit.view")}
             </a>
           </div>
         </Alert>
       ) : null}
       <div className="grid gap-2">
-        <p>
-          Replace your default product page with a custom landing page. Copy the prompt and hand it to your AI agent
-          (Claude, Cursor, etc.) — it builds and publishes the page for you.
-        </p>
-        <p className="text-sm text-muted">
-          For safety, your landing page is sandboxed: animations and interactive effects work, but it can't reach your
-          Gumroad account or send data to other sites.
-        </p>
+        <p>{t("seller.productEdit.landing_page_desc")}</p>
+        <p className="text-sm text-muted">{t("seller.productEdit.landing_page_sandboxed")}</p>
       </div>
       <div className="flex flex-wrap gap-3">
         <CopyToClipboard text={agentPrompt} tooltipPosition="top">
-          <Button color="primary">Copy prompt</Button>
+          <Button color="primary">{t("seller.productEdit.copy_prompt")}</Button>
         </CopyToClipboard>
-        {hasLandingPage ? <Button onClick={() => setIsRemoveOpen(true)}>Remove landing page</Button> : null}
+        {hasLandingPage ? (
+          <Button onClick={() => setIsRemoveOpen(true)}>{t("seller.productEdit.remove_landing_page")}</Button>
+        ) : null}
       </div>
       <Details>
-        <DetailsToggle>Show prompt</DetailsToggle>
+        <DetailsToggle>{t("seller.productEdit.show_prompt")}</DetailsToggle>
         <pre className="rounded border border-border bg-background p-4 text-sm whitespace-pre-wrap">{agentPrompt}</pre>
       </Details>
       <AgentSupportFallbackNote subject="Help with my product landing page" />
@@ -134,20 +132,19 @@ If the gumroad CLI isn't installed: brew install antiwork/cli/gumroad (or curl -
           open
           allowClose={!isRemoving}
           onClose={() => setIsRemoveOpen(false)}
-          title="Remove landing page?"
+          title={t("seller.productEdit.remove_landing_page_modal_title")}
           footer={
             <>
               <Button disabled={isRemoving} onClick={() => setIsRemoveOpen(false)}>
-                Cancel
+                {t("seller.products.cancel")}
               </Button>
               <Button color="danger" disabled={isRemoving} onClick={() => void removeLandingPage()}>
-                {isRemoving ? "Removing..." : "Remove"}
+                {isRemoving ? t("seller.productEdit.removing") : t("seller.bundles.remove")}
               </Button>
             </>
           }
         >
-          This removes your live landing page, so buyers will see your default product page again. You can't undo it —
-          if you might want the page back, save its HTML first.
+          {t("seller.productEdit.remove_landing_page_modal_desc")}
         </Modal>
       ) : null}
     </section>

@@ -2,9 +2,10 @@ import { Archive } from "@boxicons/react";
 import * as React from "react";
 
 import { getSearchResults, ProductFilter, SearchRequest, SearchResults } from "$app/data/search";
-import { PROFILE_SORT_KEYS, SORT_KEYS } from "$app/parsers/product";
+import { PROFILE_SORT_KEYS, type ProfileSortKey, SORT_KEYS, type SortKey } from "$app/parsers/product";
 import { classNames } from "$app/utils/classNames";
 import { CurrencyCode, getShortCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { AbortError, RateLimitError } from "$app/utils/request";
 
@@ -30,15 +31,31 @@ import { useOnChange } from "$app/components/useOnChange";
 
 import { Card } from "./Card";
 
-export const SORT_BY_LABELS = {
-  default: "Default",
-  highest_rated: "Highest rated",
-  hot_and_new: "Hot and new",
-  most_reviewed: "Most reviewed",
-  newest: "Newest",
-  page_layout: "Custom",
-  price_asc: "Price (Low to High)",
-  price_desc: "Price (High to Low)",
+export const SORT_BY_LABELS: Record<SortKey | ProfileSortKey, string> = {
+  get default() {
+    return t("discover.sort_default");
+  },
+  get highest_rated() {
+    return t("discover.sort_highest_rated");
+  },
+  get hot_and_new() {
+    return t("discover.sort_hot_and_new");
+  },
+  get most_reviewed() {
+    return t("discover.sort_most_reviewed");
+  },
+  get newest() {
+    return t("discover.sort_newest");
+  },
+  get page_layout() {
+    return t("discover.sort_custom");
+  },
+  get price_asc() {
+    return t("discover.sort_price_asc");
+  },
+  get price_desc() {
+    return t("discover.sort_price_desc");
+  },
 };
 
 export type State = {
@@ -207,7 +224,7 @@ const FilterCheckboxes = ({
         </Label>
       ))}
       {filters.length > 5 && !showingAll ? (
-        <LinkButton onClick={() => setShowingAll(true)}>Show more</LinkButton>
+        <LinkButton onClick={() => setShowingAll(true)}>{t("discover.show_more")}</LinkButton>
       ) : null}
     </>
   );
@@ -249,7 +266,7 @@ export const CardGrid = ({
   const trySetPrice = (minPrice: number | null, maxPrice: number | null) => {
     if (minPrice == null || maxPrice == null || maxPrice > minPrice) {
       updateParams({ min_price: minPrice ?? undefined, max_price: maxPrice ?? undefined });
-    } else showAlert("Please set the price minimum to be lower than the maximum.", "error");
+    } else showAlert(t("discover.price_min_lower_than_max"), "error");
   };
   const resetFilters = () => dispatchAction({ type: "set-params", params: defaults });
 
@@ -323,13 +340,16 @@ export const CardGrid = ({
       )}
     >
       {hideFilters ? null : (
-        <UICard className="overflow-y-auto lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]" aria-label="Filters">
+        <UICard
+          className="overflow-y-auto lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]"
+          aria-label={t("discover.filters")}
+        >
           <CardContent asChild>
             <header>
-              {title ?? "Filters"}
+              {title ?? t("discover.filters")}
               {anyFilters ? (
                 <div className="grow text-right">
-                  <LinkButton onClick={resetFilters}>Clear</LinkButton>
+                  <LinkButton onClick={resetFilters}>{t("discover.clear")}</LinkButton>
                 </div>
               ) : null}
             </header>
@@ -339,7 +359,7 @@ export const CardGrid = ({
             <CardContent asChild details>
               <Details>
                 <DetailsToggle chevronPosition="right" className="grow">
-                  Sort by
+                  {t("discover.sort_by")}
                 </DetailsToggle>
                 <Fieldset role="group">
                   {(onProfile ? PROFILE_SORT_KEYS : SORT_KEYS).map((key) => (
@@ -362,11 +382,11 @@ export const CardGrid = ({
             <CardContent asChild details>
               <Details open={tagsOpen} onToggle={setTagsOpen}>
                 <DetailsToggle chevronPosition="right" className="grow">
-                  Tags
+                  {t("discover.tags")}
                 </DetailsToggle>
                 <Fieldset role="group">
                   <Label className="w-full">
-                    All Products
+                    {t("discover.all_products")}
                     <Checkbox
                       wrapperClassName="ml-auto"
                       checked={!searchParams.tags?.length}
@@ -390,7 +410,7 @@ export const CardGrid = ({
             <CardContent asChild details>
               <Details open={filetypesOpen} onToggle={setFiletypesOpen}>
                 <DetailsToggle chevronPosition="right" className="grow">
-                  Contains
+                  {t("discover.contains")}
                 </DetailsToggle>
                 <Fieldset role="group">
                   {results ? (
@@ -431,7 +451,7 @@ export const CardGrid = ({
           <CardContent asChild details>
             <Details>
               <DetailsToggle chevronPosition="right" className="grow">
-                Price
+                {t("discover.price")}
               </DetailsToggle>
               <div
                 style={{
@@ -443,7 +463,7 @@ export const CardGrid = ({
               >
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={minPriceUid}>Minimum price</Label>
+                    <Label htmlFor={minPriceUid}>{t("discover.min_price")}</Label>
                   </FieldsetTitle>
                   <InputGroup>
                     <Pill className="-ml-2 shrink-0">{currencySymbol}</Pill>
@@ -460,7 +480,7 @@ export const CardGrid = ({
                 </Fieldset>
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={maxPriceUid}>Maximum price</Label>
+                    <Label htmlFor={maxPriceUid}>{t("discover.max_price")}</Label>
                   </FieldsetTitle>
                   <InputGroup>
                     <Pill className="-ml-2 shrink-0">{currencySymbol}</Pill>
@@ -484,7 +504,7 @@ export const CardGrid = ({
       {results?.products.length === 0 ? (
         <Placeholder>
           <Archive pack="filled" className="size-5" />
-          No products found
+          {t("discover.no_products_found")}
         </Placeholder>
       ) : (
         <div>
@@ -499,7 +519,7 @@ export const CardGrid = ({
           !((state.results?.total ?? 0) < (state.offset ?? 1) + (state.results?.products.length ?? 0)) ? (
             <div className="mt-8 w-full text-center">
               <Button onClick={() => dispatchAction({ type: "load-more" })} disabled={state.loading}>
-                {state.loading ? <LoadingSpinner /> : "Load more"}
+                {state.loading ? <LoadingSpinner /> : t("storefront.load_more")}
               </Button>
             </div>
           ) : null}

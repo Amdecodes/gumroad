@@ -11,6 +11,7 @@ import typia from "typia";
 import { cancelDropboxFileUpload } from "$app/data/dropbox_upload";
 import { assertDefined } from "$app/utils/assert";
 import FileUtils from "$app/utils/file";
+import { useTranslation } from "$app/utils/i18n";
 import { createJWPlayer } from "$app/utils/jwPlayer";
 import { getMimeType } from "$app/utils/mimetypes";
 import { summarizeUploadProgress } from "$app/utils/summarizeUploadProgress";
@@ -75,6 +76,7 @@ const FileEmbedNodeView = ({
 
   const { ref, visible, lastHeight } = useNodeVisibility(DEFAULT_FILE_ROW_HEIGHT);
   const { id, updateProduct, filesById } = useProductEditContext();
+  const { t } = useTranslation();
   const uid = React.useId();
   const [expanded, setExpanded] = React.useState(false);
   const [isDropZone, setIsDropZone] = React.useState(false);
@@ -398,7 +400,7 @@ const FileEmbedNodeView = ({
     item: () => (
       <>
         <Folder pack="filled" className="size-5" />
-        <span>Move to folder...</span>
+        <span>{t("seller.productEdit.move_to_folder", "Move to folder...")}</span>
       </>
     ),
     menu: () => (
@@ -410,7 +412,7 @@ const FileEmbedNodeView = ({
             }
           >
             <FolderPlus className="size-5" />
-            <span>New folder</span>
+            <span>{t("seller.productEdit.new_folder", "New folder")}</span>
           </MenuItem>
         )}
         {fileEmbedGroups.map(({ uid, name }) => (
@@ -420,11 +422,19 @@ const FileEmbedNodeView = ({
               editor.commands.moveFileEmbedToGroup({ fileUid: typia.assert<string>(node.attrs.uid), groupUid: uid });
 
               const fileName = filesById.get(typia.assert<string>(node.attrs.id))?.display_name;
-              if (fileName) showAlert(`Moved "${fileName}" to "${name}".`, "success");
+              if (fileName) {
+                showAlert(
+                  t("seller.productEdit.moved_file_success", 'Moved "%{file}" to "%{folder}".', {
+                    file: fileName,
+                    folder: name || t("seller.productEdit.untitled", "Untitled"),
+                  }),
+                  "success",
+                );
+              }
             }}
           >
             <Folder pack="filled" className="size-5" />
-            <span>{name || "Untitled"}</span>
+            <span>{name || t("seller.productEdit.untitled", "Untitled")}</span>
           </MenuItem>
         ))}
       </>
@@ -539,15 +549,19 @@ const FileEmbedNodeView = ({
                     <label className={buttonVariants({ size: "default", color: "primary" })}>
                       {thumbnailInput}
                       <ArrowUp pack="filled" className="size-5" />
-                      Upload a thumbnail
+                      {t("seller.productEdit.upload_thumbnail", "Upload a thumbnail")}
                     </label>
                     <div>
-                      The thumbnail image is shown as a preview in the embedded video player. Your image should have a
-                      16:9 aspect ratio, at least 1280x720px, and be in JPG, PNG, or GIF format.
+                      {t(
+                        "seller.productEdit.thumbnail_guide",
+                        "The thumbnail image is shown as a preview in the embedded video player. Your image should have a 16:9 aspect ratio, at least 1280x720px, and be in JPG, PNG, or GIF format.",
+                      )}
                     </div>
-                    <Separator>or</Separator>
+                    <Separator>{t("common.common.or", "or")}</Separator>
                     <div>
-                      <Button onClick={generateThumbnail}>Generate a thumbnail</Button>
+                      <Button onClick={generateThumbnail}>
+                        {t("seller.productEdit.generate_thumbnail", "Generate a thumbnail")}
+                      </Button>
                     </div>
                   </Placeholder>
                 </div>
@@ -561,7 +575,7 @@ const FileEmbedNodeView = ({
           />
           <RowContent className="content">
             {!isFailedUpload && file.is_streamable && node.attrs.collapsed ? (
-              <label className="thumbnail" aria-label="Upload a thumbnail">
+              <label className="thumbnail" aria-label={t("seller.productEdit.upload_thumbnail", "Upload a thumbnail")}>
                 {loadingVideo ? (
                   <div style={{ placeSelf: "center" }}>
                     <LoadingSpinner className="size-12" />
@@ -793,9 +807,9 @@ const FileEmbedNodeView = ({
                   onChange={(e) => updateFile({ pdf_stamp_enabled: e.target.checked })}
                   label={
                     <>
-                      Stamp this PDF with buyer information{" "}
+                      {t("seller.productEdit.stamp_pdf", "Stamp this PDF with buyer information")}{" "}
                       <a href="/help/article/130-pdf-stamping" target="_blank" rel="noreferrer">
-                        Learn more
+                        {t("seller.productEdit.learn_more", "Learn more")}
                       </a>
                     </>
                   }
@@ -809,15 +823,21 @@ const FileEmbedNodeView = ({
                   onChange={(e) => updateFile({ hide_kindle_and_read_buttons: !e.target.checked })}
                   label={
                     file.stream_only
-                      ? "Send to Kindle and Read buttons stay on while downloads are disabled"
-                      : 'Show "Send to Kindle" and "Read" buttons on the download page'
+                      ? t(
+                          "seller.productEdit.kindle_buttons_stream_only",
+                          "Send to Kindle and Read buttons stay on while downloads are disabled",
+                        )
+                      : t(
+                          "seller.productEdit.kindle_buttons_show",
+                          'Show "Send to Kindle" and "Read" buttons on the download page',
+                        )
                   }
                 />
               ) : null}
 
               {file.is_streamable ? (
                 <Fieldset>
-                  <FieldsetTitle>Subtitles</FieldsetTitle>
+                  <FieldsetTitle>{t("seller.productEdit.subtitles", "Subtitles")}</FieldsetTitle>
                   <div className="flex flex-col gap-4">
                     <SubtitleList
                       subtitleFiles={file.subtitle_files}
@@ -845,13 +865,16 @@ const FileEmbedNodeView = ({
                       checked={file.stream_only}
                       disabled
                       onChange={(e) => updateFile({ stream_only: e.target.checked })}
-                      aria-label="Disable file downloads"
+                      aria-label={t("seller.productEdit.disable_file_downloads", "Disable file downloads")}
                       aria-describedby={`${uid}downloads-disabled`}
                     />
-                    <span>Disable file downloads</span>
+                    <span>{t("seller.productEdit.disable_file_downloads", "Disable file downloads")}</span>
                   </div>
                   <small id={`${uid}downloads-disabled`} className="block text-muted">
-                    This file is too large for the in-browser reader, so downloads can&apos;t be turned off
+                    {t(
+                      "seller.productEdit.file_too_large_reader",
+                      "This file is too large for the in-browser reader, so downloads can't be turned off",
+                    )}
                   </small>
                 </div>
               ) : canDisableDownloads ? (
@@ -861,13 +884,16 @@ const FileEmbedNodeView = ({
                   label={
                     file.is_streamable ? (
                       <>
-                        Disable file downloads (stream only){" "}
+                        {t("seller.productEdit.file_downloads_stream_only", "Disable file downloads (stream only)")}{" "}
                         <a href="/help/article/43-streaming-videos" target="_blank" rel="noreferrer">
-                          Learn more
+                          {t("seller.productEdit.learn_more", "Learn more")}
                         </a>
                       </>
                     ) : (
-                      "Disable file downloads (buyers read it in the browser instead)"
+                      t(
+                        "seller.productEdit.file_downloads_in_browser",
+                        "Disable file downloads (buyers read it in the browser instead)",
+                      )
                     )
                   }
                 />

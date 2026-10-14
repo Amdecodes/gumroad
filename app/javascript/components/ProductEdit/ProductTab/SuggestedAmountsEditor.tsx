@@ -2,6 +2,7 @@ import { Plus, Trash } from "@boxicons/react";
 import * as React from "react";
 
 import { confirmRemovedVariantPageDeletions } from "$app/data/product_save_contract";
+import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { PriceInput } from "$app/components/PriceInput";
@@ -17,6 +18,7 @@ export const SuggestedAmountsEditor = ({
   versions: Version[];
   onChange: (versions: Version[]) => void;
 }) => {
+  const { t } = useTranslation();
   const { updateProduct } = useProductEditContext();
   const updateVersion = (id: string, update: Partial<Version>) => {
     onChange(versions.map((version) => (version.id === id ? { ...version, ...update } : version)));
@@ -69,20 +71,24 @@ export const SuggestedAmountsEditor = ({
       disabled={versions.length === 3}
     >
       <Plus className="size-5" />
-      Add amount
+      {t("seller.productEdit.add_amount", "Add amount")}
     </Button>
   );
 
   return (
     <Fieldset>
-      <FieldsetTitle>{versions.length > 1 ? "Suggested amounts" : "Suggested amount"}</FieldsetTitle>
+      <FieldsetTitle>
+        {versions.length > 1
+          ? t("seller.productEdit.suggested_amounts", "Suggested amounts")
+          : t("seller.productEdit.suggested_amount", "Suggested amount")}
+      </FieldsetTitle>
       {versions.map((version, index) => (
         <SuggestedAmountEditor
           key={version.id}
           version={version}
           updateVersion={(update) => updateVersion(version.id, update)}
           onDelete={versions.length > 1 ? () => removeVersion(version) : null}
-          label={`Suggested amount ${index + 1}`}
+          label={`${t("seller.productEdit.suggested_amount", "Suggested amount")} ${index + 1}`}
           onBlur={() =>
             onChange(versions.sort((a, b) => (a.price_difference_cents ?? 0) - (b.price_difference_cents ?? 0)))
           }
@@ -106,6 +112,7 @@ const SuggestedAmountEditor = ({
   label: string;
   onBlur: () => void;
 }) => {
+  const { t } = useTranslation();
   const { currencyType } = useProductEditContext();
 
   return (
@@ -118,7 +125,7 @@ const SuggestedAmountEditor = ({
         ariaLabel={label}
         onBlur={onBlur}
       />
-      <Button aria-label="Delete" onClick={onDelete ?? undefined} disabled={!onDelete}>
+      <Button aria-label={t("seller.products.delete", "Delete")} onClick={onDelete ?? undefined} disabled={!onDelete}>
         <Trash className="size-5" />
       </Button>
     </section>

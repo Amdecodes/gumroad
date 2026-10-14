@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Button, NavigationButton } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
 import { Purchase } from "$app/components/Product";
@@ -21,17 +23,14 @@ export const SubscriptionChoiceModal = ({ purchase, checkoutUrl, onClose }: Prop
 
   if (purchase.subscription_has_lapsed && purchase.membership) {
     return (
-      <Modal open={open} onClose={onClose} title="Resume your previous subscription?">
-        <p>
-          You've previously subscribed to this product. Would you like to <strong>pick up where you left off</strong>,
-          or <strong>start fresh with a new subscription</strong>?
-        </p>
+      <Modal open={open} onClose={onClose} title={t("storefront.resume_subscription_title")}>
+        <p>{t("storefront.resume_subscription_desc")}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <NavigationButton href={newSubscriptionHref} target="_top">
-            Start a new subscription
+            {t("storefront.start_new_subscription")}
           </NavigationButton>
           <NavigationButton href={purchase.membership.manage_url} color="black" target="_blank">
-            Resume subscription
+            {t("storefront.resume_subscription")}
           </NavigationButton>
         </div>
       </Modal>
@@ -41,15 +40,12 @@ export const SubscriptionChoiceModal = ({ purchase, checkoutUrl, onClose }: Prop
   if (!purchase.membership) return null;
 
   return (
-    <Modal open={open} onClose={onClose} title="You already have an active subscription">
-      <p>
-        You currently have an active subscription to this product. Would you like to{" "}
-        <strong>start a new subscription</strong>?
-      </p>
+    <Modal open={open} onClose={onClose} title={t("storefront.already_subscribed_title")}>
+      <p>{t("storefront.already_subscribed_desc")}</p>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t("actions.cancel")}</Button>
         <NavigationButton href={newSubscriptionHref} color="black" target="_top">
-          Start a new subscription
+          {t("storefront.start_new_subscription")}
         </NavigationButton>
       </div>
     </Modal>
