@@ -63,7 +63,7 @@ export const content = {
   send: "ላክ",
   back: "ተመለስ",
   sent_to_kindle: "ወደ Kindleዎ ተልኳል።",
-  send_to_kindle_instruction: '"noreply@customers.arifdrop.com"ን ወደ {approved_emails_link}ዎ ማከል ያስፈልግዎታል.',
+  send_to_kindle_instruction: '"{kindle_email}"ን ወደ {approved_emails_link}ዎ ማከል ያስፈልግዎታል.',
   approved_emails_link_text: "የተፈቀዱ የግል ሰነድ ኢሜይሎች ዝርዝር",
   call_link: "የጥሪ አገናኝ",
   removed_by_seller: "በሻጩ ተወግዷል",

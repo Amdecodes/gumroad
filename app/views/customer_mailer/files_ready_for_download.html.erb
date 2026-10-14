@@ -7,5 +7,5 @@
 
   <%= render("shared/download_button", link: @product, url_redirect: @url_redirect) %>
 
-  <p><%= t("mailers.customer.receipt.questions_and_contact") %></p>
+  <p><%= t("mailers.customer.receipt.questions_and_contact", seller: @product.user.name) %></p>
 </div>

@@ -5,4 +5,4 @@
 <%= t("mailers.customer.files_ready_for_download.click_below") %>:
 <%= @url_redirect&.download_page_url %>
 
-<%= t("mailers.customer.receipt.questions_and_contact") %>
+<%= t("mailers.customer.receipt.questions_and_contact", seller: @product.user.name) %>
