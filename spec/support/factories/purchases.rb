@@ -224,7 +224,7 @@ FactoryBot.define do
 
       after(:create) do |purchase|
         purchase.subscription ||= create(:subscription, link: purchase.link)
-        purchase.subscription.purchases << build(:membership_purchase)
+        purchase.subscription.purchases << build(:membership_purchase, link: purchase.link, displayed_price_currency_type: purchase.displayed_price_currency_type)
         purchase.save!
 
         if purchase.is_installment_payment && purchase.installment_plan.present?

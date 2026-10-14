@@ -207,7 +207,7 @@ class ReceiptPresenter::ItemInfo
       return unless purchase.tip.present?
 
       {
-        label: I18n.t("receipt.summary_title", default: "Tip"),
+        label: I18n.t("mailers.customer.receipt.tip", default: "Tip"),
         value: show_buyer_presentment_amounts? ? purchase.formatted_buyer_presentment_tip : format_just_price_in_cents(purchase.tip.value_cents, purchase.displayed_price_currency_type),
       }
     end
@@ -219,7 +219,7 @@ class ReceiptPresenter::ItemInfo
         return if purchase.link.native_type === Link::NATIVE_TYPE_COFFEE
 
         label = if purchase.license_key.present? && purchase.is_multiseat_license?
-          I18n.t("storefront.seats", default: "Seats")
+          I18n.t("mailers.customer.receipt.number_of_seats", default: "Number of seats")
         else
           I18n.t("storefront.quantity", default: "Quantity")
         end

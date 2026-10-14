@@ -7,7 +7,7 @@ describe ReceiptPresenter::PaymentInfo do
   include ActionView::Helpers::UrlHelper
 
   let(:seller) { create(:named_seller) }
-  let(:product) { create(:product, user: seller, name: "Digital product") }
+  let(:product) { create(:product, user: seller, name: "Digital product", price_currency_type: Currency::USD) }
   let!(:merchant_account) { MerchantAccount.gumroad(StripeChargeProcessor.charge_processor_id) || create(:merchant_account, user: nil, charge_processor_id: StripeChargeProcessor.charge_processor_id) }
   let(:purchase) do
     create(
@@ -16,6 +16,7 @@ describe ReceiptPresenter::PaymentInfo do
       seller:,
       merchant_account:,
       price_cents: 1_499,
+      displayed_price_currency_type: Currency::USD,
       created_at: DateTime.parse("January 1, 2023")
     )
   end
@@ -95,12 +96,13 @@ describe ReceiptPresenter::PaymentInfo do
       end
 
       context "when is a membership purchase" do
-        let(:product) { create(:membership_product, name: "Membership product") }
+        let(:product) { create(:membership_product, name: "Membership product", price_currency_type: Currency::USD) }
         let(:purchase) do
           create(
             :membership_purchase,
             link: product,
             price_cents: 1_998,
+            displayed_price_currency_type: Currency::USD,
             created_at: DateTime.parse("January 1, 2023")
           )
         end
@@ -200,7 +202,9 @@ describe ReceiptPresenter::PaymentInfo do
           end
 
           before do
-            purchase.link.update!(name: "Membership with trial")
+            purchase.link.update_column(:name, "Membership with trial")
+            purchase.link.update_column(:price_currency_type, Currency::USD)
+            purchase.update_column(:displayed_price_currency_type, Currency::USD)
             purchase.subscription.update!(free_trial_ends_at: Date.parse("Jan 8, 2023"))
           end
 
@@ -267,7 +271,9 @@ describe ReceiptPresenter::PaymentInfo do
             end
 
             before do
-              purchase.link.update!(name: "Membership product")
+              purchase.link.update_column(:name, "Membership product")
+              purchase.link.update_column(:price_currency_type, Currency::USD)
+              purchase.update_column(:displayed_price_currency_type, Currency::USD)
               purchase.subscription.update!(
                 free_trial_ends_at: Date.parse("Jan 8, 2023"),
                 charge_occurrence_count: 2
@@ -340,13 +346,14 @@ describe ReceiptPresenter::PaymentInfo do
           end
 
           context "when the purchase is a test purchase with no more remaining charges" do
-            let(:product) { create(:membership_product, name: "Membership product") }
+            let(:product) { create(:membership_product, name: "Membership product", price_currency_type: Currency::USD) }
             let(:purchase) do
               create(
                 :test_purchase,
                 link: product,
                 is_original_subscription_purchase: true,
                 price_cents: 1_00,
+                displayed_price_currency_type: Currency::USD,
                 created_at: DateTime.parse("January 1, 2023")
               )
             end
@@ -638,7 +645,11 @@ describe ReceiptPresenter::PaymentInfo do
         let(:purchase) { create(:commission_deposit_purchase, price_cents: 200) }
         let(:payment_info) { described_class.new(purchase) }
 
-        before { purchase.create_artifacts_and_send_receipt! }
+        before do
+          purchase.link.update_column(:price_currency_type, Currency::USD)
+          purchase.update_column(:displayed_price_currency_type, Currency::USD)
+          purchase.create_artifacts_and_send_receipt!
+        end
 
         it "returns correct today payment attributes" do
           expect(payment_info.today_payment_attributes).to eq(
@@ -744,17 +755,19 @@ describe ReceiptPresenter::PaymentInfo do
         let(:purchase_two) do
           create(
             :purchase,
-            link: create(:product, name: "Product Two", user: seller),
+            link: create(:product, name: "Product Two", user: seller, price_currency_type: Currency::USD),
             seller:,
-            price_cents: 999
+            price_cents: 999,
+            displayed_price_currency_type: Currency::USD
           )
         end
         let(:purchase_three) do
           create(
             :purchase,
-            link: create(:product, name: "Product Three", user: seller),
+            link: create(:product, name: "Product Three", user: seller, price_currency_type: Currency::USD),
             seller:,
-            price_cents: 499
+            price_cents: 499,
+            displayed_price_currency_type: Currency::USD
           )
         end
 
@@ -881,20 +894,41 @@ describe ReceiptPresenter::PaymentInfo do
   end
 
   describe "#usd_currency_note" do
-    it "returns note content" do
+    it "returns note content for USD purchase" do
       expect(payment_info.send(:usd_currency_note)).to eq(
         "All charges are processed in United States Dollars. " +
         "Your bank or financial institution may apply their own fees for currency conversion."
       )
     end
+
+    context "when purchase currency is ETB" do
+      let(:etb_product) { create(:product, user: seller, price_currency_type: Currency::ETB) }
+      let(:etb_purchase) { create(:purchase, link: etb_product, seller:, merchant_account:) }
+      let(:payment_info) { described_class.new(etb_purchase) }
+
+      it "returns nil" do
+        expect(payment_info.send(:usd_currency_note)).to be_nil
+      end
+    end
   end
 
   describe "#credit_card_note" do
     RSpec.shared_examples "credit card note" do
-      it "returns note content" do
+      it "returns note content for card purchase" do
         expect(payment_info.send(:credit_card_note)).to eq(
-          "The charge will be listed as GUMRD.COM* on your credit card statement."
+          "The charge will be listed as #{PlatformConfig.statement_descriptor} on your credit card statement."
         )
+      end
+
+      context "when purchase is made via card brands in allowlist" do
+        it "shows descriptor note for visa, mastercard, and amex" do
+          [CardType::VISA, CardType::MASTERCARD, CardType::AMERICAN_EXPRESS].each do |brand|
+            purchase.update!(card_type: brand)
+            expect(payment_info.send(:credit_card_note)).to eq(
+              "The charge will be listed as #{PlatformConfig.statement_descriptor} on your credit card statement."
+            )
+          end
+        end
       end
 
       context "when the card_type is blank" do
@@ -905,11 +939,38 @@ describe ReceiptPresenter::PaymentInfo do
         end
       end
 
+      context "when purchase is made via Chapa (card_type nil or 'chapa')" do
+        it "returns nil when card_type is nil" do
+          purchase.update!(card_type: nil)
+          expect(payment_info.send(:credit_card_note)).to be_nil
+        end
+
+        it "returns nil when card_type is 'chapa'" do
+          purchase.update!(card_type: "chapa")
+          expect(payment_info.send(:credit_card_note)).to be_nil
+        end
+      end
+
+      context "when purchase is made via Telebirr (card_type 'telebirr')" do
+        before { purchase.update!(card_type: "telebirr") }
+
+        it "returns nil" do
+          expect(payment_info.send(:credit_card_note)).to be_nil
+        end
+      end
+
+      context "when purchase is made via CBE Birr (card_type 'cbebirr')" do
+        before { purchase.update!(card_type: "cbebirr") }
+
+        it "returns nil" do
+          expect(payment_info.send(:credit_card_note)).to be_nil
+        end
+      end
+
       context "when the card_type is paypal" do
         before { purchase.update!(card_type: CardType::PAYPAL) }
 
         it "returns nil" do
-          purchase.update!(card_type: CardType::PAYPAL)
           expect(payment_info.send(:credit_card_note)).to be_nil
         end
       end
@@ -977,7 +1038,7 @@ describe ReceiptPresenter::PaymentInfo do
         "Your bank or financial institution may apply their own fees for currency conversion."
       )
       expect(payment_info.notes[2]).to eq(
-        "The charge will be listed as GUMRD.COM* on your credit card statement."
+        "The charge will be listed as #{PlatformConfig.statement_descriptor} on your credit card statement."
       )
     end
   end

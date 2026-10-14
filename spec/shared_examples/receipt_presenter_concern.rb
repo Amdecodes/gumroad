@@ -28,15 +28,15 @@ RSpec.shared_context "when the purchase has a license" do
 end
 
 RSpec.shared_context "when the purchase is for a physical product" do
-  let(:product) { create(:product, :is_physical) }
-  let(:purchase) { create(:physical_purchase, link: product) }
+  let(:product) { create(:product, :is_physical, price_currency_type: Currency::USD) }
+  let(:purchase) { create(:physical_purchase, link: product, displayed_price_currency_type: Currency::USD) }
 end
 
 RSpec.shared_context "when the purchase is recurring subscription" do
   let(:shipping_attributes) { {} }
   let(:purchase_attributes) { {}.merge(shipping_attributes) }
 
-  let(:purchase) { create(:recurring_membership_purchase, link: product, **purchase_attributes) }
+  let(:purchase) { create(:recurring_membership_purchase, link: product, displayed_price_currency_type: Currency::USD, **purchase_attributes) }
   let(:sizes_category) { create(:variant_category, title: "sizes", link: product) }
   let(:small_variant) { create(:variant, name: "small", price_difference_cents: 300, variant_category: sizes_category) }
   let(:colors_category) { create(:variant_category, title: "colors", link: product) }

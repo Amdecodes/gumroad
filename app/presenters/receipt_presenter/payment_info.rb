@@ -130,9 +130,9 @@ class ReceiptPresenter::PaymentInfo
       # render the method name alone rather than dereferencing a nil visual.
       value =
         if orderable.card_visual.present?
-          "#{orderable.card_type.upcase} *#{orderable.card_visual.delete('*').delete(' ')}"
+          [orderable.card_type&.upcase, "*#{orderable.card_visual.delete('*').delete(' ')}"].compact.join(" ")
         else
-          orderable.card_type.upcase
+          orderable.card_type&.upcase
         end
 
       {
@@ -170,23 +170,29 @@ class ReceiptPresenter::PaymentInfo
       I18n.t("mailers.customer.receipt.usd_currency_note", default: "All charges are processed in United States Dollars. Your bank or financial institution may apply their own fees for currency conversion.")
     end
 
-    def credit_card_note
-      return if orderable.card_type.blank?
-      # Non-card methods: PayPal/Link/Alipay wallets, local bank methods (UPI, iDEAL, Bancontact,
-      # Pix) and buy-now-pay-later (Klarna). None of them produce a credit card statement line,
-      # so the note would be wrong.
-      return if orderable.card_type.in?([CardType::PAYPAL, CardType::LINK, CardType::UPI, CardType::IDEAL, CardType::BANCONTACT, CardType::PIX, CardType::KLARNA, CardType::ALIPAY])
+    CARD_BRANDS = [
+      CardType::VISA,
+      CardType::MASTERCARD,
+      CardType::AMERICAN_EXPRESS,
+      CardType::DISCOVER,
+      CardType::JCB,
+      CardType::DINERS_CLUB,
+      CardType::UNION_PAY,
+      CardType::UNKNOWN,
+    ].freeze
 
-      # TODO: Update when multiple charges per receipt are supported
+    def credit_card_note
+      return unless orderable.card_type.in?(CARD_BRANDS)
+
       descriptor = PlatformConfig.statement_descriptor
-      I18n.t("mailers.customer.receipt.credit_card_note", statement_descriptor: descriptor, default: "The charge will be listed as %{statement_descriptor} on your credit card statement.")
+      I18n.t("mailers.customer.receipt.credit_card_note", statement_descriptor: descriptor)
     end
 
     def today_payment_heading_attribute
       return unless any_upcoming_payments?
 
       {
-        label: I18n.t("receipt.invoices.payment", default: "Payment"),
+        label: I18n.t("mailers.customer.receipt.todays_payment", default: "Today's payment"),
         value: nil
       }
     end

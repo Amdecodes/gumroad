@@ -9,7 +9,7 @@ class ReceiptPresenter::ShippingInfo
   end
 
   def title
-    I18n.t("checkout.shipping_information", default: "Shipping info")
+    I18n.t("mailers.customer.receipt.shipping_info", default: "Shipping info")
   end
 
   def attributes
@@ -37,7 +37,7 @@ class ReceiptPresenter::ShippingInfo
 
     def address_attribute
       {
-        label: I18n.t("checkout.shipping_information", default: "Shipping address"),
+        label: I18n.t("mailers.customer.receipt.shipping_address", default: "Shipping address"),
         value: safe_join(
           [
             chargeable.street_address,
