@@ -290,7 +290,8 @@ class Subscription < ApplicationRecord
                         referrer: original_purchase.referrer,
                         quantity: original_purchase.quantity,
                         was_product_recommended: original_purchase.was_product_recommended,
-                        is_installment_payment: original_purchase.is_installment_payment }
+                        is_installment_payment: original_purchase.is_installment_payment,
+                        locale: override_params[:locale].presence || original_purchase&.locale.presence || user&.locale.presence || I18n.default_locale.to_s }
     purchase_params.merge!(override_params)
     # `ip_country`/`ip_state` are derived from `ip_address`, so a caller supplying a live IP must not
     # leave the original purchase's derivations standing beside it — sanctions screening would read

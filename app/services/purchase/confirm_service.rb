@@ -46,7 +46,7 @@ class Purchase::ConfirmService < Purchase::BaseService
       end
       unless setup_intent&.succeeded?
         purchase.stripe_error_code ||= "setup_intent_authentication_failed"
-        purchase.errors.add(:base, "We couldn't authorize your card for this payment. Please try again or use a different payment method.") if purchase.errors.empty?
+        purchase.errors.add(:base, :card_authorization_failed) if purchase.errors.empty?
         error_message = purchase.errors.full_messages[0]
         handle_purchase_failure
         return error_message
@@ -64,7 +64,7 @@ class Purchase::ConfirmService < Purchase::BaseService
        purchase.processor_payment_intent_id.blank? &&
        purchase.stripe_transaction_id.blank? &&
        !purchase.free_purchase? && !purchase.is_free_trial_purchase? && !purchase.is_test_purchase?
-      purchase.errors.add(:base, "There is a temporary problem, please try again (your card was not charged).") if purchase.errors.empty?
+      purchase.errors.add(:base, :temporary_problem) if purchase.errors.empty?
       error_message = purchase.errors.full_messages[0]
       handle_purchase_failure
       return error_message

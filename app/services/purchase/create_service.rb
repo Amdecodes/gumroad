@@ -505,6 +505,8 @@ class Purchase::CreateService < Purchase::BaseService
       params_for_purchase[:country] = ISO3166::Country[params_for_purchase[:country]]&.common_name
 
       purchase = product.sales.build(params_for_purchase)
+      candidate_locale = (params_for_purchase[:locale].presence || params[:locale].presence || buyer&.locale.presence || I18n.locale.to_s).to_s.downcase
+      purchase.locale = I18n.available_locales.map(&:to_s).include?(candidate_locale) ? candidate_locale : I18n.default_locale.to_s
       purchase.authenticated_offer_code_buyer = buyer
       purchase.affiliate = product.collaborator if product.collaborator.present?
       should_ship = product.is_physical || product.require_shipping
@@ -583,7 +585,8 @@ class Purchase::CreateService < Purchase::BaseService
         is_preorder_authorization: false,
         perceived_price_cents: 0,
         is_gift_sender_purchase: false,
-        is_gift_receiver_purchase: true
+        is_gift_receiver_purchase: true,
+        locale: purchase.locale
       )
       giftee_purchase = build_purchase(giftee_purchase_params)
       giftee_purchase.purchaser = giftee_purchaser

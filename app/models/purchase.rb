@@ -2468,7 +2468,7 @@ class Purchase < ApplicationRecord
     end
 
     unless charge_intent.succeeded? || charge_intent.requires_action? || (charge_intent.is_a?(StripeChargeIntent) && charge_intent.processing?)
-      errors.add :base, "Sorry, something went wrong."
+      errors.add :base, :something_went_wrong
     end
   end
 
@@ -2485,7 +2485,7 @@ class Purchase < ApplicationRecord
       # flow of funds. FinalizeBuyerPresentmentChargeJob completes the purchase later.
       save_charge_data(charge_intent.charge, allow_missing_flow_of_funds: processor_settlement_deferrable?)
     else
-      errors.add :base, "Sorry, something went wrong."
+      errors.add :base, :something_went_wrong
     end
 
   rescue ChargeProcessorFxQuoteInvalidError => e
@@ -2500,13 +2500,13 @@ class Purchase < ApplicationRecord
     # not an outage. Record it under its own code so a code regression shows up in monitoring
     # instead of hiding inside Stripe-outage noise. Retry behavior is unchanged.
     logger.error "Error while confirming charge intent: #{e.message} in purchase: #{external_id}"
-    errors.add :base, "There is a temporary problem, please try again (your card was not charged)."
+    errors.add :base, :temporary_problem
     self.error_code = PurchaseErrorCode::PROCESSOR_INVALID_REQUEST
     self.stripe_error_code = e.processor_error_code if stripe_error_code.blank?
     nil
   rescue ChargeProcessorUnavailableError => e
     logger.error "Error while confirming charge intent: #{e.message} in purchase: #{external_id}"
-    errors.add :base, "There is a temporary problem, please try again (your card was not charged)."
+    errors.add :base, :temporary_problem
     self.error_code = PurchaseErrorCode::STRIPE_UNAVAILABLE
     nil
   rescue ChargeProcessorCardError => e
@@ -5002,12 +5002,12 @@ class Purchase < ApplicationRecord
         # side, not an outage. Record it under its own code so a code regression shows up in
         # monitoring instead of hiding inside Stripe-outage noise. Retry behavior is unchanged.
         logger.error "Error while preparing chargeable: #{e.message} in purchase: #{external_id}"
-        errors.add :base, "There is a temporary problem, please try again (your card was not charged)."
+        errors.add :base, :temporary_problem
         self.error_code = PurchaseErrorCode::PROCESSOR_INVALID_REQUEST
         self.stripe_error_code = e.processor_error_code if stripe_error_code.blank?
       rescue ChargeProcessorUnavailableError => e
         logger.error "Error while preparing chargeable: #{e.message} in purchase: #{external_id}"
-        errors.add :base, "There is a temporary problem, please try again (your card was not charged)."
+        errors.add :base, :temporary_problem
         self.error_code = charge_processor_unavailable_error
       rescue ChargeProcessorCardError => e
         self.stripe_error_code = e.error_code
@@ -5064,7 +5064,7 @@ class Purchase < ApplicationRecord
         save!
 
         unless setup_intent.succeeded? || setup_intent.requires_action?
-          errors.add :base, "Sorry, something went wrong."
+          errors.add :base, :something_went_wrong
         end
       end
     end
@@ -5429,7 +5429,7 @@ class Purchase < ApplicationRecord
                 charge_processor_id.nil? &&
                 self.merchant_account.nil?
 
-      errors.add(:base, "We couldn't charge your card. Try again or use a different card.")
+      errors.add(:base, :card_charge_failed)
     end
 
     def zip_code_from_geoip
@@ -5665,7 +5665,7 @@ class Purchase < ApplicationRecord
       return if quantity > 0
 
       self.error_code = PurchaseErrorCode::INVALID_QUANTITY
-      errors.add :base, "Sorry, you've selected an invalid quantity."
+      errors.add :base, :invalid_quantity
     end
 
     # Sanctions screening for every purchase, not just physical ones. Before this, a digital product
@@ -5684,7 +5684,7 @@ class Purchase < ApplicationRecord
       end
 
       self.error_code = PurchaseErrorCode::BLOCKED_SANCTIONED_LOCATION
-      errors.add :base, "Sorry, this item is not available in your location."
+      errors.add :base, :location_unavailable
     end
 
     # [alpha2, subdivision] pairs we know about the buyer at create time. `card_country` is not here
@@ -5715,13 +5715,13 @@ class Purchase < ApplicationRecord
 
       if offer_code.nil?
         self.error_code = PurchaseErrorCode::OFFER_CODE_INVALID
-        errors.add :base, "Sorry, the discount code you wish to use is invalid."
+        errors.add :base, :discount_invalid
         return
       end
 
       if offer_code.inactive?
         self.error_code = PurchaseErrorCode::OFFER_CODE_INACTIVE
-        errors.add :base, "Sorry, the discount code you wish to use is inactive."
+        errors.add :base, :discount_inactive
         return
       end
 
@@ -5779,13 +5779,13 @@ class Purchase < ApplicationRecord
         errors.add :base, "Sorry, the discount code you are using is invalid for the quantity you have selected."
       else
         self.error_code = PurchaseErrorCode::OFFER_CODE_SOLD_OUT
-        errors.add :base, "Sorry, the discount code you wish to use has reached its usage limit."
+        errors.add :base, :discount_limit_reached
       end
     end
 
     def reject_existing_customer_offer_code
       self.error_code = PurchaseErrorCode::OFFER_CODE_INVALID
-      errors.add(:base, "Sorry, this discount code is only for existing customers.")
+      errors.add(:base, :discount_existing_customers_only)
     end
 
     def validate_subscription
@@ -5793,7 +5793,7 @@ class Purchase < ApplicationRecord
       return if subscription.alive?
 
       self.error_code = PurchaseErrorCode::SUBSCRIPTION_INACTIVE
-      errors.add :base, "This subscription has been canceled."
+      errors.add :base, :subscription_cancelled
     end
 
     def perceived_price_cents_matches_price_cents
@@ -5809,7 +5809,7 @@ class Purchase < ApplicationRecord
       # This message is shown to buyers verbatim (checkout surfaces errors via
       # errors.full_messages), so it must live on :base — attaching it to an attribute
       # would prepend "Price cents" to the buyer-facing alert.
-      errors.add(:base, "The price just changed! Refresh the page for the updated price.")
+      errors.add(:base, :price_changed)
       true
     end
 
@@ -5859,10 +5859,10 @@ class Purchase < ApplicationRecord
 
       if sales_count == link.max_purchase_count
         self.error_code = PurchaseErrorCode::PRODUCT_SOLD_OUT
-        errors.add :base, "Sold out, please go back and pick another option."
+        errors.add :base, :sold_out
       else
         self.error_code = PurchaseErrorCode::EXCEEDING_PRODUCT_QUANTITY
-        errors.add :base, "You have chosen a quantity that exceeds what is available."
+        errors.add :base, :quantity_exceeded
       end
     end
 
@@ -5877,10 +5877,10 @@ class Purchase < ApplicationRecord
 
       if !new_variants_available
         self.error_code = PurchaseErrorCode::VARIANT_SOLD_OUT
-        errors.add :base, "Sold out, please go back and pick another option."
+        errors.add :base, :sold_out
       else
         self.error_code = PurchaseErrorCode::EXCEEDING_VARIANT_QUANTITY
-        errors.add :base, "You have chosen a quantity that exceeds what is available."
+        errors.add :base, :quantity_exceeded
       end
     end
 
@@ -5903,7 +5903,7 @@ class Purchase < ApplicationRecord
     def reject_closed_variants(variants)
       Rails.logger.info("[Purchase] new purchase rejected reason=tier_closed_to_new_purchases product_id=#{link.external_id} variant_ids=#{variants.map(&:external_id).join(",")}")
       self.error_code = PurchaseErrorCode::VARIANT_SOLD_OUT
-      errors.add :base, "Sold out, please go back and pick another option."
+      errors.add :base, :sold_out
     end
 
     def variants_available_for_quantity?
@@ -5932,7 +5932,7 @@ class Purchase < ApplicationRecord
       end
 
       self.error_code = PurchaseErrorCode::MISSING_VARIANTS
-      errors.add :base, "The product's variants have changed, please refresh the page!"
+      errors.add :base, :variants_changed
     end
 
     def product_is_sellable
@@ -5940,7 +5940,7 @@ class Purchase < ApplicationRecord
       return unless seller.suspended? || !link.alive?
 
       self.error_code = PurchaseErrorCode::NOT_FOR_SALE
-      errors.add :base, "This product is not currently for sale."
+      errors.add :base, :not_for_sale
     end
 
     def product_is_not_blocked
@@ -5949,7 +5949,7 @@ class Purchase < ApplicationRecord
       return if PlatformBlock.product.active.find_by(object_value: link_id).blank?
 
       self.error_code = PurchaseErrorCode::TEMPORARILY_BLOCKED_PRODUCT
-      errors.add :base, "Your card was not charged."
+      errors.add :base, :card_uncharged
     end
 
     def validate_purchase_type
@@ -6155,7 +6155,7 @@ class Purchase < ApplicationRecord
           "You have already paid for this product. It has been emailed to you. Do you want to buy it again?"
         end
       elsif purchases.any?(&:preorder_authorization_successful?)
-        errors.add :base, "You have already pre-ordered this product. A confirmation has been emailed to you."
+        errors.add :base, :preorder_already_made
       elsif (in_progress = purchases.select(&:in_progress?)).any?
         errors.add :base, if is_gift_sender_purchase && in_progress.any?(&:is_gift_sender_purchase)
           "A gift of this product to #{giftee_email} is already going through. Wait for it to finish before sending another."

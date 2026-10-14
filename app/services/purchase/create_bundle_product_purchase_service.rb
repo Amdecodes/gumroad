@@ -34,7 +34,8 @@ class Purchase::CreateBundleProductPurchaseService
       quantity: @bundle_product.quantity * @purchase.quantity,
       is_bundle_product_purchase: true,
       is_gift_sender_purchase: @purchase.is_gift_sender_purchase,
-      is_gift_receiver_purchase: @purchase.is_gift_receiver_purchase
+      is_gift_receiver_purchase: @purchase.is_gift_receiver_purchase,
+      locale: @purchase.locale
     )
     # Custom fields for bundle products are temporarily saved on the bundle purchase until we can assign them
     # to their respective purchase records.

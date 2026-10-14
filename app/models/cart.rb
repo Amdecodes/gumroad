@@ -194,7 +194,7 @@ class Cart < ApplicationRecord
 
     def ensure_only_one_alive_cart_per_user
       if self.class.fetch_by(user:, browser_guid:).present?
-        errors.add(:base, "An alive cart already exists")
+        errors.add(:base, :alive_cart_exists)
       end
     end
 end

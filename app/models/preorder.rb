@@ -126,7 +126,8 @@ class Preorder < ApplicationRecord
                            zip_code: authorization_purchase.zip_code,
                            city: authorization_purchase.city,
                            quantity: authorization_purchase.quantity,
-                           was_product_recommended: authorization_purchase.was_product_recommended)
+                           was_product_recommended: authorization_purchase.was_product_recommended,
+                           locale: authorization_purchase.locale.presence || purchaser&.locale.presence || I18n.default_locale.to_s)
     purchase = Purchase.new(purchase_params)
     purchase.preorder = self
     purchase.credit_card = credit_card
