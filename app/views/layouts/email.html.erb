@@ -16,7 +16,9 @@
       <div class="footer">
         <div class="paragraphs">
           <%= render(@footer_template) if @footer_template %>
-          <p><%= PlatformConfig::LEGAL_ADDRESS %></p>
+          <% if PlatformConfig.legal_address.present? %>
+            <p><%= PlatformConfig.legal_address %></p>
+          <% end %>
 
           <% if @unsub_link.present? %>
             <p>

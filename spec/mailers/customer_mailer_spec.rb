@@ -202,11 +202,15 @@ describe CustomerMailer do
 
     it "renders the body" do
       expect(mail.body.sanitized).to match(@purchase.link_name)
-      expect(mail.body.sanitized).to have_text(
-        "All charges are processed in United States Dollars. " +
-        "Your bank or financial institution may apply their own fees for currency conversion."
-      )
-      expect(mail.body.sanitized).to have_text("The charge will be listed as GUMRD.COM* on your credit card statement.")
+      expect(mail.body.sanitized).not_to have_text("All charges are processed in United States Dollars.")
+      expect(mail.body.sanitized).to have_text("The charge will be listed as #{PlatformConfig.statement_descriptor} on your credit card statement.")
+    end
+
+    it "omits the statement descriptor note for non-card payments" do
+      product = create(:product, user: create(:user))
+      non_card_purchase = create(:purchase, link: product, seller: product.user, card_type: nil)
+      mail_without_card = CustomerMailer.receipt(non_card_purchase.id)
+      expect(mail_without_card.body.sanitized).not_to have_text("on your credit card statement")
     end
 
     it "renders persisted buyer-presentment amounts" do
@@ -401,7 +405,7 @@ describe CustomerMailer do
           mail = CustomerMailer.receipt(purchase.id)
 
           expect(mail.body.sanitized).to have_text("Customers who bought this item also bought")
-          expect(mail.body.sanitized).to have_text("$9.99")
+          expect(mail.body.sanitized).to have_text("9.99 ETB")
 
           html = Nokogiri::HTML(mail.body.decoded)
           rows = html.css("table.two-product-card-table > tbody > tr")
@@ -422,12 +426,13 @@ describe CustomerMailer do
     end
 
     context "with membership purchase" do
-      let(:product) { create(:membership_product) }
+      let(:product) { create(:membership_product, price_currency_type: Currency::USD) }
       let(:purchase) do
         create(
           :membership_purchase,
           link: product,
           price_cents: 1998,
+          displayed_price_currency_type: Currency::USD,
           created_at: DateTime.parse("January 1, 2023"),
         )
       end
@@ -459,7 +464,7 @@ describe CustomerMailer do
           "All charges are processed in United States Dollars. " +
           "Your bank or financial institution may apply their own fees for currency conversion."
         )
-        expect(mail.body.sanitized).to have_text("The charge will be listed as GUMRD.COM* on your credit card statement.")
+        expect(mail.body.sanitized).to have_text("The charge will be listed as #{PlatformConfig.statement_descriptor} on your credit card statement.")
         expect(mail.body.sanitized).to have_text("Today's payment The Works of Edgar Gumstein $19.98 Generate invoice")
         expect(mail.body.encoded).to have_link("Generate invoice")
         expect(mail.body.sanitized).to have_text("Upcoming payment The Works of Edgar Gumstein $19.98 on Feb 1, 2023")
@@ -531,10 +536,13 @@ describe CustomerMailer do
       end
 
       context "with free trial membership purchase" do
+        let(:free_trial_product) { create(:membership_product, :with_free_trial_enabled, price_currency_type: Currency::USD) }
         let(:purchase) do
           create(
             :free_trial_membership_purchase,
+            link: free_trial_product,
             price_cents: 3_00,
+            displayed_price_currency_type: Currency::USD,
             created_at: Date.new(2023, 1, 1),
           )
         end
@@ -821,17 +829,20 @@ describe CustomerMailer do
     end
 
     describe "subscription with limited duration discount" do
+      let(:product) { create(:membership_product, price_currency_type: Currency::USD) }
       let(:purchase) do
         create(
           :membership_purchase,
+          link: product,
           price_cents: 500,
+          displayed_price_currency_type: Currency::USD,
           created_at: DateTime.parse("January 1, 2023"),
         )
       end
 
       before do
         purchase.create_purchase_offer_code_discount(
-          offer_code: create(:offer_code, user: purchase.seller, products: [purchase.link]),
+          offer_code: create(:offer_code, user: purchase.seller, products: [purchase.link], currency_type: Currency::USD),
           offer_code_amount: 100,
           offer_code_is_percent: false,
           pre_discount_minimum_price_cents: 600,
@@ -880,7 +891,8 @@ describe CustomerMailer do
     end
 
     context "commission deposit purchase", :vcr do
-      let(:purchase) { create(:commission_deposit_purchase) }
+      let(:product) { create(:commission_product, price_currency_type: Currency::USD) }
+      let(:purchase) { create(:commission_deposit_purchase, link: product, displayed_price_currency_type: Currency::USD) }
 
       before { purchase.create_artifacts_and_send_receipt! }
 
@@ -911,7 +923,8 @@ describe CustomerMailer do
     end
 
     context "purchase with a tip" do
-      let(:purchase) { create(:purchase, price_cents: 1000) }
+      let(:product) { create(:product, price_currency_type: Currency::USD) }
+      let(:purchase) { create(:purchase, link: product, price_cents: 1000, displayed_price_currency_type: Currency::USD) }
 
       before { purchase.create_tip!(value_cents: 500) }
 
@@ -925,7 +938,8 @@ describe CustomerMailer do
     end
 
     context "call purchase" do
-      let(:purchase) { create(:call_purchase, variant_attributes: [create(:variant, name: "1 hour")]) }
+      let(:product) { create(:call_product, :available_for_a_year, price_currency_type: Currency::USD) }
+      let(:purchase) { create(:call_purchase, link: product, displayed_price_currency_type: Currency::USD, variant_attributes: [create(:variant, name: "1 hour")]) }
 
       before { purchase.create_artifacts_and_send_receipt! }
 
@@ -1428,7 +1442,7 @@ describe CustomerMailer do
       expect(mail.body.encoded).to have_link("View content", href: call.purchase.url_redirect.download_page_url)
       expect(mail.body.sanitized).to have_text("Call schedule #{call.formatted_time_range} #{call.formatted_date_range}")
       expect(mail.body.sanitized).to have_text("Duration 1 hour")
-      expect(mail.body.sanitized).to have_text("Product price $1")
+      expect(mail.body.sanitized).to have_text("Product price 1 ETB")
     end
 
     it "does not deliver a queued reminder after a full refund" do
@@ -1783,8 +1797,8 @@ describe CustomerMailer do
 
   describe "#refund" do
     let(:seller) { create(:named_seller) }
-    let(:product) { create(:product, user: seller) }
-    let(:purchase) { create(:purchase, link: product, seller:) }
+    let(:product) { create(:product, user: seller, price_currency_type: Currency::USD) }
+    let(:purchase) { create(:purchase, link: product, seller:, displayed_price_currency_type: Currency::USD) }
 
     it "sends a refund email" do
       mail = CustomerMailer.refund("test@example.com", product.id, purchase.id)
@@ -1840,8 +1854,8 @@ describe CustomerMailer do
 
   describe "#partial_refund" do
     let(:seller) { create(:named_seller) }
-    let(:product) { create(:product, user: seller) }
-    let(:purchase) { create(:purchase, link: product, seller:) }
+    let(:product) { create(:product, user: seller, price_currency_type: Currency::USD) }
+    let(:purchase) { create(:purchase, link: product, seller:, displayed_price_currency_type: Currency::USD) }
 
     it "sends a partial refund email" do
       mail = CustomerMailer.partial_refund("test@example.com", product.id, purchase.id, 500, "partially")

@@ -155,9 +155,7 @@ class CustomerMailer < ApplicationMailer
     with_recipient_locale(@purchase || @product) do
       if @purchase&.buyer_presentment?
         @formatted_presentment_total = @purchase.formatted_buyer_presentment_total
-        unless @purchase.displayed_price_currency_type.to_s.casecmp?("etb")
-          @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents)
-        end
+        @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents)
       end
       mail(
         to: email,
@@ -179,10 +177,8 @@ class CustomerMailer < ApplicationMailer
       @formatted_refund_amount = formatted_price(@product.price_currency_type, amount_cents)
       if presentment_refund_currency.present? && presentment_refund_amount_cents.to_i > 0
         @formatted_presentment_refund_amount = StripeChargeProcessor.format_charge_presentment_amount(presentment_refund_amount_cents, presentment_refund_currency)
-        unless @product.price_currency_type.to_s.casecmp?("etb") || @purchase&.displayed_price_currency_type.to_s.casecmp?("etb")
-          @formatted_usd_refund_amount = formatted_price("usd", refund_amount_cents_usd)
-          @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents) if @purchase
-        end
+        @formatted_usd_refund_amount = formatted_price("usd", refund_amount_cents_usd)
+        @formatted_usd_total = formatted_price("usd", @purchase.total_transaction_cents) if @purchase
       end
       mail(
         to: email,
@@ -248,7 +244,7 @@ class CustomerMailer < ApplicationMailer
     # tell amazon to convert the pdf to kindle-readable format
     mail(
       to: kindle_email,
-      from: "noreply@#{CUSTOMERS_MAIL_DOMAIN}",
+      from: PlatformConfig.kindle_sender_email,
       subject: "convert",
       delivery_method_options: MailerInfo.default_delivery_method_options(domain: :customers)
     )

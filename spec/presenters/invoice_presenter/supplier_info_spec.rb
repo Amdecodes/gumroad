@@ -44,31 +44,68 @@ describe InvoicePresenter::SupplierInfo do
 
     describe "#attributes" do
       context "when is not supplied by the seller" do
-        it "returns platform supplier attributes including the platform note attribute" do
-          expect(presenter.attributes).to eq(
-            [
-              {
-                label: nil,
-                value: PlatformConfig.legal_name,
-              },
-              {
-                label: "Office address",
-                value: PlatformConfig.legal_address,
-              },
-              {
-                label: "Email",
-                value: ApplicationMailer::NOREPLY_EMAIL,
-              },
-              {
-                label: "Web",
-                value: ROOT_DOMAIN,
-              },
-              {
-                label: nil,
-                value: "Products supplied via #{PlatformConfig.app_name}.",
-              }
-            ]
-          )
+        context "when legal_name and legal_address are unset in config" do
+          before do
+            allow(PlatformConfig).to receive(:legal_name).and_return(nil)
+            allow(PlatformConfig).to receive(:legal_address).and_return(nil)
+          end
+
+          it "shows just the app name and omits the legal address line" do
+            expect(presenter.attributes).to eq(
+              [
+                {
+                  label: nil,
+                  value: PlatformConfig.app_name,
+                },
+                {
+                  label: "Email",
+                  value: ApplicationMailer::NOREPLY_EMAIL,
+                },
+                {
+                  label: "Web",
+                  value: ROOT_DOMAIN,
+                },
+                {
+                  label: nil,
+                  value: "Products supplied via #{PlatformConfig.app_name}.",
+                }
+              ]
+            )
+          end
+        end
+
+        context "when legal_name and legal_address are explicitly configured" do
+          before do
+            allow(PlatformConfig).to receive(:legal_name).and_return("Custom Legal Entity LLC")
+            allow(PlatformConfig).to receive(:legal_address).and_return("123 Platform Way, Addis Ababa")
+          end
+
+          it "returns the configured legal name and office address" do
+            expect(presenter.attributes).to eq(
+              [
+                {
+                  label: nil,
+                  value: "Custom Legal Entity LLC",
+                },
+                {
+                  label: "Office address",
+                  value: "123 Platform Way, Addis Ababa",
+                },
+                {
+                  label: "Email",
+                  value: ApplicationMailer::NOREPLY_EMAIL,
+                },
+                {
+                  label: "Web",
+                  value: ROOT_DOMAIN,
+                },
+                {
+                  label: nil,
+                  value: "Products supplied via #{PlatformConfig.app_name}.",
+                }
+              ]
+            )
+          end
         end
 
         describe "Gumroad tax information" do

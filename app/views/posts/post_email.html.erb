@@ -59,7 +59,9 @@ Do not include route helpers (`root_url`), because the URL options (e.g. the hos
             <a href="{{unsubscribe_url}}">{{t_unsubscribe}}</a>
           </p>
 
-          <p><%= PlatformConfig::LEGAL_ADDRESS %></p>
+          <% if PlatformConfig.legal_address.present? %>
+            <p><%= PlatformConfig.legal_address %></p>
+          <% end %>
           <% unless Rails.env.production? %>
             <p>(⌐▨_▨) <%= Rails.env.capitalize %> (▨_▨¬)</p>
           <% end %>

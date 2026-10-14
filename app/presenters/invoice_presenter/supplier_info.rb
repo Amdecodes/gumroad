@@ -31,6 +31,8 @@ class InvoicePresenter::SupplierInfo
     end
 
     def gumroad_address_attribute
+      return if PlatformConfig.legal_address.blank?
+
       {
         label: "Office address",
         value: PlatformConfig.legal_address,
@@ -40,7 +42,7 @@ class InvoicePresenter::SupplierInfo
     def gumroad_title_attribute
       {
         label: nil,
-        value: PlatformConfig.legal_name,
+        value: PlatformConfig.legal_name.presence || PlatformConfig.app_name,
       }
     end
 

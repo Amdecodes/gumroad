@@ -14,7 +14,7 @@ describe UserSignupMailer do
     end
 
     it "sets the correct headers" do
-      expect(@mail.subject).to eq "Confirmation instructions"
+      expect(@mail.subject).to eq I18n.t("devise.mailer.confirmation_instructions.subject")
       expect(@mail.from).to eq [ApplicationMailer::NOREPLY_EMAIL]
       expect(@mail.reply_to).to eq [ApplicationMailer::NOREPLY_EMAIL]
     end
@@ -33,14 +33,14 @@ describe UserSignupMailer do
     end
 
     it "sets the correct headers" do
-      expect(@mail.subject).to eq "Security alert: Your Gumroad account email is being changed"
+      expect(@mail.subject).to eq I18n.t("devise.mailer.email_changed.subject", app_name: PlatformConfig.app_name)
       expect(@mail.from).to eq [ApplicationMailer::NOREPLY_EMAIL]
       expect(@mail.reply_to).to eq [ApplicationMailer::NOREPLY_EMAIL]
     end
 
     it "includes the notification message" do
-      expect(@mail.body).to include("Your Gumroad account email is being changed")
-      expect(@mail.body).to include("We're contacting you to notify that your Gumroad account email is being changed from original@example.com to new@example.com.")
+      expect(@mail.body).to include("Your #{PlatformConfig.app_name} account email is being changed")
+      expect(@mail.body).to include("We're contacting you to notify that your #{PlatformConfig.app_name} account email is being changed from original@example.com to new@example.com.")
       expect(@mail.body).to include("If you did not make this change, please contact support immediately by replying to this email.")
       expect(@mail.body).to include("User ID: #{@user.external_id}")
     end
@@ -69,14 +69,14 @@ describe UserSignupMailer do
     end
 
     it "sets the correct headers" do
-      expect(@mail.subject).to eq "Reset password instructions"
+      expect(@mail.subject).to eq I18n.t("devise.mailer.reset_password_instructions.subject")
       expect(@mail.from).to eq [ApplicationMailer::NOREPLY_EMAIL]
       expect(@mail.reply_to).to eq [ApplicationMailer::NOREPLY_EMAIL]
     end
 
     it "includes the notification message" do
       expect(@mail.body).to include("Forgotten password request")
-      expect(@mail.body).to include("It seems you forgot the password for your Gumroad account. You can change your password by clicking the button below:")
+      expect(@mail.body).to include("It seems you forgot the password for your #{PlatformConfig.app_name} account. You can change your password by clicking the button below:")
       expect(@mail.body).to include("If you didn't request this, please ignore this email. You won't get another one!")
     end
   end

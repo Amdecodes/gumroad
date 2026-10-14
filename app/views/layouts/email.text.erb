@@ -1,7 +1,7 @@
 <%= yield %>
 
 --
-<%= PlatformConfig::LEGAL_ADDRESS %>
-<% if @unsub_link.present? %><%= t("mailers.common.unsubscribe") %>: <%= @unsub_link %>
+<% if PlatformConfig.legal_address.present? %><%= PlatformConfig.legal_address %>
+<% end %><% if @unsub_link.present? %><%= t("mailers.common.unsubscribe") %>: <%= @unsub_link %>
 <% end %>
 <%= t("mailers.common.powered_by") %> <%= PlatformConfig::APP_NAME %>
