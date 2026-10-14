@@ -10,6 +10,7 @@ rescue LoadError
 end
 
 Sidekiq.configure_server do |config|
+  PlatformConfig.validate_production_config!
   config.redis = { url: "redis://#{ENV["SIDEKIQ_REDIS_HOST"]}" }
 
   if defined?(Sidekiq::Pro)

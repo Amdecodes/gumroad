@@ -133,14 +133,14 @@ describe CustomerMailer do
         it "sets the FROM name to the creator's name" do
           @user.update!(name: "Juan Girão")
           mail = CustomerMailer.receipt(@purchase.id)
-          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@staging.customers.gumroad.com>").encoded)
+          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>").encoded)
         end
 
         context "and symbols" do
           it "sets the FROM name to 'ArifDrop'" do
             @user.update!(name: "Juan Girão @ Gumroad")
             mail = CustomerMailer.receipt(@purchase.id)
-            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@staging.customers.gumroad.com>")
+            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>")
           end
         end
       end
@@ -149,14 +149,14 @@ describe CustomerMailer do
         it "sets the FROM name to the creator's name" do
           @user.update!(name: "Ștefan Opriță")
           mail = CustomerMailer.receipt(@purchase.id)
-          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@staging.customers.gumroad.com>").encoded)
+          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>").encoded)
         end
 
         context "and symbols" do
           it "sets the FROM name to 'ArifDrop'" do
             @user.update!(name: "Ștefan Opriță @ Gumroad")
             mail = CustomerMailer.receipt(@purchase.id)
-            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@staging.customers.gumroad.com>")
+            expect(mail.header.to_s).to include("From: #{PlatformConfig::APP_NAME} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>")
           end
         end
       end
@@ -165,14 +165,14 @@ describe CustomerMailer do
         it "sets the FROM name to the creator's name" do
           @user.update!(name: "ゆうさん")
           mail = CustomerMailer.receipt(@purchase.id)
-          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@staging.customers.gumroad.com>").encoded)
+          expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>").encoded)
         end
 
         context "and symbols" do
           it "sets the FROM name to the creator's name" do
             @user.update!(name: "ゆうさん @ Gumroad")
             mail = CustomerMailer.receipt(@purchase.id)
-            expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@staging.customers.gumroad.com>").encoded)
+            expect(mail.header.to_s).to include(Mail::Address.new("#{@user.name} <noreply@#{CUSTOMERS_MAIL_DOMAIN}>").encoded)
           end
         end
       end
@@ -181,7 +181,7 @@ describe CustomerMailer do
         it "wraps creator name in quotes" do
           @user.update!(name: "Gumbot @ Gumroad")
           mail = CustomerMailer.receipt(@purchase.id)
-          expect(mail.header.to_s).to include("From: \"Gumbot @ Gumroad\" <noreply@staging.customers.gumroad.com>")
+          expect(mail.header.to_s).to include("From: \"Gumbot @ Gumroad\" <noreply@#{CUSTOMERS_MAIL_DOMAIN}>")
         end
       end
 
@@ -189,7 +189,7 @@ describe CustomerMailer do
         it "deletes the new lines and strips whitespaces from the creator name" do
           @user.update!(name: "   \nGumbot\n Generalist @ Gumroad   ")
           mail = CustomerMailer.receipt(@purchase.id)
-          expect(mail.header.to_s).to include("From: \"Gumbot Generalist @ Gumroad\" <noreply@staging.customers.gumroad.com>")
+          expect(mail.header.to_s).to include("From: \"Gumbot Generalist @ Gumroad\" <noreply@#{CUSTOMERS_MAIL_DOMAIN}>")
         end
       end
     end

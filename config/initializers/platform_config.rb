@@ -8,7 +8,15 @@ module PlatformConfig
   LEGAL_NAME = GlobalConfig.get("LEGAL_NAME")
   LEGAL_ADDRESS = GlobalConfig.get("LEGAL_ADDRESS")
   DEFAULT_CURRENCY = "ETB"
-  REQUIRED_PRODUCTION_KEYS = %w[LEGAL_NAME LEGAL_ADDRESS SUPPORT_EMAIL STATEMENT_DESCRIPTOR].freeze
+  REQUIRED_PRODUCTION_KEYS = %w[
+    LEGAL_NAME
+    LEGAL_ADDRESS
+    SUPPORT_EMAIL
+    STATEMENT_DESCRIPTOR
+    CUSTOMERS_MAIL_DOMAIN
+    FOLLOWER_CONFIRMATION_MAIL_DOMAIN
+    CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN
+  ].freeze
 
   class << self
     def app_name(locale = I18n.locale)
@@ -98,7 +106,9 @@ module PlatformConfig
       return unless env.production?
 
       missing = REQUIRED_PRODUCTION_KEYS.select do |key|
-        GlobalConfig.get(key).blank?
+        val = GlobalConfig.get(key)
+        val = GlobalConfig.get("#{key}_PROD") if val.blank?
+        val.blank?
       end
       if missing.any?
         raise "Missing required platform configuration in production: #{missing.join(', ')}. " \

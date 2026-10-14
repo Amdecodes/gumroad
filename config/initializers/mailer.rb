@@ -4,13 +4,13 @@ require_relative "../../app/models/mailer_info"
 require_relative "../../app/models/mailer_info/delivery_method"
 
 if Rails.env.production?
-  FOLLOWER_CONFIRMATION_MAIL_DOMAIN = GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN_PROD", "followers.gumroad.com")
-  CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN_PROD", "creators.gumroad.com")
-  CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN_PROD", "customers.gumroad.com")
+  FOLLOWER_CONFIRMATION_MAIL_DOMAIN = GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN").presence || GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN_PROD")
+  CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN").presence || GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN_PROD")
+  CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN").presence || GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN_PROD")
 else
-  FOLLOWER_CONFIRMATION_MAIL_DOMAIN = GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN_DEV", "staging.followers.gumroad.com")
-  CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN_DEV", "staging.creators.gumroad.com")
-  CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN_DEV", "staging.customers.gumroad.com")
+  FOLLOWER_CONFIRMATION_MAIL_DOMAIN = GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN").presence || GlobalConfig.get("FOLLOWER_CONFIRMATION_MAIL_DOMAIN_DEV", "followers.arifdrop.test")
+  CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN").presence || GlobalConfig.get("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN_DEV", "creators.arifdrop.test")
+  CUSTOMERS_MAIL_DOMAIN = GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN").presence || GlobalConfig.get("CUSTOMERS_MAIL_DOMAIN_DEV", "customers.arifdrop.test")
 end
 
 SENDGRID_SMTP_ADDRESS = GlobalConfig.get("SENDGRID_SMTP_ADDRESS", "smtp.sendgrid.net")

@@ -16,6 +16,32 @@ This document provides guidance on setting up and configuring the production env
 
 Set up all environment variables listed in the `.env.production.example` file in your environment. These variables contain all the necessary configuration for database connections, caching, application servers, storage, payment processing, authentication, email services, and third-party integrations.
 
+### Required Platform & Identity Variables (Boot Guard)
+
+These variables are validated at production boot by `PlatformConfig.validate_production_config!`. If any required variable is missing or blank, both the Puma application server and Sidekiq background workers fail fast on startup:
+
+| Variable | Required | Description | Example / Recommended Value |
+| :--- | :---: | :--- | :--- |
+| `LEGAL_NAME` | **Yes** | Legal registered entity name shown on invoices & copyright | `ArifDrop Technologies PLC` |
+| `LEGAL_ADDRESS` | **Yes** | Official company registered business address on invoices | `Bole Sub-City, Addis Ababa, Ethiopia` |
+| `SUPPORT_EMAIL` | **Yes** | Primary customer support inbox | `support@arifdrop.com` |
+| `STATEMENT_DESCRIPTOR`| **Yes** | Card payment bank statement descriptor | `ARIFDROP*` |
+| `CUSTOMERS_MAIL_DOMAIN`| **Yes** | Delivery domain for receipts, notifications, Kindle deliveries | `customers.arifdrop.com` |
+| `FOLLOWER_CONFIRMATION_MAIL_DOMAIN`| **Yes** | Delivery domain for follower opt-in confirmations | `followers.arifdrop.com` |
+| `CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN`| **Yes** | Delivery domain for creator broadcasts & updates | `creators.arifdrop.com` |
+
+### Optional Platform Variables
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `APP_NAME` | `ArifDrop` | Public English platform name |
+| `APP_NAME_AM` | `አሪፍድሮፕ` | Public Amharic platform name |
+| `PLATFORM_TWITTER_URL` | *(none)* | Link rendered in public footer (hidden if unset) |
+| `PLATFORM_YOUTUBE_URL` | *(none)* | Link rendered in public footer (hidden if unset) |
+| `PLATFORM_INSTAGRAM_URL`| *(none)* | Link rendered in public footer (hidden if unset) |
+| `PLATFORM_FACEBOOK_URL` | *(none)* | Link rendered in public footer (hidden if unset) |
+| `PLATFORM_PINTEREST_URL`| *(none)* | Link rendered in public footer (hidden if unset) |
+
 ## Running Services
 
 The Gumroad production environment consists of several services that work together. Below is information on how to run each service.

@@ -72,10 +72,12 @@ RSpec.describe "Localization Parity" do
     let(:dev_env) { ActiveSupport::StringInquirer.new("development") }
 
     it "raises when required configuration keys are missing in production" do
-      allow(GlobalConfig).to receive(:get).with("LEGAL_NAME").and_return(nil)
-      allow(GlobalConfig).to receive(:get).with("LEGAL_ADDRESS").and_return(nil)
+      allow(GlobalConfig).to receive(:get).and_return(nil)
       allow(GlobalConfig).to receive(:get).with("SUPPORT_EMAIL").and_return("support@example.com")
       allow(GlobalConfig).to receive(:get).with("STATEMENT_DESCRIPTOR").and_return("TEST*")
+      allow(GlobalConfig).to receive(:get).with("CUSTOMERS_MAIL_DOMAIN").and_return("customers.example.com")
+      allow(GlobalConfig).to receive(:get).with("FOLLOWER_CONFIRMATION_MAIL_DOMAIN").and_return("followers.example.com")
+      allow(GlobalConfig).to receive(:get).with("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN").and_return("creators.example.com")
 
       expect do
         PlatformConfig.validate_production_config!(prod_env)
@@ -83,10 +85,14 @@ RSpec.describe "Localization Parity" do
     end
 
     it "succeeds when all required configuration keys are present in production" do
+      allow(GlobalConfig).to receive(:get).and_return(nil)
       allow(GlobalConfig).to receive(:get).with("LEGAL_NAME").and_return("ArifDrop PLC")
       allow(GlobalConfig).to receive(:get).with("LEGAL_ADDRESS").and_return("Addis Ababa")
       allow(GlobalConfig).to receive(:get).with("SUPPORT_EMAIL").and_return("support@arifdrop.com")
       allow(GlobalConfig).to receive(:get).with("STATEMENT_DESCRIPTOR").and_return("ARIFDROP*")
+      allow(GlobalConfig).to receive(:get).with("CUSTOMERS_MAIL_DOMAIN").and_return("customers.arifdrop.com")
+      allow(GlobalConfig).to receive(:get).with("FOLLOWER_CONFIRMATION_MAIL_DOMAIN").and_return("followers.arifdrop.com")
+      allow(GlobalConfig).to receive(:get).with("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN").and_return("creators.arifdrop.com")
 
       expect do
         PlatformConfig.validate_production_config!(prod_env)

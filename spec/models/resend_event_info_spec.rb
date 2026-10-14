@@ -27,7 +27,7 @@ RSpec.describe ResendEventInfo do
         "data" => {
           "created_at" => "2025-01-02 00:14:11.140106+00",
           "email_id" => "7409b6f1-56f1-4ba5-89f0-4364a08b246e",
-          "from" => "\"Seller\" <noreply@staging.customers.gumroad.com>",
+          "from" => "\"Seller\" <noreply@#{CUSTOMERS_MAIL_DOMAIN}>",
           "to" => [email],
           "headers" => mailer_headers,
           "subject" => "Test email"
