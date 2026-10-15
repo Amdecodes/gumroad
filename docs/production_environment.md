@@ -22,6 +22,7 @@ These variables are validated at production boot by `PlatformConfig.validate_pro
 
 | Variable | Required | Description | Example / Recommended Value |
 | :--- | :---: | :--- | :--- |
+| `SERVER_BOOT` | **Yes** | Flag enabling boot validation guard on web and worker startup | `true` |
 | `LEGAL_NAME` | **Yes** | Legal registered entity name shown on invoices & copyright | `ArifDrop Technologies PLC` |
 | `LEGAL_ADDRESS` | **Yes** | Official company registered business address on invoices | `Bole Sub-City, Addis Ababa, Ethiopia` |
 | `SUPPORT_EMAIL` | **Yes** | Primary customer support inbox | `support@arifdrop.com` |
@@ -54,6 +55,7 @@ Gumroad uses Puma as the application server.
 
 Puma runs the Rails application and handles HTTP requests. Configuration:
 
+- **Boot Guard**: Set `SERVER_BOOT=true` to enforce required platform environment variables on startup
 - **Worker Processes**: Set via `PUMA_WORKER_PROCESSES` (default: 1)
 - **Threads**: Set via `RAILS_MAX_THREADS` (default: 2)
 - **Memory**: Recommended 2GB per instance
@@ -66,6 +68,7 @@ Sidekiq processes background jobs for the application.
 
 #### Configuration
 
+- **Boot Guard**: Set `SERVER_BOOT=true` to enforce required platform environment variables on startup
 - **Threads**: Set via `RAILS_MAX_THREADS` (default: 2)
 - **Memory**: Recommended 2GB per instance
 - **Database Replicas**: Set `USE_DB_WORKER_REPLICAS=true` to use read replicas for database operations

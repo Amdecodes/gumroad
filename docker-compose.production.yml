@@ -12,6 +12,7 @@ services:
       - RAILS_ENV=production
       - RACK_ENV=production
       - PORT=3000
+      - SERVER_BOOT=true
     depends_on:
       db:
         condition: service_healthy
@@ -38,6 +39,7 @@ services:
     environment:
       - RAILS_ENV=production
       - RACK_ENV=production
+      - SERVER_BOOT=true
     depends_on:
       db:
         condition: service_healthy
