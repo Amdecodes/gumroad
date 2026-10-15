@@ -11,7 +11,7 @@
         <% if @shipping_info.nil? && @purchase.quantity > 1 %>
           <tr>
             <td>
-              <h4>Quantity</h4>
+              <h4><%= t("mailers.contacting_creator.notify.quantity", default: "Quantity") %></h4>
             </td>
             <td><%= @purchase.quantity %></td>
           </tr>
@@ -19,14 +19,14 @@
         <% if @buyer_name.present? %>
           <tr>
             <td>
-              <h4>Customer</h4>
+              <h4><%= t("mailers.contacting_creator.notify.customer", default: "Customer") %></h4>
             </td>
             <td><%= @buyer_name %></td>
           </tr>
         <% end %>
         <tr>
           <td>
-            <h4>Email</h4>
+            <h4><%= t("mailers.contacting_creator.notify.email", default: "Email") %></h4>
           </td>
           <td><%= @purchaser_email %></td>
         </tr>
@@ -34,7 +34,7 @@
           <tr>
             <td>
               <h4>
-                Call schedule
+                <%= t("mailers.contacting_creator.notify.call_schedule", default: "Call schedule") %>
               </h4>
             </td>
             <td>
@@ -47,7 +47,7 @@
         <% if @shipping_info.present? %>
           <tr>
             <td>
-              <h4>Shipping address</h4>
+              <h4><%= t("mailers.contacting_creator.notify.shipping_address", default: "Shipping address") %></h4>
             </td>
             <td>
               <%= @shipping_info["full_name"] %>
@@ -66,7 +66,7 @@
         <% if @quantity.present? && !is_coffee && call.blank? %>
           <tr>
             <td>
-              <h4>Quantity</h4>
+              <h4><%= t("mailers.contacting_creator.notify.quantity", default: "Quantity") %></h4>
             </td>
             <td><%= @quantity %></td>
           </tr>
@@ -74,7 +74,7 @@
         <% if @variants.present? && !is_coffee && call.blank? %>
           <tr>
             <td>
-              <h4><%= @product.is_tiered_membership ? "Tier" : "Variant".pluralize(@variants_count) %></h4>
+              <h4><%= @product.is_tiered_membership ? t("mailers.contacting_creator.notify.tier", default: "Tier") : (@variants_count > 1 ? t("mailers.contacting_creator.notify.variants", default: "Variants") : t("mailers.contacting_creator.notify.variant", default: "Variant")) %></h4>
             </td>
             <td><%= @variants %></td>
           </tr>
@@ -84,7 +84,7 @@
           <tr>
             <td>
               <h4>
-                Deposit paid
+                <%= t("mailers.contacting_creator.notify.deposit_paid", default: "Deposit paid") %>
               </h4>
             </td>
             <td style="white-space: nowrap;"><%= @purchase.formatted_display_price %></td>
@@ -95,7 +95,7 @@
           <tr>
             <td>
               <h4>
-                Tip
+                <%= t("mailers.contacting_creator.notify.tip", default: "Tip") %>
               </h4>
             </td>
             <td style="white-space: nowrap;"><%= format_just_price_in_cents(@purchase.tip.value_cents, @purchase.displayed_price_currency_type) %></td>
@@ -105,7 +105,7 @@
           <tr>
             <td>
               <h4>
-                Duration
+                <%= t("mailers.contacting_creator.notify.duration", default: "Duration") %>
               </h4>
             </td>
             <td><%= @purchase.variant_attributes.first.name %></td>
@@ -114,35 +114,35 @@
         <% if affiliate.present? && !@purchase.affiliate_credit_cents.zero? && @purchase.affiliate_credit.present? %>
           <tr>
             <td>
-              <h4><%= affiliate.collaborator? ? "Collaborator email" : "Affiliate email" %></h4>
+              <h4><%= affiliate.collaborator? ? t("mailers.contacting_creator.notify.collaborator_email", default: "Collaborator email") : t("mailers.contacting_creator.notify.affiliate_email", default: "Affiliate email") %></h4>
             </td>
             <td><%= affiliate.affiliate_user.form_email %></td>
           </tr>
           <tr>
             <td>
-              <h4><%= affiliate.collaborator? ? "Collaborator commission" : "Affiliate commission" %></h4>
+              <h4><%= affiliate.collaborator? ? t("mailers.contacting_creator.notify.collaborator_commission", default: "Collaborator commission") : t("mailers.contacting_creator.notify.affiliate_commission", default: "Affiliate commission") %></h4>
             </td>
             <td style="white-space: nowrap;"><%= "#{Money.new(@purchase.affiliate_credit_cents + @purchase.affiliate_credit.fee_cents).format(no_cents_if_whole: true, symbol: true)} (#{@purchase.affiliate_credit.basis_points / 100}%)" %></td>
           </tr>
         <% end %>
         <% if @purchase.utm_link.present? %>
           <tr>
-            <td><h4><%= link_to "UTM link", @purchase.utm_link.utm_url, rel: "noopener noreferrer nofollow", target: "_blank" %> driven sale</h4></td>
+            <td><h4><%= t("mailers.contacting_creator.notify.utm_sale", link: link_to("UTM link", @purchase.utm_link.utm_url, rel: "noopener noreferrer nofollow", target: "_blank"), default: "%{link} driven sale").html_safe %></h4></td>
             <td>
-              <span style="font-weight: bold">Link</span>: <%= link_to @purchase.utm_link.title, dashboard_utm_links_url(query: @purchase.utm_link.title), target: "_blank" %>
+              <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.link_label", default: "Link") %></span>: <%= link_to @purchase.utm_link.title, dashboard_utm_links_url(query: @purchase.utm_link.title), target: "_blank" %>
               <br>
-              <span style="font-weight: bold">Source</span>: <%= @purchase.utm_link.utm_source %>
+              <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.source", default: "Source") %></span>: <%= @purchase.utm_link.utm_source %>
               <br>
-              <span style="font-weight: bold">Medium</span>: <%= @purchase.utm_link.utm_medium %>
+              <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.medium", default: "Medium") %></span>: <%= @purchase.utm_link.utm_medium %>
               <br>
-              <span style="font-weight: bold">Campaign</span>: <%= @purchase.utm_link.utm_campaign %>
+              <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.campaign", default: "Campaign") %></span>: <%= @purchase.utm_link.utm_campaign %>
               <br>
               <% if @purchase.utm_link.utm_term.present? %>
-                <span style="font-weight: bold">Term</span>: <%= @purchase.utm_link.utm_term %>
+                <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.term", default: "Term") %></span>: <%= @purchase.utm_link.utm_term %>
                 <br>
               <% end %>
               <% if @purchase.utm_link.utm_content.present? %>
-                <span style="font-weight: bold">Content</span>: <%= @purchase.utm_link.utm_content %>
+                <span style="font-weight: bold"><%= t("mailers.contacting_creator.notify.content", default: "Content") %></span>: <%= @purchase.utm_link.utm_content %>
                 <br>
               <% end %>
             </td>
@@ -150,11 +150,11 @@
         <% end %>
         <tr>
           <td>
-            <h4>Referrer</h4>
+            <h4><%= t("mailers.contacting_creator.notify.referrer", default: "Referrer") %></h4>
           </td>
           <td>
             <% if @purchase.referrer == "direct" %>
-              Direct
+              <%= t("mailers.contacting_creator.notify.direct", default: "Direct") %>
             <% elsif @referrer_name.present? %>
               <% if @purchase.referrer.present? %>
                 <a href="<%= @purchase.referrer %>" target="_blank"><%= @referrer_name %></a>
@@ -167,7 +167,7 @@
         <% if @purchase.try(:is_gift_sender_purchase) %>
           <tr>
             <td>
-              <h4>Giftee email</h4>
+              <h4><%= t("mailers.contacting_creator.notify.giftee_email", default: "Giftee email") %></h4>
             </td>
             <td><%= @purchase.giftee_email %></td>
           </tr>
@@ -191,14 +191,14 @@
       <tbody>
         <tr>
           <td>
-            <h4>Product price</h4>
+            <h4><%= t("mailers.contacting_creator.notify.product_price", default: "Product price") %></h4>
           </td>
           <td style="white-space: nowrap;"><%= @purchase.formatted_display_price %></td>
         </tr>
         <% if @purchase.quantity > 1 %>
           <tr>
             <td>
-              <h4>Quantity</h4>
+              <h4><%= t("mailers.contacting_creator.notify.quantity", default: "Quantity") %></h4>
             </td>
             <td><%= @purchase.quantity %></td>
           </tr>
@@ -206,7 +206,7 @@
         <% if @product.is_physical %>
           <tr>
             <td>
-              <h4>Shipping rate</h4>
+              <h4><%= t("mailers.contacting_creator.notify.shipping_rate", default: "Shipping rate") %></h4>
             </td>
             <td style="white-space: nowrap;"><%= @purchase.formatted_shipping_amount %></td>
           </tr>
@@ -222,7 +222,7 @@
         <% end %>
         <tr>
           <td>
-            <h4>Order total</h4>
+            <h4><%= t("mailers.contacting_creator.notify.order_total", default: "Order total") %></h4>
           </td>
           <td style="white-space: nowrap;"><%= @purchase.formatted_total_price %></td>
         </tr>
@@ -233,6 +233,6 @@
 
 <% if @purchase.nil? || @purchase.is_test_purchase? %>
   <div>
-    <p>Because this was a test sale, this amount will not be added to your account balance.</p>
+    <p><%= t("mailers.contacting_creator.notify.test_sale_notice", default: "Because this was a test sale, this amount will not be added to your account balance.") %></p>
   </div>
 <% end %>

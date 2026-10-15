@@ -49,8 +49,7 @@ am:
         purchase:
           attributes:
             base:
-              card_authorization_failed: ለዚህ ክፍያ ካርድዎን ማረጋገጥ አልቻልንም። እባክዎ እንደገና ይሞክሩ
-                ወይም ሌላ የክፍያ ዘዴ ይጠቀሙ።
+              card_authorization_failed: ለዚህ ክፍያ ካርድዎን ማረጋገጥ አልቻልንም። እባክዎ እንደገና ይሞክሩ ወይም ሌላ የክፍያ ዘዴ ይጠቀሙ።
               card_charge_failed: ካርድዎን ማስከፈል አልቻልንም። እንደገና ይሞክሩ ወይም ሌላ ካርድ ይጠቀሙ።
               card_uncharged: ካርድዎ አልተከፈለበትም።
               discount_existing_customers_only: ይቅርታ፣ ይህ የቅናሽ ኮድ ለነባር ደንበኞች ብቻ ነው።
@@ -60,8 +59,7 @@ am:
               invalid_quantity: ይቅርታ፣ ልክ ያልሆነ ብዛት መርጠዋል።
               location_unavailable: ይቅርታ፣ ይህ እቃ ባለዎት አካባቢ አይገኝም።
               not_for_sale: ይህ ምርት በአሁኑ ጊዜ ለሽያጭ የቀረበ አይደለም።
-              preorder_already_made: ይህንን ምርት አስቀድመው በቅድመ-ትዕዛዝ ገዝተዋል። ማረጋገጫ በኢሜይል
-                ተልኮልዎታል።
+              preorder_already_made: ይህንን ምርት አስቀድመው በቅድመ-ትዕዛዝ ገዝተዋል። ማረጋገጫ በኢሜይል ተልኮልዎታል።
               price_changed: ዋጋው አሁን ተቀይሯል! የተሻሻለውን ዋጋ ለማየት ገጹን ያድሱ።
               quantity_exceeded: ካለው መጠን በላይ የሆነ ብዛት መርጠዋል።
               sold_out: አልቋል፣ እባክዎ ተመልሰው ሌላ አማራጭ ይምረጡ።
@@ -103,8 +101,7 @@ am:
     county: አውራጃ
     currency_detected: የተገኘ
     currency_label: የገንዘብ ምንዛሬ
-    currency_unsupported: ይህንን ግዢ በ%{currency} ማስከፈል ስለማይቻል ጠቅላላው በ%{fallbackCurrency}
-      ነው
+    currency_unsupported: ይህንን ግዢ በ%{currency} ማስከፈል ስለማይቻል ጠቅላላው በ%{fallbackCurrency} ነው
     custom_tip: የተመረጠ ጉርሻ
     customers_also_bought: "%{items} የገዙ ደንበኞች እነዚህንም ገዝተዋል"
     cvc_placeholder: CVC
@@ -126,8 +123,7 @@ am:
     full_name: ሙሉ ስም
     future_installments: ቀጣይ የክፍያ ዕቅዶች
     gift_email_hidden: የ%{name} ኢሜይል ለደህንነት ሲባል ተደብቋል።
-    gift_membership_note: ማሳሰቢያ፦ ነጻ ሙከራዎች ወዲያውኑ ይከፈላሉ። አባልነቱ በራሱ አይታደስም። አባልነቱን ለማደስ
-      ተቀባዩ የክፍያ ዘዴ ማስተካከል አለበት።
+    gift_membership_note: ማሳሰቢያ፦ ነጻ ሙከራዎች ወዲያውኑ ይከፈላሉ። አባልነቱ በራሱ አይታደስም። አባልነቱን ለማደስ ተቀባዩ የክፍያ ዘዴ ማስተካከል አለበት።
     gift_message_placeholder: የግል መልዕክት (አማራጭ)
     gift_note_label: የስጦታ መልዕክት
     give_as_gift: በስጦታ ይስጡ?
@@ -152,8 +148,7 @@ am:
     payment_form_aria: የክፍያ ቅጽ
     payment_method: የክፍያ ዘዴ
     payment_processing_full: ክፍያዎ በመከናወን ላይ ነው — ደረሰኙን በኢሜይልዎ ያረጋግጡ። እባክዎ ደግመው አይክፈሉ።
-    payment_processing_partial: የክፍያው የተወሰነ ክፍል በመከናወን ላይ ነው — ደረሰኙን በኢሜይልዎ ያረጋግጡ።
-      ያልተከፈለባቸው እቃዎች እንደገና ለመሞከር በቅርጫትዎ ውስጥ ቀርተዋል።
+    payment_processing_partial: የክፍያው የተወሰነ ክፍል በመከናወን ላይ ነው — ደረሰኙን በኢሜይልዎ ያረጋግጡ። ያልተከፈለባቸው እቃዎች እንደገና ለመሞከር በቅርጫትዎ ውስጥ ቀርተዋል።
     payment_today: የዛሬ ክፍያ
     pending: ክፍያ በማረጋገጥ ላይ
     phone_number: ስልክ ቁጥር
@@ -164,8 +159,7 @@ am:
     ppp_tooltip: ይህ ቅናሽ በአገርዎ የኑሮ ውድነት መሠረት የተሰላ ነው።
     price: ዋጋ
     processing: ክፍያ በቻፓ በመከናወን ላይ ነው...
-    processing_pending_desc: ደረሰኝዎን በኢሜይልዎ ያረጋግጡ — ክፍያው እንደተጠናቀቀ ይላካል። እባክዎ ደግመው አይክፈሉ።
-      ይህ ገጽ ራሱ ይታደሳል።
+    processing_pending_desc: ደረሰኝዎን በኢሜይልዎ ያረጋግጡ — ክፍያው እንደተጠናቀቀ ይላካል። እባክዎ ደግመው አይክፈሉ። ይህ ገጽ ራሱ ይታደሳል።
     processing_pending_title: ክፍያዎ በመከናወን ላይ ነው
     province: ግዛት
     quantity: ብዛት
@@ -173,8 +167,7 @@ am:
     recipient_email: የተቀባይ ኢሜይል
     recipient_email_placeholder: የተቀባይ ኢሜይል አድራሻ
     redirecting: ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ...
-    reset_gift_message: የስጦታ አማራጩን ሊያጠፉ ነው። ይህንን ዳግም በስጦታ ለመስጠት ወደ ገጹ ተመልሰው "በስጦታ
-      ይስጡ" የሚለውን መምረጥ ይኖርብዎታል።
+    reset_gift_message: የስጦታ አማራጩን ሊያጠፉ ነው። ይህንን ዳግም በስጦታ ለመስጠት ወደ ገጹ ተመልሰው "በስጦታ ይስጡ" የሚለውን መምረጥ ይኖርብዎታል።
     reset_gift_title: የስጦታ አማራጭን ዳግም ማስጀመር ይፈልጋሉ?
     retry_price_update: የዋጋ ዝመናን እንደገና ይሞክሩ
     save_address_for_future: ለቀጣይ ግዢዎች አድራሻውን ያስቀምጡ
@@ -206,8 +199,7 @@ am:
     tip_confirmation_message: በ%{price} ግዢ ላይ %{tip} ጉርሻ ሊጨምሩ ነው። እርግጠኛ ነዎት?
     title: ክፍያ መፈጸሚያ
     total: ጠቅላላ ድምር
-    total_changed_billing_address: የክፍያ ዘዴዎ የሂሳብ አድራሻ ከተተገበረ በኋላ ጠቅላላ ድምሩ ተለውጧል። እባክዎ
-      የተሻሻለውን ድምር አይተው እንደገና ይሞክሩ።
+    total_changed_billing_address: የክፍያ ዘዴዎ የሂሳብ አድራሻ ከተተገበረ በኋላ ጠቅላላ ድምሩ ተለውጧል። እባክዎ የተሻሻለውን ድምር አይተው እንደገና ይሞክሩ።
     updating_total: ጠቅላላ ድምር በማዘመን ላይ…
     use_different_card: ሌላ ካርድ ይጠቀሙ?
     use_saved_card: የተቀመጠ ካርድ ይጠቀሙ
@@ -235,8 +227,7 @@ am:
     confirm_email: ኢሜይል ያረጋግጡ
     confirm_email_gift_desc: ይህ ስጦታ የተላከበትን የኢሜይል አድራሻ ያስገቡ፣ ከዚያም ማግኘት ይችላሉ።
     confirm_email_gift_title: ይህንን ስጦታ ለመድረስ ኢሜይልዎን ያረጋግጡ
-    confirm_email_viewed_desc: ይህንን ምርት ለመግዛት የተጠቀሙበትን የኢሜይል አድራሻ አንዴ ካስገቡ በኋላ፣ እንደገና
-      ማግኘት ይችላሉ።
+    confirm_email_viewed_desc: ይህንን ምርት ለመግዛት የተጠቀሙበትን የኢሜይል አድራሻ አንዴ ካስገቡ በኋላ፣ እንደገና ማግኘት ይችላሉ።
     confirm_email_viewed_title: ይህንን ምርት ቀደም ሲል ጥቂት ጊዜ ተመልክተውታል
     confirming: በማረጋገጥ ላይ...
     create_account: ፍጠር
@@ -246,15 +237,12 @@ am:
     download_as_zip: እንደ ዚፕ (ZIP) ያውርዱ
     email_address: የኢሜይል አድራሻ
     generate_invoice: የክፍያ መጠየቂያ ደረሰኝ አውጣ
-    installment_inactive_desc: የክፍያ ዕቅድዎ ከአሁን በኋላ ንቁ ስላልሆነ የ'%{product}' ይዘት መድረስ
-      አይችሉም።
+    installment_inactive_desc: የክፍያ ዕቅድዎ ከአሁን በኋላ ንቁ ስላልሆነ የ'%{product}' ይዘት መድረስ አይችሉም።
     installment_inactive_title: የክፍያ ዕቅድዎ ንቁ አይደለም
     installment_plan_paid_full: ይህ የክፍያ ዕቅድ ሙሉ በሙሉ ተከፍሏል።
-    installment_update_payment_desc: የ'%{product}' ይዘት ማግኘትን ለመቀጠል እባክዎ የክፍያ ዘዴዎን
-      ያዘምኑ።
+    installment_update_payment_desc: የ'%{product}' ይዘት ማግኘትን ለመቀጠል እባክዎ የክፍያ ዘዴዎን ያዘምኑ።
     manage: አስተዳድር
-    membership_inactive_desc: የአባልነት ምዝገባዎ ከአሁን በኋላ ንቁ ስላልሆነ የ'%{product}' ይዘት መድረስ
-      አይችሉም።
+    membership_inactive_desc: የአባልነት ምዝገባዎ ከአሁን በኋላ ንቁ ስላልሆነ የ'%{product}' ይዘት መድረስ አይችሉም።
     membership_inactive_title: የአባልነት ምዝገባዎ ንቁ አይደለም
     open: ክፈት
     page_count:
@@ -272,8 +260,7 @@ am:
     resubscribe: እንደገና ይመዝገቡ
     save_to_dropbox: ወደ Dropbox አስቀምጥ
     send_to_kindle: ወደ Kindle ላክ
-    send_to_kindle_instruction: '"%{kindle_email}"ን ወደ %{approved_emails_link}ዎ ማከል
-      ያስፈልግዎታል.'
+    send_to_kindle_instruction: '"%{kindle_email}"ን ወደ %{approved_emails_link}ዎ ማከል ያስፈልግዎታል.'
     subscription_ended: ይህ የአባልነት ምዝገባ አብቅቷል።
     terms_agreement: በእኛ %{terms_of_use} ተስማምተዋል።
     terms_of_use: የአጠቃቀም ደንቦች
@@ -346,8 +333,7 @@ am:
   devise:
     confirmations:
       confirmed: የኢሜይል አድራሻዎ በተሳካ ሁኔታ ተረጋግጧል።
-      send_instructions: የኢሜይል አድራሻዎን እንዴት ማረጋገጥ እንደሚችሉ መመሪያ የያዘ ኢሜይል በጥቂት ደቂቃዎች ውስጥ
-        ይደርስዎታል።
+      send_instructions: የኢሜይል አድራሻዎን እንዴት ማረጋገጥ እንደሚችሉ መመሪያ የያዘ ኢሜይል በጥቂት ደቂቃዎች ውስጥ ይደርስዎታል።
     failure:
       already_authenticated: አስቀድመው ገብተዋል።
       invalid: ልክ ያልሆነ %{authentication_keys} ወይም የይለፍ ቃል።
@@ -366,11 +352,9 @@ am:
         subject: የኢሜይል አድራሻዎን ያረጋግጡ
       email_changed:
         header: የ "%{app_name}" መለያዎ ኢሜይል እየተቀየረ ነው
-        notification: የ "%{app_name}" መለያዎ ኢሜይል ከ%{old_email} ወደ %{new_email} እየተቀየረ
-          መሆኑን ለማሳወቅ እንጽፋለን።
+        notification: የ "%{app_name}" መለያዎ ኢሜይል ከ%{old_email} ወደ %{new_email} እየተቀየረ መሆኑን ለማሳወቅ እንጽፋለን።
         subject: የ "%{app_name}" መለያዎ ኢሜይል እየተቀየረ ነው
-        support_notice: ይህንን ለውጥ ያላደረጉት እርስዎ ከሆኑ፣ እባክዎ ለዚህ ኢሜይል ምላሽ በመስጠት ወዲያውኑ ድጋፍን
-          ያነጋግሩ።
+        support_notice: ይህንን ለውጥ ያላደረጉት እርስዎ ከሆኑ፣ እባክዎ ለዚህ ኢሜይል ምላሽ በመስጠት ወዲያውኑ ድጋፍን ያነጋግሩ።
         user_id: የተጠቃሚ መለያ፦ %{user_id}
       password_change:
         header: የይለፍ ቃልዎ ተቀይሯል
@@ -385,8 +369,7 @@ am:
         denied_subject: የይለፍ ቃል ዳግም ማስጀመሪያ ጥያቄ ውድቅ ተደርጓል
         header: የይለፍ ቃል ዳግም ማስጀመሪያ ጥያቄ
         ignore_notice: ይህንን ካልጠየቁ እባክዎ ይህንን ኢሜይል ችላ ይበሉ። ሌላ አይላክላችሁም!
-        instruction: የ "%{app_name}" መለያዎን የይለፍ ቃል የረሱት ይመስላል። ከታች ያለውን አዝራር ጠቅ በማድረግ
-          የይለፍ ቃልዎን መቀየር ይችላሉ፦
+        instruction: የ "%{app_name}" መለያዎን የይለፍ ቃል የረሱት ይመስላል። ከታች ያለውን አዝራር ጠቅ በማድረግ የይለፍ ቃልዎን መቀየር ይችላሉ፦
         or_click: ወይም እዚህ ጠቅ ማድረግ ይችላሉ፦
         subject: የይለፍ ቃል ዳግም ማስጀመሪያ ጥያቄ
       unlock_instructions:
@@ -452,27 +435,21 @@ am:
       other: ቀድሞ ከተቀመጠው ፋይል በተጨማሪ %{count} ፋይሎችን በማያያዝ ላይ ነዎት።
     confirm_and_save: አረጋግጥና አስቀምጥ
     confirm_save_title: ምላሽዎን ማስቀመጥ ይፈልጋሉ?
-    customer_disputed_multiple: ደንበኛዎ (%{email}) በ%{date} ያደረጉትን የ%{count} እቃዎች ግዢ
-      (%{amount}) ተቃውመዋል፦
-    customer_disputed_single: ደንበኛዎ (%{email}) በ%{date} ያደረጉትን የ%{product} ግዢ (%{amount})
-      ተቃውመዋል፦
-    deadline_note: የክፍያ አቀነባባሪው በአንድ ክርክር አንድ ምላሽ ብቻ ስለሚቀበል ምላሽዎን አስቀምጠን በመጨረሻው ቀን
-      እንልካለን። ከዚያ በፊት በማንኛውም ጊዜ ፋይሎችን ማከል ወይም ማስተካከል ይችላሉ።
+    customer_disputed_multiple: ደንበኛዎ (%{email}) በ%{date} ያደረጉትን የ%{count} እቃዎች ግዢ (%{amount}) ተቃውመዋል፦
+    customer_disputed_single: ደንበኛዎ (%{email}) በ%{date} ያደረጉትን የ%{product} ግዢ (%{amount}) ተቃውመዋል፦
+    deadline_note: የክፍያ አቀነባባሪው በአንድ ክርክር አንድ ምላሽ ብቻ ስለሚቀበል ምላሽዎን አስቀምጠን በመጨረሻው ቀን እንልካለን። ከዚያ በፊት በማንኛውም ጊዜ ፋይሎችን ማከል ወይም ማስተካከል ይችላሉ።
     deadline_reminder: ይህን በመጨረሻው ቀን ለክፍያ አቀነባባሪው ስለምንልክ እስከዚያ ድረስ ተመልሰው ማከል ይችላሉ።
     no_files_attached: ምንም ፋይል አላያያዙም። ከመጨረሻው ቀን በፊት በማንኛውም ጊዜ ማያያዝ ይችላሉ።
     save_response: ምላሽ አስቀምጥ
     saved_file_stays: ቀደም ሲል ያስቀመጡት ፋይል እንደተያያዘ ይቆያል።
     saved_response_note: የተቀመጠው ምላሽዎ ከዚህ በታች ተሞልቷል። የፈለጉትን ቀይረው እንደገና ማስቀመጥ ይችላሉ።
     saved_success: እናመሰግናለን! ምላሽዎን አስቀምጠናል።
-    sent_at_deadline: በመጨረሻው ቀን ለክፍያ አቀነባባሪው እንልካለን። እስከዚያ ድረስ ፋይሎችን ማከል ወይም ማስተካከል
-      ይችላሉ።
-    sent_at_deadline_date: የመጨረሻው ቀን %{date} ሲደርስ ወደ ክፍያ አቀናባሪው እንልከዋለን። እስከዚያ ድረስ
-      ተመልሰው ፋይሎችን ማከል ወይም የጻፉትን ማስተካከል ይችላሉ።
+    sent_at_deadline: በመጨረሻው ቀን ለክፍያ አቀነባባሪው እንልካለን። እስከዚያ ድረስ ፋይሎችን ማከል ወይም ማስተካከል ይችላሉ።
+    sent_at_deadline_date: የመጨረሻው ቀን %{date} ሲደርስ ወደ ክፍያ አቀናባሪው እንልከዋለን። እስከዚያ ድረስ ተመልሰው ፋይሎችን ማከል ወይም የጻፉትን ማስተካከል ይችላሉ።
     submit_additional_info: ተጨማሪ መረጃ ያስገቡ
     title: የክርክር ማስረጃ
     upload_communication: የደንበኛ ግንኙነት መረጃ ይጫኑ
-    upload_help: ከደንበኛው ጋር ያደረጉት ማንኛውም ግንኙነት (ኢሜይሎች፣ የውይይት መልዕክቶች)። እስከ %{maxFiles}
-      የJPG፣ PNG ወይም PDF ፋይሎችን (እያንዳንዳቸው ከ%{maxSize}MB በታች) ማያያዝ ይችላሉ።
+    upload_help: ከደንበኛው ጋር ያደረጉት ማንኛውም ግንኙነት (ኢሜይሎች፣ የውይይት መልዕክቶች)። እስከ %{maxFiles} የJPG፣ PNG ወይም PDF ፋይሎችን (እያንዳንዳቸው ከ%{maxSize}MB በታች) ማያያዝ ይችላሉ።
     why_not_entitled_refund: ደንበኛው ለምን ተመላሽ ገንዘብ እንደማይገባቸው ያብራሩ
     why_sub_not_cancelled: የደንበኛው ምዝገባ ለምን አልተሰረዘም?
     why_win: ይህን ክርክር ለምን ማሸነፍ እንዳለብዎት ያብራሩ
@@ -552,10 +529,8 @@ am:
       one: "%{count} በማህደር የተቀመጠ ግዢ አለዎት። %{click_here}"
       other: "%{count} በማህደር የተቀመጡ ግዢዎች አሉዎት። %{click_here}"
     bundle_download_all_zip: በ%{label} ውስጥ የተካተቱትን ሁሉ እንደ አንድ የዚፕ (ZIP) ፋይል ያውርዱ።
-    bundle_failed: ለ%{label} የዚፕ (ZIP) ፋይል ማዘጋጀት አልተቻለም። እባክዎ ከታች ያሉትን ምርቶች በተናጠል
-      ያውርዱ።
-    bundle_too_large: "%{label} እንደ አንድ የዚፕ (ZIP) ፋይል ለማውረድ በጣም ትልቅ ነው። እባክዎ ከታች ያሉትን
-      ምርቶች በተናጠል ያውርዱ።"
+    bundle_failed: ለ%{label} የዚፕ (ZIP) ፋይል ማዘጋጀት አልተቻለም። እባክዎ ከታች ያሉትን ምርቶች በተናጠል ያውርዱ።
+    bundle_too_large: "%{label} እንደ አንድ የዚፕ (ZIP) ፋይል ለማውረድ በጣም ትልቅ ነው። እባክዎ ከታች ያሉትን ምርቶች በተናጠል ያውርዱ።"
     bundles: ጥቅሎች
     click_here_to_view: ለመመልከት እዚህ ጠቅ ያድርጉ
     creator: ሻጭ
@@ -570,8 +545,7 @@ am:
     purchase_date: የተገዛበት ቀን
     purchase_successful_receipt_sent: ግዢዎ በተሳካ ሁኔታ ተጠናቋል! ደረሰኝ ወደ %{email} ልከናል!
     recently_updated: በቅርቡ የተሻሻለ
-    remove_confirm_desc: በመጀመሪያው የማውረጃ አገናኝዎ በኩል መዳረሻ ይኖርዎታል፣ እና ሀሳብዎን ከቀየሩ የድጋፍ ቡድናችን
-      ካርዱን ሊመልስልዎ ይችላል።
+    remove_confirm_desc: በመጀመሪያው የማውረጃ አገናኝዎ በኩል መዳረሻ ይኖርዎታል፣ እና ሀሳብዎን ከቀየሩ የድጋፍ ቡድናችን ካርዱን ሊመልስልዎ ይችላል።
     remove_confirm_title: "%{name} ከቤተ-መጽሐፍትዎ ይወገድ?"
     remove_from_library: ከቤተ-መጽሐፍት አስወግድ
     removed_from_library: ከቤተ-መጽሐፍትዎ ተወግዷል!
@@ -594,55 +568,43 @@ am:
       abandoned_cart:
         subject: በጋሪዎ ውስጥ እቃ ትተዋል
       already_subscribed_checkout_attempt:
-        body_1: አንድ ሰው የኢሜይል አድራሻዎን በመጠቀም የ%{product} አባልነትን ለመግዛት ሞክሯል፤ ነገር ግን እርስዎ
-          አስቀድመው ንቁ የአባልነት ምዝገባ አለዎት።
-        body_2_html: ይህ እርስዎ ከነበሩ አይጨነቁ! ያለዎት አባልነት አሁንም ንቁ ነው፣ ምንም ማድረግ አይጠበቅብዎትም።
-          በማንኛውም ጊዜ %{link} ይችላሉ።
+        body_1: አንድ ሰው የኢሜይል አድራሻዎን በመጠቀም የ%{product} አባልነትን ለመግዛት ሞክሯል፤ ነገር ግን እርስዎ አስቀድመው ንቁ የአባልነት ምዝገባ አለዎት።
+        body_2_html: ይህ እርስዎ ከነበሩ አይጨነቁ! ያለዎት አባልነት አሁንም ንቁ ነው፣ ምንም ማድረግ አይጠበቅብዎትም። በማንኛውም ጊዜ %{link} ይችላሉ።
         body_3: ይህንን ግዢ ለመፈጸም ያልሞከሩት እርስዎ ከሆኑ፣ ይህንን ኢሜይል ችላ ማለት ይችላሉ።
         greeting: ሰላም
         manage_link: አባልነትዎን እዚህ ማስተዳደር
         subject: አስቀድመው የተመዘገቡበትን አባልነት አንድ ሰው ለመግዛት ሞክሯል
       auto_invoice:
-        billing_settings_note_html: የሂሳብ አከፋፈል መረጃዎ እስከተመዘገበ ድረስ በእያንዳንዱ ግዢ ይህንን በራስ-ሰር
-          ይቀበላሉ። የደረሰኝ አድራሻን፣ የንግድ ድርጅት ስምን ለመቀየር ወይም ይህንን ለማጥፋት <a href="%{url}">የክፍያ
-          ቅንብሮችዎን</a> ይጎብኙ።
+        billing_settings_note_html: የሂሳብ አከፋፈል መረጃዎ እስከተመዘገበ ድረስ በእያንዳንዱ ግዢ ይህንን በራስ-ሰር ይቀበላሉ። የደረሰኝ አድራሻን፣ የንግድ ድርጅት ስምን ለመቀየር ወይም ይህንን ለማጥፋት <a href="%{url}">የክፍያ ቅንብሮችዎን</a> ይጎብኙ።
         body_html: ከ<strong>%{seller}</strong> ለፈጸሙት ግዢ ደረሰኝ በፒዲኤፍ (PDF) ተያይዟል።
         greeting: ሰላም
         signoff_html: እናመሰግናለን፣<br>%{app_name}
         subject: ከ%{seller} የተላከ ደረሰኝዎ
       blocked_purchase_resolved:
-        body_reassurance: ምንም ያጠፉት ነገር የለም — ስህተቱ የእኛ ነበር፣ ስላስቸገርንዎ ይቅርታ እንጠይቃለን።
-          አሁንም ምርቱን ከፈለጉ አሁን እንደገና መግዛት ይችላሉ፤ በተለመደው ሁኔታ ይሳካል።
-        body_with_product_html: በእኛ በኩል የነበረ እና የ%{link} ግዢዎ እንዳይጠናቀቅ ያደረገውን የክፍያ
-          ችግር ገምግመን አስተካክለናል።
-        body_without_product: በእኛ በኩል የነበረ እና የቅርብ ጊዜ ግዢዎ እንዳይጠናቀቅ ያደረገውን የክፍያ ችግር
-          ገምግመን አስተካክለናል።
+        body_reassurance: ምንም ያጠፉት ነገር የለም — ስህተቱ የእኛ ነበር፣ ስላስቸገርንዎ ይቅርታ እንጠይቃለን። አሁንም ምርቱን ከፈለጉ አሁን እንደገና መግዛት ይችላሉ፤ በተለመደው ሁኔታ ይሳካል።
+        body_with_product_html: በእኛ በኩል የነበረ እና የ%{link} ግዢዎ እንዳይጠናቀቅ ያደረገውን የክፍያ ችግር ገምግመን አስተካክለናል።
+        body_without_product: በእኛ በኩል የነበረ እና የቅርብ ጊዜ ግዢዎ እንዳይጠናቀቅ ያደረገውን የክፍያ ችግር ገምግመን አስተካክለናል።
         header: የክፍያ ችግርዎ ተፈትቷል
         subject: የክፍያ ችግርዎ ተፈትቷል
       bundle_content_updated:
-        body: ደስ የሚል ዜና! %{seller} ለ%{product} አዲስ ይዘት ጨምሯል። ቤተ-መጽሐፍትዎን በመጎብኘት ወይም
-          ከታች ያለውን አዝራር ጠቅ በማድረግ ማግኘት ይችላሉ።
+        body: ደስ የሚል ዜና! %{seller} ለ%{product} አዲስ ይዘት ጨምሯል። ቤተ-መጽሐፍትዎን በመጎብኘት ወይም ከታች ያለውን አዝራር ጠቅ በማድረግ ማግኘት ይችላሉ።
         header: "%{seller} ለ%{product} አዲስ ይዘት ጨምሯል"
         subject: "%{seller} ለ%{product} አዲስ ይዘት ጨምሯል"
         view_content_button: ይዘትን ይመልከቱ
       chargeback_notice_to_customer:
-        body_1: ለፈጸሙት የ%{amount} የ%{product} ግዢ ክርክር አስመዝግበዋል። ደረሰኝ ወደ %{email} ተልኳል
-          — ማግኘት ካልቻሉ እባክዎ የስፓም (Spam) ማህደርዎን ይመልከቱ።
-        body_2: ይህንን ክርክር ያስመዘገቡት በሂሳብ መግለጫዎ ላይ "%{statement_descriptor}" የሚለውን ስም
-          ባለማወቅዎ ከሆነ፣ ክርክሩን ለመሰረዝ ባንክዎን ማነጋገር ይችላሉ።
+        body_1: ለፈጸሙት የ%{amount} የ%{product} ግዢ ክርክር አስመዝግበዋል። ደረሰኝ ወደ %{email} ተልኳል — ማግኘት ካልቻሉ እባክዎ የስፓም (Spam) ማህደርዎን ይመልከቱ።
+        body_2: ይህንን ክርክር ያስመዘገቡት በሂሳብ መግለጫዎ ላይ "%{statement_descriptor}" የሚለውን ስም ባለማወቅዎ ከሆነ፣ ክርክሩን ለመሰረዝ ባንክዎን ማነጋገር ይችላሉ።
         disputed_items: የሚከተሉትን እቃዎች
         header: ስለ ቅርብ ጊዜ ክርክርዎ።
         subject: ስለ ቅርብ ጊዜ ክርክርዎ።
       credit_card_expiring_membership:
-        body: በ'%{last4}' የሚያበቃው ካርድዎ በ%{month} እንደሚያበቃ እናስታውሳለን። የ%{product} አባልነትዎን
-          ለመቀጠል እባክዎ የካርድ መረጃዎን ያዘምኑ።
+        body: በ'%{last4}' የሚያበቃው ካርድዎ በ%{month} እንደሚያበቃ እናስታውሳለን። የ%{product} አባልነትዎን ለመቀጠል እባክዎ የካርድ መረጃዎን ያዘምኑ።
         greeting: ሰላም
         header: ለ%{product} የተመዘገበው የክፍያ ዘዴ ሊያበቃ ነው
         manage_button: አባልነትን ያስተዳድሩ
         or_click_here: ወይም እዚህ ጠቅ ማድረግ ይችላሉ
         subject: ለ%{product} የተመዘገበው የክፍያ ዘዴ ሊያበቃ ነው
-        why_body: በ "%{app_name}" ላይ አካውንት ከፍተው የካርድ መረጃዎ እንዲቀመጥ መርጠዋል። መረጃዎን ወቅታዊ
-          ማድረግ የወደፊት ግዢዎችዎን ፈጣን እና ቀላል ያደርጋል።
+        why_body: በ "%{app_name}" ላይ አካውንት ከፍተው የካርድ መረጃዎ እንዲቀመጥ መርጠዋል። መረጃዎን ወቅታዊ ማድረግ የወደፊት ግዢዎችዎን ፈጣን እና ቀላል ያደርጋል።
         why_heading: ይህ ለምን ተላከልኝ?
       files_ready_for_download:
         body: የ%{product} ፋይሎችዎ አሁን ለማውረድ ዝግጁ ናቸው።
@@ -650,16 +612,14 @@ am:
         header: ፋይሎችዎ ለማውረድ ዝግጁ ናቸው!
         subject: ፋይሎችዎ ለማውረድ ዝግጁ ናቸው!
       free_trial_expiring_soon:
-        body_html: የ%{product} የነፃ ሙከራ ጊዜዎ በ%{date} ያበቃል፤ በዚያ ጊዜ ክፍያ ይጠየቃሉ። አባልነትዎን
-          መሰረዝ ከፈለጉ በማንኛውም ጊዜ %{link} ይችላሉ።
+        body_html: የ%{product} የነፃ ሙከራ ጊዜዎ በ%{date} ያበቃል፤ በዚያ ጊዜ ክፍያ ይጠየቃሉ። አባልነትዎን መሰረዝ ከፈለጉ በማንኛውም ጊዜ %{link} ይችላሉ።
         header: የነፃ ሙከራ ጊዜዎ ሊያበቃ ነው
         subject: የነፃ ሙከራ ጊዜዎ ሊያበቃ ነው
       grouped_receipt:
         subject: የግዢዎች ደረሰኝ
       order_review_reminder:
         body_greeting: ሰላም%{name}
-        body_message: የትዕዛዝዎ እቃዎች ጥሩ ጥቅም እየሰጡዎት እንደሆነ ተስፋ እናደርጋለን። አስተያየትዎን መስማት እንፈልጋለን።
-          ጥቂት ጊዜ ወስደው ግምገማ ሊሰጡን ይችላሉ?
+        body_message: የትዕዛዝዎ እቃዎች ጥሩ ጥቅም እየሰጡዎት እንደሆነ ተስፋ እናደርጋለን። አስተያየትዎን መስማት እንፈልጋለን። ጥቂት ጊዜ ወስደው ግምገማ ሊሰጡን ይችላሉ?
         header: ትዕዛዝዎን ወደዱት? ግምገማ ይስጡ!
         leave_reviews: ግምገማዎችን ይስጡ
         subject: ትዕዛዝዎን ወደዱት? ግምገማ ይስጡ!
@@ -672,20 +632,14 @@ am:
         questions_reply: ስለ እቃው አጓጓዝ ሁኔታ ጥያቄ ካለዎት ለዚህ ኢሜይል ምላሽ በመስጠት መጠየቅ ይችላሉ።
         subject: ትዕዛዝዎ ተልኳል!
       partial_refund:
-        body: ለፈጸሙት የ%{purchase_amount} የ "%{product}" ግዢ የ%{refund_amount} ከፊል ተመላሽ
-          ገንዘብ ተደርጎልዎታል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት
-          የስራ ቀናት ሊወስድ ይችላል።
-        body_presentment: ለፈጸሙት የ%{purchase_amount} የ "%{product}" ግዢ የ%{refund_amount}
-          (%{usd_refund_amount} USD) ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት
-          ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
+        body: ለፈጸሙት የ%{purchase_amount} የ "%{product}" ግዢ የ%{refund_amount} ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
+        body_presentment: ለፈጸሙት የ%{purchase_amount} የ "%{product}" ግዢ የ%{refund_amount} (%{usd_refund_amount} USD) ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
         header: ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል።
         subject: ከፊል ተመላሽ ገንዘብ ተደርጎልዎታል።
       paypal_purchase_failed:
         body_intro: በቅርቡ ሊፈጽሙት የሞከሩትን የክፍያ ሂደት ከሚያስተናግደው የ "%{app_name}" ቡድን አባል ነኝ።
-        body_notification: PayPal በመጠቀም "%{product}" ለመግዛት እንደሞከሩ እና ክፍያው እንዳልተሳካ
-          መረጃ ደርሶኛል።
-        body_pending_note: አንዳንድ ጊዜ የPayPal መግለጫዎ 'በሂደት ላይ' (pending) ሊል ይችላል — አይጨነቁ፣
-          በጥቂት ቀናት ውስጥ ይጠፋል።
+        body_notification: PayPal በመጠቀም "%{product}" ለመግዛት እንደሞከሩ እና ክፍያው እንዳልተሳካ መረጃ ደርሶኛል።
+        body_pending_note: አንዳንድ ጊዜ የPayPal መግለጫዎ 'በሂደት ላይ' (pending) ሊል ይችላል — አይጨነቁ፣ በጥቂት ቀናት ውስጥ ይጠፋል።
         body_retry_note: እባክዎ እዚህ ጠቅ በማድረግ እንደገና ይሞክሩ (አሁንም ካልተሳካ በሌላ ካርድ ይሞክሩ)፦
         greeting: ሰላም
         header: በPayPal የፈጸሙት ክፍያ አልተሳካም።
@@ -696,22 +650,18 @@ am:
         header: የቅድመ-ትዕዛዝዎ ተሰርዟል።
         subject: የቅድመ-ትዕዛዝዎ ተሰርዟል።
       preorder_card_declined:
-        body_html: "%{product} ዛሬ የተለቀቀ ሲሆን ካርድዎን ለማስከፈል ሞክረን አልተሳካም። ምርቱን በቀጥታ %{link}
-          መግዛት ይችላሉ።"
+        body_html: "%{product} ዛሬ የተለቀቀ ሲሆን ካርድዎን ለማስከፈል ሞክረን አልተሳካም። ምርቱን በቀጥታ %{link} መግዛት ይችላሉ።"
         header: ለ%{product} ካርድዎን ማስከፈል አልተቻለም
         subject: ለ%{product} ካርድዎን ማስከፈል አልተቻለም
       preorder_receipt:
         body_digital: '"%{product}" በተሳካ ሁኔታ በቅድመ-ትዕዛዝ ገዝተዋል። ምርቱ በ%{date} ይለቀቃል።'
-        body_physical: '"%{product}" በተሳካ ሁኔታ በቅድመ-ትዕዛዝ ገዝተዋል። ክፍያው በ%{date} የሚፈጸም
-          ሲሆን ከዚያም ብዙ ሳይቆይ እቃው ይላካል።'
-        contact_address_note: አድራሻዎን መቀየር ከፈለጉ፣ ለዚህ ኢሜይል አዲሱን አድራሻዎን በመላክ ወዲያውኑ ሻጩን
-          ያነጋግሩ።
+        body_physical: '"%{product}" በተሳካ ሁኔታ በቅድመ-ትዕዛዝ ገዝተዋል። ክፍያው በ%{date} የሚፈጸም ሲሆን ከዚያም ብዙ ሳይቆይ እቃው ይላካል።'
+        contact_address_note: አድራሻዎን መቀየር ከፈለጉ፣ ለዚህ ኢሜይል አዲሱን አድራሻዎን በመላክ ወዲያውኑ ሻጩን ያነጋግሩ።
         shipping_address: የመላኪያ አድራሻ
         subject: '"%{product}" በቅድመ-ትዕዛዝ ገዝተዋል!'
       purchase_review_reminder:
         body_greeting: ሰላም%{name}
-        body_message: "%{product} ጥሩ ጥቅም እየሰጠዎት እንደሆነ ተስፋ እናደርጋለን። አስተያየትዎን መስማት እንፈልጋለን።
-          ጥቂት ጊዜ ወስደው አጭር ግምገማ ሊሰጡን ይችላሉ?"
+        body_message: "%{product} ጥሩ ጥቅም እየሰጠዎት እንደሆነ ተስፋ እናደርጋለን። አስተያየትዎን መስማት እንፈልጋለን። ጥቂት ጊዜ ወስደው አጭር ግምገማ ሊሰጡን ይችላሉ?"
         header: '"%{product}" ወደዱት? ግምገማ ይስጡ!'
         leave_review: ግምገማ ይስጡ
         subject: '"%{product}" ወደዱት? ግምገማ ይስጡ!'
@@ -724,8 +674,7 @@ am:
         call_schedule: የጥሪ መርሃ ግብር
         contact_seller_at: '"%{seller}" በ%{email} ያግኙ።'
         contact_seller_reply: ለዚህ ኢሜይል ምላሽ በመስጠት "%{seller}" ያግኙ።
-        credit_card_note: ክፍያው በክሬዲት ካርድ መግለጫዎ ላይ እንደ "%{statement_descriptor}" ሆኖ
-          ይዘረዘራል።
+        credit_card_note: ክፍያው በክሬዲት ካርድ መግለጫዎ ላይ እንደ "%{statement_descriptor}" ሆኖ ይዘረዘራል።
         donation: ስጦታ
         duration: የቆይታ ጊዜ
         final_payment_note: ይህ የመጨረሻው ክፍያ ነው። ለዚህ ምርት ዳግም አይጠየቁም።
@@ -737,15 +686,12 @@ am:
         gift_received_title: ስጦታ ደርሶዎታል!
         gift_sent_to: ስጦታ የተላከለት ለ
         gift_someone: አንድ ሰው
-        giftee_subscription_note_html: ስጦታዎ የ%{period} አባልነትን ያካትታል። አባልነትዎን መቀጠል
-          ከፈለጉ ወደ %{settings_link} መሄድ ይችላሉ።
+        giftee_subscription_note_html: ስጦታዎ የ%{period} አባልነትን ያካትታል። አባልነትዎን መቀጠል ከፈለጉ ወደ %{settings_link} መሄድ ይችላሉ።
         installment_final_charge: የመጨረሻው ክፍያ በ%{date} ይፈጸማል።
-        installment_plan_html: የክፍያ ዕቅድ በ%{date} ተጀምሯል። %{final_charge} የክፍያ ቅንብሮችዎን
-          %{here_link} ማስተዳደር ይችላሉ።
+        installment_plan_html: የክፍያ ዕቅድ በ%{date} ተጀምሯል። %{final_charge} የክፍያ ቅንብሮችዎን %{here_link} ማስተዳደር ይችላሉ።
         installment_processed: የ%{product} ተከፋይ ክፍያ በተሳካ ሁኔታ ተከናውኗል።
         license_key: የፈቃድ ቁልፍ
-        manage_membership_html: በየ%{recurrence} አንድ ጊዜ ይከፍላሉ። አባልነትዎን ማስተዳደር ከፈለጉ
-          ወደ %{settings_link} መሄድ ይችላሉ።
+        manage_membership_html: በየ%{recurrence} አንድ ጊዜ ይከፍላሉ። አባልነትዎን ማስተዳደር ከፈለጉ ወደ %{settings_link} መሄድ ይችላሉ።
         membership_paid_until: የአባልነት ክፍያ የተፈጸመበት እስከ
         number_of_seats: የመቀመጫዎች ብዛት
         order_date: የትዕዛዝ ቀን
@@ -763,8 +709,7 @@ am:
         shipping_address: የመላኪያ አድራሻ
         shipping_info: የመላኪያ መረጃ
         shipping_to: መላኪያ ለ
-        single_charge_membership_html: ለዚህ አባልነት ዳግም ክፍያ አይጠየቁም። አባልነትዎ በ%{date} ያበቃል።
-          አባልነትዎን ማስተዳደር ከፈለጉ ወደ %{settings_link} መሄድ ይችላሉ።
+        single_charge_membership_html: ለዚህ አባልነት ዳግም ክፍያ አይጠየቁም። አባልነትዎ በ%{date} ያበቃል። አባልነትዎን ማስተዳደር ከፈለጉ ወደ %{settings_link} መሄድ ይችላሉ።
         subject_bought: የ%{product} ግዢ ፈጽመዋል!
         subject_bought_multiple: "%{first} እና ተጨማሪ %{count} ምርቶችን ገዝተዋል"
         subject_bought_two: '"%{first}" እና "%{second}" ገዝተዋል'
@@ -779,29 +724,22 @@ am:
         subject_subscribed: የ%{product} አባል ሆነዋል!
         subscription_processed: የ%{product} ተደጋጋሚ የአባልነት ክፍያ በተሳካ ሁኔታ ተከናውኗል።
         subscription_settings: የአባልነት ቅንብሮች
-        test_purchase_warning: ይህ የሙከራ ግዢ ነው — ምንም ክፍያ አልተፈጸመም (ይህ መልዕክት የታየው እንደ
-          ሻጭ ስለገቡ ነው)።
+        test_purchase_warning: ይህ የሙከራ ግዢ ነው — ምንም ክፍያ አልተፈጸመም (ይህ መልዕክት የታየው እንደ ሻጭ ስለገቡ ነው)።
         thank_you_payment: ስለ ክፍያዎ እናመሰግናለን!
         tip: ጉርሻ
         todays_payment: የዛሬው ክፍያ
         upcoming_payments:
           one: ቀጣይ ክፍያ
           other: ቀጣይ ክፍያዎች
-        usd_currency_note: ሁሉም ክፍያዎች በአሜሪካ ዶላር ይስተናገዳሉ። ባንክዎ ወይም የፋይናንስ ተቋምዎ የምንዛሪ
-          ክፍያ ሊጠይቅ ይችላል።
+        usd_currency_note: ሁሉም ክፍያዎች በአሜሪካ ዶላር ይስተናገዳሉ። ባንክዎ ወይም የፋይናንስ ተቋምዎ የምንዛሪ ክፍያ ሊጠይቅ ይችላል።
         variant: አይነት
       refund:
-        body: በ "%{app_name}" ላይ የፈጸሙት የ "%{product}" ግዢ በጠቅላላው %{total} ሙሉ በሙሉ ተመላሽ
-          ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት
-          ሊወስድ ይችላል።
-        body_presentment: በ "%{app_name}" ላይ የፈጸሙት የ "%{product}" ግዢ በጠቅላላው %{total}
-          (%{usd_total} USD) ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ
-          በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
+        body: በ "%{app_name}" ላይ የፈጸሙት የ "%{product}" ግዢ በጠቅላላው %{total} ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
+        body_presentment: በ "%{app_name}" ላይ የፈጸሙት የ "%{product}" ግዢ በጠቅላላው %{total} (%{usd_total} USD) ሙሉ በሙሉ ተመላሽ ተደርጓል። እንደ ባንክዎ ወይም የክፍያ አገልግሎት ሰጪዎ ሁኔታ ገንዘቡ በሂሳብዎ ውስጥ ለመታየት ጥቂት የስራ ቀናት ሊወስድ ይችላል።
         header: ተመላሽ ገንዘብ ተደርጎልዎታል።
         subject: ተመላሽ ገንዘብ ተደርጎልዎታል።
       rental_expiring_soon:
-        body_html: "<p>ሰላም፣</p><p>የ%{product} ኪራይዎ በ%{time} ውስጥ ያበቃል። ከዚያ በኋላ ለማየት
-          እንደገና መከራየት ይኖርብዎታል። እንዳያመልጥዎ!</p>"
+        body_html: "<p>ሰላም፣</p><p>የ%{product} ኪራይዎ በ%{time} ውስጥ ያበቃል። ከዚያ በኋላ ለማየት እንደገና መከራየት ይኖርብዎታል። እንዳያመልጥዎ!</p>"
         body_intro: ሰላም
         subject: የኪራይ ጊዜዎ በ%{time} ውስጥ ያበቃል
         watch_now: አሁኑኑ ይመልከቱ
@@ -810,8 +748,7 @@ am:
         subject: "%{seller} ለሰጡት አስተያየት ምላሽ ሰጥቷል"
         view_product: ምርቱን ይመልከቱ
       subscription_autocancelled:
-        installment_body_1: ተደጋጋሚ የክፍያ ሙከራዎች ባለመሳካታቸው ምክንያት የ%{product} የክፍያ እቅድዎ
-          (installment plan) ቆሟል እና ምርቱን የማግኘት እድልዎ ተቋርጧል።
+        installment_body_1: ተደጋጋሚ የክፍያ ሙከራዎች ባለመሳካታቸው ምክንያት የ%{product} የክፍያ እቅድዎ (installment plan) ቆሟል እና ምርቱን የማግኘት እድልዎ ተቋርጧል።
         installment_body_2_html: የክፍያ እቅድዎን ለመቀጠል እባክዎ %{link}።
         installment_subject: የክፍያ ዕቅድዎ ለጊዜው ቆሟል።
         subscription_body_1: ተደጋጋሚ ክፍያዎች ባለመሳካታቸው ምክንያት የ%{product} ምዝገባዎ በራስ-ሰር ተሰርዟል።
@@ -819,65 +756,46 @@ am:
         subscription_subject: የአባልነት ምዝገባዎ ተሰርዟል።
         update_payment_method_link: የክፍያ ዘዴዎን ያዘምኑ
       subscription_cancelled:
-        body: የ%{product} አባልነትዎን ሰርዘዋል። እስከ %{date} ድረስ የሚላኩ መልዕክቶች ይደርስዎታል፣ ነገር
-          ግን ተጨማሪ ክፍያ አይጠየቁም።
+        body: የ%{product} አባልነትዎን ሰርዘዋል። እስከ %{date} ድረስ የሚላኩ መልዕክቶች ይደርስዎታል፣ ነገር ግን ተጨማሪ ክፍያ አይጠየቁም።
         header: የአባልነት ምዝገባዎ ተሰርዟል።
         subject: የአባልነት ምዝገባዎ ተሰርዟል።
       subscription_cancelled_by_seller:
-        installment_body: ለ%{product} የነበረዎት የክፍያ እቅድ በሻጩ ተሰርዟል። ከዚህ በኋላ ክፍያ አይጠየቁም
-          እና ምርቱን የማግኘት እድልዎ ወዲያውኑ ይቋረጣል።
+        installment_body: ለ%{product} የነበረዎት የክፍያ እቅድ በሻጩ ተሰርዟል። ከዚህ በኋላ ክፍያ አይጠየቁም እና ምርቱን የማግኘት እድልዎ ወዲያውኑ ይቋረጣል።
         installment_subject: የክፍያ ዕቅድዎ ተሰርዟል።
-        subscription_body: የ%{product} ምዝገባዎ በሻጩ ተሰርዟል። በ%{date} የክፍያ ጊዜዎ እስኪያበቃ ድረስ
-          ሻጩ የሚልካቸውን ልጥፎች ማግኘትዎን ይቀጥላሉ፣ ነገር ግን ከዚህ በኋላ ክፍያ አይጠየቁም።
+        subscription_body: የ%{product} ምዝገባዎ በሻጩ ተሰርዟል። በ%{date} የክፍያ ጊዜዎ እስኪያበቃ ድረስ ሻጩ የሚልካቸውን ልጥፎች ማግኘትዎን ይቀጥላሉ፣ ነገር ግን ከዚህ በኋላ ክፍያ አይጠየቁም።
         subscription_subject: የአባልነት ምዝገባዎ ተሰርዟል።
       subscription_card_declined:
         card_subject: ካርድዎ ተቀባይነት አላገኘም።
         header: ካርድዎ ተቀባይነት አላገኘም።
-        installment_body_html: ለ "%{product}" የክፍያ ዕቅድዎ በካርድዎ ለማስከፈል ሞክረን አልተሳካም።
-          ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
-        installment_warning: በ5 ቀናት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" የክፍያ ዕቅድዎ ለጊዜው
-          ይቆማል እንዲሁም ምርቱን የማግኘት መብትዎ ይቋረጣል።
+        installment_body_html: ለ "%{product}" የክፍያ ዕቅድዎ በካርድዎ ለማስከፈል ሞክረን አልተሳካም። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
+        installment_warning: በ5 ቀናት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" የክፍያ ዕቅድዎ ለጊዜው ይቆማል እንዲሁም ምርቱን የማግኘት መብትዎ ይቋረጣል።
         reauthorize_card_link: ካርድዎን እንደገና ያረጋግጡ ወይም ያዘምኑ
-        subscription_body_html: ለ "%{product}" አባልነትዎ በካርድዎ ለማስከፈል ሞክረን አልተሳካም። ክፍያውን
-          ለማጠናቀቅ እባክዎ %{link}።
+        subscription_body_html: ለ "%{product}" አባልነትዎ በካርድዎ ለማስከፈል ሞክረን አልተሳካም። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
         subscription_warning: በ5 ቀናት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" አባልነትዎ ይሰረዛል።
         update_payment_link: የክፍያ ዘዴዎን ያዘምኑ
-        upi_body_html: የተመዘገበውን የUPI ክፍያ ዘዴ በመጠቀም የ "%{product}" ተደጋጋሚ ክፍያን ማስኬድ አልቻልንም።
-          ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
+        upi_body_html: የተመዘገበውን የUPI ክፍያ ዘዴ በመጠቀም የ "%{product}" ተደጋጋሚ ክፍያን ማስኬድ አልቻልንም። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
         upi_header: የክፍያ ዘዴዎ ትኩረት ይሻል።
         upi_subject: የክፍያ ዘዴዎ ትኩረት ይሻል።
         upi_warning: ክፍያው በ5 ቀናት ውስጥ ካልተሳካ፣ የ "%{product}" አባልነትዎ ይሰረዛል።
       subscription_card_declined_warning:
         card_subject: ካርድዎ ተቀባይነት አላገኘም።
-        installment_reminder_html: ለ "%{product}" የክፍያ ዕቅድዎ በካርድዎ ለማስከፈል ሞክረን እንዳልተሳካ
-          እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
-        installment_reminder_warning: በ48 ሰዓታት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" የክፍያ
-          ዕቅድዎ ለጊዜው ይቆማል እንዲሁም ምርቱን የማግኘት መብትዎ ይቋረጣል።
-        subscription_reminder_html: ለ "%{product}" አባልነትዎ በካርድዎ ለማስከፈል ሞክረን እንዳልተሳካ
-          እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
-        subscription_reminder_warning: በ48 ሰዓታት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" አባልነትዎ
-          ይሰረዛል።
+        installment_reminder_html: ለ "%{product}" የክፍያ ዕቅድዎ በካርድዎ ለማስከፈል ሞክረን እንዳልተሳካ እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
+        installment_reminder_warning: በ48 ሰዓታት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" የክፍያ ዕቅድዎ ለጊዜው ይቆማል እንዲሁም ምርቱን የማግኘት መብትዎ ይቋረጣል።
+        subscription_reminder_html: ለ "%{product}" አባልነትዎ በካርድዎ ለማስከፈል ሞክረን እንዳልተሳካ እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
+        subscription_reminder_warning: በ48 ሰዓታት ውስጥ ክፍያው ካልተሳካ፣ የ "%{product}" አባልነትዎ ይሰረዛል።
         update_card_link: ካርድዎን ያዘምኑ
-        upi_reminder_html: የተመዘገበውን የUPI ክፍያ ዘዴ በመጠቀም የ "%{product}" ተደጋጋሚ ክፍያን ማስኬድ
-          እንዳልቻልን እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
+        upi_reminder_html: የተመዘገበውን የUPI ክፍያ ዘዴ በመጠቀም የ "%{product}" ተደጋጋሚ ክፍያን ማስኬድ እንዳልቻልን እናስታውሳለን። ክፍያውን ለማጠናቀቅ እባክዎ %{link}።
         upi_reminder_warning: ክፍያው በ48 ሰዓታት ውስጥ ካልተሳካ፣ የ "%{product}" አባልነትዎ ይሰረዛል።
         upi_subject: የክፍያ ዘዴዎ ትኩረት ይሻል።
       subscription_charge_blocked_location:
-        installment_body_1: የ%{product} የክፍያ ዕቅድ የቅርብ ጊዜ ክፍያን ማስኬድ አልቻልንም። የተመዘገበው
-          አድራሻ የአሜሪካ ማዕቀብ ክፍያዎችን እንዳናስተናግድ በሚከለክልበት አካባቢ በመሆኑ ክፍያ አልተሞከረም፤ በካርድዎ ላይ
-          ምንም ችግር የለም።
+        installment_body_1: የ%{product} የክፍያ ዕቅድ የቅርብ ጊዜ ክፍያን ማስኬድ አልቻልንም። የተመዘገበው አድራሻ የአሜሪካ ማዕቀብ ክፍያዎችን እንዳናስተናግድ በሚከለክልበት አካባቢ በመሆኑ ክፍያ አልተሞከረም፤ በካርድዎ ላይ ምንም ችግር የለም።
         installment_body_2_html: አድራሻው የተቀየረ ከሆነ፣ %{link} እና ቀጣዩ ክፍያ በተለመደው መንገድ ይከናወናል።
-        installment_body_3_html: አለበለዚያ የ%{product} የክፍያ ዕቅድዎ በ5 ቀናት ውስጥ ይቆማል እንዲሁም
-          ምርቱን መጠቀም አይችሉም። %{why_link} የበለጠ ማንበብ ይችላሉ።
+        installment_body_3_html: አለበለዚያ የ%{product} የክፍያ ዕቅድዎ በ5 ቀናት ውስጥ ይቆማል እንዲሁም ምርቱን መጠቀም አይችሉም። %{why_link} የበለጠ ማንበብ ይችላሉ።
         installment_subject: ተከፋይ ክፍያዎ ሊከናወን አልቻለም።
         installment_update_link: ከክፍያ ዕቅድዎ ላይ ያዘምኑት
-        subscription_body_1: የ%{product} አባልነት የቅርብ ጊዜ ክፍያን ማስኬድ አልቻልንም። የተመዘገበው አድራሻ
-          የአሜሪካ ማዕቀብ ክፍያዎችን እንዳናስተናግድ በሚከለክልበት አካባቢ በመሆኑ ክፍያ አልተሞከረም፤ በካርድዎ ላይ ምንም
-          ችግር የለም።
-        subscription_body_2_html: አድራሻው የተቀየረ ከሆነ፣ %{link} እና ቀጣዩ ክፍያ በተለመደው መንገድ
-          ይከናወናል።
-        subscription_body_3_html: አለበለዚያ የ%{product} አባልነትዎ በ5 ቀናት ውስጥ ይሰረዛል። %{why_link}
-          የበለጠ ማንበብ ይችላሉ።
+        subscription_body_1: የ%{product} አባልነት የቅርብ ጊዜ ክፍያን ማስኬድ አልቻልንም። የተመዘገበው አድራሻ የአሜሪካ ማዕቀብ ክፍያዎችን እንዳናስተናግድ በሚከለክልበት አካባቢ በመሆኑ ክፍያ አልተሞከረም፤ በካርድዎ ላይ ምንም ችግር የለም።
+        subscription_body_2_html: አድራሻው የተቀየረ ከሆነ፣ %{link} እና ቀጣዩ ክፍያ በተለመደው መንገድ ይከናወናል።
+        subscription_body_3_html: አለበለዚያ የ%{product} አባልነትዎ በ5 ቀናት ውስጥ ይሰረዛል። %{why_link} የበለጠ ማንበብ ይችላሉ።
         subscription_subject: አባልነትዎ ሊታደስ አልቻለም።
         subscription_update_link: ከአባልነትዎ ላይ ያዘምኑት
         why_declined_link: ክፍያ ለምን ውድቅ እንደሚደረግ
@@ -891,10 +809,8 @@ am:
         subscription_subject: ተደጋጋሚ ክፍያዎ አልተሳካም።
         subscription_warning: በ5 ቀናት ውስጥ ክፍያው ካልተሳካ፣ የ%{product} አባልነትዎ ይሰረዛል።
       subscription_early_fraud_warning_notification:
-        body_1: በ%{date} የተፈጸመውን የ%{price} የ%{product} ግዢዎን እንደ ማጭበርበር ሪፖርት አድርገዋል።
-          ደረሰኝ ወደ %{email} ተልኳል — ማግኘት ካልቻሉ እባክዎ የስፓም (Spam) ማህደርዎን ይመልከቱ።
-        body_2: ይህንን ግዢ ሪፖርት ያደረጉት በሂሳብ መግለጫዎ ላይ "GUMRD.COM"ን ባለማወቅዎ ከሆነ ወይም እርስዎ
-          ሪፖርት ካላደረጉት፣ ሪፖርቱን ለመሰረዝ ባንክዎን ማነጋገር ይችላሉ።
+        body_1: በ%{date} የተፈጸመውን የ%{price} የ%{product} ግዢዎን እንደ ማጭበርበር ሪፖርት አድርገዋል። ደረሰኝ ወደ %{email} ተልኳል — ማግኘት ካልቻሉ እባክዎ የስፓም (Spam) ማህደርዎን ይመልከቱ።
+        body_2: ይህንን ግዢ ሪፖርት ያደረጉት በሂሳብ መግለጫዎ ላይ "GUMRD.COM"ን ባለማወቅዎ ከሆነ ወይም እርስዎ ሪፖርት ካላደረጉት፣ ሪፖርቱን ለመሰረዝ ባንክዎን ማነጋገር ይችላሉ።
         body_manage_html: አባልነትዎን ማስተዳደር ከፈለጉ ወደ %{link} መሄድ ይችላሉ።
         subject: እንደ ማጭበርበር ሪፖርት ስለተደረገው የቅርብ ጊዜ ግዢዎ
       subscription_ended:
@@ -903,8 +819,7 @@ am:
         installment_header: የክፍያ ዕቅድዎ ሙሉ በሙሉ ተከፍሎ ተጠናቋል።
         installment_subject: የክፍያ ዕቅድዎ ሙሉ በሙሉ ተከፍሎ ተጠናቋል።
         questions_contact_creator: ጥያቄ ካለዎት እባክዎ ሻጩን ያነጋግሩ።
-        subscription_body: የ%{product} አባልነትዎ አብቅቷል። ተጨማሪ ክፍያ አይጠየቁም እንዲሁም አዲስ ይዘት
-          አይደርስዎትም።
+        subscription_body: የ%{product} አባልነትዎ አብቅቷል። ተጨማሪ ክፍያ አይጠየቁም እንዲሁም አዲስ ይዘት አይደርስዎትም።
         subscription_header: የአባልነት ምዝገባዎ አብቅቷል።
         subscription_subject: የአባልነት ምዝገባዎ አብቅቷል።
       subscription_giftee_added_card:
@@ -912,13 +827,11 @@ am:
         subject: የ %{product} የስጦታ አባልነትዎ ተዘምኗል
       subscription_indian_card_mandate_invalid:
         body_intro: ለ%{product} ተደጋጋሚ የክፍያ ፈቃድን ማረጋገጥ አልቻልንም።
-        body_paused: ተደጋጋሚ እድሳቶችን ለጊዜው አቁመናል፤ ክፍያውንም ዳግም አልሞከርንም። እድሳቶች ለጊዜው በቆሙበት
-          ወቅት ምርቱን መጠቀም ይችላሉ።
+        body_paused: ተደጋጋሚ እድሳቶችን ለጊዜው አቁመናል፤ ክፍያውንም ዳግም አልሞከርንም። እድሳቶች ለጊዜው በቆሙበት ወቅት ምርቱን መጠቀም ይችላሉ።
         body_update_html: ተደጋጋሚ እድሳቶችን ለመመለስ እባክዎ %{link}።
         subject: ተደጋጋሚ እድሳቶች እንዳይቋረጡ የክፍያ ዘዴዎን ያዘምኑ።
       subscription_magic_link:
-        body: የ"%{product}" አባልነትዎን ለማስተዳደር የቀጥታ መግቢያ አገናኝ ጠይቀዋል። ይህ አገናኝ በ%{hours}
-          ሰዓታት ውስጥ ያበቃል።
+        body: የ"%{product}" አባልነትዎን ለማስተዳደር የቀጥታ መግቢያ አገናኝ ጠይቀዋል። ይህ አገናኝ በ%{hours} ሰዓታት ውስጥ ያበቃል።
         button: አገናኙን ይክፈቱ
         header: የቀጥታ መግቢያ አገናኝዎ እነሆ
         ignore_notice: ይህንን አገናኝ እርስዎ ካልጠየቁ፣ ይህንን መልዕክት ችላ ማለት ይችላሉ።
@@ -926,10 +839,8 @@ am:
       subscription_price_change_notification:
         header: በአባልነትዎ ላይ አስፈላጊ ለውጦች ተደርገዋል
         manage_subscription_button: አባልነትዎን ያስተዳድሩ
-        message_future_html: የ"%{product}" አባልነትዎ ዋጋ በ%{date} ይቀየራል።<br /><br />በማንኛውም
-          ጊዜ አባልነትዎን ማሻሻል ወይም መሰረዝ ይችላሉ።
-        message_past_html: የ"%{product}" አባልነትዎ ዋጋ በ%{date} ተቀይሯል።<br /><br />ከቀጣዩ
-          የክፍያ ጊዜ ጀምሮ አዲሱ ዋጋ ይጠየቃሉ። በማንኛውም ጊዜ አባልነትዎን ማሻሻል ወይም መሰረዝ ይችላሉ።
+        message_future_html: የ"%{product}" አባልነትዎ ዋጋ በ%{date} ይቀየራል።<br /><br />በማንኛውም ጊዜ አባልነትዎን ማሻሻል ወይም መሰረዝ ይችላሉ።
+        message_past_html: የ"%{product}" አባልነትዎ ዋጋ በ%{date} ተቀይሯል።<br /><br />ከቀጣዩ የክፍያ ጊዜ ጀምሮ አዲሱ ዋጋ ይጠየቃሉ። በማንኛውም ጊዜ አባልነትዎን ማሻሻል ወይም መሰረዝ ይችላሉ።
         new_price_label: አዲሱ ዋጋ
         next_payment_date_label: ቀጣይ የክፍያ ቀን
         payment_method_label: የክፍያ ዘዴ
@@ -938,18 +849,15 @@ am:
         product_label: ምርት
         subject: በአባልነትዎ ላይ አስፈላጊ ለውጦች ተደርገዋል
       subscription_product_deleted:
-        installment_body: ሻጩ ምርቱን በመሰረዙ ምክንያት የ%{product} የክፍያ ዕቅድዎ ተሰርዟል። ተጨማሪ ክፍያ
-          አይጠየቁም።
+        installment_body: ሻጩ ምርቱን በመሰረዙ ምክንያት የ%{product} የክፍያ ዕቅድዎ ተሰርዟል። ተጨማሪ ክፍያ አይጠየቁም።
         installment_subject: የክፍያ ዕቅድዎ ተሰርዟል።
-        subscription_body: ሻጩ ምርቱን በመሰረዙ ምክንያት የ%{product} አባልነትዎ ተሰርዟል። ተጨማሪ ክፍያ
-          አይጠየቁም።
+        subscription_body: ሻጩ ምርቱን በመሰረዙ ምክንያት የ%{product} አባልነትዎ ተሰርዟል። ተጨማሪ ክፍያ አይጠየቁም።
         subscription_subject: የአባልነት ምዝገባዎ ተሰርዟል።
       subscription_restarted:
         body_installment_manual: የ%{product} የክፍያ ዕቅድዎን እንደገና አስጀምረዋል።
         body_installment_resolved: የክፍያ ችግር በመፈታቱ የ%{product} የክፍያ ዕቅድዎ እንደገና ቀጥሏል።
         body_subscription_manual: የ%{product} አባልነትዎን እንደገና አስጀምረዋል።
-        body_subscription_resolved_html: የክፍያ ችግር በመፈታቱ የ%{product} አባልነትዎ እንደገና ቀጥሏል።
-          አባልነትዎን መሰረዝ ከፈለጉ %{link} ማድረግ ይችላሉ።
+        body_subscription_resolved_html: የክፍያ ችግር በመፈታቱ የ%{product} አባልነትዎ እንደገና ቀጥሏል። አባልነትዎን መሰረዝ ከፈለጉ %{link} ማድረግ ይችላሉ።
         future_posts_note: ወደፊት ከዚህ ሻጭ የሚላኩ መልዕክቶች ይደርስዎታል።
         installment_subject: የክፍያ ዕቅድዎ እንደገና ቀጥሏል።
         subscription_subject: የአባልነት ምዝገባዎ እንደገና ቀጥሏል።
@@ -969,11 +877,9 @@ am:
       thank_you: Thank you for your purchase!
     subscription_renewal_reminder:
       contact_seller: Contact %{seller} by replying to this email
-      installment_body: This is a reminder that your next installment payment of %{price}
-        for %{product} will be charged on %{date}.
+      installment_body: This is a reminder that your next installment payment of %{price} for %{product} will be charged on %{date}.
       installment_subject: Upcoming installment payment reminder
-      membership_body: This is a reminder that your membership to "%{product}" will
-        automatically renew on %{date}.
+      membership_body: This is a reminder that your membership to "%{product}" will automatically renew on %{date}.
       membership_subject: Upcoming automatic membership renewal
       paying: You're paying %{price}.
       questions: Questions about your product?
@@ -983,14 +889,230 @@ am:
         action_notice: ወደ መለያዎ ለመግባት የሚከተለውን አዝራር ጠቅ ማድረግም ይችላሉ።
         expires_in: ይህ የማረጋገጫ ኮድ እና የመግቢያ አገናኝ በ%{time} ውስጥ ያበቃል።
         header: ባለሁለት ደረጃ ማረጋገጫ
-        instruction: ወደ "%{app_name}" መለያዎ አዲስ መግባት ተገኝቷል። ለመቀጠል እባክዎ ይህንን የማረጋገጫ
-          ኮድ በማረጋገጫ ገጹ ላይ ያስገቡ፦
+        instruction: ወደ "%{app_name}" መለያዎ አዲስ መግባት ተገኝቷል። ለመቀጠል እባክዎ ይህንን የማረጋገጫ ኮድ በማረጋገጫ ገጹ ላይ ያስገቡ፦
         subject: የማረጋገጫ ኮድዎ %{token} ነው
+    accounting:
+      ytd_sales_report:
+        subject: የዓመቱ እስካሁን የሽያጭ ሪፖርት በሀገር/ክልል
+    affiliate:
+      collaboration_ended_by_affiliate_user:
+        subject: "%{affiliate} ትብብርዎን አቁሟል"
+      collaboration_ended_by_seller:
+        subject: "%{seller} የትብብር አጋር ሁኔታዎን አዘምኗል"
+      collaborator_creation:
+        subject: "%{seller} በ%{app_name} ላይ እንደ ትብብር አጋር አካትቶዎታል"
+      collaborator_invitation_accepted:
+        subject: "%{invitee} በ%{app_name} ላይ አብሮ ለመስራት የቀረበለትን ግብዣ ተቀብሏል"
+      collaborator_invitation_declined:
+        subject: "%{invitee} በ%{app_name} ላይ አብሮ ለመስራት የቀረበለትን ግብዣ አልተቀበለም"
+      collaborator_invited:
+        subject: "%{inviter} በ%{app_name} ላይ አብረው እንዲሰሩ ጋብዞዎታል"
+      collaborator_update:
+        subject: "%{seller} በ%{app_name} ላይ የትብብር አጋር ሁኔታዎን አዘምኗል"
+      direct_affiliate_invitation:
+        subject: "%{seller} እንደ አፊሊዬት አካትቶዎታል"
+      direct_affiliate_removal:
+        subject: "%{seller} የአፊሊዬት ሁኔታዎን አዘምኗል"
+      direct_affiliate_removal_by_affiliate_user:
+        subject: "%{affiliate} ከአፊሊዬት ፕሮግራምዎ ወጥቷል"
+      notify_affiliate_of_sale:
+        subject_collaborator: ሽያጭ ፈጽመዋል!
+        subject_direct: "%{seller} ሽያጭ እንዲያገኝ ረድተዋል"
+        subject_global: "\U0001F389 ኮሚሽን አግኝተዋል!"
+      notify_direct_affiliate_of_new_product:
+        subject: "%{seller} ለ%{product} እንደ አፊሊዬት አካትቶዎታል"
+      notify_direct_affiliate_of_updated_products:
+        subject: "%{seller} የተቆራኙ ምርቶችዎን አሁን አዘምኗል"
+    affiliate_request:
+      notify_requester_of_ignored_request:
+        subject: ለ%{seller} የቀረበው የአፊሊዬት ጥያቄዎ ተቀባይነት አላገኘም
+      notify_requester_of_request_approval:
+        subject: ለ%{seller} የቀረበው የአፊሊዬት ጥያቄዎ ጸድቋል!
+      notify_requester_of_request_submission:
+        subject: ለ%{seller} የቀረበው የማመልከቻ ጥያቄዎ ገብቷል!
+      notify_seller_of_new_request:
+        subject: "%{name} አፊሊዬት ለመሆን አመልክቷል"
+      notify_unregistered_requester_of_request_approval:
+        subject: ለ%{seller} የቀረበው የአፊሊዬት ጥያቄዎ ጸድቋል!
+    contacting_creator:
+      affiliates_data:
+        subject: የአፊሊዬቶችዎ ውሂብ እነሆ!
+      annual_payout_summary:
+        subject: የ%{year} የፋይናንስ ሪፖርትዎ እነሆ!
+      cannot_pay:
+        subject: ክፍያዎን መፈጸም አልቻልንም።
+      chargeback_evidence_due_soon:
+        subject: ማሳሰቢያ፦ የክርክር ማስረጃ በ24 ሰዓታት ውስጥ ያቅርቡ
+      chargeback_lost_no_refund_policy:
+        subject: የክፍያ ክርክር ተሸንፏል
+      chargeback_notice:
+        header: ለ%{product} የክፍያ ክርክር ተነስቷል
+        subject: ለ%{product} የክስረት/ተመላሽ ማስታወቂያ
+        subject_disputed: አንድ ሽያጭ ክርክር ተነስቶበታል
+        subject_paypal: የPayPal ሽያጭ ክርክር ተነስቶበታል
+        subject_urgent: "\U0001F6A8 አስቸኳይ፦ የተከራከረውን ሽያጭ ለመፍታት እርምጃ ያስፈልጋል"
+      chargeback_won:
+        subject: የክፍያ ክርክር አሸንፈዋል
+      credit_notification:
+        subject: የ%{app_name} ክሬዲት አግኝተዋል!
+      invalid_account_holder_name:
+        subject: የባንክ ሂሳብ ባለቤት ስምዎ ተቀባይነት አላገኘም።
+      invalid_bank_account:
+        subject: ክፍያዎን መፈጸም አልቻልንም።
+        subject_blocked: መለያዎ ለጊዜው ታግዷል
+      more_kyc_needed:
+        subject: ከእርስዎ ተጨማሪ መረጃ እንፈልጋለን።
+      notify:
+        affiliate_commission: የአፊሊዬት ኮሚሽን
+        affiliate_email: የአፊሊዬት ኢሜይል
+        call_schedule: የጥሪ መርሃግብር
+        campaign: ዘመቻ
+        collaborator_commission: የትብብር አጋር ኮሚሽን
+        collaborator_email: የትብብር አጋር ኢሜይል
+        content: ይዘት
+        customer: ደንበኛ
+        deposit_paid: የተከፈለ ተቀማጭ
+        direct: ቀጥተኛ
+        discount: ቅናሽ
+        duration: የቆይታ ጊዜ
+        email: ኢሜይል
+        giftee_email: የስጦታ ተቀባይ ኢሜይል
+        link_label: አገናኝ
+        medium: ሚዲየም
+        'off': "%{amount} ቅናሽ"
+        order_total: ጠቅላላ ትዕዛዝ
+        product_price: የምርት ዋጋ
+        quantity: ብዛት
+        referrer: አጣቃሽ
+        shipping_address: የመላኪያ አድራሻ
+        shipping_rate: የመላኪያ ዋጋ
+        source: ምንጭ
+        subject_bought: "%{buyer} %{product}ን ገዝቷል!"
+        subject_gift_bought: "%{buyer} %{product}ን ለ%{recipient} በስጦታ ገዝቷል!"
+        subject_installment: ለ%{product} የክፍያ ጭማሪ ተከፍሏል!
+        subject_membership: አዲስ የ%{product} አባልነት አግኝተዋል!
+        subject_preorder: አዲስ የ%{product} ቅድመ-ትዕዛዝ አግኝተዋል!
+        subject_sale: አዲስ የ%{product} ሽያጭ አግኝተዋል!
+        term: ቃል
+        test_sale_notice: ይህ የሙከራ ሽያጭ ስለሆነ ይህ መጠን ወደ ሂሳብ ቀሪ ሂሳብዎ አይጨመርም።
+        tier: ደረጃ
+        tip: ጉርሻ
+        upsell: ተጨማሪ ሽያጭ
+        utm_sale: በ%{link} የተገኘ ሽያጭ
+        variant: ዓይነት
+        variants: ዓይነቶች
+        view_account_balance: የሂሳብ ቀሪ ይመልከቱ
+        mail_heading_sale: ሽያጭ ፈጽመዋል!
+        subject_download: አዲስ የ%{product} ማውረድ
+        subject_preorder_price: አዲስ የ%{product} ቅድመ-ትዕዛዝ በ%{price}
+        subject_recurring_charge: ለ%{product} አዲስ የ%{price} ተደጋጋሚ ክፍያ
+        subject_sale_no_price: አዲስ የ%{product} ሽያጭ
+        subject_sale_price: አዲስ የ%{product} ሽያጭ በ%{price}
+        subject_subscriber: ለ%{product} አዲስ የ%{price} ተመዝጋቢ አግኝተዋል
+        subject_upgrade: አንድ ተመዝጋቢ ለ%{product} ያለውን አባልነት አሻሽሏል እና %{price} ተከፍሏል
+      payment_returned:
+        subject: የ%{app_name} ክፍያ ተመልሷል
+      payout_data:
+        subject: የክፍያዎ ውሂብ እነሆ!
+      payouts_may_be_blocked:
+        subject: ከእርስዎ ተጨማሪ መረጃ እንፈልጋለን።
+      paypal_payout_permanently_failed:
+        subject: የPayPal መለያዎ ክፍያዎን መቀበል አይችልም።
+      paypal_suspension_notification:
+        subject: አስፈላጊ፦ በ%{app_name} ላይ የክፍያ መቀበያ ዘዴዎን ያዘምኑ
+      preorder_cancelled:
+        subject: አንድ ቅድመ-ትዕዛዝ ተሰርዟል።
+      preorder_release_reminder:
+        subject: የቅድመ-ትዕዛዝዎ በቅርቡ ይለቀቃል
+      preorder_summary:
+        subject: የቅድመ-ትዕዛዝዎ በተሳካ ሁኔታ ተለቋል!
+      product_level_refund_policies_reverted:
+        subject: አስፈላጊ፦ የተመላሽ ፖሊሲ ለውጦች ወዲያውኑ ተግባራዊ ሆነዋል
+      purchase_refunded:
+        subject: አንድ ሽያጭ ተመላሽ ተደርጓል
+      purchase_refunded_for_fraud:
+        subject: በ%{app_name} መለያዎ ላይ የማጭበርበር ድርጊት ተገኝቷል።
+      refund_policy_enabled_email:
+        subject: አስፈላጊ፦ በመለያዎ ላይ የተደረጉ የተመላሽ ፖሊሲ ለውጦች
+      refund_policy_enforced_notification:
+        subject: አስፈላጊ፦ የተመላሽ ፖሊሲዎ ተዘምኗል
+      remind:
+        subject: እባክዎ የክፍያ መለያ ወደ %{app_name} ያክሉ።
+      review_submitted:
+        subject: "%{buyer} ለ%{product} ግምገማ ሰጥቷል"
+      seller_update:
+        subject: ያለፈው ሳምንትዎ።
+      singapore_identity_verification_reminder:
+        subject: "[እርምጃ ያስፈልጋል] መለያ እንዳይዘጋ የማንነት ማረጋገጫ ያጠናቅቁ"
+      stripe_document_verification_failed:
+        subject: "[እርምጃ ያስፈልጋል] Stripe የዘመነ ሰነድ ይፈልጋል"
+      stripe_identity_verification_failed:
+        subject: "[እርምጃ ያስፈልጋል] Stripe የዘመነ የማንነት መረጃ ይፈልጋል"
+      subscribers_data:
+        subject: የተመዝጋቢዎችዎ ውሂብ እነሆ!
+      subscription_cancelled:
+        subject: አንድ የአባልነት ምዝገባ ተሰርዟል።
+      subscription_downgraded:
+        subject: አንድ የአባልነት ምዝገባ ዝቅ ተደርጓል።
+      subscription_ended:
+        subject: አንድ የአባልነት ምዝገባ አብቅቷል።
+      subscription_restarted:
+        subject: አንድ የአባልነት ምዝገባ እንደገና ተጀምሯል።
+      suspended_due_to_stripe_risk:
+        subject: መለያዎ ከፍተኛ አደጋ ስላለው ታግዷል
+      tax_form_1099k:
+        subject: የ%{year} 1099-K ቅጽዎን ያግኙ
+      tax_form_1099misc:
+        subject: የ%{year} 1099-MISC ቅጽዎን ያግኙ
+      upcoming_call_reminder:
+        subject: ከ%{buyer} ጋር የተቀጠረው ጥሪዎ ነገ ነው!
+      upcoming_refund_policy_change:
+        subject: አስፈላጊ፦ ከጥር 1 ቀን 2025 ጀምሮ ተግባራዊ የሚሆኑ የተመላሽ ፖሊሲ ለውጦች
+      user_sales_data:
+        subject: የደንበኞችዎ ውሂብ እነሆ!
+      video_preview_conversion_error:
+        subject: የቅድመ-ዕይታ ቪዲዮዎን ማስተናገድ አልቻልንም።
+    creator:
+      bundles_marketing:
+        subject: ከ$300,000 በላይ ጥቅል ምርቶችን ከሸጡ ምርጥ ፈጣሪዎች ጋር ይቀላቀሉ
+      gumroad_day_fee_saved:
+        subject: በ%{app_name} ቀን %{fee} ክፍያ ቆጥበዋል!
+      marketing_x_reconnect:
+        subject: የማስጀመሪያ ልጥፍዎን ለመላክ Xን እንደገና ያገናኙ
+      scheduled_payout_chargeback_hold:
+        subject: ክፍያዎ ዘግይቷል
+      top_creator_announcement:
+        body_1: በ%{app_name} ላይ ከፍተኛ ፈጣሪ ባጅ አግኝተዋል።
+        body_2: አሁን በመገለጫዎ እና ምርቶችዎ በሚታዩበት ቦታ ሁሉ ቀርቧል፤ ስለዚህ ገዢዎች ከምርጥ የ%{app_name} ፈጣሪዎች እንደሚያገኙ ሁልጊዜ ያውቃሉ። ምንም እርምጃ አያስፈልግም። ዋናውን ክፍል አጠናቀዋል።
+        subject: እርስዎ ምርጥ ፈጣሪ ነዎት!
+      year_in_review:
+        subject: የ%{year} ዓመትዎ በጨረፍታ
+    merchant_registration:
+      account_deauthorized_to_user:
+        subject: የክፍያ መለያ ተቋርጧል - %{user_id}
+      account_needs_registration_to_user:
+        subject: የ%{processor} መለያ ያስፈልጋል
+      confirm_email_on_paypal:
+        subject: እባክዎ የኢሜይል አድራሻዎን ከPayPal ጋር ያረጋግጡ
+      paypal_account_updated:
+        subject: የPayPal Connect መለያዎ ተዘምኗል።
+      stripe_account_rejected:
+        subject: በ%{app_name} ላይ ክፍያዎችን ከአሁን በኋላ መቀበል አይችሉም
+      stripe_charges_disabled:
+        subject: እርምጃ ያስፈልጋል፦ ሽያጭዎ ቆሟል
+      stripe_payouts_disabled:
+        subject: እርምጃ ያስፈልጋል፦ ክፍያዎ ቆሟል
+      stripe_payouts_under_review:
+        subject: ክፍያዎ ለጊዜው ቆሟል
+    team:
+      invitation_accepted:
+        subject: "%{user} ግብዣዎን ተቀብሏል"
+      invite:
+        subject: የ%{app_name} የቡድን ግብዣ
   profile:
     cannot_follow_self: የዚህ መገለጫ ሻጭ ስለሆኑ ራስዎን መከተል አይችሉም!
     creator_rating: የሻጭ ደረጃ
-    creator_rating_summary: "%{average} ከ%{count_reviews} በ%{products_count} ምርቶች
-      ላይ"
+    creator_rating_summary: "%{average} ከ%{count_reviews} በ%{products_count} ምርቶች ላይ"
     enter_email: እባክዎ የኢሜይል አድራሻዎን ያስገቡ።
     enter_valid_email: እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።
     no_wishlists_selected: ምንም የምኞት ዝርዝር አልተመረጠም
@@ -1052,8 +1174,7 @@ am:
     already_bought_this: አስቀድመው ገዝተውታል?
     already_own_bundle: ይህንን ጥቅል አስቀድመው ገዝተዋል
     already_own_product: ይህንን ምርት አስቀድመው ገዝተዋል
-    already_subscribed_desc: በአሁኑ ጊዜ ለዚህ ምርት ንቁ የአባልነት ምዝገባ አለዎት። አዲስ የአባልነት ምዝገባ
-      መጀመር ይፈልጋሉ?
+    already_subscribed_desc: በአሁኑ ጊዜ ለዚህ ምርት ንቁ የአባልነት ምዝገባ አለዎት። አዲስ የአባልነት ምዝገባ መጀመር ይፈልጋሉ?
     already_subscribed_title: አስቀድሞ ንቁ የአባልነት ምዝገባ አለዎት
     buy: ይግዙ
     buy_description: ለዘላለም የፈለጉትን ያህል ይመልከቱ።
@@ -1064,10 +1185,8 @@ am:
     copy_link: አገናኝ ቅዳ
     copy_product_url: የምርት አገናኝ ቅዳ
     create_wishlist: የምኞት ዝርዝር ፍጠር
-    creator_rating_from: የሻጭ ደረጃ፦ %{average} ከ%{count_reviews} በ%{products_count}
-      ሌሎች ምርቶች ላይ።
-    creator_rating_from_profile: የሻጭ ደረጃ፦ %{average} ከ%{count_reviews} በ%{products_count}
-      ሌሎች ምርቶች ላይ።
+    creator_rating_from: የሻጭ ደረጃ፦ %{average} ከ%{count_reviews} በ%{products_count} ሌሎች ምርቶች ላይ።
+    creator_rating_from_profile: የሻጭ ደረጃ፦ %{average} ከ%{count_reviews} በ%{products_count} ሌሎች ምርቶች ላይ።
     discount_code_existing_customers_only: ይቅርታ፣ ይህ የቅናሽ ኮድ ለነባር ደንበኞች ብቻ ነው።
     discount_code_inactive: ይቅርታ፣ ሊጠቀሙበት የፈለጉት የቅናሽ ኮድ አያገለግልም።
     discount_code_invalid: ይቅርታ፣ ሊጠቀሙበት የፈለጉት የቅናሽ ኮድ ትክክል አይደለም።
@@ -1123,8 +1242,7 @@ am:
     resend_receipt: ደረሰኝዎን እንደገና ይላኩ
     restart_membership: የአባልነት ምዝገባን እንደገና ያስጀምሩ
     resume_subscription: የአባልነት ምዝገባን ይቀጥሉ
-    resume_subscription_desc: ቀደም ሲል ለዚህ ምርት ተመዝግበው ነበር። ካቆሙበት መቀጠል ይፈልጋሉ፣ ወይስ በአዲስ
-      የአባልነት ምዝገባ እንደገና መጀመር?
+    resume_subscription_desc: ቀደም ሲል ለዚህ ምርት ተመዝግበው ነበር። ካቆሙበት መቀጠል ይፈልጋሉ፣ ወይስ በአዲስ የአባልነት ምዝገባ እንደገና መጀመር?
     resume_subscription_title: የቀደመውን የአባልነት ምዝገባዎን ይቀጥሉ?
     search_products: ምርቶችን ይፈልጉ...
     seats: መቀመጫዎች
@@ -1149,8 +1267,7 @@ am:
     you_already_own_this: ይህንን አስቀድመው ገዝተዋል
     you_selected: የመረጡት
   subscriptions:
-    grace_period_warning: ምዝገባዎ በማራዘሚያ ጊዜ ውስጥ ነው (ቀሪ %{days} ቀናት)። ያልተቋረጠ መዳረሻ ለማግኘት
-      አሁኑኑ ያድሱ።
+    grace_period_warning: ምዝገባዎ በማራዘሚያ ጊዜ ውስጥ ነው (ቀሪ %{days} ቀናት)። ያልተቋረጠ መዳረሻ ለማግኘት አሁኑኑ ያድሱ።
     renew_now_for: በ%{price} አሁኑኑ ያድሱ
     renewal_banner_title: የምዝገባ ዕድሳት ደርሷል
     renewal_success: ምዝገባው እስከ %{date} በተሳካ ሁኔታ ታድሷል።

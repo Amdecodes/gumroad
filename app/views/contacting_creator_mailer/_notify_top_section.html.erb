@@ -19,7 +19,7 @@
 
   <% unless @is_preorder %>
     <p>
-      <%= link_to "View account balance", balance_url, class: "button primary" %>
+      <%= link_to t("mailers.contacting_creator.notify.view_account_balance", default: "View account balance"), balance_url, class: "button primary" %>
     </p>
   <% end %>
 </div>

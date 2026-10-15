@@ -89,7 +89,9 @@ class ContactingCreatorMailer < ApplicationMailer
     @unsub_link = user_unsubscribe_url(id: @seller.secure_external_id(scope: "email_unsubscribe"), email_type: :notify)
     @reply_to = @purchase.try(:email)
 
-    set_notify_of_sale_headers(is_preorder:)
+    with_recipient_locale(@seller) do
+      set_notify_of_sale_headers(is_preorder:)
+    end
 
     @referrer_name = @purchase&.display_referrer
 
@@ -133,14 +135,15 @@ class ContactingCreatorMailer < ApplicationMailer
         )
       end
 
-    @subject = \
+    set_localized_subject do
       if @is_paypal.present?
-        "A PayPal sale has been disputed"
+        t("mailers.contacting_creator.chargeback_notice.subject_paypal", default: "A PayPal sale has been disputed")
       elsif asking_for_evidence
-        "🚨 Urgent: Action required for resolving disputed sale"
+        t("mailers.contacting_creator.chargeback_notice.subject_urgent", default: "🚨 Urgent: Action required for resolving disputed sale")
       else
-        "A sale has been disputed"
+        t("mailers.contacting_creator.chargeback_notice.subject_disputed", default: "A sale has been disputed")
       end
+    end
   end
 
   def chargeback_evidence_due_soon(dispute_id)
@@ -154,7 +157,7 @@ class ContactingCreatorMailer < ApplicationMailer
     return do_not_send unless @hours_left.positive?
 
     @seller_response_due_at_formatted = format_dispute_evidence_due_at(@dispute_evidence.seller_response_due_at)
-    @subject = "Reminder: Submit dispute evidence within 24 hours"
+    set_localized_subject("mailers.contacting_creator.chargeback_evidence_due_soon.subject", default: "Reminder: Submit dispute evidence within 24 hours")
   end
 
   def remind(user_id)
@@ -163,13 +166,13 @@ class ContactingCreatorMailer < ApplicationMailer
 
     @unsub_link = user_unsubscribe_url(id: @seller.secure_external_id(scope: "email_unsubscribe"), email_type: :product_update)
     @sales_count = @seller.sales.successful.count
-    @subject = "Please add a payment account to #{PlatformConfig.app_name}."
+    set_localized_subject("mailers.contacting_creator.remind.subject", app_name: PlatformConfig.app_name, default: "Please add a payment account to #{PlatformConfig.app_name}.")
   end
 
   def video_preview_conversion_error(link_id)
     @product = Link.find(link_id)
     @seller = @product.user
-    @subject = "We were unable to process your preview video."
+    set_localized_subject("mailers.contacting_creator.video_preview_conversion_error.subject", default: "We were unable to process your preview video.")
   end
 
   def seller_update(user_id)
@@ -177,7 +180,7 @@ class ContactingCreatorMailer < ApplicationMailer
     @start_of_period = @end_of_period - 7.days
     @seller = User.find(user_id)
     @unsub_link = user_unsubscribe_url(id: @seller.secure_external_id(scope: "email_unsubscribe"), email_type: :seller_update)
-    @subject = "Your last week."
+    set_localized_subject("mailers.contacting_creator.seller_update.subject", default: "Your last week.")
   end
 
   # The three rejection kinds need opposite advice — correct the value, use a different account,
@@ -205,27 +208,25 @@ class ContactingCreatorMailer < ApplicationMailer
         rejected_bank_account(bank_account_id)
       )
     end
-    @subject = if @account_blocked
-      "Please add a different bank account for payouts."
-    elsif @format_rejected
-      "Your bank details need correcting for payouts."
-    elsif @terminal_rejected
-      "We need a different bank account for your payouts."
-    else
-      "We couldn't verify your bank account yet."
+    set_localized_subject do
+      if @account_blocked
+        t("mailers.contacting_creator.invalid_bank_account.subject_blocked", default: "Please add a different bank account for payouts.")
+      else
+        t("mailers.contacting_creator.invalid_bank_account.subject", default: "We couldn't verify your bank account yet.")
+      end
     end
   end
 
   def invalid_account_holder_name(user_id)
     @seller = User.find(user_id)
     @country_code = @seller.alive_user_compliance_info&.legal_entity_country_code
-    @subject = "Your bank account holder name was rejected."
+    set_localized_subject("mailers.contacting_creator.invalid_account_holder_name.subject", default: "Your bank account holder name was rejected.")
   end
 
   def cannot_pay(payment_id)
     @payment = Payment.find(payment_id)
     @seller = @payment.user
-    @subject = "We were unable to pay you."
+    set_localized_subject("mailers.contacting_creator.cannot_pay.subject", default: "We were unable to pay you.")
     @amount = Money.new(@payment.amount_cents, @payment.currency).format(no_cents_if_whole: true, symbol: true)
   end
 
@@ -239,7 +240,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def paypal_payout_permanently_failed(payment_id)
     @payment = Payment.find(payment_id)
     @seller = @payment.user
-    @subject = "Your PayPal account can't receive your payout."
+    set_localized_subject("mailers.contacting_creator.paypal_payout_permanently_failed.subject", default: "Your PayPal account can't receive your payout.")
     @amount = Money.new(@payment.amount_cents, @payment.currency).format(no_cents_if_whole: true, symbol: true)
     @reason = Payment::FailureReason::TERMINAL_PAYPAL_FAILURE_SELLER_REASONS.fetch(
       @payment.failure_reason,
@@ -316,71 +317,75 @@ class ContactingCreatorMailer < ApplicationMailer
     @seller = User.find_by(id: user_id)
     @amount = Money.new(amount_cents * get_rate(@seller.currency_type).to_f, @seller.currency_type.to_sym).format(no_cents_if_whole: true, symbol: true)
     @reason = reason
-    @subject = "You've received #{PlatformConfig.app_name} credit!"
+    set_localized_subject("mailers.contacting_creator.credit_notification.subject", app_name: PlatformConfig.app_name, default: "You've received #{PlatformConfig.app_name} credit!")
   end
 
   def gumroad_day_credit_notification(user_id, amount_cents)
     @seller = User.find_by(id: user_id)
     @amount = Money.new(amount_cents * get_rate(@seller.currency_type).to_f, @seller.currency_type.to_sym).format(no_cents_if_whole: true, symbol: true)
-    @subject = "You've received #{PlatformConfig.app_name} credit!"
+    set_localized_subject("mailers.contacting_creator.credit_notification.subject", app_name: PlatformConfig.app_name, default: "You've received #{PlatformConfig.app_name} credit!")
   end
 
   def subscription_cancelled(subscription_id)
     @subscription = Subscription.find(subscription_id)
     @seller = @subscription.seller
-    @subject =
+    set_localized_subject do
       if @subscription.is_installment_plan?
         "An installment plan has been canceled."
       else
-        "A subscription has been canceled."
+        t("mailers.contacting_creator.subscription_cancelled.subject", default: "A subscription has been canceled.")
       end
+    end
   end
 
   def subscription_cancelled_by_customer(subscription_id)
     @subscription = Subscription.find(subscription_id)
     @seller = @subscription.seller
-    @subject = "A subscription has been canceled."
+    set_localized_subject("mailers.contacting_creator.subscription_cancelled.subject", default: "A subscription has been canceled.")
   end
 
   def subscription_autocancelled(subscription_id)
     @subscription = Subscription.find(subscription_id)
-    @subject =
+    @seller = @subscription.seller
+    @last_failed_purchase = @subscription.purchases.failed.last
+    set_localized_subject do
       if @subscription.is_installment_plan?
         "An installment plan has been paused."
       else
-        "A subscription has been canceled."
+        t("mailers.contacting_creator.subscription_cancelled.subject", default: "A subscription has been canceled.")
       end
-    @seller = @subscription.seller
-    @last_failed_purchase = @subscription.purchases.failed.last
+    end
   end
 
   def subscription_ended(subscription_id)
     @subscription = Subscription.find(subscription_id)
     @seller = @subscription.seller
-    @subject =
+    set_localized_subject do
       if @subscription.is_installment_plan?
         "An installment plan has been paid in full."
       else
-        "A subscription has ended."
+        t("mailers.contacting_creator.subscription_ended.subject", default: "A subscription has ended.")
       end
+    end
   end
 
   def subscription_downgraded(subscription_id, plan_change_id)
     @subscription = Subscription.find(subscription_id)
     @subscription_plan_change = SubscriptionPlanChange.find(plan_change_id)
     @seller = @subscription.seller
-    @subject = "A subscription has been downgraded."
+    set_localized_subject("mailers.contacting_creator.subscription_downgraded.subject", default: "A subscription has been downgraded.")
   end
 
   def subscription_restarted(subscription_id)
     @subscription = Subscription.find(subscription_id)
     @seller = @subscription.seller
-    @subject =
+    set_localized_subject do
       if @subscription.is_installment_plan?
         "An installment plan has been restarted."
       else
-        "A subscription has been restarted."
+        t("mailers.contacting_creator.subscription_restarted.subject", default: "A subscription has been restarted.")
       end
+    end
   end
 
   def unremovable_discord_member(discord_user_id, discord_server_name, purchase_id)
@@ -469,21 +474,21 @@ class ContactingCreatorMailer < ApplicationMailer
     return do_not_send if @product_without_refund_policy.nil?
 
     @seller = @disputable.seller
-    @subject = "A dispute has been lost"
+    set_localized_subject("mailers.contacting_creator.chargeback_lost_no_refund_policy.subject", default: "A dispute has been lost")
   end
 
   def chargeback_won(dispute_id)
     dispute = Dispute.find(dispute_id)
     @disputable = dispute.disputable
     @seller = @disputable.seller
-    @subject = "A dispute has been won"
+    set_localized_subject("mailers.contacting_creator.chargeback_won.subject", default: "A dispute has been won")
   end
 
   def preorder_release_reminder(link_id)
     @product = Link.find(link_id)
     @preorder_link = @product.preorder_link
     @seller = @product.user
-    @subject = "Your pre-order will be released shortly"
+    set_localized_subject("mailers.contacting_creator.preorder_release_reminder.subject", default: "Your pre-order will be released shortly")
   end
 
   def preorder_summary(preorder_link_id)
@@ -499,13 +504,13 @@ class ContactingCreatorMailer < ApplicationMailer
     return do_not_send if @preorders_charged_successfully_count == 0
 
     @seller = @product.user
-    @subject = "Your pre-order was successfully released!"
+    set_localized_subject("mailers.contacting_creator.preorder_summary.subject", default: "Your pre-order was successfully released!")
   end
 
   def preorder_cancelled(preorder_id)
     @preorder = Preorder.find_by(id: preorder_id)
     @seller = @preorder.seller
-    @subject = "A preorder has been canceled."
+    set_localized_subject("mailers.contacting_creator.preorder_cancelled.subject", default: "A preorder has been canceled.")
   end
 
   def purchase_refunded_for_fraud(purchase_id)
@@ -516,7 +521,7 @@ class ContactingCreatorMailer < ApplicationMailer
       Purchase.includes(:seller).find_by(id: purchase_id)
     end
     @seller = @purchase.seller
-    @subject = "Fraud was detected on your #{PlatformConfig.app_name} account."
+    set_localized_subject("mailers.contacting_creator.purchase_refunded_for_fraud.subject", app_name: PlatformConfig.app_name, default: "Fraud was detected on your #{PlatformConfig.app_name} account.")
   end
 
   # refund_id is optional: when the refund carries a note (the reason a team member
@@ -531,19 +536,19 @@ class ContactingCreatorMailer < ApplicationMailer
       @refund_reason = Refund.find_by(id: refund_id)&.note
     end
     @seller = @purchase.seller
-    @subject = "A sale has been refunded"
+    set_localized_subject("mailers.contacting_creator.purchase_refunded.subject", default: "A sale has been refunded")
   end
 
   def payment_returned(payment_id)
     @payment = Payment.find(payment_id)
     @seller = @payment.user
-    @subject = "#{PlatformConfig.app_name} payout returned"
+    set_localized_subject("mailers.contacting_creator.payment_returned.subject", app_name: PlatformConfig.app_name, default: "#{PlatformConfig.app_name} payout returned")
   end
 
   def payouts_may_be_blocked(user_id)
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
-    @subject = "We need more information from you."
+    set_localized_subject("mailers.contacting_creator.payouts_may_be_blocked.subject", default: "We need more information from you.")
   end
 
   def payout_setup_retry_exhausted(user_id, marker_type)
@@ -556,7 +561,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def more_kyc_needed(user_id, fields_needed = [])
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
-    @subject = "We need more information from you."
+    set_localized_subject("mailers.contacting_creator.more_kyc_needed.subject", default: "We need more information from you.")
     country = @seller.compliance_country_code
     @fields_needed_tags = fields_needed.map { |field_needed| UserComplianceInfoFieldProperty.name_tag_for_field(field_needed, country:) }.compact
   end
@@ -564,7 +569,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def stripe_document_verification_failed(user_id, error_message)
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
-    @subject = "[Action Required] Stripe needs an updated document"
+    set_localized_subject("mailers.contacting_creator.stripe_document_verification_failed.subject", default: "[Action Required] Stripe needs an updated document")
     @error_message = error_message
     @error_message_is_unactionable = UserComplianceInfoRequest.unactionable_verification_message?(error_message)
   end
@@ -572,7 +577,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def stripe_identity_verification_failed(user_id, error_message)
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
-    @subject = "[Action Required] Stripe needs updated identity information"
+    set_localized_subject("mailers.contacting_creator.stripe_identity_verification_failed.subject", default: "[Action Required] Stripe needs updated identity information")
     @error_message = error_message
     @error_message_is_unactionable = UserComplianceInfoRequest.unactionable_verification_message?(error_message)
   end
@@ -581,23 +586,23 @@ class ContactingCreatorMailer < ApplicationMailer
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
     @deadline = deadline.to_fs(:formatted_date_full_month)
-    @subject = "[Action Required] Complete the identity verification to avoid account closure"
+    set_localized_subject("mailers.contacting_creator.singapore_identity_verification_reminder.subject", default: "[Action Required] Complete the identity verification to avoid account closure")
   end
 
   def stripe_remediation(user_id)
     @seller = User.find(user_id)
     return do_not_send unless @seller.account_active?
-    @subject = "We need more information from you."
+    set_localized_subject("mailers.contacting_creator.more_kyc_needed.subject", default: "We need more information from you.")
   end
 
   def suspended_due_to_stripe_risk(user_id)
     @seller = User.find(user_id)
-    @subject = "Your account has been suspended for being high risk"
+    set_localized_subject("mailers.contacting_creator.suspended_due_to_stripe_risk.subject", default: "Your account has been suspended for being high risk")
   end
 
   def user_sales_data(user_id, sales_csv_tempfile)
     @seller = User.find(user_id)
-    @subject = "Here's your customer data!"
+    set_localized_subject("mailers.contacting_creator.user_sales_data.subject", default: "Here's your customer data!")
     file_or_url = MailerAttachmentOrLinkService.new(
       file: sales_csv_tempfile,
       extension: "csv",
@@ -615,7 +620,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def tax_form_transaction_report(user_id, year, csv_tempfile)
     @seller = User.find(user_id)
     @year = year
-    @subject = "Your #{year} 1099-K transaction report"
+    set_localized_subject("mailers.contacting_creator.tax_form_transaction_report.subject", year:, default: "Your #{year} 1099-K transaction report")
     file_or_url = MailerAttachmentOrLinkService.new(
       file: csv_tempfile,
       extension: "csv",
@@ -632,7 +637,7 @@ class ContactingCreatorMailer < ApplicationMailer
 
   def payout_data(attachment_name, extension, tempfile, recipient_user_id)
     @recipient = User.find(recipient_user_id)
-    @subject = "Here's your payout data!"
+    set_localized_subject("mailers.contacting_creator.payout_data.subject", default: "Here's your payout data!")
 
     file_or_url = MailerAttachmentOrLinkService.new(
       file: tempfile,
@@ -653,7 +658,7 @@ class ContactingCreatorMailer < ApplicationMailer
     @next_year = Date.new(year).next_year.year
     @formatted_total_amount = formatted_dollar_amount((total_amount * 100).floor)
     @seller = User.find(user_id)
-    @subject = "Here's your financial report for #{year}!"
+    set_localized_subject("mailers.contacting_creator.annual_payout_summary.subject", year:, default: "Here's your financial report for #{year}!")
     @link = @seller.financial_annual_report_url_for(year:)
     do_not_send unless @link.present?
   end
@@ -662,27 +667,27 @@ class ContactingCreatorMailer < ApplicationMailer
     @seller = User.find(user_id)
     @year = year
     @is_filed = @seller.user_tax_forms.for_year(year).where(tax_form_type: "us_1099_k").first&.filed?
-    @subject = "Get your 1099-K form for #{@year}"
+    set_localized_subject("mailers.contacting_creator.tax_form_1099k.subject", year: @year, default: "Get your 1099-K form for #{@year}")
   end
 
   def tax_form_1099misc(user_id, year)
     @seller = User.find(user_id)
     @year = year
-    @subject = "Get your 1099-MISC form for #{@year}"
+    set_localized_subject("mailers.contacting_creator.tax_form_1099misc.subject", year: @year, default: "Get your 1099-MISC form for #{@year}")
   end
 
   def video_transcode_failed(product_file_id)
-    @subject = "A video failed to transcode."
     product_file = ProductFile.find(product_file_id)
     return do_not_send if product_file.link.nil?
 
-    @video_transcode_error = "We attempted to transcode a video (#{product_file.s3_filename}) from your product #{product_file.link.name}, but were unable to do so."
     @seller = product_file.user
+    set_localized_subject("mailers.contacting_creator.video_transcode_failed.subject", default: "A video failed to transcode.")
+    @video_transcode_error = "We attempted to transcode a video (#{product_file.s3_filename}) from your product #{product_file.link.name}, but were unable to do so."
   end
 
   def affiliates_data(recipient:, tempfile:, filename:)
-    @subject = "Here is your affiliates data!"
     @recipient = recipient
+    set_localized_subject("mailers.contacting_creator.affiliates_data.subject", default: "Here is your affiliates data!")
     file_or_url = MailerAttachmentOrLinkService.new(
       file: tempfile,
       filename:,
@@ -696,8 +701,8 @@ class ContactingCreatorMailer < ApplicationMailer
   end
 
   def subscribers_data(recipient:, tempfile:, filename:)
-    @subject = "Here is your subscribers data!"
     @recipient = recipient
+    set_localized_subject("mailers.contacting_creator.subscribers_data.subject", default: "Here is your subscribers data!")
     file_or_url = MailerAttachmentOrLinkService.new(
       file: tempfile,
       filename:,
@@ -740,7 +745,7 @@ class ContactingCreatorMailer < ApplicationMailer
     name = @review.purchase.rater_identity_name
     email = @review.purchase.email
     @buyer = name.present? ? "#{name} (#{email})" : email
-    @subject = "#{@buyer} reviewed #{@product.name}"
+    set_localized_subject("mailers.contacting_creator.review_submitted.subject", buyer: @buyer, product: @product.name, default: "#{@buyer} reviewed #{@product.name}")
   end
 
   def upcoming_call_reminder(call_id)
@@ -750,7 +755,7 @@ class ContactingCreatorMailer < ApplicationMailer
     purchase = call.purchase
     @seller = purchase.seller
     buyer_email = purchase.purchaser_email_or_email
-    @subject = "Your scheduled call with #{buyer_email} is tomorrow!"
+    set_localized_subject("mailers.contacting_creator.upcoming_call_reminder.subject", buyer: buyer_email, default: "Your scheduled call with #{buyer_email} is tomorrow!")
 
     @post_purchase_custom_fields_attributes = purchase.purchase_custom_fields
       .where.not(field_type: CustomField::TYPE_FILE)
@@ -767,30 +772,32 @@ class ContactingCreatorMailer < ApplicationMailer
 
   def refund_policy_enabled_email(seller_id)
     @seller = User.find(seller_id)
-    @subject = "Important: Refund policy changes to your account"
     @postponed_date = User::LAST_ALLOWED_TIME_FOR_PRODUCT_LEVEL_REFUND_POLICY + 1.second if @seller.account_level_refund_policy_delayed?
-    @subject += " (effective #{@postponed_date.to_fs(:formatted_date_full_month)})" if @postponed_date.present?
+    set_localized_subject do
+      base = t("mailers.contacting_creator.refund_policy_enabled_email.subject", default: "Important: Refund policy changes to your account")
+      @postponed_date.present? ? "#{base} (effective #{@postponed_date.to_fs(:formatted_date_full_month)})" : base
+    end
   end
 
   def refund_policy_enforced_notification(seller_id)
     @seller = User.find(seller_id)
     return do_not_send unless @seller.account_active?
-    @subject = "Important: Your refund policy has been updated"
+    set_localized_subject("mailers.contacting_creator.refund_policy_enforced_notification.subject", default: "Important: Your refund policy has been updated")
   end
 
   def product_level_refund_policies_reverted(seller_id)
     @seller = User.find(seller_id)
-    @subject = "Important: Refund policy changes effective immediately"
+    set_localized_subject("mailers.contacting_creator.product_level_refund_policies_reverted.subject", default: "Important: Refund policy changes effective immediately")
   end
 
   def upcoming_refund_policy_change(user_id)
     @seller = User.find(user_id)
-    @subject = "Important: Upcoming refund policy changes effective January 1, 2025"
+    set_localized_subject("mailers.contacting_creator.upcoming_refund_policy_change.subject", default: "Important: Upcoming refund policy changes effective January 1, 2025")
   end
 
   def paypal_suspension_notification(user_id)
     @seller = User.find(user_id)
-    @subject = "Important: Update Your Payout Method on #{PlatformConfig.app_name}"
+    set_localized_subject("mailers.contacting_creator.paypal_suspension_notification.subject", app_name: PlatformConfig.app_name, default: "Important: Update Your Payout Method on #{PlatformConfig.app_name}")
   end
 
   private
@@ -862,6 +869,13 @@ class ContactingCreatorMailer < ApplicationMailer
       end
     end
 
+    def set_localized_subject(key = nil, default: nil, **params, &block)
+      recipient = @recipient || @seller
+      with_recipient_locale(recipient) do
+        @subject = block_given? ? yield : t(key, default:, **params)
+      end
+    end
+
     def deliver_email
       return if @do_not_send
 
@@ -869,10 +883,12 @@ class ContactingCreatorMailer < ApplicationMailer
       email = recipient.form_email
       return unless EmailFormatValidator.valid?(email)
 
-      mailer_args = { to: email, subject: @subject }
-      mailer_args[:reply_to] = @reply_to if @reply_to.present?
-      mailer_args[:from] = @from if @from.present?
-      mail(mailer_args)
+      with_recipient_locale(recipient) do
+        mailer_args = { to: email, subject: @subject }
+        mailer_args[:reply_to] = @reply_to if @reply_to.present?
+        mailer_args[:from] = @from if @from.present?
+        mail(mailer_args)
+      end
     end
 
     # The render claimed the seller's one notice; this decides whether it was spent. Only a message

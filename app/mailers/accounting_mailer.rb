@@ -241,6 +241,9 @@ class AccountingMailer < ApplicationMailer
       data: ::Base64.encode64(csv_data),
       encoding: "base64"
     }
-    mail(to: recipient_email, subject: "Year-to-Date Sales Report by Country/State")
+    recipient = User.find_by(email: recipient_email)
+    with_recipient_locale(recipient) do
+      mail(to: recipient_email, subject: t("mailers.accounting.ytd_sales_report.subject", default: "Year-to-Date Sales Report by Country/State"))
+    end
   end
 end

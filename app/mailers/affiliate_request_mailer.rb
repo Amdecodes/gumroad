@@ -8,12 +8,14 @@ class AffiliateRequestMailer < ApplicationMailer
 
   def notify_requester_of_request_submission(affiliate_request_id)
     @affiliate_request = AffiliateRequest.find(affiliate_request_id)
-
-    @subject = "Your application request to #{@affiliate_request.seller.display_name} was submitted!"
     @requester_has_existing_account = User.exists?(email: @affiliate_request.email)
-    mail to: @affiliate_request.email,
-         subject: @subject,
-         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+
+    with_recipient_locale(@affiliate_request) do
+      @subject = t("mailers.affiliate_request.notify_requester_of_request_submission.subject", seller: @affiliate_request.seller.display_name, default: "Your application request to #{@affiliate_request.seller.display_name} was submitted!")
+      mail to: @affiliate_request.email,
+           subject: @subject,
+           delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+    end
   end
 
   def notify_requester_of_request_approval(affiliate_request_id)
@@ -34,39 +36,47 @@ class AffiliateRequestMailer < ApplicationMailer
         }
       end
 
-    @subject = "Your affiliate request to #{@affiliate_request.seller.display_name} was approved!"
+    with_recipient_locale(requester) do
+      @subject = t("mailers.affiliate_request.notify_requester_of_request_approval.subject", seller: @affiliate_request.seller.display_name, default: "Your affiliate request to #{@affiliate_request.seller.display_name} was approved!")
 
-    mail to: @affiliate_request.email,
-         subject: @subject,
-         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+      mail to: @affiliate_request.email,
+           subject: @subject,
+           delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+    end
   end
 
   def notify_requester_of_ignored_request(affiliate_request_id)
     @affiliate_request = AffiliateRequest.find(affiliate_request_id)
 
-    @subject = "Your affiliate request to #{@affiliate_request.seller.display_name} was not approved"
-    mail to: @affiliate_request.email,
-         subject: @subject,
-         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+    with_recipient_locale(@affiliate_request) do
+      @subject = t("mailers.affiliate_request.notify_requester_of_ignored_request.subject", seller: @affiliate_request.seller.display_name, default: "Your affiliate request to #{@affiliate_request.seller.display_name} was not approved")
+      mail to: @affiliate_request.email,
+           subject: @subject,
+           delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+    end
   end
 
   def notify_unregistered_requester_of_request_approval(affiliate_request_id)
     @affiliate_request = AffiliateRequest.find(affiliate_request_id)
 
-    @subject = "Your affiliate request to #{@affiliate_request.seller.display_name} was approved!"
+    with_recipient_locale(@affiliate_request) do
+      @subject = t("mailers.affiliate_request.notify_unregistered_requester_of_request_approval.subject", seller: @affiliate_request.seller.display_name, default: "Your affiliate request to #{@affiliate_request.seller.display_name} was approved!")
 
-    mail to: @affiliate_request.email,
-         subject: @subject,
-         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+      mail to: @affiliate_request.email,
+           subject: @subject,
+           delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.email)
+    end
   end
 
   def notify_seller_of_new_request(affiliate_request_id)
     @affiliate_request = AffiliateRequest.find(affiliate_request_id)
 
-    @subject = "#{@affiliate_request.name} has applied to be an affiliate"
+    with_recipient_locale(@affiliate_request.seller) do
+      @subject = t("mailers.affiliate_request.notify_seller_of_new_request.subject", name: @affiliate_request.name, default: "#{@affiliate_request.name} has applied to be an affiliate")
 
-    mail to: @affiliate_request.seller.email,
-         subject: @subject,
-         delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.seller.email)
+      mail to: @affiliate_request.seller.email,
+           subject: @subject,
+           delivery_method_options: MailerInfo.random_delivery_method_options(domain: :customers, seller: @affiliate_request.seller, to: @affiliate_request.seller.email)
+    end
   end
 end

@@ -2,10 +2,10 @@
   <h2><%= @subject %></h2>
 
   <div style="text-align: center; padding: 24px 0;">
-    <%= image_tag("email/top_creator_badge.png", alt: "Top Creator Badge", style: "display: block; margin: 0 auto; max-width: 100%; height: auto;") %>
+    <%= image_tag("email/top_creator_badge.png", alt: t("mailers.top_creator", default: "Top creator"), style: "display: block; margin: 0 auto; max-width: 100%; height: auto;") %>
   </div>
 
-  <p>You just earned the Top Creator badge on Gumroad.</p>
+  <p><%= t("mailers.creator.top_creator_announcement.body_1", app_name: PlatformConfig::APP_NAME, default: "You just earned the Top Creator badge on #{PlatformConfig::APP_NAME}.") %></p>
 
-  <p>It's now live on your profile and everywhere your products appear, so buyers always know they're getting something from one of Gumroad's best. No action needed. You've already done the hard part.</p>
+  <p><%= t("mailers.creator.top_creator_announcement.body_2", app_name: PlatformConfig::APP_NAME, default: "It's now live on your profile and everywhere your products appear, so buyers always know they're getting something from one of #{PlatformConfig::APP_NAME}'s best. No action needed. You've already done the hard part.") %></p>
 </div>

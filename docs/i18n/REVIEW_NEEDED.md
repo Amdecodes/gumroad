@@ -509,3 +509,46 @@ The following Amharic strings cover seller settings (account security, 2FA, pass
 | `seller.utm_links.short_link_help`     | This is your short UTM link to share                                              | ለማጋራት የሚያገለግል አጭር የ UTM አገናኝዎ ይህ ነው                          | Shortened redirection URL explanation.                        |
 | `seller.utm_links.source_help`         | Where the traffic comes from e.g Twitter, Instagram                               | ትራፊኩ ከየት እንደመጣ ለምሳሌ Twitter, Instagram                       | UTM parameter guidance for non-technical creators.            |
 | `seller.utm_links.medium_help`         | Medium by which the traffic arrived e.g. email, ads, story                        | ትራፊኩ የመጣበት ዘዴ ለምሳሌ ኢሜይል፣ ማስታወቂያዎች፣ ስቶሪ                       | UTM medium parameter definitions.                             |
+
+---
+
+## 13. Seller Mailers Rendered in Recipient & Seller Locale
+
+The following Amharic strings cover notifications sent to sellers, affiliates, and team members regarding sales, payouts, disputes, commission credits, and account status:
+
+### 13.1 Sale Notifications & Order Breakdowns (`ContactingCreatorMailer.notify`)
+
+| Key                                                         | English Source                                                                       | Amharic Draft                               | Review Focus / Questions                             |
+| :---------------------------------------------------------- | :----------------------------------------------------------------------------------- | :------------------------------------------ | :--------------------------------------------------- |
+| `mailers.contacting_creator.notify.mail_heading_sale`       | You made a sale!                                                                     | ሽያጭ ፈጽመዋል!                                  | Main seller sale notification heading.               |
+| `mailers.contacting_creator.notify.subject_sale_price`      | New sale of %{product} for %{price}                                                  | አዲስ የ%{product} ሽያጭ በ%{price}               | Sale email subject with dynamic product and price.   |
+| `mailers.contacting_creator.notify.view_account_balance`    | View account balance                                                                 | የሂሳብ ቀሪ ይመልከቱ                               | Primary call-to-action button in sale notifications. |
+| `mailers.contacting_creator.notify.customer`                | Customer                                                                             | ደንበኛ                                        | Customer name row in order summary table.            |
+| `mailers.contacting_creator.notify.shipping_address`        | Shipping address                                                                     | የመላኪያ አድራሻ                                  | Physical order recipient address header.             |
+| `mailers.contacting_creator.notify.quantity`                | Quantity                                                                             | ብዛት                                         | Purchased quantity label.                            |
+| `mailers.contacting_creator.notify.deposit_paid`            | Deposit paid                                                                         | የተከፈለ ተቀማጭ                                  | Commission/custom service deposit label.             |
+| `mailers.contacting_creator.notify.tip`                     | Tip                                                                                  | ጉርሻ                                         | Customer gratuity label.                             |
+| `mailers.contacting_creator.notify.affiliate_commission`    | Affiliate commission                                                                 | የአፊሊዬት ኮሚሽን                                 | Direct affiliate cut row in sale breakdown.          |
+| `mailers.contacting_creator.notify.collaborator_commission` | Collaborator commission                                                              | የአጋር ኮሚሽን                                   | Collaborator cut row in sale breakdown.              |
+| `mailers.contacting_creator.notify.order_total`             | Order total                                                                          | ጠቅላላ ትዕዛዝ                                   | Grand total charged to buyer.                        |
+| `mailers.contacting_creator.notify.test_sale_notice`        | Because this was a test sale, this amount will not be added to your account balance. | ይህ የሙከራ ሽያጭ ስለሆነ፣ ይህ መጠን ወደ ሂሳብዎ ቀሪ አይጨመርም። | Test order disclaimer.                               |
+
+### 13.2 Payout, Disputes & Account Warnings (`ContactingCreatorMailer`, `MerchantRegistrationMailer`)
+
+| Key                                                                  | English Source                                   | Amharic Draft                              | Review Focus / Questions                     |
+| :------------------------------------------------------------------- | :----------------------------------------------- | :----------------------------------------- | :------------------------------------------- |
+| `mailers.contacting_creator.cannot_pay.subject`                      | We were unable to pay you.                       | ክፍያዎን መፈጸም አልቻልንም።                         | Critical failed payout notification subject. |
+| `mailers.contacting_creator.chargeback_notice.subject`               | Chargeback notice for %{product}                 | ለ %{product} የክፍያ ተመላሽ ማስታወቂያ              | Customer dispute alert to seller.            |
+| `mailers.contacting_creator.payout_data.subject`                     | Here's your payout data!                         | የክፍያ መረጃዎ እነሆ!                             | Periodic payout data export subject.         |
+| `mailers.merchant_registration.stripe_account_rejected.subject`      | You can no longer accept payments on %{app_name} | በ%{app_name} ላይ ክፍያዎችን ከአሁን በኋላ መቀበል አይችሉም | Account shutdown notification subject.       |
+| `mailers.merchant_registration.account_deauthorized_to_user.subject` | Payments account disconnected - %{user_id}       | የክፍያ መለያ ተቋርጧል - %{user_id}                | Disconnected payment processor alert.        |
+
+### 13.3 Collaborators & Affiliates (`AffiliateMailer`, `AffiliateRequestMailer`, `TeamMailer`)
+
+| Key                                                              | English Source                                                        | Amharic Draft                                          | Review Focus / Questions                          |
+| :--------------------------------------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------- | :------------------------------------------------ |
+| `mailers.affiliate.direct_affiliate_invitation.subject`          | %{seller} has added you as an affiliate.                              | %{seller} እንደ አፊሊዬት አካትቶዎታል                            | Direct affiliate invitation email subject.        |
+| `mailers.affiliate.collaborator_invited.subject`                 | %{inviter} has invited you to collaborate on %{app_name}              | %{inviter} በ%{app_name} ላይ አብሮ ለመስራት ጋብዞዎታል            | Collaborator revenue-share invitation subject.    |
+| `mailers.affiliate.collaborator_invitation_accepted.subject`     | %{invitee} has accepted your invitation to collaborate on %{app_name} | %{invitee} በ%{app_name} ላይ አብሮ ለመስራት የቀረበለትን ግብዣ ተቀብሏል | Seller notification that collaborator accepted.   |
+| `mailers.affiliate_request.notify_seller_of_new_request.subject` | %{name} has applied to be an affiliate                                | %{name} አፊሊዬት ለመሆን አመልክቷል                              | Seller notification of pending affiliate request. |
+| `mailers.team.invite.subject`                                    | %{app_name} team invitation                                           | የ%{app_name} የቡድን ግብዣ                                  | Team member invitation email subject.             |

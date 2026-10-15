@@ -17,14 +17,16 @@ class TeamMailer < ApplicationMailer
     return if team_invitation.matches_owner_email?
 
     @team_invitation = team_invitation
-    @subject = "#{PlatformConfig::APP_NAME} team invitation"
+    with_recipient_locale(team_invitation) do
+      @subject = t("mailers.team.invite.subject", app_name: PlatformConfig::APP_NAME, default: "#{PlatformConfig::APP_NAME} team invitation")
 
-    mail(
-      from: NOREPLY_EMAIL_WITH_NAME,
-      to: @team_invitation.email,
-      reply_to: NOREPLY_EMAIL,
-      subject: @subject
-    )
+      mail(
+        from: NOREPLY_EMAIL_WITH_NAME,
+        to: @team_invitation.email,
+        reply_to: NOREPLY_EMAIL,
+        subject: @subject
+      )
+    end
   end
 
   def invitation_accepted(team_membership)
@@ -32,13 +34,16 @@ class TeamMailer < ApplicationMailer
     @user = team_membership.user
     @seller = team_membership.seller
     @user_name = sanitize(@user.display_name(prefer_email_over_default_username: true))
-    @subject = "#{@user_name} has accepted your invitation"
 
-    mail(
-      from: NOREPLY_EMAIL_WITH_NAME,
-      to: @seller.email,
-      reply_to: @user.email,
-      subject: @subject
-    )
+    with_recipient_locale(@seller) do
+      @subject = t("mailers.team.invitation_accepted.subject", user: @user_name, default: "#{@user_name} has accepted your invitation")
+
+      mail(
+        from: NOREPLY_EMAIL_WITH_NAME,
+        to: @seller.email,
+        reply_to: @user.email,
+        subject: @subject
+      )
+    end
   end
 end

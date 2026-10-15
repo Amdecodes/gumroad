@@ -115,7 +115,7 @@ describe TeamMailer do
     it "excludes seller-controlled content from the invitation" do
       seller.update!(name: "Unrequested charge notice at example.net", username: "billingcallback")
 
-      expect(mail.subject).to eq("Gumroad team invitation")
+      expect(mail.subject).to eq("#{PlatformConfig::APP_NAME} team invitation")
       expect(mail.body.decoded).not_to include(seller.name, seller.username, seller.email)
       expect(mail.body.decoded).to include("not a purchase receipt or a charge notice")
       expect(mail.body.decoded).to include("If you are not expecting an invitation, please ignore this email.")
@@ -125,7 +125,7 @@ describe TeamMailer do
 
     it "generates email" do
       expect(mail.to).to eq [email]
-      expect(mail.subject).to eq("Gumroad team invitation")
+      expect(mail.subject).to eq("#{PlatformConfig::APP_NAME} team invitation")
       expect(mail.from).to eq [ApplicationMailer::NOREPLY_EMAIL]
       expect(mail.reply_to).to eq [ApplicationMailer::NOREPLY_EMAIL]
 
@@ -139,7 +139,7 @@ describe TeamMailer do
         let(:seller) { create(:named_seller, user_risk_state: state, name: "Unrequested charge notice", username: "billingcallback") }
 
         it "keeps seller identity out of the subject, body, and reply address" do
-          expect(mail.subject).to eq("Gumroad team invitation")
+          expect(mail.subject).to eq("#{PlatformConfig::APP_NAME} team invitation")
           expect(mail.body.decoded).not_to include(seller.name, seller.username, seller.email)
           expect(mail.reply_to).to eq([ApplicationMailer::NOREPLY_EMAIL])
         end

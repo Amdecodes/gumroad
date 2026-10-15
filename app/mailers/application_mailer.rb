@@ -80,6 +80,7 @@ class ApplicationMailer < ActionMailer::Base
 
     def with_recipient_locale(target = nil, &block)
       resolved_locale = resolve_recipient_locale(target)
+      resolved_locale = resolved_locale.to_s.presence_in(I18n.available_locales.map(&:to_s)) || I18n.default_locale
       I18n.with_locale(resolved_locale, &block)
     end
 
@@ -110,6 +111,18 @@ class ApplicationMailer < ActionMailer::Base
         target.locale.presence || I18n.default_locale
       when Order
         target.purchases.first&.locale.presence || target.user&.locale.presence || I18n.default_locale
+      when Payment
+        target.user&.locale.presence || I18n.default_locale
+      when AffiliateRequest
+        target.seller&.locale.presence || I18n.default_locale
+      when Collaborator
+        target.seller&.locale.presence || target.affiliate_user&.locale.presence || I18n.default_locale
+      when DirectAffiliate
+        target.seller&.locale.presence || target.affiliate_user&.locale.presence || I18n.default_locale
+      when TeamInvitation
+        target.seller&.locale.presence || I18n.default_locale
+      when TeamMembership
+        target.seller&.locale.presence || target.user&.locale.presence || I18n.default_locale
       else
         if target.respond_to?(:locale) && target.locale.present?
           target.locale
@@ -123,6 +136,8 @@ class ApplicationMailer < ActionMailer::Base
           target.purchaser.locale
         elsif target.respond_to?(:orderable) && target.orderable.respond_to?(:locale) && target.orderable.locale.present?
           target.orderable.locale
+        elsif target.respond_to?(:seller) && target.seller&.locale.present?
+          target.seller.locale
         elsif target.respond_to?(:user) && target.user&.locale.present?
           target.user.locale
         else

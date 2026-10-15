@@ -32,38 +32,42 @@ class AffiliateMailer < ApplicationMailer
     @affiliate_referral_url = affiliate_referral_url
     @final_destination_url = @direct_affiliate.final_destination_url
 
-    @subject = "#{@seller_name} has added you as an affiliate."
-    params = {
-      to: @direct_affiliate.affiliate_user.form_email,
-      subject: @subject
-    }
-    params[:cc] = @seller.form_email unless prevent_sending_invitation_email_to_seller
+    with_recipient_locale(@direct_affiliate.affiliate_user) do
+      @subject = t("mailers.affiliate.direct_affiliate_invitation.subject", seller: @seller_name, default: "#{@seller_name} has added you as an affiliate.")
+      params = {
+        to: @direct_affiliate.affiliate_user.form_email,
+        subject: @subject
+      }
+      params[:cc] = @seller.form_email unless prevent_sending_invitation_email_to_seller
 
-    mail params
+      mail params
+    end
   end
 
   def notify_affiliate_of_sale(purchase_id)
     @purchase = Purchase.find(purchase_id)
     @affiliate = @purchase.affiliate
 
-    if @affiliate.collaborator?
-      notify_collaborator_of_sale
-    else
-      @affiliate_percentage_text = "#{@affiliate.basis_points(product_id: @purchase.link_id) / 100}%"
-      @purchase_price_formatted = MoneyFormatter.format(@purchase.price_cents, :usd, no_cents_if_whole: true, symbol: true)
-      @affiliate_amount_formatted = MoneyFormatter.format(@purchase.affiliate_credit_cents, :usd, no_cents_if_whole: true, symbol: true)
-      # Not every membership purchase has its subscription attached yet when this job runs, so both
-      # the trial date and the recurrence have to come off the association.
-      subscription = @purchase.subscription
-      @free_trial_end_date = subscription&.free_trial_end_date_formatted
-      @recurring_commission_text = if subscription && @purchase.is_original_subscription_purchase?
-        "You'll continue to receive a commission once #{recurrence_long_indicator(subscription.recurrence)} as long as the subscription is active."
-      end
-
-      if @affiliate.global?
-        notify_global_affiliate_of_sale
+    with_recipient_locale(@affiliate.affiliate_user) do
+      if @affiliate.collaborator?
+        notify_collaborator_of_sale
       else
-        notify_direct_affiliate_of_sale
+        @affiliate_percentage_text = "#{@affiliate.basis_points(product_id: @purchase.link_id) / 100}%"
+        @purchase_price_formatted = MoneyFormatter.format(@purchase.price_cents, :usd, no_cents_if_whole: true, symbol: true)
+        @affiliate_amount_formatted = MoneyFormatter.format(@purchase.affiliate_credit_cents, :usd, no_cents_if_whole: true, symbol: true)
+        # Not every membership purchase has its subscription attached yet when this job runs, so both
+        # the trial date and the recurrence have to come off the association.
+        subscription = @purchase.subscription
+        @free_trial_end_date = subscription&.free_trial_end_date_formatted
+        @recurring_commission_text = if subscription && @purchase.is_original_subscription_purchase?
+          "You'll continue to receive a commission once #{recurrence_long_indicator(subscription.recurrence)} as long as the subscription is active."
+        end
+
+        if @affiliate.global?
+          notify_global_affiliate_of_sale
+        else
+          notify_direct_affiliate_of_sale
+        end
       end
     end
   end
@@ -76,9 +80,11 @@ class AffiliateMailer < ApplicationMailer
                                  .sort_by { -_1[:fee_percent] }
     seller_name = @direct_affiliate.seller.name_or_username
 
-    @subject = "#{seller_name} just updated your affiliated products"
-    mail to: @direct_affiliate.affiliate_user.form_email,
-         subject: @subject
+    with_recipient_locale(@direct_affiliate.affiliate_user) do
+      @subject = t("mailers.affiliate.notify_direct_affiliate_of_updated_products.subject", seller: seller_name, default: "#{seller_name} just updated your affiliated products")
+      mail to: @direct_affiliate.affiliate_user.form_email,
+           subject: @subject
+    end
   end
 
   def notify_direct_affiliate_of_new_product(affiliate_id, product_id)
@@ -91,9 +97,11 @@ class AffiliateMailer < ApplicationMailer
     @affiliate_percentage_text = "#{@direct_affiliate.basis_points(product_id:) / 100}%"
     @affiliate_referral_url = @direct_affiliate.referral_url_for_product(product)
 
-    @subject = "#{@seller_name} has added you as an affiliate to #{@product_name}."
-    mail to: @direct_affiliate.affiliate_user.form_email,
-         subject: @subject
+    with_recipient_locale(@direct_affiliate.affiliate_user) do
+      @subject = t("mailers.affiliate.notify_direct_affiliate_of_new_product.subject", seller: @seller_name, product: @product_name, default: "#{@seller_name} has added you as an affiliate to #{@product_name}.")
+      mail to: @direct_affiliate.affiliate_user.form_email,
+           subject: @subject
+    end
   end
 
   def direct_affiliate_removal(affiliate_id)
@@ -101,10 +109,12 @@ class AffiliateMailer < ApplicationMailer
     @seller = @direct_affiliate.seller
     @seller_name = @direct_affiliate.seller.name_or_username
 
-    @subject = "#{@seller_name} just updated your affiliate status"
-    mail to: @direct_affiliate.affiliate_user.form_email,
-         cc: @seller.form_email,
-         subject: @subject
+    with_recipient_locale(@direct_affiliate.affiliate_user) do
+      @subject = t("mailers.affiliate.direct_affiliate_removal.subject", seller: @seller_name, default: "#{@seller_name} just updated your affiliate status")
+      mail to: @direct_affiliate.affiliate_user.form_email,
+           cc: @seller.form_email,
+           subject: @subject
+    end
   end
 
   def direct_affiliate_removal_by_affiliate_user(affiliate_id)
@@ -117,32 +127,40 @@ class AffiliateMailer < ApplicationMailer
     # may have neither name nor username.
     @affiliate_user_name = @affiliate_user.name_or_username.presence || "An affiliate"
 
-    @subject = "#{@affiliate_user_name} has left your affiliate program"
-    mail to: @seller.form_email,
-         cc: @affiliate_user.form_email,
-         subject: @subject
+    with_recipient_locale(@seller) do
+      @subject = t("mailers.affiliate.direct_affiliate_removal_by_affiliate_user.subject", affiliate: @affiliate_user_name, default: "#{@affiliate_user_name} has left your affiliate program")
+      mail to: @seller.form_email,
+           cc: @affiliate_user.form_email,
+           subject: @subject
+    end
   end
 
   def collaborator_creation(collaborator_id)
     @collaborator = Collaborator.find(collaborator_id)
     @seller = @collaborator.seller
-    @subject = "#{@collaborator.seller.name_or_username} has added you as a collaborator on #{PlatformConfig::APP_NAME}"
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
-    mail to: @collaborator.affiliate_user.form_email,
-         cc: @seller.form_email,
-         subject: @subject
+    with_recipient_locale(@collaborator.affiliate_user) do
+      @subject = t("mailers.affiliate.collaborator_creation.subject", seller: @collaborator.seller.name_or_username, app_name: PlatformConfig::APP_NAME, default: "#{@collaborator.seller.name_or_username} has added you as a collaborator on #{PlatformConfig::APP_NAME}")
+
+      mail to: @collaborator.affiliate_user.form_email,
+           cc: @seller.form_email,
+           subject: @subject
+    end
   end
 
   def collaborator_update(collaborator_id)
     @collaborator = Collaborator.find(collaborator_id)
     @seller = @collaborator.seller
-    @subject = "#{@collaborator.seller.name_or_username} has updated your collaborator status on #{PlatformConfig::APP_NAME}"
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
-    mail to: @collaborator.affiliate_user.form_email,
-         cc: @seller.form_email,
-         subject: @subject
+    with_recipient_locale(@collaborator.affiliate_user) do
+      @subject = t("mailers.affiliate.collaborator_update.subject", seller: @collaborator.seller.name_or_username, app_name: PlatformConfig::APP_NAME, default: "#{@collaborator.seller.name_or_username} has updated your collaborator status on #{PlatformConfig::APP_NAME}")
+
+      mail to: @collaborator.affiliate_user.form_email,
+           cc: @seller.form_email,
+           subject: @subject
+    end
   end
 
   def collaboration_ended_by_seller(collaborator_id)
@@ -150,10 +168,12 @@ class AffiliateMailer < ApplicationMailer
     @seller = @collaborator.seller
     @seller_name = @collaborator.seller.name_or_username
 
-    @subject = "#{@seller_name} just updated your collaborator status"
-    mail to: @collaborator.affiliate_user.form_email,
-         cc: @seller.form_email,
-         subject: @subject
+    with_recipient_locale(@collaborator.affiliate_user) do
+      @subject = t("mailers.affiliate.collaboration_ended_by_seller.subject", seller: @seller_name, default: "#{@seller_name} just updated your collaborator status")
+      mail to: @collaborator.affiliate_user.form_email,
+           cc: @seller.form_email,
+           subject: @subject
+    end
   end
   alias_method :collaborator_removal, :collaboration_ended_by_seller
 
@@ -163,11 +183,13 @@ class AffiliateMailer < ApplicationMailer
     @affiliate_user_name = @affiliate_user.name_or_username
     @seller = @collaborator.seller
 
-    @subject = "#{@affiliate_user_name} has ended your collaboration"
+    with_recipient_locale(@seller) do
+      @subject = t("mailers.affiliate.collaboration_ended_by_affiliate_user.subject", affiliate: @affiliate_user_name, default: "#{@affiliate_user_name} has ended your collaboration")
 
-    mail to: @seller.form_email,
-         cc: @affiliate_user.form_email,
-         subject: @subject
+      mail to: @seller.form_email,
+           cc: @affiliate_user.form_email,
+           subject: @subject
+    end
   end
 
   def collaborator_invited(collaborator_id)
@@ -178,11 +200,13 @@ class AffiliateMailer < ApplicationMailer
 
     @max_products = COLLABORATOR_MAX_PRODUCTS
 
-    @subject = "#{inviter_name} has invited you to collaborate on #{PlatformConfig::APP_NAME}"
+    with_recipient_locale(invitee) do
+      @subject = t("mailers.affiliate.collaborator_invited.subject", inviter: inviter_name, app_name: PlatformConfig::APP_NAME, default: "#{inviter_name} has invited you to collaborate on #{PlatformConfig::APP_NAME}")
 
-    mail to: invitee.form_email,
-         cc: @inviter.form_email,
-         subject: @subject
+      mail to: invitee.form_email,
+           cc: @inviter.form_email,
+           subject: @subject
+    end
   end
 
   def collaborator_invitation_accepted(collaborator_id)
@@ -191,10 +215,12 @@ class AffiliateMailer < ApplicationMailer
     @invitee = collaborator.affiliate_user
     invitee_name = @invitee.name_or_username
 
-    @subject = "#{invitee_name} has accepted your invitation to collaborate on #{PlatformConfig::APP_NAME}"
+    with_recipient_locale(inviter) do
+      @subject = t("mailers.affiliate.collaborator_invitation_accepted.subject", invitee: invitee_name, app_name: PlatformConfig::APP_NAME, default: "#{invitee_name} has accepted your invitation to collaborate on #{PlatformConfig::APP_NAME}")
 
-    mail to: inviter.form_email,
-         subject: @subject
+      mail to: inviter.form_email,
+           subject: @subject
+    end
   end
 
   def collaborator_invitation_declined(collaborator_id)
@@ -203,10 +229,12 @@ class AffiliateMailer < ApplicationMailer
     @invitee = collaborator.affiliate_user
     invitee_name = @invitee.name_or_username
 
-    @subject = "#{invitee_name} has declined your invitation to collaborate on #{PlatformConfig::APP_NAME}"
+    with_recipient_locale(inviter) do
+      @subject = t("mailers.affiliate.collaborator_invitation_declined.subject", invitee: invitee_name, app_name: PlatformConfig::APP_NAME, default: "#{invitee_name} has declined your invitation to collaborate on #{PlatformConfig::APP_NAME}")
 
-    mail to: inviter.form_email,
-         subject: @subject
+      mail to: inviter.form_email,
+           subject: @subject
+    end
   end
 
   private
@@ -216,14 +244,14 @@ class AffiliateMailer < ApplicationMailer
       @product_name = @purchase.link.name
       @customer_email = @purchase.email
 
-      @subject = "You helped #{@seller_name} make a sale."
+      @subject = t("mailers.affiliate.notify_affiliate_of_sale.subject_direct", seller: @seller_name, default: "You helped #{@seller_name} make a sale.")
       mail to: @affiliate.affiliate_user.form_email,
            subject: @subject,
            template_name: "notify_direct_affiliate_of_sale"
     end
 
     def notify_global_affiliate_of_sale
-      @subject = "🎉 You earned a commission!"
+      @subject = t("mailers.affiliate.notify_affiliate_of_sale.subject_global", default: "🎉 You earned a commission!")
       @seller_name = @purchase.seller.name_or_username
       @product_name = @purchase.link.name
 
@@ -240,7 +268,7 @@ class AffiliateMailer < ApplicationMailer
       @variants_count = @purchase.variant_names&.count || 0
       @cut = MoneyFormatter.format(@purchase.affiliate_credit_cents + @purchase.affiliate_credit.fee_cents, :usd, no_cents_if_whole: true, symbol: true)
 
-      @subject = "You made a sale!"
+      @subject = t("mailers.affiliate.notify_affiliate_of_sale.subject_collaborator", default: "You made a sale!")
       set_notify_of_sale_headers(is_preorder: @is_preorder)
 
       mail to: @affiliate.affiliate_user.form_email,

@@ -128,7 +128,7 @@ describe MerchantRegistrationMailer do
     it "tells the seller the rejection is final and sales have stopped" do
       mail = described_class.stripe_account_rejected(user.id)
 
-      expect(mail.subject).to eq("You can no longer accept payments on Gumroad")
+      expect(mail.subject).to eq("You can no longer accept payments on #{PlatformConfig::APP_NAME}")
       expect(mail.to).to include(user.email)
       expect(mail.from).to eq([ApplicationMailer::NOREPLY_EMAIL])
       expect(mail.body.encoded).to include("made a final decision to reject it")

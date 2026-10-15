@@ -60,7 +60,7 @@ describe AffiliateMailer do
         expect(mail.body.encoded).to include("We've added your commission to your balance.")
         expect(mail.body.encoded).to include "Purchase amount: $10"
         expect(mail.body.encoded).to include "Your commission rate: 25%"
-        expect(mail.body.encoded).to include "Your earnings (after fees): $1.97"
+        expect(mail.body.encoded).to include "Your earnings (after fees): $2.37"
       end
     end
 
@@ -73,7 +73,7 @@ describe AffiliateMailer do
     end
 
     context "for a collaborator" do
-      let(:product) { create(:product, user: seller, name: product_name, price_cents: 20_00) }
+      let(:product) { create(:product, user: seller, name: product_name, price_cents: 20_00, price_currency_type: "usd") }
       let(:collaborator) { create(:collaborator, seller:, affiliate_basis_points: 40_00, products: [product]) }
       let(:purchase) { create(:purchase_in_progress, affiliate: collaborator, link: product, seller:) }
 
@@ -374,14 +374,14 @@ describe AffiliateMailer do
   end
 
   describe "#collaborator_creation" do
-    let(:seller) { create(:named_user) }
+    let(:seller) { create(:named_user, currency_type: "usd") }
     let(:collaborator) { create(:collaborator, seller:) }
 
     it "sends email to collaborator" do
-      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500))
+      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500, price_currency_type: "usd"))
       mail = AffiliateMailer.collaborator_creation(collaborator.id)
       expect(mail.to).to eq([collaborator.affiliate_user.form_email])
-      subject = "#{seller.name} has added you as a collaborator on Gumroad"
+      subject = "#{seller.name} has added you as a collaborator on #{PlatformConfig::APP_NAME}"
       expect(mail.subject).to eq(subject)
 
       expect(mail.body.encoded).to have_text("Product")
@@ -391,13 +391,13 @@ describe AffiliateMailer do
       expect(mail.body.encoded).to have_text("Your cut")
       expect(mail.body.encoded).to have_text("10% ($0.50)")
 
-      expect(mail.body.encoded).to have_link("Log in to Gumroad")
+      expect(mail.body.encoded).to have_link("Log in to #{PlatformConfig.app_name}")
     end
 
     context "when the collaborator has more than 5 products" do
       let!(:product_affiliates) do
         build_list(:product_affiliate, 6, affiliate: collaborator) do |product_affiliate, i|
-          product_affiliate.product = create(:product, user: seller, name: "Product #{i}")
+          product_affiliate.product = create(:product, user: seller, name: "Product #{i}", price_currency_type: "usd")
           product_affiliate.save!
         end
       end
@@ -405,7 +405,7 @@ describe AffiliateMailer do
       it "sends email to collaborator and truncates the product list" do
         mail = AffiliateMailer.collaborator_creation(collaborator.id)
         expect(mail.to).to eq([collaborator.affiliate_user.form_email])
-        subject = "#{seller.name} has added you as a collaborator on Gumroad"
+        subject = "#{seller.name} has added you as a collaborator on #{PlatformConfig::APP_NAME}"
         expect(mail.subject).to eq(subject)
         expect(mail.body.encoded).to have_text(subject)
 
@@ -429,14 +429,14 @@ describe AffiliateMailer do
   end
 
   describe "#collaborator_update" do
-    let(:seller) { create(:named_user) }
+    let(:seller) { create(:named_user, currency_type: "usd") }
     let(:collaborator) { create(:collaborator, seller:) }
 
     it "sends email to collaborator" do
-      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500))
+      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500, price_currency_type: "usd"))
       mail = AffiliateMailer.collaborator_update(collaborator.id)
       expect(mail.to).to eq([collaborator.affiliate_user.form_email])
-      subject = "#{seller.name} has updated your collaborator status on Gumroad"
+      subject = "#{seller.name} has updated your collaborator status on #{PlatformConfig::APP_NAME}"
       expect(mail.subject).to eq(subject)
 
       expect(mail.body.encoded).to have_text("Product")
@@ -446,13 +446,13 @@ describe AffiliateMailer do
       expect(mail.body.encoded).to have_text("Your cut")
       expect(mail.body.encoded).to have_text("10% ($0.50)")
 
-      expect(mail.body.encoded).to have_link("Log in to Gumroad")
+      expect(mail.body.encoded).to have_link("Log in to #{PlatformConfig.app_name}")
     end
 
     context "when the collaborator has more than 5 products" do
       let!(:product_affiliates) do
         build_list(:product_affiliate, 6, affiliate: collaborator) do |product_affiliate, i|
-          product_affiliate.product = create(:product, user: seller, name: "Product #{i}")
+          product_affiliate.product = create(:product, user: seller, name: "Product #{i}", price_currency_type: "usd")
           product_affiliate.save!
         end
       end
@@ -460,7 +460,7 @@ describe AffiliateMailer do
       it "sends email to collaborator and truncates the product list" do
         mail = AffiliateMailer.collaborator_update(collaborator.id)
         expect(mail.to).to eq([collaborator.affiliate_user.form_email])
-        subject = "#{seller.name} has updated your collaborator status on Gumroad"
+        subject = "#{seller.name} has updated your collaborator status on #{PlatformConfig::APP_NAME}"
         expect(mail.subject).to eq(subject)
         expect(mail.body.encoded).to have_text(subject)
 
@@ -483,7 +483,7 @@ describe AffiliateMailer do
   end
 
   describe "#collaboration_ended_by_seller" do
-    let(:seller) { create(:named_user) }
+    let(:seller) { create(:named_user, currency_type: "usd") }
     let(:collaborator) { create(:collaborator, seller:) }
 
     it "sends email to collaborator" do
@@ -495,16 +495,16 @@ describe AffiliateMailer do
   end
 
   describe "#collaborator_invited" do
-    let(:seller) { create(:named_user) }
+    let(:seller) { create(:named_user, currency_type: "usd") }
     let(:collaborator) { create(:collaborator, seller:) }
 
     it "sends email to collaborator" do
-      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500))
+      product_affiliate = create(:product_affiliate, affiliate: collaborator, product: create(:product, user: seller, name: "Product", price_cents: 500, price_currency_type: "usd"))
 
       mail = AffiliateMailer.collaborator_invited(collaborator.id)
 
       expect(mail.to).to eq([collaborator.affiliate_user.form_email])
-      expect(mail.subject).to eq("#{seller.name} has invited you to collaborate on Gumroad")
+      expect(mail.subject).to eq("#{seller.name} has invited you to collaborate on #{PlatformConfig::APP_NAME}")
 
       expect(mail.body.encoded).to have_text("Product")
       expect(mail.body.encoded).to have_link(product_affiliate.product.long_url, href: product_affiliate.product.long_url)
@@ -519,7 +519,7 @@ describe AffiliateMailer do
     context "when the collaborator has more than 5 products" do
       let!(:product_affiliates) do
         build_list(:product_affiliate, 6, affiliate: collaborator) do |product_affiliate, i|
-          product_affiliate.product = create(:product, user: seller, name: "Product #{i}")
+          product_affiliate.product = create(:product, user: seller, name: "Product #{i}", price_currency_type: "usd")
           product_affiliate.save!
         end
       end
@@ -529,7 +529,7 @@ describe AffiliateMailer do
 
         expect(mail.to).to eq([collaborator.affiliate_user.form_email])
 
-        subject = "#{seller.name} has invited you to collaborate on Gumroad"
+        subject = "#{seller.name} has invited you to collaborate on #{PlatformConfig::APP_NAME}"
         expect(mail.subject).to eq(subject)
         expect(mail.body.encoded).to have_text(subject)
 
@@ -561,7 +561,7 @@ describe AffiliateMailer do
     it "sends email to the seller" do
       mail = AffiliateMailer.collaborator_invitation_accepted(collaborator.id)
       expect(mail.to).to eq([collaborator.seller.form_email])
-      expect(mail.subject).to include("#{collaborator.affiliate_user.name} accepted your invitation to collaborate on Gumroad")
+      expect(mail.subject).to include("#{collaborator.affiliate_user.name} has accepted your invitation to collaborate on #{PlatformConfig::APP_NAME}")
     end
   end
 
@@ -571,7 +571,7 @@ describe AffiliateMailer do
     it "sends email to the seller" do
       mail = AffiliateMailer.collaborator_invitation_declined(collaborator.id)
       expect(mail.to).to eq([collaborator.seller.form_email])
-      expect(mail.subject).to include("#{collaborator.affiliate_user.name} declined your invitation to collaborate on Gumroad")
+      expect(mail.subject).to include("#{collaborator.affiliate_user.name} has declined your invitation to collaborate on #{PlatformConfig::APP_NAME}")
     end
   end
 end

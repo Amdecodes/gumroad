@@ -13,7 +13,7 @@ describe CreatorMailer do
 
       mail = CreatorMailer.gumroad_day_fee_saved(seller_id: seller.id)
 
-      expect(mail.subject).to eq("You saved $40.62 in fees on Gumroad Day!")
+      expect(mail.subject).to eq("You saved $40.62 in fees on #{PlatformConfig::APP_NAME} Day!")
 
       body = mail.body.encoded
 
@@ -26,7 +26,7 @@ describe CreatorMailer do
   end
 
   describe "#bundles_marketing" do
-    let(:seller) { create(:user) }
+    let(:seller) { create(:user, currency_type: "usd") }
 
     let(:bundles) do
       [
@@ -92,7 +92,7 @@ describe CreatorMailer do
   end
 
   describe "#year_in_review" do
-    let(:seller) { create(:user) }
+    let(:seller) { create(:user, currency_type: "usd") }
     let(:year) { 2024 }
     let(:analytics_data) do
       {
