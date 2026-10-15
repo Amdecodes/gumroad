@@ -49,6 +49,7 @@ import {
 import { formatCallDate } from "$app/utils/date";
 import { isValidEmail } from "$app/utils/email";
 import FileUtils from "$app/utils/file";
+import { t } from "$app/utils/i18n";
 import { priceCentsToUnit } from "$app/utils/price";
 import { asyncVoid } from "$app/utils/promise";
 import { RecurrenceId, recurrenceLabels } from "$app/utils/recurringPricing";
@@ -110,24 +111,46 @@ const formatDiscount = (discount: Discount, currencyType: CurrencyCode) =>
       })
     : `${discount.percents}%`;
 
-const MEMBERSHIP_STATUS_LABELS = {
-  alive: "Active",
-  cancelled: "Cancelled",
-  failed_payment: "Failed payment",
-  fixed_subscription_period_ended: "Ended",
-  payment_method_update_required: "Payment method update required",
-  pending_cancellation: "Cancellation pending",
-  pending_failure: "Failure pending",
+const getMembershipStatusLabel = (status: string) => {
+  switch (status) {
+    case "alive":
+      return t("seller.customerDetail.membership_status_alive");
+    case "cancelled":
+      return t("seller.customerDetail.membership_status_cancelled");
+    case "failed_payment":
+      return t("seller.customerDetail.membership_status_failed_payment");
+    case "fixed_subscription_period_ended":
+      return t("seller.customerDetail.membership_status_ended");
+    case "payment_method_update_required":
+      return t("seller.customerDetail.membership_status_payment_method_update_required");
+    case "pending_cancellation":
+      return t("seller.customerDetail.membership_status_pending_cancellation");
+    case "pending_failure":
+      return t("seller.customerDetail.membership_status_pending_failure");
+    default:
+      return status;
+  }
 };
 
-const INSTALLMENT_PLAN_STATUS_LABELS = {
-  alive: "In progress",
-  cancelled: "Cancelled",
-  failed_payment: "Payment failed",
-  fixed_subscription_period_ended: "Paid in full",
-  payment_method_update_required: "Payment method update required",
-  pending_cancellation: "Cancellation pending",
-  pending_failure: "Failure pending",
+const getInstallmentPlanStatusLabel = (status: string) => {
+  switch (status) {
+    case "alive":
+      return t("seller.customerDetail.installment_status_alive");
+    case "cancelled":
+      return t("seller.customerDetail.installment_status_cancelled");
+    case "failed_payment":
+      return t("seller.customerDetail.installment_status_failed_payment");
+    case "fixed_subscription_period_ended":
+      return t("seller.customerDetail.installment_status_paid_in_full");
+    case "payment_method_update_required":
+      return t("seller.customerDetail.installment_status_payment_method_update_required");
+    case "pending_cancellation":
+      return t("seller.customerDetail.installment_status_pending_cancellation");
+    case "pending_failure":
+      return t("seller.customerDetail.installment_status_pending_failure");
+    default:
+      return status;
+  }
 };
 
 const PAGE_SIZE = 10;
@@ -168,7 +191,10 @@ const CustomerDetailPage = ({
     try {
       await (type === "receipt" ? resendReceipt(id) : resendPost(customer.id, id));
       sentEmailIds.current.add(id);
-      showAlert(type === "receipt" ? "Receipt resent" : "Email Sent", "success");
+      showAlert(
+        type === "receipt" ? t("seller.customerDetail.receipt_resent") : t("seller.customerDetail.email_sent"),
+        "success",
+      );
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -200,22 +226,26 @@ const CustomerDetailPage = ({
       {commission ? <CommissionStatusPill commission={commission} /> : null}
       {customer.refunded ? (
         <Pill size="small" color="danger">
-          Refunded
+          {t("seller.customers.badge_refunded")}
         </Pill>
       ) : null}
-      {customer.partially_refunded ? <Pill size="small">Partially refunded</Pill> : null}
+      {customer.partially_refunded ? <Pill size="small">{t("seller.customers.badge_partially_refunded")}</Pill> : null}
       {customer.chargedback ? (
         <Pill size="small" color="danger">
-          Chargedback
+          {t("seller.customers.badge_chargedback")}
         </Pill>
       ) : null}
-      {customer.is_preorder ? <Pill size="small">Pre-order</Pill> : null}
-      {customer.is_additional_contribution ? <Pill size="small">Additional contribution</Pill> : null}
-      {customer.is_bundle_purchase ? <Pill size="small">Bundle</Pill> : null}
-      {subscription?.is_installment_plan ? <Pill size="small">Installments</Pill> : null}
+      {customer.is_preorder ? <Pill size="small">{t("seller.customerDetail.pill_preorder")}</Pill> : null}
+      {customer.is_additional_contribution ? (
+        <Pill size="small">{t("seller.customerDetail.pill_additional_contribution")}</Pill>
+      ) : null}
+      {customer.is_bundle_purchase ? <Pill size="small">{t("seller.customers.badge_bundle")}</Pill> : null}
+      {subscription?.is_installment_plan ? <Pill size="small">{t("seller.customers.badge_installments")}</Pill> : null}
       {subscription && !subscription.is_installment_plan && subscription.status !== "alive" ? (
         <Pill size="small">
-          {subscription.status === "payment_method_update_required" ? "Payment update required" : "Inactive"}
+          {subscription.status === "payment_method_update_required"
+            ? t("seller.customers.badge_payment_update_required")
+            : t("seller.customers.badge_inactive")}
         </Pill>
       ) : null}
     </>
@@ -229,7 +259,7 @@ const CustomerDetailPage = ({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/customers"
-              aria-label="Back to customers"
+              aria-label={t("seller.customerDetail.back_to_customers")}
               className="mr-4 hidden no-underline sm:inline"
               onClick={(e) => {
                 if (!canGoBackToCustomers) return;
@@ -253,7 +283,7 @@ const CustomerDetailPage = ({
               })}
             >
               <Envelope aria-hidden="true" className="size-5" />
-              Email customer
+              {t("seller.customerDetail.email_customer")}
             </NavigationButton>
           ) : null
         }
@@ -263,45 +293,53 @@ const CustomerDetailPage = ({
         {customer.is_additional_contribution ? (
           <div className="break-inside-avoid">
             <Alert role="status" variant="info">
-              <strong>Additional amount: </strong>This is an additional contribution, added to a previous purchase of
-              this product.
+              <strong>{t("seller.customerDetail.additional_amount_title")} </strong>
+              {t("seller.customerDetail.additional_amount_desc")}
             </Alert>
           </div>
         ) : null}
         {customer.ppp ? (
           <div className="break-inside-avoid">
             <Alert role="status" variant="info">
-              This customer received a purchasing power parity discount of <b>{customer.ppp.discount}</b> because they
-              are located in <b>{customer.ppp.country}</b>.
+              {t("seller.customerDetail.ppp_notice", {
+                discount: customer.ppp.discount,
+                country: customer.ppp.country,
+              })}
             </Alert>
           </div>
         ) : null}
         {customer.giftee_email ? (
           <div className="break-inside-avoid">
             <Alert role="status" variant="info">
-              {customer.email} purchased this for {customer.giftee_email}.
+              {t("seller.customerDetail.gift_notice", {
+                email: customer.email,
+                giftee_email: customer.giftee_email,
+              })}
             </Alert>
           </div>
         ) : null}
         {customer.is_preorder ? (
           <div className="break-inside-avoid">
             <Alert role="status" variant="info">
-              <strong>Pre-order: </strong>This is a pre-order authorization. The customer's card has not been charged
-              yet.
+              <strong>{t("seller.customerDetail.preorder_notice_title")} </strong>
+              {t("seller.customerDetail.preorder_notice_desc")}
             </Alert>
           </div>
         ) : null}
         {customer.affiliate && customer.affiliate.type !== "Collaborator" ? (
           <div className="break-inside-avoid">
             <Alert role="status" variant="info">
-              <strong>Affiliate: </strong>An affiliate ({customer.affiliate.email}) helped you make this sale and
-              received {customer.affiliate.amount}.
+              <strong>{t("seller.customerDetail.affiliate_notice_title")} </strong>
+              {t("seller.customerDetail.affiliate_notice_desc", {
+                email: customer.affiliate.email,
+                amount: customer.affiliate.amount,
+              })}
             </Alert>
           </div>
         ) : null}
         <div className="break-inside-avoid">
           <EmailSection
-            label="Email"
+            label={t("seller.customerDetail.email_label")}
             email={customer.email}
             onSave={
               customer.is_existing_user
@@ -309,7 +347,7 @@ const CustomerDetailPage = ({
                 : (email) =>
                     updatePurchase(customer.id, { email }).then(
                       () => {
-                        showAlert("Email updated successfully.", "success");
+                        showAlert(t("seller.customerDetail.email_updated"), "success");
                         updateCustomer({ email });
                         if (productPurchases.length)
                           setProductPurchases((prevProductPurchases) =>
@@ -328,8 +366,8 @@ const CustomerDetailPage = ({
                 () => {
                   showAlert(
                     canContact
-                      ? "Your customer will now receive your posts."
-                      : "Your customer will no longer receive your posts.",
+                      ? t("seller.customerDetail.posts_subscribed")
+                      : t("seller.customerDetail.posts_unsubscribed"),
                     "success",
                   );
                   updateCustomer({ can_contact: canContact });
@@ -345,12 +383,12 @@ const CustomerDetailPage = ({
         {customer.giftee_email ? (
           <div className="break-inside-avoid">
             <EmailSection
-              label="Giftee email"
+              label={t("seller.customerDetail.giftee_email_label")}
               email={customer.giftee_email}
               onSave={(email) =>
                 updatePurchase(customer.id, { giftee_email: email }).then(
                   () => {
-                    showAlert("Email updated successfully.", "success");
+                    showAlert(t("seller.customerDetail.email_updated"), "success");
                     updateCustomer({ giftee_email: email });
                   },
                   (e: unknown) => {
@@ -366,7 +404,7 @@ const CustomerDetailPage = ({
           <section className="break-inside-avoid">
             <CardContent asChild>
               <h3 className="flex gap-1">
-                Order information
+                {t("seller.customerDetail.order_information")}
                 {!subscription && customer.transaction_url_for_seller ? (
                   <a
                     href={customer.transaction_url_for_seller}
@@ -381,21 +419,23 @@ const CustomerDetailPage = ({
               </h3>
             </CardContent>
             <CardContent>
-              <h5 className="grow font-bold">Customer name</h5>
+              <h5 className="grow font-bold">{t("seller.customerDetail.customer_name")}</h5>
               {customer.name || customer.email}
             </CardContent>
             <CardContent>
-              <h5 className="grow font-bold">{customer.is_multiseat_license ? "Seats" : "Quantity"}</h5>
+              <h5 className="grow font-bold">
+                {customer.is_multiseat_license ? t("seller.customerDetail.seats") : t("seller.customerDetail.quantity")}
+              </h5>
               {customer.quantity}
             </CardContent>
             {customer.download_count ? (
               <CardContent>
-                <h5 className="grow font-bold">Times opened</h5>
+                <h5 className="grow font-bold">{t("seller.customerDetail.times_opened")}</h5>
                 {customer.download_count}
               </CardContent>
             ) : null}
             <CardContent>
-              <h5 className="grow font-bold">Price</h5>
+              <h5 className="grow font-bold">{t("seller.customerDetail.price")}</h5>
               <div>
                 {customer.price.cents_before_offer_code > customer.price.cents ? (
                   <>
@@ -417,35 +457,43 @@ const CustomerDetailPage = ({
             </CardContent>
             {customer.price.tip_cents ? (
               <CardContent>
-                <h5 className="grow font-bold">Tip</h5>
+                <h5 className="grow font-bold">{t("seller.customerDetail.tip")}</h5>
                 {formatPrice(customer.price.tip_cents, customer.price.currency_type, customer.price.recurrence)}
               </CardContent>
             ) : null}
             {customer.discount && !customer.upsell ? (
               <CardContent>
-                <h5 className="grow font-bold">Discount</h5>
+                <h5 className="grow font-bold">{t("seller.customerDetail.discount")}</h5>
                 {customer.discount.code ? (
                   <div>
-                    {formatDiscount(customer.discount, customer.price.currency_type)} off with code{" "}
+                    {t("seller.customerDetail.discount_off_with_code", {
+                      amount: formatDiscount(customer.discount, customer.price.currency_type),
+                    })}{" "}
                     <Pill size="small">{customer.discount.code.toUpperCase()}</Pill>
                   </div>
                 ) : (
-                  `${formatDiscount(customer.discount, customer.price.currency_type)} off`
+                  t("seller.customerDetail.discount_off", {
+                    amount: formatDiscount(customer.discount, customer.price.currency_type),
+                  })
                 )}
               </CardContent>
             ) : null}
             {customer.upsell ? (
               <CardContent>
-                <h5 className="grow font-bold">Upsell</h5>
+                <h5 className="grow font-bold">{t("seller.customerDetail.upsell")}</h5>
                 {`${customer.upsell}${
-                  customer.discount ? ` (${formatDiscount(customer.discount, customer.price.currency_type)} off)` : ""
+                  customer.discount
+                    ? ` (${t("seller.customerDetail.discount_off", { amount: formatDiscount(customer.discount, customer.price.currency_type) })})`
+                    : ""
                 }`}
               </CardContent>
             ) : null}
             {subscription?.status ? (
               <CardContent>
                 <h5 className="grow font-bold">
-                  {subscription.is_installment_plan ? "Installment plan status" : "Membership status"}
+                  {subscription.is_installment_plan
+                    ? t("seller.customerDetail.installment_plan_status")
+                    : t("seller.customerDetail.membership_status")}
                 </h5>
                 <div
                   style={{
@@ -456,25 +504,25 @@ const CustomerDetailPage = ({
                   }}
                 >
                   {subscription.is_installment_plan
-                    ? INSTALLMENT_PLAN_STATUS_LABELS[subscription.status]
-                    : MEMBERSHIP_STATUS_LABELS[subscription.status]}
+                    ? getInstallmentPlanStatusLabel(subscription.status)
+                    : getMembershipStatusLabel(subscription.status)}
                 </div>
               </CardContent>
             ) : null}
             {customer.referrer ? (
               <CardContent>
-                <h5 className="grow font-bold">Referrer</h5>
+                <h5 className="grow font-bold">{t("seller.customerDetail.referrer")}</h5>
                 {customer.referrer}
               </CardContent>
             ) : null}
             {customer.physical ? (
               <>
                 <CardContent>
-                  <h5 className="grow font-bold">SKU</h5>
+                  <h5 className="grow font-bold">{t("seller.customerDetail.sku")}</h5>
                   {customer.physical.sku}
                 </CardContent>
                 <CardContent>
-                  <h5 className="grow font-bold">Order number</h5>
+                  <h5 className="grow font-bold">{t("seller.customerDetail.order_number")}</h5>
                   {customer.physical.order_number}
                 </CardContent>
               </>
@@ -500,7 +548,7 @@ const CustomerDetailPage = ({
             <section className="break-inside-avoid">
               <CardContent asChild>
                 <header>
-                  <h3 className="grow">Information provided</h3>
+                  <h3 className="grow">{t("seller.customerDetail.information_provided")}</h3>
                 </header>
               </CardContent>
               {customer.custom_fields.map((field, idx) => {
@@ -542,7 +590,7 @@ const CustomerDetailPage = ({
             <section className="break-inside-avoid">
               <CardContent asChild>
                 <header>
-                  <h3 className="grow">Content</h3>
+                  <h3 className="grow">{t("seller.customerDetail.content")}</h3>
                 </header>
               </CardContent>
               {productPurchases.length > 0 ? (
@@ -551,7 +599,7 @@ const CustomerDetailPage = ({
                     <section>
                       <h5 className="grow font-bold">{productPurchase.product.name}</h5>
                       <NavigationButtonInertia href={Routes.customer_sale_path(productPurchase.id)}>
-                        Manage
+                        {t("seller.customerDetail.manage")}
                       </NavigationButtonInertia>
                     </section>
                   </CardContent>
@@ -575,7 +623,7 @@ const CustomerDetailPage = ({
               onSave={(enabled) =>
                 updateLicense(license.id, enabled).then(
                   () => {
-                    showAlert("Changes saved!", "success");
+                    showAlert(t("seller.customerDetail.changes_saved"), "success");
                     updateCustomer({ license: { ...license, enabled } });
                   },
                   (e: unknown) => {
@@ -587,7 +635,7 @@ const CustomerDetailPage = ({
               onSetUses={(uses) =>
                 setLicenseUses(license.id, uses).then(
                   (updatedUses) => {
-                    showAlert("License uses updated", "success");
+                    showAlert(t("seller.customerDetail.license_uses_updated"), "success");
                     updateCustomer({ license: { ...license, uses: updatedUses } });
                   },
                   (e: unknown) => {
@@ -600,7 +648,7 @@ const CustomerDetailPage = ({
               onAdjustUses={(delta) =>
                 adjustLicenseUses(license.id, delta).then(
                   (updatedUses) => {
-                    showAlert("License uses updated", "success");
+                    showAlert(t("seller.customerDetail.license_uses_updated"), "success");
                     updateCustomer({ license: { ...license, uses: updatedUses } });
                   },
                   (e: unknown) => {
@@ -619,7 +667,7 @@ const CustomerDetailPage = ({
               onSave={(quantity) =>
                 updatePurchase(customer.id, { quantity }).then(
                   () => {
-                    showAlert("Successfully updated seats!", "success");
+                    showAlert(t("seller.customerDetail.seats_updated"), "success");
                     updateCustomer({ quantity });
                   },
                   (e: unknown) => {
@@ -640,7 +688,7 @@ const CustomerDetailPage = ({
                   onMarkShipped={(url) =>
                     markShipped(customer.id, url).then(
                       () => {
-                        showAlert("Changes saved!", "success");
+                        showAlert(t("seller.customerDetail.changes_saved"), "success");
                         updateCustomer({ shipping: { ...shipping, tracking: { url, shipped: true } } });
                       },
                       (e: unknown) => {
@@ -659,7 +707,7 @@ const CustomerDetailPage = ({
                 onSave={(address) =>
                   updatePurchase(customer.id, address).then(
                     () => {
-                      showAlert("Changes saved!", "success");
+                      showAlert(t("seller.customerDetail.changes_saved"), "success");
                       updateCustomer({ shipping: { ...shipping, address } });
                     },
                     (e: unknown) => {
@@ -683,7 +731,7 @@ const CustomerDetailPage = ({
             <section className="break-inside-avoid">
               <CardContent asChild>
                 <header>
-                  <h3 className="grow">Refund</h3>
+                  <h3 className="grow">{t("seller.customerDetail.refund")}</h3>
                 </header>
               </CardContent>
               <CardContent asChild>
@@ -694,8 +742,8 @@ const CustomerDetailPage = ({
                     amountRefundable={customer.price.cents_refundable}
                     showRefundFeeNotice={showRefundFeeNotice}
                     paypalRefundExpired={customer.paypal_refund_expired}
-                    modalTitle="Purchase refund"
-                    modalText="Would you like to confirm this purchase refund?"
+                    modalTitle={t("seller.customerDetail.purchase_refund")}
+                    modalText={t("seller.customerDetail.confirm_purchase_refund")}
                     onChange={(amountRefundable) =>
                       updateCustomer({
                         price: { ...customer.price, cents_refundable: amountRefundable },
@@ -717,7 +765,7 @@ const CustomerDetailPage = ({
               onCancel={() =>
                 void cancelSubscription(subscription.id).then(
                   () => {
-                    showAlert("Changes saved!", "success");
+                    showAlert(t("seller.customerDetail.changes_saved"), "success");
                     updateCustomer({ subscription: { ...subscription, status: "pending_cancellation" } });
                   },
                   (e: unknown) => {
@@ -778,7 +826,7 @@ const CustomerDetailPage = ({
             <section className="break-inside-avoid">
               <CardContent asChild>
                 <header>
-                  <h3 className="grow">Emails received</h3>
+                  <h3 className="grow">{t("seller.customerDetail.emails_received")}</h3>
                 </header>
               </CardContent>
               {emails.slice(0, shownEmails).map((email) => (
@@ -803,10 +851,10 @@ const CustomerDetailPage = ({
                         disabled={!!loadingId || sentEmailIds.current.has(email.id)}
                       >
                         {sentEmailIds.current.has(email.id)
-                          ? "Receipt resent"
+                          ? t("seller.customerDetail.receipt_resent")
                           : loadingId === email.id
-                            ? "Resending receipt..."
-                            : "Resend receipt"}
+                            ? t("seller.customerDetail.resending_receipt")
+                            : t("seller.customerDetail.resend_receipt")}
                       </Button>
                     ) : (
                       <Button
@@ -815,10 +863,10 @@ const CustomerDetailPage = ({
                         disabled={!!loadingId || sentEmailIds.current.has(email.id)}
                       >
                         {sentEmailIds.current.has(email.id)
-                          ? "Sent"
+                          ? t("seller.customerDetail.sent")
                           : loadingId === email.id
-                            ? "Sending..."
-                            : "Resend email"}
+                            ? t("seller.customerDetail.sending")
+                            : t("seller.customerDetail.resend_email")}
                       </Button>
                     )}
                   </section>
@@ -828,7 +876,7 @@ const CustomerDetailPage = ({
                 <CardContent asChild>
                   <section>
                     <Button onClick={() => setShownEmails((prev) => prev + PAGE_SIZE)} className="grow basis-0">
-                      Load more
+                      {t("seller.customerDetail.load_more")}
                     </Button>
                   </section>
                 </CardContent>
@@ -844,7 +892,7 @@ const CustomerDetailPage = ({
                 <section>
                   <CardContent asChild>
                     <header>
-                      <h3 className="grow">Send missed posts</h3>
+                      <h3 className="grow">{t("seller.customerDetail.send_missed_posts")}</h3>
                     </header>
                   </CardContent>
                   <CardContent>
@@ -859,7 +907,7 @@ const CustomerDetailPage = ({
                 <section>
                   <CardContent asChild>
                     <header>
-                      <h3 className="grow">Send missed posts</h3>
+                      <h3 className="grow">{t("seller.customerDetail.send_missed_posts")}</h3>
                     </header>
                   </CardContent>
                   {missedPosts.slice(0, shownMissedPosts).map((post) => (
@@ -871,14 +919,22 @@ const CustomerDetailPage = ({
                               {post.name}
                             </a>
                           </h5>
-                          <small className="block text-muted">{`Originally sent on ${formatDateWithoutTime(new Date(post.published_at))}`}</small>
+                          <small className="block text-muted">
+                            {t("seller.customerDetail.originally_sent_on", {
+                              date: formatDateWithoutTime(new Date(post.published_at)),
+                            })}
+                          </small>
                         </div>
                         <Button
                           color="primary"
                           disabled={!!loadingId || sentEmailIds.current.has(post.id)}
                           onClick={() => void onSend(post.id, "post")}
                         >
-                          {sentEmailIds.current.has(post.id) ? "Sent" : loadingId === post.id ? "Sending..." : "Send"}
+                          {sentEmailIds.current.has(post.id)
+                            ? t("seller.customerDetail.sent")
+                            : loadingId === post.id
+                              ? t("seller.customerDetail.sending")
+                              : t("seller.customerDetail.send_email")}
                         </Button>
                       </section>
                     </CardContent>
@@ -890,7 +946,7 @@ const CustomerDetailPage = ({
                           onClick={() => setShownMissedPosts((prev) => prev + PAGE_SIZE)}
                           className="grow basis-0"
                         >
-                          Show more
+                          {t("seller.analytics.show_more")}
                         </Button>
                       </section>
                     </CardContent>
@@ -911,10 +967,10 @@ const CommissionStatusPill = ({ commission }: { commission: Commission }) => (
     color={commission.status === "completed" ? "primary" : commission.status === "cancelled" ? "danger" : undefined}
   >
     {commission.status === "in_progress"
-      ? "In progress"
+      ? t("seller.customerDetail.commission_in_progress")
       : commission.status === "completed"
-        ? "Completed"
-        : "Cancelled"}
+        ? t("seller.customerDetail.commission_completed_badge")
+        : t("seller.customerDetail.commission_cancelled")}
   </Pill>
 );
 
@@ -926,41 +982,41 @@ const UtmLinkCard = ({ link }: { link: Customer["utm_link"] }) => {
       <section>
         <CardContent asChild>
           <section>
-            <h3 className="grow">UTM link</h3>
+            <h3 className="grow">{t("seller.customerDetail.utm_link")}</h3>
           </section>
         </CardContent>
         <CardContent>
           <Alert className="grow text-sm" role="status" variant="info">
-            This sale was driven by a{" "}
+            {t("seller.customerDetail.utm_alert")}{" "}
             <a href={link.utm_url} target="_blank" rel="noreferrer">
-              UTM link
+              {t("seller.customerDetail.utm_link_text")}
             </a>
             .
           </Alert>
         </CardContent>
         <CardContent>
           <DefinitionList>
-            <dt>Title</dt>
+            <dt>{t("seller.customerDetail.utm_title")}</dt>
             <dd>
               <a href={Routes.dashboard_utm_links_path({ query: link.title })} target="_blank" rel="noreferrer">
                 {link.title}
               </a>
             </dd>
-            <dt>Source</dt>
+            <dt>{t("seller.customerDetail.utm_source")}</dt>
             <dd>{link.source}</dd>
-            <dt>Medium</dt>
+            <dt>{t("seller.customerDetail.utm_medium")}</dt>
             <dd>{link.medium}</dd>
-            <dt>Campaign</dt>
+            <dt>{t("seller.customerDetail.utm_campaign")}</dt>
             <dd>{link.campaign}</dd>
             {link.term ? (
               <>
-                <dt>Term</dt>
+                <dt>{t("seller.customerDetail.utm_term")}</dt>
                 <dd>{link.term}</dd>
               </>
             ) : null}
             {link.content ? (
               <>
-                <dt>Content</dt>
+                <dt>{t("seller.customerDetail.utm_content")}</dt>
                 <dd>{link.content}</dd>
               </>
             ) : null}
@@ -998,10 +1054,10 @@ const AddressSection = ({
   return (
     <section className="grow">
       <div className="mb-4 flex items-center gap-2">
-        <h3 className="grow">Shipping address</h3>
+        <h3 className="grow">{t("seller.customerDetail.shipping_address")}</h3>
         {!isEditing ? (
           <LinkButton className="text-sm" onClick={() => setIsEditing(true)}>
-            Edit
+            {t("actions.edit")}
           </LinkButton>
         ) : null}
       </div>
@@ -1009,7 +1065,7 @@ const AddressSection = ({
         <div className="flex flex-col gap-4">
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-full-name`}>Full name</Label>
+              <Label htmlFor={`${uid}-full-name`}>{t("seller.customerDetail.full_name")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-full-name`}
@@ -1020,7 +1076,7 @@ const AddressSection = ({
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-street-address`}>Street address</Label>
+              <Label htmlFor={`${uid}-street-address`}>{t("seller.customerDetail.street_address")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-street-address`}
@@ -1032,7 +1088,7 @@ const AddressSection = ({
           <div className="grid grid-cols-3 gap-2">
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-city`}>City</Label>
+                <Label htmlFor={`${uid}-city`}>{t("seller.customerDetail.city")}</Label>
               </FieldsetTitle>
               <Input
                 id={`${uid}-city`}
@@ -1043,7 +1099,7 @@ const AddressSection = ({
             </Fieldset>
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-state`}>State</Label>
+                <Label htmlFor={`${uid}-state`}>{t("seller.customerDetail.state")}</Label>
               </FieldsetTitle>
               <Input
                 id={`${uid}-state`}
@@ -1054,7 +1110,7 @@ const AddressSection = ({
             </Fieldset>
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-zip-code`}>ZIP code</Label>
+                <Label htmlFor={`${uid}-zip-code`}>{t("seller.customerDetail.zip_code")}</Label>
               </FieldsetTitle>
               <Input
                 id={`${uid}-zip-code`}
@@ -1065,7 +1121,7 @@ const AddressSection = ({
             </Fieldset>
           </div>
           <Fieldset>
-            <Label htmlFor={`${uid}-country`}>Country</Label>
+            <Label htmlFor={`${uid}-country`}>{t("seller.customerDetail.country")}</Label>
             <FormSelect
               id={`${uid}-country`}
               value={address.country}
@@ -1080,10 +1136,10 @@ const AddressSection = ({
           </Fieldset>
           <div className="flex gap-2">
             <Button onClick={() => setIsEditing(false)} disabled={isLoading} className="flex-1">
-              Cancel
+              {t("actions.cancel")}
             </Button>
             <Button color="primary" onClick={() => void handleSave()} disabled={isLoading} className="flex-1">
-              Save
+              {t("actions.save")}
             </Button>
           </div>
         </div>
@@ -1098,7 +1154,7 @@ const AddressSection = ({
             <br />
             {currentAddress.country}
           </p>
-          <p className="mt-2 text-sm text-muted">Shipping charged {price}</p>
+          <p className="mt-2 text-sm text-muted">{t("seller.customerDetail.shipping_charged", { price })}</p>
         </div>
       )}
     </section>
@@ -1123,27 +1179,27 @@ const TrackingSection = ({
 
   return (
     <section className="grow">
-      <h3 className="mb-4">Tracking information</h3>
+      <h3 className="mb-4">{t("seller.customerDetail.tracking_information")}</h3>
       {tracking.shipped ? (
         tracking.url ? (
           <NavigationButton color="primary" href={tracking.url} target="_blank" className="w-full">
-            Track shipment
+            {t("seller.customerDetail.track_shipment")}
           </NavigationButton>
         ) : (
           <Alert role="status" variant="success">
-            Shipped
+            {t("seller.customerDetail.shipped")}
           </Alert>
         )
       ) : (
         <Fieldset>
           <Input
             type="text"
-            placeholder="Tracking URL (optional)"
+            placeholder={t("seller.customerDetail.tracking_url_placeholder")}
             value={url}
             onChange={(evt) => setUrl(evt.target.value)}
           />
           <Button color="primary" disabled={isLoading} onClick={() => void handleSave()}>
-            Mark as shipped
+            {t("seller.customerDetail.mark_as_shipped")}
           </Button>
         </Fieldset>
       )}
@@ -1172,7 +1228,11 @@ const EmailSection = ({
     if (!onSave) return;
 
     const emailError =
-      email.length === 0 ? "Email must be provided" : !isValidEmail(email) ? "Please enter a valid email" : null;
+      email.length === 0
+        ? t("seller.customerDetail.email_required")
+        : !isValidEmail(email)
+          ? t("seller.customerDetail.email_invalid")
+          : null;
 
     if (emailError) {
       showAlert(emailError, "error");
@@ -1213,10 +1273,10 @@ const EmailSection = ({
                   disabled={isLoading}
                   className="flex-1"
                 >
-                  Cancel
+                  {t("actions.cancel")}
                 </Button>
                 <Button color="primary" onClick={() => void handleSave()} disabled={isLoading} className="flex-1">
-                  Save
+                  {t("actions.save")}
                 </Button>
               </div>
             </Fieldset>
@@ -1226,12 +1286,9 @@ const EmailSection = ({
             <section>
               <h5 className="grow font-bold">{currentEmail}</h5>
               {onSave ? (
-                <LinkButton onClick={() => setIsEditing(true)}>Edit</LinkButton>
+                <LinkButton onClick={() => setIsEditing(true)}>{t("actions.edit")}</LinkButton>
               ) : (
-                <small className="block text-muted">
-                  You cannot change the email of this purchase, because it was made by an existing user. Please ask them
-                  to go to gumroad.com/settings to update their email.
-                </small>
+                <small className="block text-muted">{t("seller.customerDetail.cannot_change_existing_email")}</small>
               )}
             </section>
           </CardContent>
@@ -1241,7 +1298,7 @@ const EmailSection = ({
             <section>
               <Fieldset role="group" className="grow basis-0">
                 <Label>
-                  Receives emails
+                  {t("seller.customerDetail.receives_emails")}
                   <Checkbox
                     wrapperClassName="ml-auto"
                     checked={canContact}
@@ -1281,10 +1338,10 @@ const ReviewVideosSubsections = ({
     try {
       await approveReviewVideo(video.id);
       onChange({ ...review, videos: [{ ...video, approval_status: "approved" }] });
-      showAlert("This video is now live!", "success");
+      showAlert(t("seller.customerDetail.video_live"), "success");
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong", "error");
+      showAlert(t("seller.customerDetail.generic_error"), "error");
     } finally {
       setLoading(false);
     }
@@ -1296,11 +1353,11 @@ const ReviewVideosSubsections = ({
       await rejectReviewVideo(video.id);
       const otherVideos = review.videos.filter((v) => v.id !== video.id);
       onChange({ ...review, videos: [{ ...video, approval_status: "rejected" }, ...otherVideos] });
-      showAlert("This video has been removed.", "success");
+      showAlert(t("seller.customerDetail.video_removed"), "success");
       setApprovedVideoRemovalModalOpen(false);
     } catch (e) {
       assertResponseError(e);
-      showAlert("Something went wrong", "error");
+      showAlert(t("seller.customerDetail.generic_error"), "error");
     } finally {
       setLoading(false);
     }
@@ -1309,27 +1366,27 @@ const ReviewVideosSubsections = ({
   const approvedVideoSubsection = approvedVideo ? (
     <section className={className}>
       <div className="flex flex-col gap-4">
-        <h5>Approved video</h5>
+        <h5>{t("seller.customerDetail.approved_video")}</h5>
         <ReviewVideoPlayer videoId={approvedVideo.id} thumbnail={approvedVideo.thumbnail_url} />
         <Button onClick={() => setApprovedVideoRemovalModalOpen(true)} disabled={loading}>
-          Remove
+          {t("seller.customerDetail.remove")}
         </Button>
         <Modal
           open={approvedVideoRemovalModalOpen}
           onClose={() => setApprovedVideoRemovalModalOpen(false)}
-          title="Remove approved video?"
+          title={t("seller.customerDetail.remove_approved_video_title")}
           footer={
             <>
               <Button onClick={() => setApprovedVideoRemovalModalOpen(false)} disabled={loading}>
-                Cancel
+                {t("actions.cancel")}
               </Button>
               <Button color="danger" onClick={() => void rejectVideo(approvedVideo)} disabled={loading}>
-                Remove video
+                {t("seller.customerDetail.remove_video")}
               </Button>
             </>
           }
         >
-          <p>This action cannot be undone. This video will be permanently removed from this review.</p>
+          <p>{t("seller.customerDetail.remove_approved_video_desc")}</p>
         </Modal>
       </div>
     </section>
@@ -1338,7 +1395,7 @@ const ReviewVideosSubsections = ({
   const pendingVideoSubsection = pendingVideo ? (
     <section>
       <div className="flex flex-col gap-4">
-        <h5>Pending video</h5>
+        <h5>{t("seller.customerDetail.pending_video")}</h5>
         <ReviewVideoPlayer videoId={pendingVideo.id} thumbnail={pendingVideo.thumbnail_url} />
         <div className="flex flex-row gap-2">
           {pendingVideo.can_approve ? (
@@ -1348,12 +1405,12 @@ const ReviewVideosSubsections = ({
               onClick={() => void approveVideo(pendingVideo)}
               disabled={loading}
             >
-              Approve
+              {t("seller.customerDetail.approve")}
             </Button>
           ) : null}
           {pendingVideo.can_reject ? (
             <Button color="danger" className="flex-1" onClick={() => void rejectVideo(pendingVideo)} disabled={loading}>
-              Reject
+              {t("seller.customerDetail.reject")}
             </Button>
           ) : null}
         </div>
@@ -1381,12 +1438,12 @@ const ReviewSection = ({
   <Card asChild>
     <section>
       <CardContent asChild>
-        <h3>Review</h3>
+        <h3>{t("seller.customerDetail.review")}</h3>
       </CardContent>
       <CardContent asChild>
         <section>
-          <h5 className="grow font-bold">Rating</h5>
-          <div aria-label={`${review.rating} ${review.rating === 1 ? "star" : "stars"}`}>
+          <h5 className="grow font-bold">{t("seller.customerDetail.rating")}</h5>
+          <div aria-label={t("seller.customerDetail.stars", { count: review.rating })}>
             <RatingStars rating={review.rating} />
           </div>
         </section>
@@ -1394,7 +1451,7 @@ const ReviewSection = ({
       {review.message ? (
         <CardContent asChild>
           <section>
-            <h5 className="grow font-bold">Message</h5>
+            <h5 className="grow font-bold">{t("seller.customerDetail.message")}</h5>
             {review.message}
           </section>
         </CardContent>
@@ -1405,7 +1462,7 @@ const ReviewSection = ({
       {review.response ? (
         <CardContent asChild>
           <section>
-            <h5 className="grow font-bold">Response</h5>
+            <h5 className="grow font-bold">{t("seller.customerDetail.response")}</h5>
             {review.response.message}
           </section>
         </CardContent>
@@ -1461,7 +1518,7 @@ const OptionSection = ({
     try {
       setIsLoading(true);
       await updateOption(purchaseId, option.id, quantity);
-      showAlert("Saved variant", "success");
+      showAlert(t("seller.customerDetail.saved_variant"), "success");
       onChange(option);
       setIsEditing(false);
     } catch (e) {
@@ -1471,7 +1528,7 @@ const OptionSection = ({
     setIsLoading(false);
   };
 
-  const title = isSubscription ? "Tier" : "Version";
+  const title = isSubscription ? t("seller.customerDetail.tier") : t("seller.customerDetail.version");
 
   return (
     <Card asChild>
@@ -1486,12 +1543,12 @@ const OptionSection = ({
             {isEditing && options.length > 0 ? (
               <Fieldset state={selectedOptionId.error ? "danger" : undefined} className="grow basis-0">
                 <FormSelect
-                  value={selectedOptionId.value ?? "None selected"}
+                  value={selectedOptionId.value ?? t("seller.customerDetail.none_selected")}
                   name={title}
                   onChange={(evt) => setSelectedOptionId({ value: evt.target.value })}
                   aria-invalid={selectedOptionId.error}
                 >
-                  {!selectedOptionId.value ? <option>None selected</option> : null}
+                  {!selectedOptionId.value ? <option>{t("seller.customerDetail.none_selected")}</option> : null}
                   {options.map((option) => (
                     <option value={option.id} key={option.id}>
                       {option.name}
@@ -1500,17 +1557,17 @@ const OptionSection = ({
                 </FormSelect>
                 <div className="flex w-full gap-2">
                   <Button onClick={() => setIsEditing(false)} disabled={isLoading} className="flex-1">
-                    Cancel
+                    {t("actions.cancel")}
                   </Button>
                   <Button color="primary" onClick={() => void handleSave()} disabled={isLoading} className="flex-1">
-                    Save
+                    {t("actions.save")}
                   </Button>
                 </div>
               </Fieldset>
             ) : (
               <>
-                <h5>{option?.name ?? "None selected"}</h5>
-                <LinkButton onClick={() => setIsEditing(true)}>Edit</LinkButton>
+                <h5>{option?.name ?? t("seller.customerDetail.none_selected")}</h5>
+                <LinkButton onClick={() => setIsEditing(true)}>{t("actions.edit")}</LinkButton>
               </>
             )}
           </section>
@@ -1585,7 +1642,7 @@ const LicenseSection = ({
       <section>
         <CardContent asChild>
           <header>
-            <h3 className="grow">License key</h3>
+            <h3 className="grow">{t("seller.customerDetail.license_key")}</h3>
           </header>
         </CardContent>
         <CardContent>
@@ -1596,9 +1653,13 @@ const LicenseSection = ({
               key copyable in one tap instead of requiring them to select the text — which is
               especially awkward on a phone. */}
           <span className="ml-auto">
-            <CopyToClipboard text={license.key} copyTooltip="Copy license key" tooltipPosition="left">
-              <Button outline aria-label="Copy license key">
-                Copy
+            <CopyToClipboard
+              text={license.key}
+              copyTooltip={t("seller.customerDetail.copy_license_key")}
+              tooltipPosition="left"
+            >
+              <Button outline aria-label={t("seller.customerDetail.copy_license_key")}>
+                {t("seller.customerDetail.copy")}
               </Button>
             </CopyToClipboard>
           </span>
@@ -1607,11 +1668,19 @@ const LicenseSection = ({
           <CardContent asChild>
             <Fieldset>
               <NumberInput value={usesDraft} onChange={setUsesDraft}>
-                {(props) => <Input type="number" {...props} min={0} aria-label="Uses" className="grow" />}
+                {(props) => (
+                  <Input
+                    type="number"
+                    {...props}
+                    min={0}
+                    aria-label={t("seller.customerDetail.uses")}
+                    className="grow"
+                  />
+                )}
               </NumberInput>
               <div className="flex w-full gap-2">
                 <Button onClick={() => setIsEditingUses(false)} disabled={isLoading} className="flex-1">
-                  Cancel
+                  {t("actions.cancel")}
                 </Button>
                 <Button
                   color="primary"
@@ -1619,21 +1688,21 @@ const LicenseSection = ({
                   disabled={isLoading || usesDraft === null}
                   className="flex-1"
                 >
-                  Save
+                  {t("actions.save")}
                 </Button>
               </div>
             </Fieldset>
           </CardContent>
         ) : (
           <CardContent>
-            <h5 className="grow font-bold">Uses</h5>
+            <h5 className="grow font-bold">{t("seller.customerDetail.uses")}</h5>
             {license.uses}
             <Button
               outline
               disabled={isLoading || license.uses === 0}
               onClick={() => void handleAdjustUses(-1)}
-              aria-label="Decrease uses"
-              title="Decrease uses by 1"
+              aria-label={t("seller.customerDetail.decrease_uses")}
+              title={t("seller.customerDetail.decrease_uses_by_1")}
             >
               −
             </Button>
@@ -1641,21 +1710,21 @@ const LicenseSection = ({
               outline
               disabled={isLoading}
               onClick={() => void handleAdjustUses(1)}
-              aria-label="Increase uses"
-              title="Increase uses by 1"
+              aria-label={t("seller.customerDetail.increase_uses")}
+              title={t("seller.customerDetail.increase_uses_by_1")}
             >
               +
             </Button>
-            <LinkButton onClick={startEditingUses}>Edit</LinkButton>
+            <LinkButton onClick={startEditingUses}>{t("actions.edit")}</LinkButton>
             {license.uses > 0 ? (
               <Button
                 outline
                 disabled={isLoading}
                 onClick={() => setConfirmingReset(true)}
-                aria-label="Reset uses"
-                title="Reset uses to 0"
+                aria-label={t("seller.customerDetail.reset_uses")}
+                title={t("seller.customerDetail.reset_uses_to_0")}
               >
-                Reset
+                {t("seller.customerDetail.reset")}
               </Button>
             ) : null}
           </CardContent>
@@ -1663,28 +1732,28 @@ const LicenseSection = ({
         <Modal
           open={confirmingReset}
           onClose={() => setConfirmingReset(false)}
-          title="Reset license uses?"
+          title={t("seller.customerDetail.reset_modal_title")}
           footer={
             <>
               <Button disabled={isLoading} onClick={() => setConfirmingReset(false)}>
-                Cancel
+                {t("actions.cancel")}
               </Button>
               <Button color="primary" disabled={isLoading} onClick={() => void handleReset()}>
-                Reset
+                {t("seller.customerDetail.reset")}
               </Button>
             </>
           }
         >
-          <p>This sets the usage count for this license back to 0.</p>
+          <p>{t("seller.customerDetail.reset_modal_desc")}</p>
         </Modal>
         <CardContent>
           {license.enabled ? (
             <Button color="danger" disabled={isLoading} onClick={() => void handleSave(false)} className="grow basis-0">
-              Disable
+              {t("seller.customerDetail.disable")}
             </Button>
           ) : (
             <Button disabled={isLoading} onClick={() => void handleSave(true)} className="grow basis-0">
-              Enable
+              {t("seller.customerDetail.enable")}
             </Button>
           )}
         </CardContent>
@@ -1710,21 +1779,29 @@ const SeatSection = ({ seats: currentSeats, onSave }: { seats: number; onSave: (
       <section>
         <CardContent asChild>
           <header>
-            <h3 className="grow">Seats</h3>
+            <h3 className="grow">{t("seller.customerDetail.seats")}</h3>
           </header>
         </CardContent>
         {isEditing ? (
           <CardContent asChild>
             <Fieldset>
               <NumberInput value={seats} onChange={(seats) => setSeats(seats ?? 0)}>
-                {(props) => <Input type="number" {...props} min={1} aria-label="Seats" className="grow" />}
+                {(props) => (
+                  <Input
+                    type="number"
+                    {...props}
+                    min={1}
+                    aria-label={t("seller.customerDetail.seats")}
+                    className="grow"
+                  />
+                )}
               </NumberInput>
               <div className="flex w-full gap-2">
                 <Button onClick={() => setIsEditing(false)} disabled={isLoading} className="flex-1">
-                  Cancel
+                  {t("actions.cancel")}
                 </Button>
                 <Button color="primary" onClick={() => void handleSave()} disabled={isLoading} className="flex-1">
-                  Save
+                  {t("actions.save")}
                 </Button>
               </div>
             </Fieldset>
@@ -1733,7 +1810,7 @@ const SeatSection = ({ seats: currentSeats, onSave }: { seats: number; onSave: (
           <CardContent asChild>
             <section>
               <h5 className="grow font-bold">{seats}</h5>
-              <LinkButton onClick={() => setIsEditing(true)}>Edit</LinkButton>
+              <LinkButton onClick={() => setIsEditing(true)}>{t("actions.edit")}</LinkButton>
             </section>
           </CardContent>
         )}
@@ -1750,26 +1827,28 @@ const SubscriptionCancellationSection = ({
   isInstallmentPlan: boolean;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const constructor = isInstallmentPlan ? "installment plan" : "subscription";
+  const constructor = isInstallmentPlan
+    ? t("seller.customerDetail.installment_plan")
+    : t("seller.customerDetail.subscription");
   return (
     <>
       <Button color="danger" onClick={() => setOpen(true)} className="w-full">
-        Cancel {constructor}
+        {t("seller.customerDetail.cancel_item", { name: constructor })}
       </Button>
       <Modal
         open={open}
-        title={`Cancel ${constructor}`}
+        title={t("seller.customerDetail.cancel_modal_title", { name: constructor })}
         onClose={() => setOpen(false)}
         footer={
           <>
-            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={() => setOpen(false)}>{t("actions.cancel")}</Button>
             <Button color="accent" onClick={onCancel}>
-              Cancel {constructor}
+              {t("seller.customerDetail.cancel_item", { name: constructor })}
             </Button>
           </>
         }
       >
-        Would you like to cancel this {constructor}?
+        {t("seller.customerDetail.cancel_modal_desc", { name: constructor })}
       </Modal>
     </>
   );
@@ -1782,7 +1861,7 @@ const PingButton = ({ purchaseId, className }: { purchaseId: string; className?:
     setIsLoading(true);
     try {
       await resendPing(purchaseId);
-      showAlert("Ping resent.", "success");
+      showAlert(t("seller.customerDetail.ping_resent"), "success");
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -1793,7 +1872,7 @@ const PingButton = ({ purchaseId, className }: { purchaseId: string; className?:
 
   return (
     <Button color="primary" disabled={isLoading} onClick={() => void handleClick()} className={className}>
-      {isLoading ? "Resending ping..." : "Resend ping"}
+      {isLoading ? t("seller.customerDetail.resending_ping") : t("seller.customerDetail.resend_ping")}
     </Button>
   );
 };
@@ -1814,11 +1893,11 @@ const AccessSection = ({
     try {
       if (revoke) {
         await revokeAccess(purchaseId);
-        showAlert("Access revoked", "success");
+        showAlert(t("seller.customerDetail.access_revoked"), "success");
         onChange(true);
       } else {
         await undoRevokeAccess(purchaseId);
-        showAlert("Access re-enabled", "success");
+        showAlert(t("seller.customerDetail.access_re_enabled"), "success");
         onChange(false);
       }
     } catch (e) {
@@ -1830,11 +1909,11 @@ const AccessSection = ({
 
   return isAccessRevoked ? (
     <Button disabled={isLoading} onClick={() => void handleClick(false)} className="w-full">
-      Re-enable access
+      {t("seller.customerDetail.re_enable_access")}
     </Button>
   ) : (
     <Button color="primary" disabled={isLoading} onClick={() => void handleClick(true)} className="w-full">
-      Revoke access
+      {t("seller.customerDetail.revoke_access")}
     </Button>
   );
 };
@@ -1882,7 +1961,7 @@ const RefundForm = ({
       const refundAmountRemaining = amountRefundable - refundAmountCents.value;
       onChange(refundAmountRemaining);
       setRefundAmountCents({ value: refundAmountRemaining });
-      showAlert("Purchase successfully refunded.", "success");
+      showAlert(t("seller.customerDetail.refund_success"), "success");
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -1898,7 +1977,11 @@ const RefundForm = ({
       disabled={isLoading || paypalRefundExpired}
       className="w-full"
     >
-      {isLoading ? "Refunding..." : isPartialRefund ? "Issue partial refund" : "Refund fully"}
+      {isLoading
+        ? t("seller.customerDetail.refunding")
+        : isPartialRefund
+          ? t("seller.customerDetail.issue_partial_refund")
+          : t("seller.customerDetail.refund_fully")}
     </Button>
   );
 
@@ -1915,12 +1998,12 @@ const RefundForm = ({
         <div className="flex w-full gap-2">
           {onClose ? (
             <Button onClick={onClose} disabled={isLoading} className="flex-1">
-              Cancel
+              {t("actions.cancel")}
             </Button>
           ) : null}
           <div className="flex-1">
             {paypalRefundExpired ? (
-              <WithTooltip tip="PayPal refunds aren't available after 6 months." position="top">
+              <WithTooltip tip={t("seller.customerDetail.paypal_refund_expired_tip")} position="top">
                 {refundButton}
               </WithTooltip>
             ) : (
@@ -1930,9 +2013,9 @@ const RefundForm = ({
         </div>
         {showRefundFeeNotice ? (
           <Alert role="status" variant="info">
-            Going forward, Gumroad does not return any fees when a payment is refunded.{" "}
+            {t("seller.customerDetail.refund_fee_notice")}{" "}
             <a href="/help/article/47-how-to-refund-a-customer" target="_blank" rel="noreferrer">
-              Learn more
+              {t("actions.learn_more")}
             </a>
           </Alert>
         ) : null}
@@ -1945,10 +2028,10 @@ const RefundForm = ({
           footer={
             <>
               <Button onClick={() => setIsModalShowing(false)} disabled={isLoading}>
-                Cancel
+                {t("actions.cancel")}
               </Button>
               <Button color="accent" onClick={() => void handleRefund()} disabled={isLoading}>
-                {isLoading ? "Refunding..." : "Confirm refund"}
+                {isLoading ? t("seller.customerDetail.refunding") : t("seller.customerDetail.confirm_refund")}
               </Button>
             </>
           }
@@ -1984,12 +2067,14 @@ const ChargeRow = ({
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <h5>
-            {formatPrice(purchase.amount_refundable, purchase.currency_type)} on{" "}
-            {new Date(purchase.created_at).toLocaleDateString(userAgentInfo.locale, {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-              timeZone: currentSeller?.timeZone.name,
+            {t("seller.customerDetail.amount_on_date", {
+              amount: formatPrice(purchase.amount_refundable, purchase.currency_type),
+              date: new Date(purchase.created_at).toLocaleDateString(userAgentInfo.locale, {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                timeZone: currentSeller?.timeZone.name,
+              }),
             })}
           </h5>
           <a
@@ -1998,27 +2083,27 @@ const ChargeRow = ({
             }
             target="_blank"
             rel="noreferrer"
-            aria-label="Transaction"
+            aria-label={t("seller.customerDetail.transaction")}
           >
             <ArrowUpRightSquare className="size-5" />
           </a>
           {purchase.partially_refunded ? (
-            <Pill size="small">Partial refund</Pill>
+            <Pill size="small">{t("seller.customerDetail.charge_partial_refund")}</Pill>
           ) : purchase.refunded ? (
-            <Pill size="small">Refunded</Pill>
+            <Pill size="small">{t("seller.customerDetail.charge_refunded")}</Pill>
           ) : null}
           {purchase.is_upgrade_purchase ? (
-            <WithTooltip tip="This is an upgrade charge, generated when the subscriber upgraded to a more expensive plan.">
-              <Pill size="small">Upgrade</Pill>
+            <WithTooltip tip={t("seller.customerDetail.charge_upgrade_tip")}>
+              <Pill size="small">{t("seller.customerDetail.charge_upgrade")}</Pill>
             </WithTooltip>
           ) : null}
-          {purchase.chargedback ? <Pill size="small">Chargedback</Pill> : null}
+          {purchase.chargedback ? <Pill size="small">{t("seller.customerDetail.charge_chargedback")}</Pill> : null}
         </div>
         <div className="flex items-center gap-2">
           {canPing ? <PingButton purchaseId={purchase.id} /> : null}
           {!purchase.refunded && !purchase.chargedback && purchase.amount_refundable > 0 ? (
             <LinkButton className="text-sm" onClick={() => setIsRefunding((prev) => !prev)}>
-              Refund Options
+              {t("seller.customerDetail.refund_options")}
             </LinkButton>
           ) : null}
         </div>
@@ -2031,8 +2116,8 @@ const ChargeRow = ({
             amountRefundable={purchase.amount_refundable}
             showRefundFeeNotice={showRefundFeeNotice}
             paypalRefundExpired={purchase.paypal_refund_expired}
-            modalTitle="Charge refund"
-            modalText="Would you like to confirm this charge refund?"
+            modalTitle={t("seller.customerDetail.charge_refund")}
+            modalText={t("seller.customerDetail.confirm_charge_refund")}
             onChange={(amountRefundable) => {
               onChange({
                 amount_refundable: amountRefundable,
@@ -2074,7 +2159,7 @@ const ChargesSection = ({
       <section>
         <CardContent asChild>
           <header>
-            <h3 className="grow">Charges</h3>
+            <h3 className="grow">{t("seller.customerDetail.charges")}</h3>
           </header>
         </CardContent>
         {loading ? (
@@ -2088,7 +2173,7 @@ const ChargesSection = ({
             {remainingCharges !== null ? (
               <CardContent>
                 <Alert role="status" variant="info">
-                  {`${remainingCharges} ${remainingCharges > 1 ? "charges" : "charge"} remaining`}
+                  {t("seller.customerDetail.charges_remaining", { count: remainingCharges })}
                 </Alert>
               </CardContent>
             ) : null}
@@ -2108,7 +2193,7 @@ const ChargesSection = ({
           </>
         ) : (
           <CardContent>
-            <p className="text-muted">No charges yet</p>
+            <p className="text-muted">{t("seller.customerDetail.no_charges_yet")}</p>
           </CardContent>
         )}
       </section>
@@ -2125,7 +2210,7 @@ const CallSection = ({ call, onChange }: { call: Call; onChange: (call: Call) =>
     try {
       await updateCallUrl(call.id, callUrl);
       onChange({ ...call, call_url: callUrl });
-      showAlert("Call URL updated!", "success");
+      showAlert(t("seller.customerDetail.call_url_updated"), "success");
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -2138,16 +2223,16 @@ const CallSection = ({ call, onChange }: { call: Call; onChange: (call: Call) =>
       <section>
         <CardContent asChild>
           <header>
-            <h3 className="grow">Call</h3>
+            <h3 className="grow">{t("seller.customerDetail.call")}</h3>
           </header>
         </CardContent>
         <CardContent>
           <DefinitionList>
-            <dt>Start time</dt>
+            <dt>{t("seller.customerDetail.start_time")}</dt>
             <dd>
               {formatCallDate(new Date(call.start_time), { timeZone: { userTimeZone: currentSeller?.timeZone.name } })}
             </dd>
-            <dt>End time</dt>
+            <dt>{t("seller.customerDetail.end_time")}</dt>
             <dd>
               {formatCallDate(new Date(call.end_time), { timeZone: { userTimeZone: currentSeller?.timeZone.name } })}
             </dd>
@@ -2166,10 +2251,10 @@ const CallSection = ({ call, onChange }: { call: Call; onChange: (call: Call) =>
                 type="text"
                 value={callUrl}
                 onChange={(evt) => setCallUrl(evt.target.value)}
-                placeholder="Call URL"
+                placeholder={t("seller.customerDetail.call_url")}
               />
               <Button color="primary" type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? "Saving..." : "Save"}
+                {isLoading ? t("actions.saving") : t("actions.save")}
               </Button>
             </Fieldset>
           </form>
@@ -2193,7 +2278,13 @@ const FileRow = ({ file, disabled, onDelete }: { file: File; disabled?: boolean;
     </RowContent>
     <RowActions>
       {onDelete ? (
-        <Button color="danger" size="icon" onClick={onDelete} disabled={disabled} aria-label="Delete">
+        <Button
+          color="danger"
+          size="icon"
+          onClick={onDelete}
+          disabled={disabled}
+          aria-label={t("seller.customerDetail.delete")}
+        >
           <Trash className="size-5" />
         </Button>
       ) : null}
@@ -2203,7 +2294,7 @@ const FileRow = ({ file, disabled, onDelete }: { file: File; disabled?: boolean;
         download
         target="_blank"
         disabled={disabled}
-        aria-label="Download"
+        aria-label={t("actions.download")}
       >
         <ArrowDown pack="filled" className="size-5" />
       </NavigationButton>
@@ -2263,11 +2354,12 @@ const CommissionSection = ({
         ],
       });
 
-      showAlert("Uploaded successfully!", "success");
+      showAlert(t("seller.customerDetail.file_uploaded"), "success");
     } catch (e) {
       // DirectUpload rejects with a plain Error, so this cannot use assertResponseError — that
       // re-throws anything that is not a ResponseError and the seller would see no alert at all.
-      const message = e instanceof ResponseError && e.message ? e.message : "Error uploading files. Please try again.";
+      const message =
+        e instanceof ResponseError && e.message ? e.message : t("seller.customerDetail.file_upload_error");
       showAlert(message, "error");
     } finally {
       setIsLoading(false);
@@ -2285,7 +2377,7 @@ const CommissionSection = ({
         ...commission,
         files: commission.files.filter(({ id }) => id !== fileId),
       });
-      showAlert("File deleted successfully!", "success");
+      showAlert(t("seller.customerDetail.file_deleted"), "success");
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -2299,7 +2391,7 @@ const CommissionSection = ({
       setIsLoading(true);
       await completeCommission(commission.id);
       onChange({ ...commission, status: "completed", files_are_editable: false });
-      showAlert("Commission completed!", "success");
+      showAlert(t("seller.customerDetail.commission_completed"), "success");
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -2313,7 +2405,7 @@ const CommissionSection = ({
       <section>
         <CardContent asChild>
           <header>
-            <h3 className="grow">Files</h3>
+            <h3 className="grow">{t("seller.customerDetail.files")}</h3>
           </header>
         </CardContent>
         {commission.files.length ? (
@@ -2341,11 +2433,11 @@ const CommissionSection = ({
                   multiple
                   style={{ display: "none" }}
                 />
-                <Paperclip className="size-5" /> Upload files
+                <Paperclip className="size-5" /> {t("seller.customerDetail.upload_files")}
               </label>
               {commission.status === "in_progress" ? (
                 <Button color="primary" disabled={isLoading} onClick={() => void handleCompletion()} className="w-full">
-                  Submit and mark as complete
+                  {t("seller.customerDetail.submit_and_mark_complete")}
                 </Button>
               ) : null}
             </div>

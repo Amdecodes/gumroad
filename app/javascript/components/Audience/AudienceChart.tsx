@@ -2,6 +2,7 @@ import * as React from "react";
 import { XAxis, YAxis, Line } from "recharts";
 
 import { AudienceDataByDate } from "$app/data/audience";
+import { t } from "$app/utils/i18n";
 
 import useChartTooltip from "$app/components/Analytics/useChartTooltip";
 import { Chart, lineProps, xAxisProps, yAxisProps } from "$app/components/Chart";
@@ -16,19 +17,11 @@ type DataPoint = {
 
 const ChartTooltip = ({ data: { newFollowers, followersRemoved, total, title } }: { data: DataPoint }) => (
   <>
-    <div>
-      <strong>{newFollowers}</strong> new {newFollowers === 1 ? "follower" : "followers"}
-    </div>
+    <div>{t("seller.audience.chart_new_follower", { count: newFollowers })}</div>
     {followersRemoved > 0 ? (
-      <div>
-        <strong>{followersRemoved}</strong> {followersRemoved === 1 ? "follower" : "followers"} removed
-      </div>
+      <div>{t("seller.audience.chart_follower_removed", { count: followersRemoved })}</div>
     ) : null}
-    {total > 0 ? (
-      <div>
-        <strong>{total}</strong> total {total === 1 ? "follower" : "followers"}
-      </div>
-    ) : null}
+    {total > 0 ? <div>{t("seller.audience.chart_total_follower", { count: total })}</div> : null}
     <time className="block font-bold">{title}</time>
   </>
 );

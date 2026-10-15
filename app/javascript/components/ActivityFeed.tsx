@@ -2,6 +2,7 @@ import { Dollar, UserCircle } from "@boxicons/react";
 import * as React from "react";
 
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { Card, CardContent } from "$app/components/ui/Card";
@@ -21,27 +22,34 @@ export type ActivityItem =
   | { type: "new_sale"; timestamp: string; details: SaleItemDetails }
   | { type: "follower_added" | "follower_removed"; timestamp: string; details: FollowItemDetails };
 
-const Sale = ({ details: { price_cents, product_name, product_unique_permalink } }: { details: SaleItemDetails }) => (
-  <>
-    <Dollar className="size-5 text-green" />
-    <span>
-      New sale of <a href={Routes.short_link_path({ id: product_unique_permalink })}>{product_name}</a> for{" "}
-      {formatPriceCentsWithCurrencySymbol("usd", price_cents, { symbolFormat: "short", noCentsIfWhole: true })}
-    </span>
-  </>
-);
+const Sale = ({ details: { price_cents, product_name, product_unique_permalink } }: { details: SaleItemDetails }) => {
+  const price = formatPriceCentsWithCurrencySymbol("usd", price_cents, { symbolFormat: "short", noCentsIfWhole: true });
+  const rawText = t("seller.dashboard.new_sale_item", { name: "\u0000", price });
+  const [before, after] = rawText.split("\u0000");
+
+  return (
+    <>
+      <Dollar className="size-5 text-green" />
+      <span>
+        {before}
+        <a href={Routes.short_link_path({ id: product_unique_permalink })}>{product_name}</a>
+        {after}
+      </span>
+    </>
+  );
+};
 
 const Follow = ({ details: { email, name } }: { details: FollowItemDetails }) => (
   <>
     <UserCircle pack="filled" className="size-5" />
-    <span> New follower {name || email} added</span>
+    <span> {t("seller.dashboard.follower_added_item", { name: name || email })}</span>
   </>
 );
 
 const FollowRemoved = ({ details: { email, name } }: { details: FollowItemDetails }) => (
   <>
     <UserCircle pack="filled" className="size-5" />
-    <span> Follower {name || email} removed</span>
+    <span> {t("seller.dashboard.follower_removed_item", { name: name || email })}</span>
   </>
 );
 
@@ -53,12 +61,14 @@ export const ActivityFeed = ({ items }: { items: ActivityItem[] }) => {
     return (
       <Placeholder>
         <p>
-          Followers and sales will show up here as they come in.
+          {t("seller.dashboard.activity_empty")}
           {loggedInUser?.policies.product.create ? (
             <span>
               {" "}
-              For now, <a href={Routes.products_path()}>create a product</a> or{" "}
-              <a href={Routes.profile_path()}>customize your profile</a>
+              {t("seller.dashboard.activity_empty_prompt")}{" "}
+              <a href={Routes.products_path()}>{t("seller.dashboard.create_a_product")}</a>{" "}
+              {t("seller.dashboard.activity_empty_or")}{" "}
+              <a href={Routes.profile_path()}>{t("seller.dashboard.customize_your_profile")}</a>
             </span>
           ) : null}
         </p>

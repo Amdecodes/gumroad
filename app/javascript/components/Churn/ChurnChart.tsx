@@ -2,6 +2,7 @@ import * as React from "react";
 import { Area, Line, XAxis, YAxis } from "recharts";
 
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import useChartTooltip from "$app/components/Analytics/useChartTooltip";
 import { Chart, type DotProps, lineProps, xAxisProps, yAxisProps } from "$app/components/Chart";
@@ -17,20 +18,15 @@ export type DataPoint = {
 
 const ChartTooltip = ({ data }: { data: DataPoint }) => (
   <>
+    <div>{t("seller.churn.chart_churn", { percent: data.churnRate.toFixed(2) })}</div>
+    <div>{t("seller.churn.chart_cancellation", { count: data.churnedCustomers })}</div>
     <div>
-      <strong>{data.churnRate.toFixed(2)}%</strong> churn
-    </div>
-    <div>
-      <strong>{data.churnedCustomers}</strong> {data.churnedCustomers === 1 ? "cancellation" : "cancellations"}
-    </div>
-    <div>
-      <strong>
-        {formatPriceCentsWithCurrencySymbol("usd", data.revenueLostCents, {
+      {t("seller.churn.chart_revenue_lost", {
+        amount: formatPriceCentsWithCurrencySymbol("usd", data.revenueLostCents, {
           symbolFormat: "short",
           noCentsIfWhole: true,
-        })}
-      </strong>{" "}
-      revenue lost
+        }),
+      })}
     </div>
     <time className="block font-bold">{data.title}</time>
   </>

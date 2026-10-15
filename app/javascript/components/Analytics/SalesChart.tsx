@@ -2,6 +2,7 @@ import * as React from "react";
 import { XAxis, YAxis, Bar, Line, Cell } from "recharts";
 
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { type AnalyticsDailyTotal } from "$app/components/Analytics";
 import { fractionOfDayElapsed, projectedEndOfDayTotal } from "$app/components/Analytics/projectedEndOfDayTotal";
@@ -110,15 +111,15 @@ const ProjectedDot = ({ x, y, width, height }: { x?: number; y?: number; width?:
 
 const ChartTooltip = ({ data: { views, sales, totals, title, projectedTotals } }: { data: DataPoint }) => (
   <>
-    <div>
-      <strong>{views}</strong> {views === 1 ? "view" : "views"}
-    </div>
-    {sales > 0 ? (
+    <div>{t("seller.analytics.chart_view", { count: views })}</div>
+    {sales > 0 ? <div>{t("seller.analytics.chart_sale", { count: sales })}</div> : null}
+    {views > 0 && sales > 0 ? (
       <div>
-        <strong>{sales}</strong> {sales === 1 ? "sale" : "sales"}
+        {t("seller.analytics.chart_conversion", {
+          percent: Math.round((sales / views) * 1000) / 10,
+        })}
       </div>
     ) : null}
-    {views > 0 && sales > 0 ? <div>({Math.round((sales / views) * 1000) / 10}% conversion)</div> : null}
     {totals > 0 ? (
       <div>
         <strong>
@@ -128,8 +129,12 @@ const ChartTooltip = ({ data: { views, sales, totals, title, projectedTotals } }
     ) : null}
     {projectedTotals != null ? (
       <div>
-        {formatPriceCentsWithCurrencySymbol("usd", projectedTotals, { symbolFormat: "short", noCentsIfWhole: true })}{" "}
-        projected today
+        {t("seller.analytics.chart_projected_today", {
+          amount: formatPriceCentsWithCurrencySymbol("usd", projectedTotals, {
+            symbolFormat: "short",
+            noCentsIfWhole: true,
+          }),
+        })}
       </div>
     ) : null}
     <time className="block font-bold">{title}</time>

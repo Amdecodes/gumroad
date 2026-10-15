@@ -2,6 +2,7 @@ import { Circle } from "@boxicons/react";
 import * as React from "react";
 
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { type AnalyticsTotal } from "$app/components/Analytics";
 import { Stats } from "$app/components/Stats";
@@ -12,7 +13,7 @@ export const SalesQuickStats = ({ total }: { total: AnalyticsTotal | undefined }
       title={
         <>
           <Circle pack="filled" className="size-5 text-foreground" />
-          Sales
+          {t("seller.analytics.sales_stat")}
         </>
       }
       value={total?.sales.toLocaleString() ?? ""}
@@ -21,7 +22,7 @@ export const SalesQuickStats = ({ total }: { total: AnalyticsTotal | undefined }
       title={
         <>
           <Circle pack="filled" className="size-5 text-active-bg" />
-          Views
+          {t("seller.analytics.views_stat")}
         </>
       }
       value={total?.views.toLocaleString() ?? ""}
@@ -30,7 +31,7 @@ export const SalesQuickStats = ({ total }: { total: AnalyticsTotal | undefined }
       title={
         <>
           <Circle pack="filled" className="size-5 text-accent" />
-          Total
+          {t("seller.analytics.total_stat")}
         </>
       }
       value={

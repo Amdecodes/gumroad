@@ -1,6 +1,8 @@
 import { Circle } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Stats } from "$app/components/Stats";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
@@ -20,7 +22,7 @@ export const AudienceQuickStats = ({
         title={
           <>
             <Circle pack="filled" className="size-5 text-accent" />
-            Lifetime followers
+            {t("seller.audience.lifetime_followers")}
             <div className="legend" />
           </>
         }
@@ -31,7 +33,7 @@ export const AudienceQuickStats = ({
         title={
           <>
             <Circle pack="filled" className="size-5 text-active-bg" />
-            New followers
+            {t("seller.audience.new_followers")}
             <div className="legend" />
           </>
         }

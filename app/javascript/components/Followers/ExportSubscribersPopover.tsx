@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { sendSubscribersReport } from "$app/data/audience";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -27,10 +28,10 @@ export const ExportSubscribersPopover = () => {
         },
       });
 
-      showAlert("Your export is being prepared. You’ll receive an email with the download link shortly.", "success");
+      showAlert(t("seller.audience.export_preparing"), "success");
     } catch (error) {
       assertResponseError(error);
-      showAlert("Something went wrong.", "error");
+      showAlert(t("common.something_went_wrong"), "error");
     }
 
     setLoading(false);
@@ -47,13 +48,13 @@ export const ExportSubscribersPopover = () => {
 
   return (
     <div>
-      <h4 className="mb-1 font-semibold">Download subscribers as CSV</h4>
-      <p className="mb-4">This will download a CSV file with one row per subscriber.</p>
+      <h4 className="mb-1 font-semibold">{t("seller.audience.export_subscribers_title")}</h4>
+      <p className="mb-4">{t("seller.audience.export_subscribers_desc")}</p>
 
       <div className="mb-4 flex flex-col gap-2">
         <Label className="font-medium">
           <Checkbox checked={allSelected} onChange={selectAll} />
-          All Subscribers
+          {t("seller.audience.all_subscribers")}
         </Label>
         <Label>
           <Checkbox
@@ -62,7 +63,7 @@ export const ExportSubscribersPopover = () => {
               setFollowers(evt.target.checked);
             }}
           />
-          Followers
+          {t("seller.audience.followers")}
         </Label>
         <Label>
           <Checkbox
@@ -71,7 +72,7 @@ export const ExportSubscribersPopover = () => {
               setCustomers(evt.target.checked);
             }}
           />
-          Customers
+          {t("seller.audience.customers")}
         </Label>
         <Label>
           <Checkbox
@@ -80,13 +81,13 @@ export const ExportSubscribersPopover = () => {
               setAffiliates(evt.target.checked);
             }}
           />
-          Affiliates
+          {t("seller.audience.affiliates")}
         </Label>
       </div>
       <div className="grid">
         <PopoverClose asChild>
           <Button disabled={noOptionSelected || loading} onClick={() => void handleDownload()}>
-            {loading ? <LoadingSpinner color="grey" /> : "Download"}
+            {loading ? <LoadingSpinner color="grey" /> : t("actions.download")}
           </Button>
         </PopoverClose>
       </div>

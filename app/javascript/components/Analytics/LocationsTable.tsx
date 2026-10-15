@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { AnalyticsDataByState, LocationDataValue } from "$app/data/analytics";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 
 import { InputGroup } from "$app/components/ui/InputGroup";
 import { Select } from "$app/components/ui/Select";
@@ -86,10 +87,10 @@ export const AnalyticsCountriesTable = ({
       <TableCaption>{caption}</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead {...thProps("name")}>Country</TableHead>
-          <TableHead {...thProps("views")}>Views</TableHead>
-          <TableHead {...thProps("sales")}>Sales</TableHead>
-          <TableHead {...thProps("totals")}>Total</TableHead>
+          <TableHead {...thProps("name")}>{t("seller.analytics.country")}</TableHead>
+          <TableHead {...thProps("views")}>{t("seller.analytics.views")}</TableHead>
+          <TableHead {...thProps("sales")}>{t("seller.analytics.sales")}</TableHead>
+          <TableHead {...thProps("totals")}>{t("seller.analytics.total")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -109,7 +110,7 @@ export const AnalyticsCountriesTable = ({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={4}>Nothing yet</TableCell>
+            <TableCell colSpan={4}>{t("seller.analytics.nothing_yet")}</TableCell>
           </TableRow>
         )}
       </TableBody>
@@ -157,10 +158,10 @@ export const AnalyticsStatesTable = ({ locationData, selectedProducts, locations
         <TableCaption>{caption}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead {...thProps("name")}>State</TableHead>
-            <TableHead {...thProps("views")}>Views</TableHead>
-            <TableHead {...thProps("sales")}>Sales</TableHead>
-            <TableHead {...thProps("totals")}>Total</TableHead>
+            <TableHead {...thProps("name")}>{t("seller.analytics.state")}</TableHead>
+            <TableHead {...thProps("views")}>{t("seller.analytics.views")}</TableHead>
+            <TableHead {...thProps("sales")}>{t("seller.analytics.sales")}</TableHead>
+            <TableHead {...thProps("totals")}>{t("seller.analytics.total")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -177,7 +178,7 @@ export const AnalyticsStatesTable = ({ locationData, selectedProducts, locations
         </TableBody>
       </Table>
 
-      {!items.length ? <InputGroup className="mt-4 lg:mt-0">Nothing yet </InputGroup> : null}
+      {!items.length ? <InputGroup className="mt-4 lg:mt-0">{t("seller.analytics.nothing_yet")}</InputGroup> : null}
     </>
   );
 };
@@ -197,15 +198,15 @@ export const LocationsTable = ({
 
   const caption = (
     <div className="flex justify-between">
-      Locations
+      {t("seller.analytics.locations_caption")}
       <Select
-        aria-label="Locations"
+        aria-label={t("seller.analytics.locations_caption")}
         wrapperClassName="w-fit"
         value={selected}
         onChange={(ev) => setSelected(ev.target.value)}
       >
-        <option value="world">World</option>
-        <option value="us">United States</option>
+        <option value="world">{t("seller.analytics.world")}</option>
+        <option value="us">{t("seller.analytics.united_states")}</option>
       </Select>
     </div>
   );

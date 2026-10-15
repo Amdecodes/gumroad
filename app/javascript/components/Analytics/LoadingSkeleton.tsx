@@ -1,12 +1,14 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Skeleton } from "$app/components/Skeleton";
 
 // The chart occupies a fixed-height box in the real page, so the skeleton claims the same height
 // and nothing below it moves when the chart arrives.
 export const SalesChartSkeleton = () => (
   <section aria-busy="true" aria-live="polite">
-    <span className="sr-only">Loading sales chart…</span>
+    <span className="sr-only">{t("seller.analytics.loading_sales_chart")}</span>
     <div className="rounded-md border border-border p-4">
       <div className="flex items-end gap-2" style={{ height: "16rem" }}>
         {/* Varying bar heights read as a chart rather than a grey block. */}
@@ -26,7 +28,7 @@ export const SalesChartSkeleton = () => (
 // promising a row count we don't know yet.
 export const AnalyticsTableSkeleton = ({ label, columns }: { label: string; columns: number }) => (
   <section aria-busy="true" aria-live="polite">
-    <span className="sr-only">{`Loading ${label}…`}</span>
+    <span className="sr-only">{t("seller.analytics.loading_named", { label })}</span>
     <div className="rounded-md border border-border">
       <div className="flex gap-4 border-b border-border p-4">
         {Array.from({ length: columns }, (_, index) => (

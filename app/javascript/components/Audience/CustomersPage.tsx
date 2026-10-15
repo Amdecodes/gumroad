@@ -7,6 +7,7 @@ import * as React from "react";
 
 import { Customer, Query, SortKey, getPagedCustomers } from "$app/data/customers";
 import { CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { RecurrenceId, recurrenceLabels } from "$app/utils/recurringPricing";
 import { AbortError, assertResponseError } from "$app/utils/request";
@@ -244,14 +245,18 @@ const CustomersPage = ({
   return (
     <div className="h-full">
       <PageHeader
-        title="Sales"
+        title={t("seller.customers.title")}
         actions={
           <div className="flex flex-wrap gap-2">
-            <Search value={searchQuery ?? ""} onSearch={(query) => updateQuery({ query })} placeholder="Search sales" />
+            <Search
+              value={searchQuery ?? ""}
+              onSearch={(query) => updateQuery({ query })}
+              placeholder={t("seller.customers.search_placeholder")}
+            />
             <Popover>
               <PopoverAnchor>
-                <WithTooltip tip="Filter">
-                  <PopoverTrigger aria-label="Filter" asChild>
+                <WithTooltip tip={t("seller.customers.filter_tooltip")}>
+                  <PopoverTrigger aria-label={t("seller.customers.filter_tooltip")} asChild>
                     <Button size="icon">
                       <MenuFilter className="size-5" />
                     </Button>
@@ -268,7 +273,7 @@ const CustomersPage = ({
                       products={products.filter(
                         (product) => !excludedItems.find((excludedItem) => product.id === excludedItem.id),
                       )}
-                      label="Customers who bought"
+                      label={t("seller.customers.customers_who_bought")}
                       items={includedItems}
                       setItems={setIncludedItems}
                       className="grow basis-0"
@@ -279,7 +284,7 @@ const CustomersPage = ({
                       products={products.filter(
                         (product) => !includedItems.find((includedItem) => product.id === includedItem.id),
                       )}
-                      label="Customers who have not bought"
+                      label={t("seller.customers.customers_who_have_not_bought")}
                       items={excludedItems}
                       setItems={setExcludedItems}
                       className="grow basis-0"
@@ -295,7 +300,7 @@ const CustomersPage = ({
                       className="grow"
                     >
                       <Fieldset>
-                        <Label htmlFor={`${uid}-minimum-amount`}>Paid more than</Label>
+                        <Label htmlFor={`${uid}-minimum-amount`}>{t("seller.customers.paid_more_than")}</Label>
                         <PriceInput
                           id={`${uid}-minimum-amount`}
                           currencyCode={currency_type}
@@ -305,7 +310,7 @@ const CustomersPage = ({
                         />
                       </Fieldset>
                       <Fieldset>
-                        <Label htmlFor={`${uid}-maximum-amount`}>Paid less than</Label>
+                        <Label htmlFor={`${uid}-maximum-amount`}>{t("seller.customers.paid_less_than")}</Label>
                         <PriceInput
                           id={`${uid}-maximum-amount`}
                           currencyCode={currency_type}
@@ -326,7 +331,7 @@ const CustomersPage = ({
                       className="grow"
                     >
                       <Fieldset>
-                        <Label htmlFor={`${uid}-after-date`}>After</Label>
+                        <Label htmlFor={`${uid}-after-date`}>{t("seller.customers.after")}</Label>
                         <DateInput
                           id={`${uid}-after-date`}
                           value={createdAfter}
@@ -338,7 +343,7 @@ const CustomersPage = ({
                         >{`00:00  ${timeZoneAbbreviation}`}</FieldsetDescription>
                       </Fieldset>
                       <Fieldset>
-                        <Label htmlFor={`${uid}-before-date`}>Before</Label>
+                        <Label htmlFor={`${uid}-before-date`}>{t("seller.customers.before")}</Label>
                         <DateInput
                           id={`${uid}-before-date`}
                           value={createdBefore}
@@ -353,7 +358,7 @@ const CustomersPage = ({
                   </CardContent>
                   <CardContent>
                     <Fieldset className="grow basis-0">
-                      <Label htmlFor={`${uid}-country`}>From</Label>
+                      <Label htmlFor={`${uid}-country`}>{t("seller.customers.from")}</Label>
                       <FormSelect
                         id={`${uid}-country`}
                         value={country ?? "Anywhere"}
@@ -361,7 +366,7 @@ const CustomersPage = ({
                           updateQuery({ country: evt.target.value === "Anywhere" ? null : evt.target.value })
                         }
                       >
-                        <option>Anywhere</option>
+                        <option value="Anywhere">{t("seller.customers.anywhere")}</option>
                         {countries.map((country) => (
                           <option value={country} key={country}>
                             {country}
@@ -373,7 +378,9 @@ const CustomersPage = ({
                   {license_uses_filter_enabled ? (
                     <CardContent>
                       <Fieldset className="grow basis-0">
-                        <Label htmlFor={`${uid}-minimum-license-uses`}>Minimum license uses</Label>
+                        <Label htmlFor={`${uid}-minimum-license-uses`}>
+                          {t("seller.customers.minimum_license_uses")}
+                        </Label>
                         <Input
                           id={`${uid}-minimum-license-uses`}
                           type="number"
@@ -388,13 +395,15 @@ const CustomersPage = ({
                           }}
                           placeholder="1"
                         />
-                        <FieldsetDescription>Number of times the license has been used.</FieldsetDescription>
+                        <FieldsetDescription>{t("seller.customers.minimum_license_uses_desc")}</FieldsetDescription>
                       </Fieldset>
                     </CardContent>
                   ) : null}
                   <CardContent>
                     <h4 className="font-bold">
-                      <Label htmlFor={`${uid}-active-customers-only`}>Show active customers only</Label>
+                      <Label htmlFor={`${uid}-active-customers-only`}>
+                        {t("seller.customers.show_active_customers_only")}
+                      </Label>
                     </h4>
                     <Switch
                       id={`${uid}-active-customers-only`}
@@ -410,17 +419,17 @@ const CustomersPage = ({
                 <PopoverTrigger asChild>
                   <Button>
                     <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
-                    Export
+                    {t("seller.audience.export")}
                   </Button>
                 </PopoverTrigger>
               </PopoverAnchor>
               <PopoverContent>
                 <div className="flex flex-col gap-4">
-                  <h3>Download sales as CSV</h3>
+                  <h3>{t("seller.customers.export_sales_csv")}</h3>
                   <div>
                     {exportNames
-                      ? `This will download sales of '${exportNames}' as a CSV, with each purchase on its own row.`
-                      : "This will download a CSV with each purchase on its own row."}
+                      ? t("seller.customers.export_desc_specific", { name: exportNames })
+                      : t("seller.customers.export_desc_all")}
                   </div>
                   <DateRangePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
                   <NavigationButtonInertia
@@ -433,12 +442,10 @@ const CustomersPage = ({
                     })}
                     onSuccess={() => setExportPopoverOpen(false)}
                   >
-                    Download
+                    {t("actions.download")}
                   </NavigationButtonInertia>
                   {count > 2000 && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      Exports over 2,000 rows will be processed in the background and emailed to you.
-                    </div>
+                    <div className="mt-2 text-sm text-gray-600">{t("seller.customers.export_over_2000_notice")}</div>
                   )}
                 </div>
               </PopoverContent>
@@ -446,7 +453,7 @@ const CustomersPage = ({
             {can_send_emails && hasActiveFilters ? (
               <NavigationButton color="accent" href={Routes.new_email_path(emailFilterParams)}>
                 <Envelope aria-hidden="true" className="size-5" />
-                Email these customers
+                {t("seller.customers.email_these_customers")}
               </NavigationButton>
             ) : null}
           </div>
@@ -456,14 +463,14 @@ const CustomersPage = ({
         {customers.length > 0 ? (
           <section className="flex flex-col gap-4">
             <Table aria-live="polite" className={cx(isLoading && "pointer-events-none opacity-50")}>
-              <TableCaption>{`All sales (${count.toLocaleString()})`}</TableCaption>
+              <TableCaption>{t("seller.customers.all_sales_count", { count: count.toLocaleString() })}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Email</TableHead>
-                  {showNameColumn ? <TableHead>Name</TableHead> : null}
-                  <TableHead {...thProps("product_name")}>Product</TableHead>
-                  <TableHead {...thProps("created_at")}>Purchase Date</TableHead>
-                  <TableHead {...thProps("price_cents")}>Price</TableHead>
+                  <TableHead>{t("seller.customers.col_email")}</TableHead>
+                  {showNameColumn ? <TableHead>{t("seller.customers.col_name")}</TableHead> : null}
+                  <TableHead {...thProps("product_name")}>{t("seller.customers.col_product")}</TableHead>
+                  <TableHead {...thProps("created_at")}>{t("seller.customers.col_purchase_date")}</TableHead>
+                  <TableHead {...thProps("price_cents")}>{t("seller.customers.col_price")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -485,10 +492,10 @@ const CustomersPage = ({
                     >
                       <TableCell>
                         {customer.shipping?.tracking && !customer.shipping.tracking.shipped ? (
-                          <WithTooltip tip="Not Shipped">
+                          <WithTooltip tip={t("seller.customers.not_shipped")}>
                             <Truck
                               style={{ marginRight: "var(--spacer-2)" }}
-                              aria-label="Not Shipped"
+                              aria-label={t("seller.customers.not_shipped")}
                               className="size-5"
                             />
                           </WithTooltip>
@@ -500,44 +507,44 @@ const CustomersPage = ({
                         {customer.product.name}
                         {customer.subscription?.is_installment_plan ? (
                           <Pill size="small" className="ml-2">
-                            Installments
+                            {t("seller.customers.badge_installments")}
                           </Pill>
                         ) : null}
                         {customer.is_bundle_purchase ? (
                           <Pill size="small" className="ml-2">
-                            Bundle
+                            {t("seller.customers.badge_bundle")}
                           </Pill>
                         ) : null}
                         {customer.subscription ? (
                           !customer.subscription.is_installment_plan && customer.subscription.status !== "alive" ? (
                             <Pill size="small" className="ml-2">
                               {customer.subscription.status === "payment_method_update_required"
-                                ? "Payment update required"
-                                : "Inactive"}
+                                ? t("seller.customers.badge_payment_update_required")
+                                : t("seller.customers.badge_inactive")}
                             </Pill>
                           ) : null
                         ) : (
                           <>
                             {customer.partially_refunded ? (
                               <Pill size="small" className="ml-2">
-                                Partially refunded
+                                {t("seller.customers.badge_partially_refunded")}
                               </Pill>
                             ) : null}
                             {customer.refunded ? (
                               <Pill size="small" className="ml-2">
-                                Refunded
+                                {t("seller.customers.badge_refunded")}
                               </Pill>
                             ) : null}
                             {customer.chargedback ? (
                               <Pill size="small" className="ml-2">
-                                Chargedback
+                                {t("seller.customers.badge_chargedback")}
                               </Pill>
                             ) : null}
                           </>
                         )}
                         {customer.utm_link ? (
                           <Pill size="small" className="ml-2">
-                            UTM
+                            {t("seller.customers.badge_utm")}
                           </Pill>
                         ) : null}
                       </TableCell>
@@ -572,21 +579,20 @@ const CustomersPage = ({
           <Placeholder>
             <PlaceholderImage src={placeholder} />
             {searchQuery !== null ? (
-              <h2>No sales found</h2>
+              <h2>{t("seller.customers.no_sales_found")}</h2>
             ) : (
               <>
-                <h2>Manage all of your sales in one place.</h2>
-                Every time a new customer purchases a product from your Gumroad, their email address and other details
-                are added here.
+                <h2>{t("seller.customers.empty_title")}</h2>
+                {t("seller.customers.empty_description")}
                 <div>
                   <NavigationButton color="accent" href={Routes.new_product_path()}>
-                    Start selling today
+                    {t("seller.customers.start_selling_today")}
                   </NavigationButton>
                 </div>
                 <p>
-                  or{" "}
+                  {t("seller.customers.or")}{" "}
                   <a href="/help/article/268-customer-dashboard" target="_blank" rel="noreferrer">
-                    learn more about the audience dashboard
+                    {t("seller.customers.learn_more_audience")}
                   </a>
                 </p>
               </>

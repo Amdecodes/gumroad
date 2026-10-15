@@ -9,6 +9,7 @@ import {
   fetchAnalyticsDataByState,
 } from "$app/data/analytics";
 import { assertDefined } from "$app/utils/assert";
+import { t } from "$app/utils/i18n";
 import { AbortError, request, ResponseError } from "$app/utils/request";
 
 import { AnalyticsLayout } from "$app/components/Analytics/AnalyticsLayout";
@@ -35,17 +36,16 @@ const MAX_HOURLY_DATE_RANGE_DAYS = 7;
 const WIDE_RANGE_DAYS = 366;
 // Names the exported range rather than calling it "the full range": by the time the export is
 // confirmed, the picker has usually moved to a narrower one, and only the dates say which is which.
-const csvOnItsWay = (range: string) => `A CSV of ${range} is on its way to your email.`;
+const csvOnItsWay = (range: string) => t("seller.analytics.csv_on_its_way", { range });
 const withCsvNote = (message: string, exportedRange: string | null) =>
   exportedRange ? `${message} ${csvOnItsWay(exportedRange)}` : message;
 // Shown when the retry runs out of range to halve. It names what failed and points at the recovery
 // the seller still has: the emailed CSV once that is confirmed, otherwise the export control beside
 // the picker.
-const ANALYTICS_FAILED = "We couldn't load your analytics for this range.";
 const terminalMessage = (exportedRange: string | null) =>
   exportedRange
-    ? withCsvNote(ANALYTICS_FAILED, exportedRange)
-    : `${ANALYTICS_FAILED} Export all sales to get your sales history by email.`;
+    ? withCsvNote(t("seller.analytics.analytics_failed"), exportedRange)
+    : t("seller.analytics.analytics_failed_export_all");
 type PendingExport = {
   startTime: string;
   endTime: string;
@@ -299,7 +299,7 @@ const Analytics = ({
             // This alert is the last one, so nothing after it can carry the promise. A late
             // confirmation repeats it instead of replacing it with a bare success toast.
             exported.streakEnded = true;
-            exported.finalFailure = ANALYTICS_FAILED;
+            exported.finalFailure = t("seller.analytics.analytics_failed");
             // No narrower range is left to fail either, so it is also the last chance to get the
             // CSV moving.
             enqueueExport(exported);
@@ -319,13 +319,7 @@ const Analytics = ({
         });
         latestStreakRef.current = pendingExport;
         enqueueExport(pendingExport);
-        showAlert(
-          withCsvNote(
-            "This range couldn't load, so we're retrying with the most recent half.",
-            csvNoteFor(pendingExport),
-          ),
-          "error",
-        );
+        showAlert(withCsvNote(t("seller.analytics.retrying_narrower"), csvNoteFor(pendingExport)), "error");
         // Move the start forward by whole days so every retry is at least one day narrower and
         // the halving reaches a single day. A midpoint in milliseconds can land mid-day and
         // stall two days short of that.
@@ -358,7 +352,7 @@ const Analytics = ({
         hasContent ? (
           <>
             <Select
-              aria-label="Aggregate by"
+              aria-label={t("seller.analytics.aggregate_by")}
               value={aggregateBy}
               onChange={(e) =>
                 setAggregateBy(
@@ -367,9 +361,9 @@ const Analytics = ({
               }
               wrapperClassName="w-auto"
             >
-              {canAggregateHourly ? <option value="hourly">Hourly</option> : null}
-              <option value="daily">Daily</option>
-              <option value="monthly">Monthly</option>
+              {canAggregateHourly ? <option value="hourly">{t("seller.analytics.aggregate_hourly")}</option> : null}
+              <option value="daily">{t("seller.analytics.aggregate_daily")}</option>
+              <option value="monthly">{t("seller.analytics.aggregate_monthly")}</option>
             </Select>
             <ProductsPopover products={products} setProducts={setProducts} />
             <div className="col-span-2">
@@ -402,7 +396,7 @@ const Analytics = ({
           ) : (
             <>
               <SalesChartSkeleton />
-              <AnalyticsTableSkeleton label="referrers" columns={5} />
+              <AnalyticsTableSkeleton label={t("seller.analytics.referrers_caption")} columns={5} />
             </>
           )}
           {data?.byState ? (
@@ -413,20 +407,17 @@ const Analytics = ({
               stateNames={state_names}
             />
           ) : (
-            <AnalyticsTableSkeleton label="locations" columns={4} />
+            <AnalyticsTableSkeleton label={t("seller.analytics.locations_caption")} columns={4} />
           )}
         </div>
       ) : (
         <div className="p-4 md:p-8">
           <Placeholder>
             <PlaceholderImage src={placeholder} />
-            <h2>You're just getting started.</h2>
-            <p>
-              You don't have any sales yet. Once you do, you'll see them here, along with powerful data that can help
-              you see what's working, and what could be working better.
-            </p>
+            <h2>{t("seller.analytics.empty_title")}</h2>
+            <p>{t("seller.analytics.empty_description")}</p>
             <a href="/help/article/74-the-analytics-dashboard" target="_blank" rel="noreferrer">
-              Learn more about the analytics dashboard
+              {t("seller.analytics.empty_learn_more")}
             </a>
           </Placeholder>
         </div>

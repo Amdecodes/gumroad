@@ -5,6 +5,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { type AudienceDataByDate } from "$app/data/audience";
+import { t } from "$app/utils/i18n";
 
 import { AnalyticsLayout } from "$app/components/Analytics/AnalyticsLayout";
 import { useAnalyticsDateRange } from "$app/components/Analytics/useAnalyticsDateRange";
@@ -50,7 +51,7 @@ function Audience() {
                 <PopoverTrigger asChild>
                   <Button>
                     <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
-                    Export
+                    {t("seller.audience.export")}
                   </Button>
                 </PopoverTrigger>
               </PopoverAnchor>
@@ -76,7 +77,7 @@ function Audience() {
             fallback={
               <InputGroup>
                 <LoadingSpinner />
-                Loading charts...
+                {t("seller.audience.loading_charts")}
               </InputGroup>
             }
           >
@@ -87,13 +88,10 @@ function Audience() {
         <div className="p-4 md:p-8">
           <Placeholder>
             <PlaceholderImage src={placeholder} />
-            <h2>It's quiet. Too quiet.</h2>
-            <p>
-              You don't have any followers yet. Once you do, you'll see them here, along with powerful data that can
-              help you keep your growing audience engaged.
-            </p>
+            <h2>{t("seller.audience.empty_title")}</h2>
+            <p>{t("seller.audience.empty_description")}</p>
             <a href="/help/article/170-audience" target="_blank" rel="noreferrer">
-              Learn more
+              {t("seller.audience.empty_learn_more")}
             </a>
           </Placeholder>
         </div>

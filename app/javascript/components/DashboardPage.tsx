@@ -4,6 +4,7 @@ import cx from "classnames";
 import * as React from "react";
 
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 import { request } from "$app/utils/request";
 
 import { ActivityFeed, ActivityItem } from "$app/components/ActivityFeed";
@@ -89,62 +90,62 @@ type GettingStartedItemType = {
   rel?: string;
 };
 
-const GETTING_STARTED_ITEMS: GettingStartedItemType[] = [
+const getGettingStartedItems = (): GettingStartedItemType[] => [
   {
-    name: "Welcome aboard",
+    name: t("seller.dashboard.welcome_aboard"),
     getCompleted: () => true,
     link: Routes.dashboard_path(),
     IconComponent: MakeAccountIcon,
-    description: "Make a Gumroad account.",
+    description: t("seller.dashboard.welcome_aboard_desc"),
   },
   {
-    name: "Make an impression",
+    name: t("seller.dashboard.make_an_impression"),
     getCompleted: (stats) => !!stats.customized_profile,
     link: Routes.profile_path(),
     IconComponent: CustomizeProfileIcon,
-    description: "Customize your profile.",
+    description: t("seller.dashboard.make_an_impression_desc"),
   },
   {
-    name: "Showtime",
+    name: t("seller.dashboard.showtime"),
     getCompleted: (stats) => !!stats.first_product,
     link: Routes.new_product_path(),
     IconComponent: FirstProductIcon,
-    description: "Create your first product.",
+    description: t("seller.dashboard.showtime_desc"),
   },
   {
-    name: "Build your tribe",
+    name: t("seller.dashboard.build_your_tribe"),
     getCompleted: (stats) => !!stats.first_follower,
     link: Routes.followers_path(),
     IconComponent: FirstFollowerIcon,
-    description: "Get your first follower.",
+    description: t("seller.dashboard.build_your_tribe_desc"),
   },
   {
-    name: "Cha-ching",
+    name: t("seller.dashboard.cha_ching"),
     getCompleted: (stats) => !!stats.first_sale,
     link: Routes.sales_dashboard_path(),
     IconComponent: FirstSaleIcon,
-    description: "Make your first sale.",
+    description: t("seller.dashboard.cha_ching_desc"),
   },
   {
-    name: "Money inbound",
+    name: t("seller.dashboard.money_inbound"),
     getCompleted: (stats) => !!stats.first_payout,
     link: Routes.settings_payments_path(),
     IconComponent: FirstPayoutIcon,
-    description: "Get your first pay out.",
+    description: t("seller.dashboard.money_inbound_desc"),
   },
   {
-    name: "Making waves",
+    name: t("seller.dashboard.making_waves"),
     getCompleted: (stats) => !!stats.first_email,
     link: Routes.posts_path(),
     IconComponent: EmailBlastIcon,
-    description: "Send out your first email blast.",
+    description: t("seller.dashboard.making_waves_desc"),
   },
   {
-    name: "Command line",
+    name: t("seller.dashboard.command_line"),
     getCompleted: (stats) => !!stats.used_cli,
     link: "/api#api-cli",
     IconComponent: CliIcon,
-    description: "Use Gumroad via the command line interface.",
+    description: t("seller.dashboard.command_line_desc"),
   },
 ];
 
@@ -160,12 +161,12 @@ type GettingStartedItemProps = {
 const Greeter = () => (
   <Placeholder>
     <PlaceholderImage src={placeholderImage} />
-    <h2>We're here to help you get paid for your work.</h2>
+    <h2>{t("seller.dashboard.greeter_heading")}</h2>
     <NavigationButton href={Routes.new_product_path()} color="accent">
-      Create your first product
+      {t("seller.dashboard.greeter_create_first_product")}
     </NavigationButton>
     <a href="/help/article/149-adding-a-product" target="_blank" rel="noreferrer">
-      Learn more about creating products
+      {t("seller.dashboard.greeter_learn_more")}
     </a>
   </Placeholder>
 );
@@ -234,16 +235,16 @@ const ProductsTable = ({ sales }: TableProps) => {
   if (sales.every((b) => b.sales === 0)) {
     return (
       <div className="grid gap-4">
-        <h2>Best selling</h2>
+        <h2>{t("seller.dashboard.best_selling")}</h2>
         <Placeholder>
           <p>
-            You haven't made any sales yet. Learn how to{" "}
+            {t("seller.dashboard.no_sales_learn")}{" "}
             <a href="/help/article/170-audience" target="_blank" rel="noreferrer">
-              build a following
+              {t("seller.dashboard.build_a_following")}
             </a>{" "}
-            and{" "}
+            {t("seller.dashboard.and")}{" "}
             <a href="/help/article/79-gumroad-discover" target="_blank" rel="noreferrer">
-              sell on Gumroad Discover
+              {t("seller.dashboard.sell_on_discover")}
             </a>
           </p>
         </Placeholder>
@@ -253,21 +254,21 @@ const ProductsTable = ({ sales }: TableProps) => {
 
   return (
     <Table>
-      <TableCaption>Best selling</TableCaption>
+      <TableCaption>{t("seller.dashboard.best_selling")}</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead colSpan={2} {...thProps("name")}>
-            Products
+            {t("seller.dashboard.products_col")}
           </TableHead>
-          <TableHead {...thProps("sales")}>Sales</TableHead>
-          <TableHead {...thProps("revenue")}>Revenue</TableHead>
-          <TableHead {...thProps("visits")}>Visits</TableHead>
-          <TableHead {...thProps("today")}>Today</TableHead>
+          <TableHead {...thProps("sales")}>{t("seller.dashboard.sales_col")}</TableHead>
+          <TableHead {...thProps("revenue")}>{t("seller.dashboard.revenue_col")}</TableHead>
+          <TableHead {...thProps("visits")}>{t("seller.dashboard.visits_col")}</TableHead>
+          <TableHead {...thProps("today")}>{t("seller.dashboard.today_col")}</TableHead>
           <TableHead className="truncate" {...thProps("last_7")}>
-            Last 7 days
+            {t("seller.dashboard.last_7_days_col")}
           </TableHead>
           <TableHead className="truncate" {...thProps("last_30")}>
-            Last 30 days
+            {t("seller.dashboard.last_30_days_col")}
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -275,27 +276,39 @@ const ProductsTable = ({ sales }: TableProps) => {
         {items.map(({ id, name, thumbnail, today, last_7, last_30, sales, visits, revenue }) => (
           <TableRow key={id}>
             <ProductIconCell href={Routes.edit_link_url({ id }, { host: appDomain })} thumbnail={thumbnail} />
-            <TableCell label="Products">
+            <TableCell label={t("seller.dashboard.products_col")}>
               <a href={Routes.edit_link_url({ id }, { host: appDomain })} className="line-clamp-2" title={name}>
                 {name}
               </a>
             </TableCell>
-            <TableCell label="Sales" title={sales.toLocaleString(locale)} className="whitespace-nowrap">
+            <TableCell
+              label={t("seller.dashboard.sales_col")}
+              title={sales.toLocaleString(locale)}
+              className="whitespace-nowrap"
+            >
               {sales.toLocaleString(locale, { notation: "compact" })}
             </TableCell>
-            <TableCell label="Revenue" title={formatPrice(revenue)} className="whitespace-nowrap">
+            <TableCell
+              label={t("seller.dashboard.revenue_col")}
+              title={formatPrice(revenue)}
+              className="whitespace-nowrap"
+            >
               {formatPrice(revenue)}
             </TableCell>
-            <TableCell label="Visits" title={visits.toLocaleString(locale)} className="whitespace-nowrap">
+            <TableCell
+              label={t("seller.dashboard.visits_col")}
+              title={visits.toLocaleString(locale)}
+              className="whitespace-nowrap"
+            >
               {visits.toLocaleString(locale, { notation: "compact" })}
             </TableCell>
-            <TableCell label="Today" className="whitespace-nowrap">
+            <TableCell label={t("seller.dashboard.today_col")} className="whitespace-nowrap">
               {formatPrice(today)}
             </TableCell>
-            <TableCell label="Last 7 days" className="whitespace-nowrap">
+            <TableCell label={t("seller.dashboard.last_7_days_col")} className="whitespace-nowrap">
               {formatPrice(last_7)}
             </TableCell>
-            <TableCell label="Last 30 days" className="whitespace-nowrap">
+            <TableCell label={t("seller.dashboard.last_30_days_col")} className="whitespace-nowrap">
               {formatPrice(last_30)}
             </TableCell>
           </TableRow>
@@ -346,10 +359,12 @@ export const DashboardPage = ({
     });
   };
 
+  const gettingStartedItems = React.useMemo(() => getGettingStartedItems(), []);
+
   return (
     <div>
       <PageHeader
-        title="Dashboard"
+        title={t("seller.dashboard.title")}
         actions={
           <>
             {tax_center_enabled
@@ -360,7 +375,7 @@ export const DashboardPage = ({
                 members whose role can't create products. */}
             {loggedInUser?.policies.product.create ? (
               <NavigationButton href={Routes.new_product_path()} color="accent">
-                New product
+                {t("seller.dashboard.new_product")}
               </NavigationButton>
             ) : null}
           </>
@@ -379,13 +394,14 @@ export const DashboardPage = ({
             <Alert variant="warning">
               {currentSeller.publishBlockedReason === "payout_setup_rejected" ? (
                 <>
-                  Your payout setup needs another look before you can publish products.{" "}
-                  <a href={Routes.settings_payments_path()}>Review your payout setup</a>
+                  {t("seller.dashboard.payout_setup_needs_look")}{" "}
+                  <a href={Routes.settings_payments_path()}>{t("seller.dashboard.review_payout_setup")}</a>
                 </>
               ) : (
                 <>
-                  You haven't connected a payout method yet, so you won't be able to publish products until you do.{" "}
-                  <a href={Routes.settings_payments_path()}>Connect a payout method</a> — it only takes a minute.
+                  {t("seller.dashboard.no_payout_connected")}{" "}
+                  <a href={Routes.settings_payments_path()}>{t("seller.dashboard.connect_payout_method")}</a>{" "}
+                  {t("seller.dashboard.only_takes_a_minute")}
                 </>
               )}
             </Alert>
@@ -397,32 +413,31 @@ export const DashboardPage = ({
             <Alert variant="warning">
               {currentSeller.legalGuardianUnsupported ? (
                 <>
-                  Our payment partner cannot verify a seller under 18 in your country, even with a legal guardian on the
-                  account. Payouts will start once you turn 18.{" "}
-                  <a href={Routes.settings_payments_path()}>Review your payout setup</a>
+                  {t("seller.dashboard.partner_cannot_verify_under_18")}{" "}
+                  <a href={Routes.settings_payments_path()}>{t("seller.dashboard.review_payout_setup")}</a>
                 </>
               ) : (
                 <>
-                  You're under 18, so a parent or guardian needs to be added to your account before your payouts can go
-                  through. <a href={Routes.settings_payments_path()}>Add a guardian</a>
+                  {t("seller.dashboard.under_18_parent_guardian_needed")}{" "}
+                  <a href={Routes.settings_payments_path()}>{t("seller.dashboard.add_a_guardian")}</a>
                 </>
               )}
             </Alert>
           ) : null}
           {stripe_verification_message ? (
             <Alert variant="warning">
-              {stripe_verification_message} <a href={Routes.settings_payments_path()}>Update</a>
+              {stripe_verification_message} <a href={Routes.settings_payments_path()}>{t("seller.dashboard.update")}</a>
             </Alert>
           ) : null}
           {show_1099_download_notice ? (
             <Alert variant="info">
-              Your 1099 tax form for {new Date().getFullYear() - 1} is ready!{" "}
+              {t("seller.dashboard.tax_form_1099_ready", { year: new Date().getFullYear() - 1 })}{" "}
               {tax_center_enabled ? (
                 <Link href={Routes.tax_center_path({ year: new Date().getFullYear() - 1 })}>
-                  Click here to download
+                  {t("seller.dashboard.click_here_to_download")}
                 </Link>
               ) : (
-                <a href={Routes.dashboard_download_tax_form_path()}>Click here to download</a>
+                <a href={Routes.dashboard_download_tax_form_path()}>{t("seller.dashboard.click_here_to_download")}</a>
               )}
               .
             </Alert>
@@ -435,7 +450,7 @@ export const DashboardPage = ({
           Object.values(getting_started_stats).some((v) => !v) && (
             <div className="grid gap-4 p-4 md:p-8">
               <div className="flex items-center justify-between">
-                <h2>Getting started</h2>
+                <h2>{t("seller.dashboard.getting_started_title")}</h2>
                 <div className="flex items-center gap-2">
                   <a
                     href="#"
@@ -443,10 +458,14 @@ export const DashboardPage = ({
                       e.preventDefault();
                       toggleGettingStarted();
                     }}
-                    aria-label={gettingStartedMinimized ? "Expand getting started" : "Minimize getting started"}
+                    aria-label={
+                      gettingStartedMinimized ? t("seller.dashboard.expand_aria") : t("seller.dashboard.minimize_aria")
+                    }
                     className="flex items-center gap-1"
                   >
-                    <span>{gettingStartedMinimized ? "Show more" : "Show less"}</span>
+                    <span>
+                      {gettingStartedMinimized ? t("seller.dashboard.show_more") : t("seller.dashboard.show_less")}
+                    </span>
                     {gettingStartedMinimized ? (
                       <ChevronsUpDown className="size-5" />
                     ) : (
@@ -459,7 +478,7 @@ export const DashboardPage = ({
                       e.preventDefault();
                       setShowDismissConfirmation(true);
                     }}
-                    aria-label="Dismiss getting started"
+                    aria-label={t("seller.dashboard.dismiss_aria")}
                     className="flex items-center"
                   >
                     <X className="size-5" />
@@ -467,7 +486,7 @@ export const DashboardPage = ({
                 </div>
               </div>
               <div className="grid w-full grid-cols-1 gap-4 min-[2000px]:grid-cols-8 sm:grid-cols-2 xl:grid-cols-4">
-                {GETTING_STARTED_ITEMS.map((item) => (
+                {gettingStartedItems.map((item) => (
                   <GettingStartedItem
                     key={item.name}
                     {...item}
@@ -479,18 +498,18 @@ export const DashboardPage = ({
               {!gettingStartedMinimized && social_connections?.length ? (
                 <Card>
                   <CardContent className="grid gap-3">
-                    <h3>Connect a social account (optional)</h3>
-                    <p>
-                      If we ever review your account, a connected social account gives us more to go on. It is not
-                      identity verification, and it does not guarantee approval or a payout date. We only read your
-                      public profile and never post for you.
-                    </p>
-                    {connectedSocialNames.length ? <p>Connected: {connectedSocialNames.join(", ")}</p> : null}
+                    <h3>{t("seller.dashboard.social_account_title")}</h3>
+                    <p>{t("seller.dashboard.social_account_description")}</p>
+                    {connectedSocialNames.length ? (
+                      <p>{t("seller.dashboard.social_connected", { names: connectedSocialNames.join(", ") })}</p>
+                    ) : null}
                     <div>
                       <NavigationButton
                         href={Routes.settings_social_connections_path({ social_connect_origin: "onboarding" })}
                       >
-                        {connectedSocialNames.length ? "Manage connections" : "Connect an account"}
+                        {connectedSocialNames.length
+                          ? t("seller.dashboard.manage_connections")
+                          : t("seller.dashboard.connect_an_account")}
                       </NavigationButton>
                     </div>
                   </CardContent>
@@ -499,10 +518,10 @@ export const DashboardPage = ({
               <Modal
                 open={showDismissConfirmation}
                 onClose={() => setShowDismissConfirmation(false)}
-                title="Hide getting started checklist?"
+                title={t("seller.dashboard.hide_checklist_title")}
                 footer={
                   <>
-                    <Button onClick={() => setShowDismissConfirmation(false)}>Cancel</Button>
+                    <Button onClick={() => setShowDismissConfirmation(false)}>{t("actions.cancel")}</Button>
                     <Button
                       color="danger"
                       onClick={() => {
@@ -510,12 +529,12 @@ export const DashboardPage = ({
                         void dismissGettingStarted();
                       }}
                     >
-                      Yes, hide it
+                      {t("seller.dashboard.hide_checklist_confirm")}
                     </Button>
                   </>
                 }
               >
-                <p>The checklist will be permanently hidden and cannot be brought back.</p>
+                <p>{t("seller.dashboard.hide_checklist_description")}</p>
               </Modal>
             </div>
           )
@@ -534,23 +553,27 @@ export const DashboardPage = ({
       ) : null}
 
       <div className="grid gap-4 p-4 md:p-8">
-        <h2>Activity</h2>
+        <h2>{t("seller.dashboard.activity")}</h2>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stats title="Balance" description="Your current balance available for payout" value={balances.balance} />
           <Stats
-            title="Last 7 days"
-            description="Your total sales in the last 7 days"
+            title={t("seller.dashboard.balance_title")}
+            description={t("seller.dashboard.balance_description")}
+            value={balances.balance}
+          />
+          <Stats
+            title={t("seller.dashboard.last_7_days_title")}
+            description={t("seller.dashboard.last_7_days_description")}
             value={balances.last_seven_days_sales_total}
           />
           <Stats
-            title="Last 28 days"
-            description="Your total sales in the last 28 days"
+            title={t("seller.dashboard.last_28_days_title")}
+            description={t("seller.dashboard.last_28_days_description")}
             value={balances.last_28_days_sales_total}
           />
           <Stats
-            title="Total earnings"
-            description="Your all-time net earnings from all products, excluding refunds and chargebacks"
+            title={t("seller.dashboard.total_earnings_title")}
+            description={t("seller.dashboard.total_earnings_description")}
             value={balances.total}
           />
         </div>

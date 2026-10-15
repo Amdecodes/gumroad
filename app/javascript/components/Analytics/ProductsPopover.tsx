@@ -1,6 +1,8 @@
 import { ChevronDown } from "@boxicons/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { type Product } from "$app/components/Analytics";
 import { Button } from "$app/components/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "$app/components/Popover";
@@ -22,7 +24,7 @@ export const ProductsPopover = ({
   <Popover>
     <PopoverTrigger>
       <InputGroup className="whitespace-nowrap">
-        <div className="flex-1">Select products...</div>
+        <div className="flex-1">{t("seller.analytics.select_products")}</div>
         <ChevronDown className="size-5" />
       </InputGroup>
     </PopoverTrigger>
@@ -40,7 +42,7 @@ export const ProductsPopover = ({
                   )
                 }
               />
-              All products
+              {t("seller.analytics.all_products")}
             </Label>
             {products.map(({ id, name, unique_permalink, selected }) => (
               <Label key={id}>
@@ -70,7 +72,7 @@ export const ProductsPopover = ({
             }
             className="grow basis-0"
           >
-            Toggle selected
+            {t("seller.analytics.toggle_selected")}
           </Button>
         </CardContent>
       </Card>

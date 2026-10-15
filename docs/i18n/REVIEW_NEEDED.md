@@ -434,4 +434,45 @@ The following Amharic strings cover seller payouts (`/payouts`), payment setting
 | `seller.payments.payouts_paused_by_reserve` | Payout pausing is managed automatically while the reserve hold is active. | የመጠባበቂያ ክፍያው ንቁ ሆኖ ሳለ የክፍያ ማቆም በራስ-ሰር ይተዳደራል። | Reserve hold automated pause note. |
 | `seller.payments.payouts_paused_by_security` | Your payouts have been paused for a security review. | የሻጭ ክፍያዎችዎ ለደህንነት ግምገማ ለጊዜው ቆመዋል። | Security pause notice. |
 
+---
+
+## 11. Phase 4c Seller Dashboard, Analytics, Audience & Customer Detail Strings
+
+The following Amharic strings cover seller dashboard metrics, analytics, customer order management, refund issues, fee notices, license management, and churn analysis:
+
+### 11.1 Financial Metrics & Sales Analytics
+
+| Key | English Source | Amharic Draft | Review Focus / Questions |
+| :--- | :--- | :--- | :--- |
+| `seller.dashboard.balance_title` | Balance | ቀሪ ሂሳብ | Current seller account balance. |
+| `seller.dashboard.balance_description` | Available for payout | ለክፍያ ዝግጁ የሆነ | Balance availability status. |
+| `seller.analytics.sales_col` | Sales | ሽያጮች | Sales metric count column. |
+| `seller.analytics.revenue_col` | Revenue | ገቢ | Revenue money amount column. |
+| `seller.analytics.average_sale` | Average sale | አማካይ ሽያጭ | Average purchase price metric. |
+| `seller.analytics.mrr` | Monthly Recurring Revenue (MRR) | ወርሃዊ ተደጋጋሚ ገቢ (MRR) | Standard SaaS/membership revenue abbreviation. |
+| `seller.churn.mrr_churn_rate` | MRR churn rate | የ MRR ቅነሳ ምጣኔ (Churn Rate) | Revenue churn rate metric. |
+| `seller.churn.subscriber_churn_rate` | Subscriber churn rate | የተመዝጋቢዎች ቅነሳ ምጣኔ (Churn Rate) | Membership churn metric. |
+
+### 11.2 Customer Orders, Refunds & Charges
+
+| Key | English Source | Amharic Draft | Review Focus / Questions |
+| :--- | :--- | :--- | :--- |
+| `seller.customerDetail.refund` | Refund | ተመላሽ ገንዘብ | Refund action header. |
+| `seller.customerDetail.purchase_refund` | Purchase refund | የግዢ ተመላሽ ገንዘብ | Full purchase refund modal title. |
+| `seller.customerDetail.charge_refund` | Charge refund | የክፍያ ተመላሽ ገንዘብ | Individual charge refund modal title. |
+| `seller.customerDetail.issue_partial_refund` | Issue partial refund | ከፊል ተመላሽ ገንዘብ ስጥ | Partial refund button CTA. |
+| `seller.customerDetail.refund_fully` | Refund fully | ሙሉ በሙሉ ተመላሽ አድርግ | Full refund button CTA. |
+| `seller.customerDetail.refunding` | Refunding... | ተመላሽ በመደረግ ላይ... | Refund in-progress loading state. |
+| `seller.customerDetail.confirm_refund` | Confirm refund | ተመላሽ ማድረግን አረጋግጥ | Refund modal confirmation submit. |
+| `seller.customerDetail.refund_fee_notice` | Going forward, {app_name} does not return any fees when a payment is refunded. | ወደፊት፣ ክፍያ ተመላሽ በሚደረግበት ጊዜ {app_name} ምንም ዓይነት የአገልግሎት ክፍያዎችን አይመልስም። | Non-refundable processing fee legal disclosure. |
+| `seller.customerDetail.paypal_refund_expired_tip` | PayPal refunds aren't available after 6 months. | የ PayPal ተመላሽ ገንዘቦች ከ6 ወራት በኋላ አይገኙም። | Gateway time-limit alert. |
+| `seller.customerDetail.charge_upgrade` | Upgrade | ማሻሻያ (Upgrade) | Upgrade charge badge. |
+| `seller.customerDetail.charge_upgrade_tip` | This is an upgrade charge, generated when the subscriber upgraded to a more expensive plan. | ይህ ደንበኛው ወደ ከፍተኛ ዋጋ ዕቅድ ሲያሻሽል የተፈጠረ የማሻሻያ ክፍያ ነው። | Upgrade charge tooltip explanation. |
+| `seller.customerDetail.charge_partial_refund` | Partial refund | በከፊል የተመለሰ | Partial refund status pill. |
+| `seller.customerDetail.charge_refunded` | Refunded | ተመላሽ የተደረገ | Full refund status pill. |
+| `seller.customerDetail.charge_chargedback` | Chargedback | ክርክር የተነሳበት (Chargedback) | Dispute chargeback pill. |
+| `seller.customerDetail.ppp_notice` | This customer received a purchasing power parity discount of {discount} because they are located in {country}. | ይህ ደንበኛ በ {country} ስለሚገኝ የ {discount} የመግዛት አቅም ማመጣጠኛ ቅናሽ አግኝቷል። | Purchasing power parity discount notice. |
+| `seller.customerDetail.amount_on_date` | {amount} on {date} | {amount} በ {date} | Charge row timestamp and amount display. |
+
+
 

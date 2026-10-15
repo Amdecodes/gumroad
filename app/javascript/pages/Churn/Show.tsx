@@ -2,6 +2,8 @@ import { router, usePage } from "@inertiajs/react";
 import { format, lightFormat, parseISO } from "date-fns";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { AnalyticsLayout } from "$app/components/Analytics/AnalyticsLayout";
 import { ProductsPopover, type ProductOption } from "$app/components/Analytics/ProductsPopover";
 import { useAnalyticsDateRange } from "$app/components/Analytics/useAnalyticsDateRange";
@@ -297,13 +299,13 @@ export default function Churn() {
         hasProducts ? (
           <>
             <Select
-              aria-label="Aggregate by"
+              aria-label={t("seller.analytics.aggregate_by")}
               onChange={(event) => setAggregateBy(event.target.value === "daily" ? "daily" : "monthly")}
               className="w-auto"
               value={aggregateBy}
             >
-              <option value="daily">Daily</option>
-              <option value="monthly">Monthly</option>
+              <option value="daily">{t("seller.analytics.aggregate_daily")}</option>
+              <option value="monthly">{t("seller.analytics.aggregate_monthly")}</option>
             </Select>
             <ProductsPopover products={products} setProducts={setProducts} />
             <div className="col-span-2">
@@ -319,12 +321,12 @@ export default function Churn() {
           {isReloading ? (
             <InputGroup>
               <LoadingSpinner />
-              Loading churn analytics...
+              {t("seller.churn.loading")}
             </InputGroup>
           ) : chartData.length > 0 ? (
             <ChurnChart data={chartData} />
           ) : (
-            <InputGroup>No churn data for this date range.</InputGroup>
+            <InputGroup>{t("seller.churn.no_data_for_range")}</InputGroup>
           )}
         </div>
       ) : (
@@ -333,13 +335,10 @@ export default function Churn() {
             <figure>
               <img src={placeholder} />
             </figure>
-            <h2>No subscription products yet</h2>
-            <p>
-              Churn analytics are available for creators with subscription products. Create a membership or subscription
-              product to start tracking subscriber retention.
-            </p>
+            <h2>{t("seller.churn.empty_title")}</h2>
+            <p>{t("seller.churn.empty_description")}</p>
             <a href={Routes.help_center_article_path("82-membership-products")} target="_blank" rel="noreferrer">
-              Learn more about memberships
+              {t("seller.churn.empty_learn_more")}
             </a>
           </Placeholder>
         </div>
