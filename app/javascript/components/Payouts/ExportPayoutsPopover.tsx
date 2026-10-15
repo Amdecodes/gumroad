@@ -2,6 +2,7 @@ import { ArrowInDownSquareHalf } from "@boxicons/react";
 import * as React from "react";
 
 import { ExportablePayout, exportPayouts, getExportablePayouts } from "$app/data/balance";
+import { useTranslation } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError } from "$app/utils/request";
 
@@ -15,6 +16,7 @@ import { Select } from "$app/components/ui/Select";
 import { useRunOnce } from "$app/components/useRunOnce";
 
 const ExportPayoutsPopoverContent = () => {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [yearsWithPayouts, setYearsWithPayouts] = React.useState<number[]>([currentYear]);
   const [selectedYear, setSelectedYear] = React.useState<number>(currentYear);
@@ -68,10 +70,16 @@ const ExportPayoutsPopoverContent = () => {
 
     try {
       await exportPayouts(Array.from(selectedPayouts));
-      showAlert("You will receive an email in your inbox shortly with the data you've requested.", "success");
+      showAlert(
+        t(
+          "seller.payouts.export_success",
+          "You will receive an email in your inbox shortly with the data you've requested.",
+        ),
+        "success",
+      );
     } catch (e) {
       assertResponseError(e);
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("seller.payouts.export_error", "Sorry, something went wrong. Please try again."), "error");
     }
 
     setIsDownloading(false);
@@ -81,14 +89,19 @@ const ExportPayoutsPopoverContent = () => {
     <div className="max-w-[300px] space-y-4">
       <header>
         <p className="mb-1">
-          <strong>Export multiple payouts</strong>
+          <strong>{t("seller.payouts.export_multiple_payouts_title", "Export multiple payouts")}</strong>
         </p>
-        <p>Select multiple payout periods to download their CSV files at once.</p>
+        <p>
+          {t(
+            "seller.payouts.export_multiple_payouts_desc",
+            "Select multiple payout periods to download their CSV files at once.",
+          )}
+        </p>
       </header>
 
       <section>
         <Select
-          aria-label="Filter by year"
+          aria-label={t("seller.payouts.filter_by_year", "Filter by year")}
           value={selectedYear}
           onChange={handleYearChange}
           className="w-full"
@@ -110,7 +123,7 @@ const ExportPayoutsPopoverContent = () => {
         ) : null}
         <div className="space-y-2">
           {payouts.length === 0 ? (
-            <p>No payouts found for this year.</p>
+            <p>{t("seller.payouts.no_payouts_found", "No payouts found for this year.")}</p>
           ) : (
             payouts.map((payout) => (
               <Label key={payout.id} className="flex items-center gap-2">
@@ -132,7 +145,9 @@ const ExportPayoutsPopoverContent = () => {
           className="flex-1"
           disabled={isLoading || isDownloading || payouts.length === 0}
         >
-          {payouts.length && selectedPayouts.size === payouts.length ? "Deselect all" : "Select all"}
+          {payouts.length && selectedPayouts.size === payouts.length
+            ? t("seller.payouts.deselect_all", "Deselect all")
+            : t("seller.payouts.select_all", "Select all")}
         </Button>
         <PopoverClose asChild>
           <Button
@@ -141,7 +156,7 @@ const ExportPayoutsPopoverContent = () => {
             disabled={selectedPayouts.size === 0 || isLoading || isDownloading}
             className="flex-1"
           >
-            {isDownloading ? <LoadingSpinner /> : "Download"}
+            {isDownloading ? <LoadingSpinner /> : t("seller.payouts.download", "Download")}
           </Button>
         </PopoverClose>
       </footer>
@@ -149,18 +164,21 @@ const ExportPayoutsPopoverContent = () => {
   );
 };
 
-export const ExportPayoutsPopover = () => (
-  <Popover>
-    <PopoverAnchor>
-      <PopoverTrigger asChild>
-        <Button>
-          <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
-          Export all
-        </Button>
-      </PopoverTrigger>
-    </PopoverAnchor>
-    <PopoverContent sideOffset={4}>
-      <ExportPayoutsPopoverContent />
-    </PopoverContent>
-  </Popover>
-);
+export const ExportPayoutsPopover = () => {
+  const { t } = useTranslation();
+  return (
+    <Popover>
+      <PopoverAnchor>
+        <PopoverTrigger asChild>
+          <Button>
+            <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
+            {t("seller.payouts.export_all", "Export all")}
+          </Button>
+        </PopoverTrigger>
+      </PopoverAnchor>
+      <PopoverContent sideOffset={4}>
+        <ExportPayoutsPopoverContent />
+      </PopoverContent>
+    </Popover>
+  );
+};

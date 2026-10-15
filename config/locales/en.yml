@@ -1,1030 +1,1279 @@
+---
 en:
-  date:
-    formats:
-      default: "%Y-%m-%d"
-      short: "%b %d"
-      long: "%B %e, %Y"
-      abbrev_month: "%b %-d, %Y"
-      full_month: "%B %-d, %Y"
-    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
-    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
-    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
-    order:
-      - :year
-      - :month
-      - :day
-  time:
-    formats:
-      default: "%a, %d %b %Y %H:%M:%S %z"
-      short: "%d %b %H:%M"
-      long: "%B %e, %Y %H:%M"
-      abbrev_month: "%b %-d, %Y"
-      full_month: "%B %-d, %Y"
-    am: "am"
-    pm: "pm"
-  common:
-    or: "or"
-    optional: "optional"
-    time: "Time"
-    date: "Date"
-    free: "Free"
-    other: "Other"
-    loading: "Loading..."
-    here: "here"
-    yes: "Yes"
-    no: "No"
-    something_went_wrong: "Something went wrong."
   actions:
-    save: "Save"
-    cancel: "Cancel"
-    confirm: "Confirm"
-    pay: "Pay"
-    pay_with_chapa: "Pay with Chapa"
-    renew: "Renew"
-    renew_subscription: "Renew Subscription"
-    download: "Download"
-    view: "View"
-    buy_now: "Buy Now"
-    get_access: "Get access"
-    manage_membership: "Manage membership"
-    manage_installment_plan: "Manage installment plan"
-    membership: "membership"
-    installment_plan: "installment plan"
-    switch_language: "Switch language"
-    close: "Close"
-    apply: "Apply"
-    edit: "Edit"
-    remove: "Remove"
-    save_changes: "Save changes"
-    continue_shopping: "Continue shopping"
-    back: "Back"
-    sign_up: "Sign up"
-    signing_up: "Signing up..."
-    saving: "Saving..."
-    uploading: "Uploading..."
-    upgrade: "Upgrade"
-    dont_upgrade: "Don't upgrade"
-    continue_without_adding: "Continue without adding"
-    no_cancel: "No, cancel"
-    yes_reset: "Yes, reset"
-    confirm_and_save: "Confirm and save"
-    learn_more: "Learn more"
-  currency:
-    name: "Ethiopian Birr"
-    code: "ETB"
-    symbol: "ETB"
-    minor_unit: "santim"
-    minor_units: "santims"
-  checkout:
-    title: "Checkout"
-    pay_now: "Pay Now"
-    email_address: "Email address"
-    full_name: "Full name"
-    phone_number: "Phone number"
-    price: "Price"
-    quantity: "Quantity"
-    subtotal: "Subtotal"
-    total: "Total"
-    payment_method: "Payment method"
-    processing: "Processing payment with Chapa..."
-    successful: "Payment successful!"
-    failed: "Payment failed"
-    pending: "Payment pending verification"
-    redirecting: "Redirecting to Chapa checkout..."
-    card_label: "Card"
-    pay_with: "Pay with"
-    payment_form_aria: "Payment form"
-    use_saved_card: "Use saved card"
-    save_card_for_future: "Save card for future purchases"
-    test_purchase_notice: "This will be a test purchase as you are the creator of at least one of the products. Your payment method will not be charged."
-    card_number: "Card number"
-    expires_placeholder: "MM / YY"
-    cvc_placeholder: "CVC"
-    loading_payment_options: "Loading payment options..."
-    give_as_gift: "Give as a gift?"
-    recipient_email: "Recipient email"
-    note_placeholder: "Add a personal note (optional)"
-    send_immediately: "Send immediately"
-    send_at_scheduled_date: "Schedule for later"
-    gift_note_label: "Gift note"
-    optional_suffix: "(optional)"
-    terms_prefix: "I agree to the"
-    terms_suffix: "terms"
-    currency_label: "Currency"
-    currency_detected: "detected"
-    currency_unsupported: "We can't charge this cart in %{currency}, so the total is in %{fallbackCurrency}"
-    updating_total: "Updating total…"
-    shipping_rate: "Shipping rate"
-    discounts: "Discounts"
-    ppp_discount: "Purchasing power parity discount"
-    discount_code: "Discount code"
-    payment_today: "Payment today"
-    payment_after_completion: "Payment after completion"
-    future_installments: "Future installments"
-    customers_also_bought: "Customers who bought %{items} also bought"
-    this_item: "this item"
-    these_items: "these items"
-    empty_cart_title: "You haven't added anything...yet!"
-    empty_cart_desc: "Once you do, it'll show up here so you can complete your purchases."
-    discover_products: "Discover products"
-    add_tip: "Add a tip?"
-    no_tip: "No Tip"
-    tip: "Tip"
-    custom_tip: "Custom tip"
-    bundle_contains: "This bundle contains..."
-    quantity_short: "Qty:"
-    time_short: "Time:"
-    after: "after"
-    in_installments: "in %{count} installments"
-    one_time_payment: "One-time payment"
-    item_count:
-      one: "%{count} item"
-      other: "%{count} items"
-    processing_pending_title: "Your payment is being processed"
-    processing_pending_desc: "Check your email for your receipt — it will arrive once the payment completes. Please do not pay again. This page updates automatically."
-    confirm_tip_title: "Confirm tip amount"
-    edit_tip: "Edit tip"
-    confirm_tip: "Yes, leave tip"
-    tip_confirmation_message: "You're about to leave a tip of %{tip} on a %{price} purchase. Are you sure?"
-    already_own_title: "You already own this"
-    buy_again: "Buy again"
-    buy_again_prompt: "Do you want to buy %{product} again?"
-    card_information: "Card information"
-    use_different_card: "Use a different card?"
-    saved_credit_card: "Saved credit card"
-    field_required: "This field is required."
-    accept_terms_prefix: "I accept"
-    terms_and_conditions: "Terms and Conditions"
-    accept_terms_error: "Please accept the Terms and Conditions."
-    gift_membership_note: "Note: Free trials will be charged immediately. The membership will not auto-renew. The recipient must update the payment method to renew the membership."
-    recipient_email_placeholder: "Recipient email address"
-    gift_email_hidden: "%{name}'s email has been hidden for privacy purposes."
-    cancel_gift_option: "Cancel gift option"
-    reset_gift_title: "Reset gift option?"
-    reset_gift_message: "You are about to switch off the gift option. To gift this wishlist again, you will need to return to the wishlist page and select \"Gift this product\"."
-    message: "Message"
-    gift_message_placeholder: "A personalized message (optional)"
-    stay_anonymous: "Stay anonymous to the recipient"
-    country: "Country"
-    state: "State"
-    province: "Province"
-    county: "County"
-    zip_code: "ZIP code"
-    postal_code: "Postal"
-    street_address: "Street address"
-    city: "City"
-    save_shipping_address_title: "Save shipping address to account"
-    save_address_for_future: "Save address for future purchases"
-    retry_price_update: "Retry price update"
-    did_you_mean_email: "Did you mean %{email}?"
-    shipping_information: "Shipping information"
-    payment_failed_uncharged: "Sorry, something went wrong. You were not charged."
-    name_required_for_method: "Please enter your full name — it's required for this payment method."
-    total_changed_billing_address: "Your total changed after applying your payment method's billing address. Please review the updated total and try again."
-    valid_email_prompt: "Please provide a valid email address."
-    enter_full_name_prompt: "Please enter your full name."
-    invalid_shipping_format: "The shipping address you have entered is in an invalid format."
-    standard_shipping: "Standard Shipping"
-    security_check_failed: "We couldn't complete the security check. Please try again to finish your purchase."
-    shipping: "Shipping"
-    tax_included: "%{tax} (included)"
-    ppp_tooltip: "This discount is applied based on the cost of living in your country."
-    item_already_in_cart: "You already have this item in your cart."
-    free_trial_duration:
-      one: "%{count} %{unit} free"
-      other: "%{count} %{unit}s free"
-    ppp_greater_all: "The offer code will not be applied because the purchasing power parity discount is greater than the offer code discount for all products."
-    ppp_greater_some: "The offer code will not be applied to some products for which the purchasing power parity discount is greater than the offer code discount."
-    max_products_limit: "You cannot add more than %{count} products to the cart."
-    something_went_wrong_retry: "Sorry, something went wrong. Please try again."
-    payment_processing_partial: "Part of your payment is being processed — check your email for its receipt. The items that couldn't be charged are still in your cart to try again."
-    payment_processing_full: "Your payment is being processed — check your email for your receipt. Please do not pay again."
-  receipt:
-    success_title: "Your purchase was successful!"
-    summary_title: "Summary"
-    need_invoice: "Need an invoice for this?"
-    generate_invoice: "Generate"
-    gift_download_note: "They'll get an email with your note and a download link."
-    gift_note_only: "They'll get an email with your note."
-    account_created_notice: "Done! Your account has been created. You'll get a confirmation email shortly."
-    keep_everything_title: "Keep everything in one place"
-    keep_everything_desc: "Create an account to access all of your purchases anytime."
-    email: "Email"
-    password: "Password"
-    enter_password: "Enter password"
-    terms_notice: "By signing up, you agree to our"
-    terms_of_use: "Terms of Use"
-    something_went_wrong: "Sorry, something went wrong."
-    charged_card_and_sent_receipt: "We charged your card and sent a receipt to %{email}"
-    sent_receipt_to: "We sent a receipt to %{email}"
-    invoices:
-      generate: "Generate invoice"
-      confirm_email: "Confirm email"
-      payment: "Payment"
-      full_name: "Full name"
-      business_name_optional: "Business name (optional)"
-      street_address: "Street address"
-      city: "City"
-      state: "State"
-      zip_code: "ZIP code"
-      country: "Country"
-      select_country: "Select country"
-      additional_notes: "Additional notes"
-      to: "To"
-      supplier: "Supplier"
-      seller: "Seller"
-      receipt_heading: "Receipt"
-      invoice_heading: "Invoice"
-      invoice_date: "Invoice date"
-      order_number: "Order number"
-      address: "Address"
-      item_purchased:
-        one: "%{count} item purchased"
-        other: "%{count} items purchased"
-      download_notice: "This invoice will be downloaded as a PDF to your computer."
-      save_as_help: "Right-click %{here} and \"Save as...\" if the PDF hasn't been automatically downloaded to your computer."
-  storefront:
-    products: "Products"
-    license_key: "License key"
-    content: "Content"
-    posts: "Posts"
-    free: "Free"
-    name_fair_price: "Name a fair price:"
-    search_products: "Search products..."
-    select_date: "Select a date"
-    select_time: "Select a time"
-    you_selected: "You selected"
-    payment_option: "Payment option"
-    pay_in_full: "Pay in full"
-    one_time_payment: "One-time payment"
-    pay_in_installments: "Pay in installments"
-    pay_in_count_installments: "Pay in %{count} installments"
-    pay_in_n_installments: "Pay in %{count} installments of %{amount}"
-    recurrence: "Recurrence"
-    quantity_left:
-      one: "%{count} left"
-      other: "%{count} left"
-    no_available_times_option: "There are no available times for this option."
-    no_available_times: "There are no available times."
-    rent: "Rent"
-    rent_description: "Your rental will be available for 30 days. Once started, you’ll have 72 hours to watch it as much as you’d like!"
-    buy: "Buy"
-    buy_description: "Watch as many times as you want, forever."
-    seats: "Seats"
-    quantity: "Quantity"
-    add_to_cart: "Add to cart"
-    choose_an_option: "Choose an option"
-    i_want_this: "I want this!"
-    buy_this: "Buy this"
-    pay: "Pay"
-    donate: "Donate"
-    support: "Support"
-    tip: "Tip"
-    purchase_again: "Purchase again"
-    subscribe: "Subscribe"
-    you_already_own_this: "You already own this"
-    must_input_amount: "You must input an amount"
-    minimum_price_is: "Minimum price for this product is %{price}."
-    must_select_call_date_time: "You must select a date and time for the call"
-    not_available_location: "Sorry, this item is not available in your location."
-    sold_out_pick_another: "Sold out, please go back and pick another option."
-    not_currently_for_sale: "This product is not currently for sale."
-    discount_code_limit_reached: "Sorry, the discount code you wish to use has reached its usage limit."
-    discount_code_invalid: "Sorry, the discount code you wish to use is invalid."
-    discount_code_existing_customers_only: "Sorry, this discount code is only for existing customers."
-    discount_code_inactive: "Sorry, the discount code you wish to use is inactive."
-    discount_expires_in: "This discount expires in %{time}"
-    received_bundle_gift: "You've received this bundle as a gift"
-    purchased_bundle: "You've purchased this bundle"
-    already_own_bundle: "You already own this bundle"
-    received_product_gift: "You've received this product as a gift"
-    purchased_product: "You've purchased this product"
-    already_own_product: "You already own this product"
-    view_content: "View content"
-    restart_membership: "Restart membership"
-    manage_membership: "Manage membership"
-    copy: "Copy"
-    already_bought_this: "Already bought this?"
-    view_your_information: "View your information"
-    get_download_link: "Get your download link"
-    resend_receipt: "Resend your receipt"
-    rating: "Rating"
-    ratings: "Ratings"
-    ratings_count:
-      one: "%{count} rating"
-      other: "%{count} ratings"
-    star_count:
-      one: "%{count} star"
-      other: "%{count} stars"
-    load_more: "Load more"
-    no_reviews_yet: "This product has no reviews yet."
-    creator_rating_from: "Creator rating: %{average} from %{count_reviews} across %{products_count} other products."
-    creator_rating_from_profile: "Creator rating: %{average} from %{count_reviews} across %{products_count} other products."
-    verified_reviews_count:
-      one: "%{count} verified review"
-      other: "%{count} verified reviews"
-    ratings_histogram: "Ratings histogram"
-    last_updated: "Last updated %{date}"
-    resume_subscription_title: "Resume your previous subscription?"
-    resume_subscription_desc: "You've previously subscribed to this product. Would you like to pick up where you left off, or start fresh with a new subscription?"
-    start_new_subscription: "Start a new subscription"
-    resume_subscription: "Resume subscription"
-    already_subscribed_title: "You already have an active subscription"
-    already_subscribed_desc: "You currently have an active subscription to this product. Would you like to start a new subscription?"
-    add_to_wishlist: "Add to wishlist"
-    adding_to_wishlist: "Adding to wishlist..."
-    added_to_wishlist: "Added to wishlist!"
-    please_enter_wishlist_name: "Please enter a wishlist name"
-    wishlist_name: "Wishlist name"
-    create_wishlist: "Create wishlist"
-    new_wishlist: "New wishlist"
-    wishlist_created: "Wishlist created!"
-    edit_it_here: "Edit it here."
-    share: "Share"
-    copy_link: "Copy link"
-    copy_product_url: "Copy product URL"
-  subscriptions:
-    statuses:
-      active: "Active"
-      renewal_due: "Renewal Due"
-      in_grace_period: "Grace Period"
-      past_due: "Past Due"
-      cancelled: "Cancelled"
-      expired: "Expired"
-    renewal_banner_title: "Subscription Renewal Due"
-    grace_period_warning: "Your membership is in its grace period (%{days} days remaining). Renew now to maintain uninterrupted access."
-    renew_now_for: "Renew now for %{price}"
-    renewal_success: "Subscription successfully renewed until %{date}."
-  admin:
-    title: "Admin Portal"
-    overview: "Overview"
-    creators: "Creators"
-    products: "Products"
-    orders: "Orders"
-    reports: "Reports"
-    payouts: "Payouts"
-    subscriptions: "Subscriptions"
-    customers: "Customers"
-    marketing: "Marketing"
-    team: "Team"
-    activity_log: "Activity Log"
-    exit_to_storefront: "Exit to Storefront"
-  disputes:
-    title: "Dispute evidence"
-    submit_additional_info: "Submit additional information"
-    customer_disputed_multiple: "A customer of yours (%{email}) has disputed their purchase made on %{date} of the following %{count} items for %{amount}:"
-    customer_disputed_single: "A customer of yours (%{email}) has disputed their purchase made on %{date} of %{product} for %{amount}:"
-    deadline_note: "Our payment processor accepts one submission per dispute, so we hold your response and send it at the deadline. Come back any time before then to add files or revise what you wrote — after the deadline nothing more can be added, not even by contacting support."
-    saved_response_note: "Your saved response is filled in below. Change whatever you want and save again — saving replaces the fields you fill in and leaves the rest as they are."
-    why_win: "Why should you win this dispute?"
-    why_sub_not_cancelled: "Why was the customer's subscription not canceled?"
-    why_not_entitled_refund: "Why is the customer not entitled to a refund?"
-    additional_evidence_prompt: "Do you have additional evidence you'd like to provide?"
-    upload_communication: "Upload customer communication"
-    upload_help: "Any communication with the customer that you feel is relevant to your case (emails, chats, etc. proving that they received the product or service, or screenshots demonstrating their use of or satisfaction with the product or service). You can attach up to %{maxFiles} JPG, PNG, or PDF files, each under %{maxSize}MB. We combine them into a single PDF in the order shown, so pick them in the order you want them read."
-    save_response: "Save response"
-    confirm_save_title: "Save your response?"
-    confirm_and_save: "Confirm and save"
-    deadline_reminder: "We send this to our payment processor at the deadline, not now, so you can come back and add to it until then."
-    attaching_files:
-      one: "You are attaching %{count} file, in addition to the file you already saved."
-      other: "You are attaching %{count} files, in addition to the file you already saved."
-    saved_file_stays: "Your previously saved file stays attached. You can add more here any time before the deadline."
-    no_files_attached: "You have not attached any files. You can add them here any time before the deadline."
-    saved_success: "Thank you! We've saved your response."
-    sent_at_deadline: "We send it to our payment processor at the deadline. Until then you can come back and add files or revise what you wrote."
-    sent_at_deadline_date: "We send it to our payment processor at the deadline, %{date}. Until then you can come back and add files or revise what you wrote."
-    add_to_response: "Add to your response"
-  mailers:
-    common:
-      creator: "Creator"
-      seller: "Seller"
-      unsubscribe: "Unsubscribe"
-      powered_by: "Powered by"
-      view_content: "View content"
-      watch: "Watch"
-    customer:
-      receipt:
-        subject_bought: "You bought %{product}!"
-        subject_got_free: "You got %{product}!"
-        subject_rented: "You rented %{product}!"
-        subject_subscribed: "You've subscribed to %{product}!"
-        subject_recurring_charge: "Recurring charge for %{product}."
-        subject_membership_upgraded: "You've upgraded your membership for %{product}!"
-        subject_gift_named: "%{gifter} bought %{product} for you!"
-        subject_gift_anonymous: "Someone bought %{product} for you!"
-        subject_gift_sent: "You bought %{giftee} %{product}!"
-        subject_commission_ready: "%{product} is ready for download!"
-        subject_bought_two: "You bought %{first} and %{second}"
-        subject_bought_multiple: "You bought %{first} and %{count} more products"
-        order_id: "Order ID"
-        order_date: "Order date"
-        thank_you_payment: "Thank you for your payment!"
-        payment_info_title: "Payment info"
-        installment_processed: "We have successfully processed the installment payment for %{product}."
-        subscription_processed: "We have successfully processed the payment for your recurring subscription to %{product}."
-        usd_currency_note: "All charges are processed in United States Dollars. Your bank or financial institution may apply their own fees for currency conversion."
-        credit_card_note: "The charge will be listed as %{statement_descriptor} on your credit card statement."
-        todays_payment: "Today's payment"
-        amount_paid: "Amount paid"
-        upcoming_payments:
-          one: "Upcoming payment"
-          other: "Upcoming payments"
-        membership_paid_until: "Membership paid for until"
-        final_payment_note: "This is the final payment. You will not be charged for this product again."
-        amount_on_date: "%{amount} on %{date}"
-        free_trial_begun: "Your free trial has begun!"
-        shipment_shortly_note: "Your order will ship shortly. The creator will notify you when your package is on its way."
-        shipment_preorder_note: "The shipment will occur soon after %{date}."
-        rental_note: "Your rental of %{product} will expire in 30 days or 72 hours after you begin viewing it."
-        preorder_delivery_note: "You'll get it on %{date}."
-        license_key: "License key"
-        gift_sent_to: "Gift sent to"
-        bundle: "Bundle"
-        variant: "Variant"
-        duration: "Duration"
-        product_price: "Product price"
-        donation: "Donation"
-        call_schedule: "Call schedule"
-        call_link: "Call link"
-        manage_membership_html: "You will be charged once %{recurrence}. If you would like to manage your membership you can visit %{settings_link}."
-        single_charge_membership_html: "You will not be charged again for this membership. Your membership ends on %{date}. If you would like to manage your membership you can visit %{settings_link}."
-        installment_plan_html: "Installment plan initiated on %{date}. %{final_charge} You can manage your payment settings %{here_link}."
-        installment_final_charge: "Your final charge will be on %{date}."
-        subscription_settings: "subscription settings"
-        gift_no_autorenew: "Note that %{giftee}’s membership will not automatically renew."
-        footer_single_charge_note: "You won't be charged again for this membership."
-        footer_recurring_note: "You'll be charged once %{recurrence}."
-        test_purchase_warning: "This was a test purchase — you have not been charged (you are seeing this message because you are logged in as the creator)."
-        shipping_to: "Shipping to"
-        shipping_info: "Shipping info"
-        shipping_address: "Shipping address"
-        number_of_seats: "Number of seats"
-        tip: "Tip"
-        questions_about_product:
-          one: "Questions about your product?"
-          other: "Questions about your products?"
-        contact_seller_reply: "Contact %{seller} by replying to this email."
-        contact_seller_at: "Contact %{seller} at %{email}."
-        questions_and_contact: "Questions about your product? Contact %{seller} by replying to this email."
-        gift_received_title: "You've received a gift!"
-        gift_someone: "Someone"
-        gift_received_body: "bought this as a gift for you. We hope you like it!"
-        giftee_subscription_note_html: "Your gift includes a %{period} membership. If you wish to continue your membership, you can visit %{settings_link}."
-      grouped_receipt:
-        subject: "Receipts for Purchases"
-      auto_invoice:
-        subject: "Your invoice from %{seller}"
-        greeting: "Hi"
-        body_html: "An invoice for your purchase from <strong>%{seller}</strong> is attached as a PDF."
-        billing_settings_note_html: "You'll receive this automatically with every purchase as long as your billing details are on file. To change the invoice address, business name, or turn this off, visit your <a href=\"%{url}\">Billing settings</a>."
-        signoff_html: "Thanks,<br>%{app_name}"
-      preorder_receipt:
-        subject: "You pre-ordered %{product}!"
-        body_physical: "You have successfully pre-ordered %{product}. You'll be charged on %{date}, and shipment will occur soon after."
-        contact_address_note: "If you need to update your address, contact the creator immediately with your updated address by replying to this email."
-        shipping_address: "Shipping address"
-        body_digital: "You have successfully pre-ordered %{product}. The product is set to release on %{date}."
-      refund:
-        subject: "You have been refunded."
-        header: "You have been refunded."
-        body: "Your purchase of %{product} for %{total} on %{app_name} has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
-        body_presentment: "Your purchase of %{product} for %{total} (%{usd_total} USD) on %{app_name} has been fully refunded. It may take a few business days depending on your bank or payment provider to show up in your account."
-      partial_refund:
-        subject: "You have been %{refund_type} refunded."
-        header: "You have been %{refund_type} refunded."
-        body: "You received a partial refund of %{refund_amount} for your %{purchase_amount} purchase of %{product}. It may take a few business days depending on your bank or payment provider to show up in your account."
-        body_presentment: "You received a partial refund of %{refund_amount} (%{usd_refund_amount} USD) for your %{purchase_amount} purchase of %{product}. It may take a few business days depending on your bank or payment provider to show up in your account."
-      paypal_purchase_failed:
-        subject: "Your purchase with PayPal failed."
-        header: "Your purchase with PayPal failed."
-        greeting: "Hi there"
-        body_intro: "I'm part of the %{app_name} team, and we power the payment process you tried to complete recently."
-        body_notification: "I got a notification that you attempted to purchase %{product} using PayPal, but it looks like the transaction ultimately did not go through."
-        body_pending_note: "Sometimes your PayPal statement will say 'pending' even in this scenario — rest assured, this will go away in a few days' time."
-        body_retry_note: "Please try again by clicking here (if it still doesn't go through, please try with another credit card):"
-        try_again_button: "Try purchasing again"
-      subscription_restarted:
-        subscription_subject: "Your subscription has been restarted."
-        installment_subject: "Your installment plan has been restarted."
-        body_installment_resolved: "Your installment plan for %{product} has been restarted because a payment issue has been resolved."
-        body_installment_manual: "You have restarted your installment plan for %{product}."
-        body_subscription_resolved_html: "Your subscription to %{product} has been restarted because a payment issue has been resolved. If you would like to cancel your subscription, you may do so %{link}."
-        body_subscription_manual: "You have restarted your subscription to %{product}."
-        future_posts_note: "You'll get posts from this creator in the future."
-      subscription_magic_link:
-        subject: "Magic Link"
-        header: "Here's your magic link"
-        body: "You requested a magic link to manage your membership for \"%{product}\". Note that this link expires in %{hours} hours."
-        button: "Open magic link"
-        ignore_notice: "If you didn't request a magic link, you can safely ignore this message."
-      files_ready_for_download:
-        subject: "Your files are ready for download!"
-        header: "Your files are ready for download!"
-        body: "Your files for %{product} are now ready for download."
-        click_below: "Click the button below to access your files:"
-      review_response:
-        subject: "%{seller} responded to your review"
-        header: "%{seller} responded to your review"
-        view_product: "View product"
-      upcoming_call_reminder:
-        subject: "Your scheduled call with %{seller} is tomorrow!"
-        header: "Your scheduled call with %{seller} is tomorrow!"
-      abandoned_cart:
-        subject: "You left something in your cart"
-      subscription_autocancelled:
-        subscription_subject: "Your subscription has been canceled."
-        installment_subject: "Your installment plan has been paused."
-        installment_body_1: "Due to multiple failed payment attempts, your installment plan for %{product} has been paused and you have lost access to the product."
-        installment_body_2_html: "Please %{link} to resume your installment plan."
-        update_payment_method_link: "update your payment method"
-        subscription_body_1: "Your subscription to %{product} has been automatically canceled due to multiple failed payments."
-        subscription_body_2_html: "If you would like to subscribe to the product, please purchase it %{link} with an updated credit card."
-      subscription_cancelled:
-        subject: "Your subscription has been canceled."
-        header: "Your subscription has been canceled."
-        body: "You have canceled your subscription to %{product}. You will continue to receive any posts that the creator sends to subscribers until the end of your billing cycle on %{date}, but you will no longer be charged."
-      subscription_cancelled_by_seller:
-        subscription_subject: "Your subscription has been canceled."
-        installment_subject: "Your installment plan has been canceled."
-        installment_body: "Your installment plan for %{product} has been canceled by the creator. You will no longer be charged and will lose access to the product immediately."
-        subscription_body: "Your subscription to %{product} has been canceled by the creator. You will continue to receive any posts that the creator sends until the end of your billing cycle on %{date}, but you will no longer be charged."
-      subscription_card_declined:
-        card_subject: "Your card was declined."
-        upi_subject: "Your payment method needs attention."
-        header: "Your card was declined."
-        upi_header: "Your payment method needs attention."
-        upi_body_html: "We couldn't process the recurring payment for %{product} using your saved UPI payment method. Please %{link} to complete the transaction."
-        upi_warning: "If a payment is not successful within 5 days, your subscription to %{product} will be canceled."
-        installment_body_html: "We attempted to charge your card for your installment payment for %{product}, but were unable. Please %{link} to complete the transaction."
-        installment_warning: "If a charge to your credit card is not successful within 5 days, your installment plan for %{product} will be paused and you will lose access to the product."
-        subscription_body_html: "We attempted to charge your card for your subscription to %{product}, but were unable. Please %{link} to complete the transaction."
-        subscription_warning: "If a charge to your credit card is not successful within 5 days, your subscription to %{product} will be canceled."
-        update_payment_link: "update your payment method"
-        reauthorize_card_link: "re-authorize or update your card"
-      subscription_card_declined_warning:
-        card_subject: "Your card was declined."
-        upi_subject: "Your payment method needs attention."
-        upi_reminder_html: "This is a reminder that we couldn't process the recurring payment for %{product} using your saved UPI payment method. Please %{link} to complete the transaction."
-        upi_reminder_warning: "If a payment is not successful within 48 hours, your subscription to %{product} will be canceled."
-        installment_reminder_html: "This is a reminder that we attempted to charge your card for your installment plan to %{product}, but were unable. Please %{link} to complete the transaction."
-        installment_reminder_warning: "If a charge to your credit card is not successful within 48 hours, your installment plan to %{product} will be paused, and you will lose access to the product."
-        subscription_reminder_html: "This is a reminder that we attempted to charge your card for your subscription to %{product}, but were unable. Please %{link} to complete the transaction."
-        subscription_reminder_warning: "If a charge to your credit card is not successful within 48 hours, your subscription to %{product} will be canceled."
-        update_card_link: "update your card"
-      subscription_indian_card_mandate_invalid:
-        subject: "Update your payment method to keep automatic renewals active."
-        body_intro: "We could not verify the recurring payment authorization for %{product}."
-        body_paused: "We paused automatic renewals and did not retry the payment. You keep access while renewals are paused."
-        body_update_html: "Please %{link} to restore automatic renewals."
-      subscription_charge_failed:
-        subscription_subject: "Your recurring charge failed."
-        installment_subject: "Your installment payment failed."
-        header: "Your recurring charge failed."
-        installment_header: "Your installment payment failed."
-        installment_body: "We attempted to charge your card for your installment payment for %{product}, but were unable to."
-        installment_warning: "If a charge to your credit card is not successful within 5 days, your installment plan for %{product} will be canceled."
-        subscription_body: "We attempted to charge your card for your subscription to %{product}, but were unable to."
-        subscription_warning: "If a charge to your credit card is not successful within 5 days, your subscription to %{product} will be canceled."
-      subscription_charge_blocked_location:
-        subscription_subject: "Your membership could not be renewed."
-        installment_subject: "Your installment payment could not be processed."
-        installment_body_1: "We were not able to process the latest payment for your installment plan for %{product}. The address on it is in a location that United States sanctions prevent us from processing payments to or from, so no charge was attempted and there is nothing wrong with your card."
-        installment_body_2_html: "If that address is out of date, %{link} and the next payment will go through normally."
-        installment_body_3_html: "Otherwise your installment plan for %{product} will be paused within 5 days and you will lose access to the product. You can read more about %{why_link}."
-        installment_update_link: "update it from your installment plan"
-        subscription_body_1: "We were not able to process the latest payment for your membership to %{product}. The address on it is in a location that United States sanctions prevent us from processing payments to or from, so no charge was attempted and there is nothing wrong with your card."
-        subscription_body_2_html: "If that address is out of date, %{link} and the next payment will go through normally."
-        subscription_body_3_html: "Otherwise your membership to %{product} will be canceled within 5 days. You can read more about %{why_link}."
-        subscription_update_link: "update it from your membership"
-        why_declined_link: "why a payment can be declined"
-      subscription_product_deleted:
-        subscription_subject: "Your subscription has been canceled."
-        installment_subject: "Your installment plan has been canceled."
-        installment_body: "Your installment plan for %{product} has been canceled due to the creator deleting the product. You will no longer be charged."
-        subscription_body: "Your subscription to %{product} has been canceled due to the creator deleting the product. You will no longer be charged."
-      subscription_ended:
-        subscription_subject: "Your subscription has ended."
-        installment_subject: "Your installment plan has been paid in full."
-        installment_header: "Your installment plan has been paid in full."
-        subscription_header: "Your subscription has ended."
-        installment_body_1: "You have completed all your installment payments for %{product}. You will no longer be charged."
-        installment_body_2: "The product will remain in your library."
-        subscription_body: "Your subscription to %{product} has ended. You will no longer be charged, nor will you receive new content."
-        questions_contact_creator: "If you have any questions, please contact the creator."
-      subscription_price_change_notification:
-        subject: "Important changes to your membership"
-        header: "Important changes to your membership"
-        message_past_html: "The price of your membership to \"%{product}\" changed on %{date}.<br /><br />You will be charged the new price starting with your next billing period. You can modify or cancel your membership at any time."
-        message_future_html: "The price of your membership to \"%{product}\" is changing on %{date}.<br /><br />You can modify or cancel your membership at any time."
-        plus_taxes: "(plus taxes)"
-        product_label: "Product"
-        new_price_label: "New price"
-        previous_price_label: "Previous price"
-        next_payment_date_label: "Next payment date"
-        payment_method_label: "Payment method"
-        manage_subscription_button: "Manage your subscription"
-      subscription_early_fraud_warning_notification:
-        subject: "Regarding your recent purchase reported as fraud"
-        body_1: "You recently reported as fraud the transaction for your purchase of %{product} for %{price}, made on %{date}. A receipt was sent to %{email} — please check your Spam folder if you are unable to locate it."
-        body_2: "If you reported this purchase because you didn't recognize \"GUMRD.COM\" on your account statement, or if you didn't report this purchase, you can contact your bank to cancel the report."
-        body_manage_html: "If you would like to manage your membership you can visit %{link}."
-      subscription_giftee_added_card:
-        subject: "Your gift membership for %{product} has been updated"
-      rental_expiring_soon:
-        subject: "Your rental will expire in %{time}"
-        body_intro: "Hey there"
-        body_html: "<p>Hey there,</p><p>Your rental of %{product} will expire in %{time}. After that, you'll have to rent the title again to watch it. Don't miss out!</p>"
-        watch_now: "Watch now"
-      preorder_card_declined:
-        subject: "Could not charge your credit card for %{product}"
-        header: "Could not charge your credit card for %{product}"
-        body_html: "%{product} was released today and we attempted to charge your credit card but it was declined. You can purchase the product directly %{link}."
-      preorder_cancelled:
-        subject: "Your pre-order has been canceled."
-        header: "Your pre-order has been canceled."
-        body: "The creator canceled your pre-order of %{product}. You will not be charged."
-      order_shipped:
-        subject: "Your order has shipped!"
-        header: "Your order has shipped!"
-        body_tracking: "Your order of %{product} is en route and should arrive soon."
-        destination: "Destination: %{host}"
-        body_no_tracking: "Your order of %{product} has been shipped and should arrive soon."
-        questions_reply: "If you have any questions about the status of the shipment, you can reach out by replying to this email."
-      blocked_purchase_resolved:
-        subject: "Your payment issue has been resolved"
-        header: "Your payment issue has been resolved"
-        body_with_product_html: "We recently reviewed a payment issue on our side that stopped your purchase of %{link} from going through. It has been fixed."
-        body_without_product: "We recently reviewed a payment issue on our side that stopped a recent purchase of yours from going through. It has been fixed."
-        body_reassurance: "You did nothing wrong — this was our mistake, and we're sorry for the trouble. If you'd still like the product, you can try your purchase again now and it should go through as normal."
-      chargeback_notice_to_customer:
-        subject: "Regarding your recent dispute."
-        header: "Regarding your recent dispute."
-        disputed_items: "the following items"
-        body_1: "You recently filed a dispute for your purchase of %{product} for %{amount}. A receipt was sent to %{email} — please check your Spam folder if you are unable to locate it."
-        body_2: "If you filed this dispute because you didn't recognize \"%{statement_descriptor}\" on your account statement, you can contact your bank to cancel the dispute."
-      credit_card_expiring_membership:
-        subject: "Payment method for %{product} is about to expire"
-        header: "Payment method for %{product} is about to expire"
-        greeting: "Hi there"
-        body: "This is a reminder that your card ending in '%{last4}' expires on %{month}. To continue your %{product} subscription, please update your card information."
-        manage_button: "Manage subscription"
-        or_click_here: "Or you can click here"
-        why_heading: "Why am I getting this?"
-        why_body: "You created an account on %{app_name} and elected to save your card info on file. Keeping it up to date will help you keep future purchases speedy and smooth."
-      free_trial_expiring_soon:
-        subject: "Your free trial is ending soon"
-        header: "Your free trial is ending soon"
-        body_html: "Your free trial to %{product} is expiring on %{date}, at which point you will be charged. If you wish to cancel your membership, you can do so at any time %{link}."
-      bundle_content_updated:
-        subject: "%{seller} just added content to %{product}"
-        header: "%{seller} just added content to %{product}"
-        body: "Get excited! %{seller} just added new content to %{product}. You can access it by visiting your library or clicking the button below."
-        view_content_button: "View content"
-      purchase_review_reminder:
-        subject: "Liked %{product}? Give it a review!"
-        header: "Liked %{product}? Give it a review!"
-        body_greeting: "Hi%{name}"
-        body_message: "Hope you're getting great value from %{product}. We'd love to hear your thoughts on it. When you have a moment, could you drop us a quick review?"
-        thank_you: "Thank you for your contribution!"
-        leave_review: "Leave a review"
-      order_review_reminder:
-        subject: "Liked your order? Leave some reviews!"
-        header: "Liked your order? Leave some reviews!"
-        body_greeting: "Hi%{name}"
-        body_message: "Hope you're getting great value from your order. We'd love to hear your thoughts on it. When you have a moment, could you drop us some reviews?"
-        thank_you: "Thank you for your contribution!"
-        leave_reviews: "Leave reviews"
-      wishlist_updated:
-        subject_single: "%{user} recently added a new product to their wishlist!"
-        subject_multiple: "%{user} recently added %{count} new products to their wishlist!"
-        header_single: "%{user} recently added a new product to their wishlist!"
-        header_multiple: "%{user} recently added %{count} new products to their wishlist!"
-        view_content: "View content"
-        future_updates_note: "You'll get updates from this wishlist in the future."
-      already_subscribed_checkout_attempt:
-        subject: "Someone tried to purchase a membership you already have"
-        greeting: "Hey there"
-        body_1: "Someone just tried to purchase a membership to %{product} using your email address, but you already have an active subscription."
-        body_2_html: "If this was you, no worries! Your existing membership is still active and you don't need to do anything. You can %{link} at any time."
-        manage_link: "manage your subscription here"
-        body_3: "If you didn't try to make this purchase, you can safely ignore this email."
-    subscription_renewal_reminder:
-      membership_subject: "Upcoming automatic membership renewal"
-      installment_subject: "Upcoming installment payment reminder"
-      membership_body: "This is a reminder that your membership to \"%{product}\" will automatically renew on %{date}."
-      installment_body: "This is a reminder that your next installment payment of %{price} for %{product} will be charged on %{date}."
-      paying: "You're paying %{price}."
-      questions: "Questions about your product?"
-      contact_seller: "Contact %{seller} by replying to this email"
-    receipt:
-      subject: "Your receipt for %{product}"
-      thank_you: "Thank you for your purchase!"
-      order_number: "Order #%{order_id}"
-    two_factor_authentication:
-      authentication_token:
-        subject: "Your authentication token is %{token}"
-        header: "Two-Factor Authentication"
-        instruction: "We have detected a new login to your %{app_name} account. Please enter this authentication token in the challenge page to continue:"
-        action_notice: "You can also click the following button to continue with your login."
-        action: "Login"
-        expires_in: "This authentication token and login link will expire in %{time}."
-  flash:
-    checkout:
-      something_went_wrong: "Sorry, something went wrong. Please try again."
-      cart_product_limit: "You cannot add more than %{count} products to the cart."
-      product_missing: "A product in your cart is missing. Refresh the page and try again."
-      login_required: "Please log in to complete checkout."
-    invoices:
-      paypal_pending: "Your purchase has not been completed yet. Please try again soon."
-      address_required: "Address information is required to generate an invoice."
-      downloaded_automatically: "The invoice will be downloaded automatically."
-      gst_refunded: "GST has also been refunded."
-      qst_refunded: "QST has also been refunded."
-      service_tax_refunded: "Service tax has also been refunded."
-      ct_refunded: "CT has also been refunded."
-      vat_refunded: "VAT has also been refunded."
-      something_went_wrong: "Sorry, something went wrong."
-      enter_email: "Please enter the purchase's email address to generate the invoice."
-      incorrect_email: "Incorrect email address. Please try again."
-    purchases:
-      payment_processing: "Your payment is currently being processed. Please refresh in a moment."
-      verification_failed: "Payment verification could not be completed. Please contact support."
-      wrong_email: "Wrong email. Please try again."
-      data_request_sent: "You will receive an email in your inbox with the data you've requested shortly."
-    library:
-      product_archived: "Product archived!"
-      product_unarchived: "Product unarchived!"
-      product_removed: "Removed from your library!"
-      confirm_email_warning: "Please check your email to confirm your address before you can see that."
-    subscriptions:
-      cancelled: "Your %{entity} has been cancelled."
-      payment_initiate_failed: "Unable to initiate payment: %{error}"
-      magic_link_sent: "Magic link sent to %{email}"
-    passwords:
-      reset_sent: "Password reset sent! Please make sure to check your spam folder."
-      reset_success: "Your password has been reset."
-      reset_two_factor: "Your password has been reset. Please complete two-factor authentication to continue."
-      reset_logged_in: "Your password has been reset, and you're now logged in."
-      account_not_found: "An account does not exist with that email."
-      invalid_token: "That reset password token doesn't look valid (or may have expired)."
-      passwords_do_not_match: "Those two passwords didn't match."
-    two_factor:
-      token_resent: "Resent the authentication token, please check your inbox."
-      token_sent: "Authentication token sent to %{email}."
-      logged_in: "Successfully logged in!"
-      cannot_resend: "Cannot resend token for authenticator app."
-      session_expired: "Your login session expired. Please sign in again."
-      invalid_token: "Invalid token, please try again."
-    users:
-      purchase_success: "Your purchase was successful! We sent a receipt to %{email}."
-      unsubscribed_purchases: "You have been unsubscribed from purchase notifications."
-      unsubscribed_sales: "You have been unsubscribed from weekly sales updates."
-      unsubscribed_announcements: "You have been unsubscribed from %{app_name} announcements."
-      account_deleted: "Your account has been successfully deleted. Thank you for using %{app_name}."
+    apply: Apply
+    back: Back
+    buy_now: Buy Now
+    cancel: Cancel
+    close: Close
+    confirm: Confirm
+    confirm_and_save: Confirm and save
+    continue_shopping: Continue shopping
+    continue_without_adding: Continue without adding
+    dont_upgrade: Don't upgrade
+    download: Download
+    edit: Edit
+    get_access: Get access
+    installment_plan: installment plan
+    learn_more: Learn more
+    manage_installment_plan: Manage installment plan
+    manage_membership: Manage membership
+    membership: membership
+    no_cancel: No, cancel
+    pay: Pay
+    pay_with_chapa: Pay with Chapa
+    remove: Remove
+    renew: Renew
+    renew_subscription: Renew Subscription
+    save: Save
+    save_changes: Save changes
+    saving: Saving...
+    sign_up: Sign up
+    signing_up: Signing up...
+    switch_language: Switch language
+    upgrade: Upgrade
+    uploading: Uploading...
+    view: View
+    yes_reset: Yes, reset
   activerecord:
     errors:
       models:
-        purchase:
-          attributes:
-            base:
-              card_charge_failed: "We couldn't charge your card. Try again or use a different card."
-              invalid_quantity: "Sorry, you've selected an invalid quantity."
-              location_unavailable: "Sorry, this item is not available in your location."
-              discount_invalid: "Sorry, the discount code you wish to use is invalid."
-              discount_inactive: "Sorry, the discount code you wish to use is inactive."
-              discount_limit_reached: "Sorry, the discount code you wish to use has reached its usage limit."
-              discount_existing_customers_only: "Sorry, this discount code is only for existing customers."
-              subscription_cancelled: "This subscription has been canceled."
-              price_changed: "The price just changed! Refresh the page for the updated price."
-              sold_out: "Sold out, please go back and pick another option."
-              quantity_exceeded: "You have chosen a quantity that exceeds what is available."
-              variants_changed: "The product's variants have changed, please refresh the page!"
-              not_for_sale: "This product is not currently for sale."
-              card_uncharged: "Your card was not charged."
-              preorder_already_made: "You have already pre-ordered this product. A confirmation has been emailed to you."
-              temporary_problem: "There is a temporary problem, please try again (your card was not charged)."
-              card_authorization_failed: "We couldn't authorize your card for this payment. Please try again or use a different payment method."
-              something_went_wrong: "Sorry, something went wrong."
-        credit_card:
-          attributes:
-            base:
-              temporary_problem: "There is a temporary problem, please try again (your card was not charged)."
         cart:
           attributes:
             base:
-              alive_cart_exists: "An alive cart already exists"
-  devise:
-    failure:
-      already_authenticated: "You are already signed in."
-      unauthenticated: "You need to sign in or sign up before continuing."
-      unconfirmed: "You have to confirm your email address before continuing."
-      locked: "Your account is locked."
-      invalid: "Invalid %{authentication_keys} or password."
-      not_found_in_database: "Invalid %{authentication_keys} or password."
-      timeout: "Your session expired. Please sign in again to continue."
-    sessions:
-      signed_in: "Signed in successfully."
-      signed_out: "Signed out successfully."
-      already_signed_out: "Signed out successfully."
-    passwords:
-      send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
-      updated: "Your password has been changed successfully. You are now signed in."
-      updated_not_active: "Your password has been changed successfully."
-    confirmations:
-      send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
-      confirmed: "Your email address has been successfully confirmed."
-    mailer:
-      confirmation_instructions:
-        subject: "Confirm your email address"
-        header: "Confirm your email address"
-        instruction: "Please confirm your account by clicking the button below."
-        action: "Confirm email"
-        or_click: "Or you can click here:"
-        ignore_notice: "If you didn't request this, please ignore this email. You won't get another one!"
-      reset_password_instructions:
-        subject: "Forgotten password request"
-        denied_subject: "Forgotten password request denied"
-        denied_header: "Forgotten password request denied."
-        denied_p1: "It seems you are trying to reset the password of a suspended account."
-        denied_p2: "This account was suspended because of a ToS violation."
-        header: "Forgotten password request"
-        instruction: "It seems you forgot the password for your %{app_name} account. You can change your password by clicking the button below:"
-        action: "Reset password"
-        or_click: "Or you can click here:"
-        ignore_notice: "If you didn't request this, please ignore this email. You won't get another one!"
-      email_changed:
-        subject: "Your %{app_name} account email is being changed"
-        header: "Your %{app_name} account email is being changed"
-        notification: "We're contacting you to notify that your %{app_name} account email is being changed from %{old_email} to %{new_email}."
-        support_notice: "If you did not make this change, please contact support immediately by replying to this email."
-        user_id: "User ID: %{user_id}"
-      unlock_instructions:
-        subject: "Unlock instructions"
-        header: "Unlock your account"
-        instruction: "Your account has been locked due to an excessive number of unsuccessful sign in attempts."
-        action: "Unlock my account"
-        or_click: "Or you can click here:"
-      password_change:
-        subject: "Password Changed"
-        header: "Your password has been changed"
-        notification: "We're contacting you to notify you that your password has been changed."
-        support_notice: "If you did not make this change, please contact support immediately."
-  errors:
-    amount_mismatch: "Amount mismatch detected"
-    currency_mismatch: "Currency must be ETB"
-    seller_suspended: "Seller account is suspended"
-    renewal_failed: "Subscription renewal failed"
-    card_declined: "Your card was declined. Please try another card or payment method."
-    card_declined_chapa: "Your card was declined. Please try another card or checkout with Chapa."
-    invalid_email: "Please enter a valid email address."
-    invalid_phone: "Please enter a valid phone number."
-    insufficient_funds: "Your card has insufficient funds. Please use a different card or payment method."
-    expired_card: "Your card has expired. Please use a valid card."
-    incorrect_cvc: "The security code (CVC) is incorrect. Please check and try again."
-    chapa_failure: "Chapa payment failed. Please try again or use another payment method."
-    chapa_cancel: "Chapa payment was cancelled. Please try again to complete your purchase."
-    generic_payment_error: "Payment failed. Please try again."
-  discover:
-    curated_for_you: "Curated for you"
-    trending: "On the market"
-    hot_and_new: "Hot and new products"
-    best_sellers: "Best selling products"
-    featured_products: "Featured products"
-    recommended: "Recommended"
-    wishlists_you_might_like: "Wishlists you might like"
-    wishlists_for_taxonomy: "Wishlists for %{taxonomy}"
-    tab_curated: "Curated"
-    tab_trending: "Trending"
-    tab_best_sellers: "Best Sellers"
-    tab_hot_and_new: "Hot & New"
-    showing_products: "Showing 1-%{count} of %{total} products"
-    no_products_found: "No products found"
-    filters: "Filters"
-    clear: "Clear"
-    sort_by: "Sort by"
-    sort_default: "Default"
-    sort_highest_rated: "Highest rated"
-    sort_hot_and_new: "Hot and new"
-    sort_most_reviewed: "Most reviewed"
-    sort_newest: "Newest"
-    sort_custom: "Custom"
-    sort_price_asc: "Price (Low to High)"
-    sort_price_desc: "Price (High to Low)"
-    tags: "Tags"
-    all_products: "All Products"
-    contains: "Contains"
-    price: "Price"
-    min_price: "Minimum price"
-    max_price: "Maximum price"
-    rating: "Rating"
-    and_up: "and up"
-    stars_and_up:
-      one: "%{count} star and up"
-      other: "%{count} stars and up"
-    offer_code: "Offer code"
-    remove_offer_code_filter: "Remove offer code filter"
-    price_min_lower_than_max: "Please set the price minimum to be lower than the maximum."
-    show_more: "Show more"
-  library:
-    archive: "Archive"
-    unarchive: "Unarchive"
-    product_archived: "Product archived!"
-    product_unarchived: "Product unarchived!"
-    remove_from_library: "Remove from library"
-    removed_from_library: "Removed from your library!"
-    remove_confirm_title: "Remove %{name} from your library?"
-    remove_confirm_desc: "You keep access through your original download link, and our support team can put the card back if you change your mind."
-    empty_header: "You haven't bought anything... yet!"
-    empty_desc: "Once you do, it'll show up here so you can download, watch, read, or listen to all your purchases."
-    discover_products: "Discover products"
-    all_archived_header: "You've archived all your products."
-    see_archive: "See archive"
-    archived_notice:
-      one: "You have %{count} archived purchase. %{click_here}"
-      other: "You have %{count} archived purchases. %{click_here}"
-    click_here_to_view: "Click here to view"
-    showing_products: "Showing %{from}-%{to} of %{count} products"
-    no_products_found: "No products found"
-    search_products: "Search products"
-    sort_by: "Sort by"
-    recently_updated: "Recently Updated"
-    purchase_date: "Purchase Date"
-    bundles: "Bundles"
-    creator: "Creator"
-    all_creators: "All Creators"
-    show_more: "Show more"
-    show_archived_only: "Show archived only"
-    bundle_too_large: "%{label} is too large to download as one ZIP file. Download the products below individually."
-    bundle_failed: "We could not prepare a ZIP file for %{label}. Download the products below individually."
-    bundle_download_all_zip: "Download everything included in %{label} as one ZIP file."
-    download_all: "Download all"
-    preparing_zip: "Preparing ZIP"
-    purchase_successful_receipt_sent: "Your purchase was successful! We sent a receipt to %{email}."
+              alive_cart_exists: An alive cart already exists
+        credit_card:
+          attributes:
+            base:
+              temporary_problem: There is a temporary problem, please try again (your
+                card was not charged).
+        purchase:
+          attributes:
+            base:
+              card_authorization_failed: We couldn't authorize your card for this
+                payment. Please try again or use a different payment method.
+              card_charge_failed: We couldn't charge your card. Try again or use a
+                different card.
+              card_uncharged: Your card was not charged.
+              discount_existing_customers_only: Sorry, this discount code is only
+                for existing customers.
+              discount_inactive: Sorry, the discount code you wish to use is inactive.
+              discount_invalid: Sorry, the discount code you wish to use is invalid.
+              discount_limit_reached: Sorry, the discount code you wish to use has
+                reached its usage limit.
+              invalid_quantity: Sorry, you've selected an invalid quantity.
+              location_unavailable: Sorry, this item is not available in your location.
+              not_for_sale: This product is not currently for sale.
+              preorder_already_made: You have already pre-ordered this product. A
+                confirmation has been emailed to you.
+              price_changed: The price just changed! Refresh the page for the updated
+                price.
+              quantity_exceeded: You have chosen a quantity that exceeds what is available.
+              sold_out: Sold out, please go back and pick another option.
+              something_went_wrong: Sorry, something went wrong.
+              subscription_cancelled: This subscription has been canceled.
+              temporary_problem: There is a temporary problem, please try again (your
+                card was not charged).
+              variants_changed: The product's variants have changed, please refresh
+                the page!
+  admin:
+    activity_log: Activity Log
+    creators: Creators
+    customers: Customers
+    exit_to_storefront: Exit to Storefront
+    marketing: Marketing
+    orders: Orders
+    overview: Overview
+    payouts: Payouts
+    products: Products
+    reports: Reports
+    subscriptions: Subscriptions
+    team: Team
+    title: Admin Portal
+  checkout:
+    accept_terms_error: Please accept the Terms and Conditions.
+    accept_terms_prefix: I accept
+    add_tip: Add a tip?
+    after: after
+    already_own_title: You already own this
+    bundle_contains: This bundle contains...
+    buy_again: Buy again
+    buy_again_prompt: Do you want to buy %{product} again?
+    cancel_gift_option: Cancel gift option
+    card_information: Card information
+    card_label: Card
+    card_number: Card number
+    city: City
+    confirm_tip: Yes, leave tip
+    confirm_tip_title: Confirm tip amount
+    country: Country
+    county: County
+    currency_detected: detected
+    currency_label: Currency
+    currency_unsupported: We can't charge this cart in %{currency}, so the total is
+      in %{fallbackCurrency}
+    custom_tip: Custom tip
+    customers_also_bought: Customers who bought %{items} also bought
+    cvc_placeholder: CVC
+    did_you_mean_email: Did you mean %{email}?
+    discount_code: Discount code
+    discounts: Discounts
+    discover_products: Discover products
+    edit_tip: Edit tip
+    email_address: Email address
+    empty_cart_desc: Once you do, it'll show up here so you can complete your purchases.
+    empty_cart_title: You haven't added anything...yet!
+    enter_full_name_prompt: Please enter your full name.
+    expires_placeholder: MM / YY
+    failed: Payment failed
+    field_required: This field is required.
+    free_trial_duration:
+      one: "%{count} %{unit} free"
+      other: "%{count} %{unit}s free"
+    full_name: Full name
+    future_installments: Future installments
+    gift_email_hidden: "%{name}'s email has been hidden for privacy purposes."
+    gift_membership_note: 'Note: Free trials will be charged immediately. The membership
+      will not auto-renew. The recipient must update the payment method to renew the
+      membership.'
+    gift_message_placeholder: A personalized message (optional)
+    gift_note_label: Gift note
+    give_as_gift: Give as a gift?
+    in_installments: in %{count} installments
+    invalid_shipping_format: The shipping address you have entered is in an invalid
+      format.
+    item_already_in_cart: You already have this item in your cart.
+    item_count:
+      one: "%{count} item"
+      other: "%{count} items"
+    loading_payment_options: Loading payment options...
+    max_products_limit: You cannot add more than %{count} products to the cart.
+    message: Message
+    name_required_for_method: Please enter your full name — it's required for this
+      payment method.
+    no_tip: No Tip
+    note_placeholder: Add a personal note (optional)
+    one_time_payment: One-time payment
+    optional_suffix: "(optional)"
+    pay_now: Pay Now
+    pay_with: Pay with
+    payment_after_completion: Payment after completion
+    payment_failed_uncharged: Sorry, something went wrong. You were not charged.
+    payment_form_aria: Payment form
+    payment_method: Payment method
+    payment_processing_full: Your payment is being processed — check your email for
+      your receipt. Please do not pay again.
+    payment_processing_partial: Part of your payment is being processed — check your
+      email for its receipt. The items that couldn't be charged are still in your
+      cart to try again.
+    payment_today: Payment today
+    pending: Payment pending verification
+    phone_number: Phone number
+    postal_code: Postal
+    ppp_discount: Purchasing power parity discount
+    ppp_greater_all: The offer code will not be applied because the purchasing power
+      parity discount is greater than the offer code discount for all products.
+    ppp_greater_some: The offer code will not be applied to some products for which
+      the purchasing power parity discount is greater than the offer code discount.
+    ppp_tooltip: This discount is applied based on the cost of living in your country.
+    price: Price
+    processing: Processing payment with Chapa...
+    processing_pending_desc: Check your email for your receipt — it will arrive once
+      the payment completes. Please do not pay again. This page updates automatically.
+    processing_pending_title: Your payment is being processed
+    province: Province
+    quantity: Quantity
+    quantity_short: 'Qty:'
+    recipient_email: Recipient email
+    recipient_email_placeholder: Recipient email address
+    redirecting: Redirecting to Chapa checkout...
+    reset_gift_message: You are about to switch off the gift option. To gift this
+      wishlist again, you will need to return to the wishlist page and select "Gift
+      this product".
+    reset_gift_title: Reset gift option?
+    retry_price_update: Retry price update
+    save_address_for_future: Save address for future purchases
+    save_card_for_future: Save card for future purchases
+    save_shipping_address_title: Save shipping address to account
+    saved_credit_card: Saved credit card
+    security_check_failed: We couldn't complete the security check. Please try again
+      to finish your purchase.
+    send_at_scheduled_date: Schedule for later
+    send_immediately: Send immediately
+    shipping: Shipping
+    shipping_information: Shipping information
+    shipping_rate: Shipping rate
+    something_went_wrong_retry: Sorry, something went wrong. Please try again.
+    standard_shipping: Standard Shipping
+    state: State
+    stay_anonymous: Stay anonymous to the recipient
+    street_address: Street address
+    subtotal: Subtotal
+    successful: Payment successful!
+    tax_included: "%{tax} (included)"
+    terms_and_conditions: Terms and Conditions
+    terms_prefix: I agree to the
+    terms_suffix: terms
+    test_purchase_notice: This will be a test purchase as you are the creator of at
+      least one of the products. Your payment method will not be charged.
+    these_items: these items
+    this_item: this item
+    time_short: 'Time:'
+    tip: Tip
+    tip_confirmation_message: You're about to leave a tip of %{tip} on a %{price}
+      purchase. Are you sure?
+    title: Checkout
+    total: Total
+    total_changed_billing_address: Your total changed after applying your payment
+      method's billing address. Please review the updated total and try again.
+    updating_total: Updating total…
+    use_different_card: Use a different card?
+    use_saved_card: Use saved card
+    valid_email_prompt: Please provide a valid email address.
+    zip_code: ZIP code
+  common:
+    date: Date
+    'false': 'No'
+    free: Free
+    here: here
+    loading: Loading...
+    optional: optional
+    or: or
+    other: Other
+    something_went_wrong: Something went wrong.
+    time: Time
+    'true': 'Yes'
   content:
-    download_all: "Download all"
-    download_as_zip: "Download as ZIP"
-    save_to_dropbox: "Save to Dropbox"
-    watch: "Watch"
-    watch_again: "Watch again"
-    play: "Play"
-    play_again: "Play again"
-    read: "Read"
-    read_again: "Read again"
-    open: "Open"
-    send_to_kindle: "Send to Kindle"
-    send_to_kindle_instruction: "You'll need to add %{kindle_email} to your %{approved_emails_link}."
+    access_expired_desc: It looks like your access to this product has expired. Please
+      contact the creator for further assistance.
+    access_expired_title: Access expired
+    add_to_library: Add to library
+    add_to_library_prompt: 'Access this product from anywhere, forever:'
+    adding_to_library: Adding...
+    back_to_library: Back to Library
+    confirm_email: Confirm email
+    confirm_email_gift_desc: Enter the email address this gift was sent to, and you'll
+      be able to access it.
+    confirm_email_gift_title: Confirm your email to access this gift
+    confirm_email_viewed_desc: Once you enter the email address used to purchase this
+      product, you'll be able to access it again.
+    confirm_email_viewed_title: You've viewed this product a few times already
+    confirming: Confirming...
+    create_account: Create
+    create_account_prompt: Create an account to access all of your purchases anytime.
+    creating_account: Creating...
+    download_all: Download all
+    download_as_zip: Download as ZIP
+    email_address: Email address
+    generate_invoice: Generate invoice
+    installment_inactive_desc: You cannot access the content of %{product} because
+      your installment plan is no longer active.
+    installment_inactive_title: Your installment plan is inactive
+    installment_plan_paid_full: This installment plan has been paid in full.
+    installment_update_payment_desc: Please update your payment method to continue
+      accessing the content of %{product}.
+    manage: Manage
+    membership_inactive_desc: You cannot access the content of %{product} because
+      your membership is no longer active.
+    membership_inactive_title: Your membership is inactive
+    open: Open
     page_count:
       one: "%{count} page"
       other: "%{count} pages"
-    confirm_email_gift_title: "Confirm your email to access this gift"
-    confirm_email_gift_desc: "Enter the email address this gift was sent to, and you'll be able to access it."
-    confirm_email_viewed_title: "You've viewed this product a few times already"
-    confirm_email_viewed_desc: "Once you enter the email address used to purchase this product, you'll be able to access it again."
-    email_address: "Email address"
-    confirm_email: "Confirm email"
-    confirming: "Confirming..."
-    access_expired_title: "Access expired"
-    access_expired_desc: "It looks like your access to this product has expired. Please contact the creator for further assistance."
-    rental_expired_title: "Your rental has expired"
-    rental_expired_desc: "Rentals expire 30 days after purchase or 72 hours after you've begun watching it."
-    membership_inactive_title: "Your membership is inactive"
-    membership_inactive_desc: "You cannot access the content of %{product} because your membership is no longer active."
-    installment_inactive_title: "Your installment plan is inactive"
-    installment_update_payment_desc: "Please update your payment method to continue accessing the content of %{product}."
-    installment_inactive_desc: "You cannot access the content of %{product} because your installment plan is no longer active."
-    resubscribe: "Resubscribe"
-    update_payment_method: "Update payment method"
-    add_to_library_prompt: "Access this product from anywhere, forever:"
-    add_to_library: "Add to library"
-    adding_to_library: "Adding..."
-    create_account_prompt: "Create an account to access all of your purchases anytime."
-    your_password: "Your password"
-    create_account: "Create"
-    creating_account: "Creating..."
-    terms_agreement: "You agree to our %{terms_of_use}."
-    terms_of_use: "Terms Of Use"
-    receipt_resent: "Receipt resent"
-    view_receipt: "View receipt"
-    resending_receipt: "Resending receipt..."
-    generate_invoice: "Generate invoice"
-    installment_plan_paid_full: "This installment plan has been paid in full."
-    subscription_ended: "This subscription has ended."
-    restart: "Restart"
-    manage: "Manage"
-    back_to_library: "Back to Library"
+    play: Play
+    play_again: Play again
+    read: Read
+    read_again: Read again
+    receipt_resent: Receipt resent
+    rental_expired_desc: Rentals expire 30 days after purchase or 72 hours after you've
+      begun watching it.
+    rental_expired_title: Your rental has expired
+    resending_receipt: Resending receipt...
+    restart: Restart
+    resubscribe: Resubscribe
+    save_to_dropbox: Save to Dropbox
+    send_to_kindle: Send to Kindle
+    send_to_kindle_instruction: You'll need to add %{kindle_email} to your %{approved_emails_link}.
+    subscription_ended: This subscription has ended.
+    terms_agreement: You agree to our %{terms_of_use}.
+    terms_of_use: Terms Of Use
+    update_payment_method: Update payment method
+    view_receipt: View receipt
+    watch: Watch
+    watch_again: Watch again
+    your_password: Your password
+  currency:
+    code: ETB
+    minor_unit: santim
+    minor_units: santims
+    name: Ethiopian Birr
+    symbol: ETB
+  date:
+    abbr_day_names:
+    - Sun
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    abbr_month_names:
+    -
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - May
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
+    day_names:
+    - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    formats:
+      abbrev_month: "%b %-d, %Y"
+      default: "%Y-%m-%d"
+      full_month: "%B %-d, %Y"
+      long: "%B %e, %Y"
+      short: "%b %d"
+    month_names:
+    -
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
+    order:
+    - :year
+    - :month
+    - :day
+  devise:
+    confirmations:
+      confirmed: Your email address has been successfully confirmed.
+      send_instructions: You will receive an email with instructions for how to confirm
+        your email address in a few minutes.
+    failure:
+      already_authenticated: You are already signed in.
+      invalid: Invalid %{authentication_keys} or password.
+      locked: Your account is locked.
+      not_found_in_database: Invalid %{authentication_keys} or password.
+      timeout: Your session expired. Please sign in again to continue.
+      unauthenticated: You need to sign in or sign up before continuing.
+      unconfirmed: You have to confirm your email address before continuing.
+    mailer:
+      confirmation_instructions:
+        action: Confirm email
+        header: Confirm your email address
+        ignore_notice: If you didn't request this, please ignore this email. You won't
+          get another one!
+        instruction: Please confirm your account by clicking the button below.
+        or_click: 'Or you can click here:'
+        subject: Confirm your email address
+      email_changed:
+        header: Your %{app_name} account email is being changed
+        notification: We're contacting you to notify that your %{app_name} account
+          email is being changed from %{old_email} to %{new_email}.
+        subject: Your %{app_name} account email is being changed
+        support_notice: If you did not make this change, please contact support immediately
+          by replying to this email.
+        user_id: 'User ID: %{user_id}'
+      password_change:
+        header: Your password has been changed
+        notification: We're contacting you to notify you that your password has been
+          changed.
+        subject: Password Changed
+        support_notice: If you did not make this change, please contact support immediately.
+      reset_password_instructions:
+        action: Reset password
+        denied_header: Forgotten password request denied.
+        denied_p1: It seems you are trying to reset the password of a suspended account.
+        denied_p2: This account was suspended because of a ToS violation.
+        denied_subject: Forgotten password request denied
+        header: Forgotten password request
+        ignore_notice: If you didn't request this, please ignore this email. You won't
+          get another one!
+        instruction: 'It seems you forgot the password for your %{app_name} account.
+          You can change your password by clicking the button below:'
+        or_click: 'Or you can click here:'
+        subject: Forgotten password request
+      unlock_instructions:
+        action: Unlock my account
+        header: Unlock your account
+        instruction: Your account has been locked due to an excessive number of unsuccessful
+          sign in attempts.
+        or_click: 'Or you can click here:'
+        subject: Unlock instructions
+    passwords:
+      send_instructions: You will receive an email with instructions on how to reset
+        your password in a few minutes.
+      updated: Your password has been changed successfully. You are now signed in.
+      updated_not_active: Your password has been changed successfully.
+    sessions:
+      already_signed_out: Signed out successfully.
+      signed_in: Signed in successfully.
+      signed_out: Signed out successfully.
+  discover:
+    all_products: All Products
+    and_up: and up
+    best_sellers: Best selling products
+    clear: Clear
+    contains: Contains
+    curated_for_you: Curated for you
+    featured_products: Featured products
+    filters: Filters
+    hot_and_new: Hot and new products
+    max_price: Maximum price
+    min_price: Minimum price
+    no_products_found: No products found
+    offer_code: Offer code
+    price: Price
+    price_min_lower_than_max: Please set the price minimum to be lower than the maximum.
+    rating: Rating
+    recommended: Recommended
+    remove_offer_code_filter: Remove offer code filter
+    show_more: Show more
+    showing_products: Showing 1-%{count} of %{total} products
+    sort_by: Sort by
+    sort_custom: Custom
+    sort_default: Default
+    sort_highest_rated: Highest rated
+    sort_hot_and_new: Hot and new
+    sort_most_reviewed: Most reviewed
+    sort_newest: Newest
+    sort_price_asc: Price (Low to High)
+    sort_price_desc: Price (High to Low)
+    stars_and_up:
+      one: "%{count} star and up"
+      other: "%{count} stars and up"
+    tab_best_sellers: Best Sellers
+    tab_curated: Curated
+    tab_hot_and_new: Hot & New
+    tab_trending: Trending
+    tags: Tags
+    trending: On the market
+    wishlists_for_taxonomy: Wishlists for %{taxonomy}
+    wishlists_you_might_like: Wishlists you might like
+  disputes:
+    add_to_response: Add to your response
+    additional_evidence_prompt: Do you have additional evidence you'd like to provide?
+    attaching_files:
+      one: You are attaching %{count} file, in addition to the file you already saved.
+      other: You are attaching %{count} files, in addition to the file you already
+        saved.
+    confirm_and_save: Confirm and save
+    confirm_save_title: Save your response?
+    customer_disputed_multiple: 'A customer of yours (%{email}) has disputed their
+      purchase made on %{date} of the following %{count} items for %{amount}:'
+    customer_disputed_single: 'A customer of yours (%{email}) has disputed their purchase
+      made on %{date} of %{product} for %{amount}:'
+    deadline_note: Our payment processor accepts one submission per dispute, so we
+      hold your response and send it at the deadline. Come back any time before then
+      to add files or revise what you wrote — after the deadline nothing more can
+      be added, not even by contacting support.
+    deadline_reminder: We send this to our payment processor at the deadline, not
+      now, so you can come back and add to it until then.
+    no_files_attached: You have not attached any files. You can add them here any
+      time before the deadline.
+    save_response: Save response
+    saved_file_stays: Your previously saved file stays attached. You can add more
+      here any time before the deadline.
+    saved_response_note: Your saved response is filled in below. Change whatever you
+      want and save again — saving replaces the fields you fill in and leaves the
+      rest as they are.
+    saved_success: Thank you! We've saved your response.
+    sent_at_deadline: We send it to our payment processor at the deadline. Until then
+      you can come back and add files or revise what you wrote.
+    sent_at_deadline_date: We send it to our payment processor at the deadline, %{date}.
+      Until then you can come back and add files or revise what you wrote.
+    submit_additional_info: Submit additional information
+    title: Dispute evidence
+    upload_communication: Upload customer communication
+    upload_help: Any communication with the customer that you feel is relevant to
+      your case (emails, chats, etc. proving that they received the product or service,
+      or screenshots demonstrating their use of or satisfaction with the product or
+      service). You can attach up to %{maxFiles} JPG, PNG, or PDF files, each under
+      %{maxSize}MB. We combine them into a single PDF in the order shown, so pick
+      them in the order you want them read.
+    why_not_entitled_refund: Why is the customer not entitled to a refund?
+    why_sub_not_cancelled: Why was the customer's subscription not canceled?
+    why_win: Why should you win this dispute?
+  errors:
+    amount_mismatch: Amount mismatch detected
+    card_declined: Your card was declined. Please try another card or payment method.
+    card_declined_chapa: Your card was declined. Please try another card or checkout
+      with Chapa.
+    chapa_cancel: Chapa payment was cancelled. Please try again to complete your purchase.
+    chapa_failure: Chapa payment failed. Please try again or use another payment method.
+    currency_mismatch: Currency must be ETB
+    expired_card: Your card has expired. Please use a valid card.
+    generic_payment_error: Payment failed. Please try again.
+    incorrect_cvc: The security code (CVC) is incorrect. Please check and try again.
+    insufficient_funds: Your card has insufficient funds. Please use a different card
+      or payment method.
+    invalid_email: Please enter a valid email address.
+    invalid_phone: Please enter a valid phone number.
+    renewal_failed: Subscription renewal failed
+    seller_suspended: Seller account is suspended
+  flash:
+    checkout:
+      cart_product_limit: You cannot add more than %{count} products to the cart.
+      login_required: Please log in to complete checkout.
+      product_missing: A product in your cart is missing. Refresh the page and try
+        again.
+      something_went_wrong: Sorry, something went wrong. Please try again.
+    invoices:
+      address_required: Address information is required to generate an invoice.
+      ct_refunded: CT has also been refunded.
+      downloaded_automatically: The invoice will be downloaded automatically.
+      enter_email: Please enter the purchase's email address to generate the invoice.
+      gst_refunded: GST has also been refunded.
+      incorrect_email: Incorrect email address. Please try again.
+      paypal_pending: Your purchase has not been completed yet. Please try again soon.
+      qst_refunded: QST has also been refunded.
+      service_tax_refunded: Service tax has also been refunded.
+      something_went_wrong: Sorry, something went wrong.
+      vat_refunded: VAT has also been refunded.
+    library:
+      confirm_email_warning: Please check your email to confirm your address before
+        you can see that.
+      product_archived: Product archived!
+      product_removed: Removed from your library!
+      product_unarchived: Product unarchived!
+    passwords:
+      account_not_found: An account does not exist with that email.
+      invalid_token: That reset password token doesn't look valid (or may have expired).
+      passwords_do_not_match: Those two passwords didn't match.
+      reset_logged_in: Your password has been reset, and you're now logged in.
+      reset_sent: Password reset sent! Please make sure to check your spam folder.
+      reset_success: Your password has been reset.
+      reset_two_factor: Your password has been reset. Please complete two-factor authentication
+        to continue.
+    purchases:
+      data_request_sent: You will receive an email in your inbox with the data you've
+        requested shortly.
+      payment_processing: Your payment is currently being processed. Please refresh
+        in a moment.
+      verification_failed: Payment verification could not be completed. Please contact
+        support.
+      wrong_email: Wrong email. Please try again.
+    subscriptions:
+      cancelled: Your %{entity} has been cancelled.
+      magic_link_sent: Magic link sent to %{email}
+      payment_initiate_failed: 'Unable to initiate payment: %{error}'
+    two_factor:
+      cannot_resend: Cannot resend token for authenticator app.
+      invalid_token: Invalid token, please try again.
+      logged_in: Successfully logged in!
+      session_expired: Your login session expired. Please sign in again.
+      token_resent: Resent the authentication token, please check your inbox.
+      token_sent: Authentication token sent to %{email}.
+    users:
+      account_deleted: Your account has been successfully deleted. Thank you for using
+        %{app_name}.
+      purchase_success: Your purchase was successful! We sent a receipt to %{email}.
+      unsubscribed_announcements: You have been unsubscribed from %{app_name} announcements.
+      unsubscribed_purchases: You have been unsubscribed from purchase notifications.
+      unsubscribed_sales: You have been unsubscribed from weekly sales updates.
+  library:
+    all_archived_header: You've archived all your products.
+    all_creators: All Creators
+    archive: Archive
+    archived_notice:
+      one: You have %{count} archived purchase. %{click_here}
+      other: You have %{count} archived purchases. %{click_here}
+    bundle_download_all_zip: Download everything included in %{label} as one ZIP file.
+    bundle_failed: We could not prepare a ZIP file for %{label}. Download the products
+      below individually.
+    bundle_too_large: "%{label} is too large to download as one ZIP file. Download
+      the products below individually."
+    bundles: Bundles
+    click_here_to_view: Click here to view
+    creator: Creator
+    discover_products: Discover products
+    download_all: Download all
+    empty_desc: Once you do, it'll show up here so you can download, watch, read,
+      or listen to all your purchases.
+    empty_header: You haven't bought anything... yet!
+    no_products_found: No products found
+    preparing_zip: Preparing ZIP
+    product_archived: Product archived!
+    product_unarchived: Product unarchived!
+    purchase_date: Purchase Date
+    purchase_successful_receipt_sent: Your purchase was successful! We sent a receipt
+      to %{email}.
+    recently_updated: Recently Updated
+    remove_confirm_desc: You keep access through your original download link, and
+      our support team can put the card back if you change your mind.
+    remove_confirm_title: Remove %{name} from your library?
+    remove_from_library: Remove from library
+    removed_from_library: Removed from your library!
+    search_products: Search products
+    see_archive: See archive
+    show_archived_only: Show archived only
+    show_more: Show more
+    showing_products: Showing %{from}-%{to} of %{count} products
+    sort_by: Sort by
+    unarchive: Unarchive
+  mailers:
+    common:
+      creator: Creator
+      powered_by: Powered by
+      seller: Seller
+      unsubscribe: Unsubscribe
+      view_content: View content
+      watch: Watch
+    customer:
+      abandoned_cart:
+        subject: You left something in your cart
+      already_subscribed_checkout_attempt:
+        body_1: Someone just tried to purchase a membership to %{product} using your
+          email address, but you already have an active subscription.
+        body_2_html: If this was you, no worries! Your existing membership is still
+          active and you don't need to do anything. You can %{link} at any time.
+        body_3: If you didn't try to make this purchase, you can safely ignore this
+          email.
+        greeting: Hey there
+        manage_link: manage your subscription here
+        subject: Someone tried to purchase a membership you already have
+      auto_invoice:
+        billing_settings_note_html: You'll receive this automatically with every purchase
+          as long as your billing details are on file. To change the invoice address,
+          business name, or turn this off, visit your <a href="%{url}">Billing settings</a>.
+        body_html: An invoice for your purchase from <strong>%{seller}</strong> is
+          attached as a PDF.
+        greeting: Hi
+        signoff_html: Thanks,<br>%{app_name}
+        subject: Your invoice from %{seller}
+      blocked_purchase_resolved:
+        body_reassurance: You did nothing wrong — this was our mistake, and we're
+          sorry for the trouble. If you'd still like the product, you can try your
+          purchase again now and it should go through as normal.
+        body_with_product_html: We recently reviewed a payment issue on our side that
+          stopped your purchase of %{link} from going through. It has been fixed.
+        body_without_product: We recently reviewed a payment issue on our side that
+          stopped a recent purchase of yours from going through. It has been fixed.
+        header: Your payment issue has been resolved
+        subject: Your payment issue has been resolved
+      bundle_content_updated:
+        body: Get excited! %{seller} just added new content to %{product}. You can
+          access it by visiting your library or clicking the button below.
+        header: "%{seller} just added content to %{product}"
+        subject: "%{seller} just added content to %{product}"
+        view_content_button: View content
+      chargeback_notice_to_customer:
+        body_1: You recently filed a dispute for your purchase of %{product} for %{amount}.
+          A receipt was sent to %{email} — please check your Spam folder if you are
+          unable to locate it.
+        body_2: If you filed this dispute because you didn't recognize "%{statement_descriptor}"
+          on your account statement, you can contact your bank to cancel the dispute.
+        disputed_items: the following items
+        header: Regarding your recent dispute.
+        subject: Regarding your recent dispute.
+      credit_card_expiring_membership:
+        body: This is a reminder that your card ending in '%{last4}' expires on %{month}.
+          To continue your %{product} subscription, please update your card information.
+        greeting: Hi there
+        header: Payment method for %{product} is about to expire
+        manage_button: Manage subscription
+        or_click_here: Or you can click here
+        subject: Payment method for %{product} is about to expire
+        why_body: You created an account on %{app_name} and elected to save your card
+          info on file. Keeping it up to date will help you keep future purchases
+          speedy and smooth.
+        why_heading: Why am I getting this?
+      files_ready_for_download:
+        body: Your files for %{product} are now ready for download.
+        click_below: 'Click the button below to access your files:'
+        header: Your files are ready for download!
+        subject: Your files are ready for download!
+      free_trial_expiring_soon:
+        body_html: Your free trial to %{product} is expiring on %{date}, at which
+          point you will be charged. If you wish to cancel your membership, you can
+          do so at any time %{link}.
+        header: Your free trial is ending soon
+        subject: Your free trial is ending soon
+      grouped_receipt:
+        subject: Receipts for Purchases
+      order_review_reminder:
+        body_greeting: Hi%{name}
+        body_message: Hope you're getting great value from your order. We'd love to
+          hear your thoughts on it. When you have a moment, could you drop us some
+          reviews?
+        header: Liked your order? Leave some reviews!
+        leave_reviews: Leave reviews
+        subject: Liked your order? Leave some reviews!
+        thank_you: Thank you for your contribution!
+      order_shipped:
+        body_no_tracking: Your order of %{product} has been shipped and should arrive
+          soon.
+        body_tracking: Your order of %{product} is en route and should arrive soon.
+        destination: 'Destination: %{host}'
+        header: Your order has shipped!
+        questions_reply: If you have any questions about the status of the shipment,
+          you can reach out by replying to this email.
+        subject: Your order has shipped!
+      partial_refund:
+        body: You received a partial refund of %{refund_amount} for your %{purchase_amount}
+          purchase of %{product}. It may take a few business days depending on your
+          bank or payment provider to show up in your account.
+        body_presentment: You received a partial refund of %{refund_amount} (%{usd_refund_amount}
+          USD) for your %{purchase_amount} purchase of %{product}. It may take a few
+          business days depending on your bank or payment provider to show up in your
+          account.
+        header: You have been %{refund_type} refunded.
+        subject: You have been %{refund_type} refunded.
+      paypal_purchase_failed:
+        body_intro: I'm part of the %{app_name} team, and we power the payment process
+          you tried to complete recently.
+        body_notification: I got a notification that you attempted to purchase %{product}
+          using PayPal, but it looks like the transaction ultimately did not go through.
+        body_pending_note: Sometimes your PayPal statement will say 'pending' even
+          in this scenario — rest assured, this will go away in a few days' time.
+        body_retry_note: 'Please try again by clicking here (if it still doesn''t
+          go through, please try with another credit card):'
+        greeting: Hi there
+        header: Your purchase with PayPal failed.
+        subject: Your purchase with PayPal failed.
+        try_again_button: Try purchasing again
+      preorder_cancelled:
+        body: The creator canceled your pre-order of %{product}. You will not be charged.
+        header: Your pre-order has been canceled.
+        subject: Your pre-order has been canceled.
+      preorder_card_declined:
+        body_html: "%{product} was released today and we attempted to charge your
+          credit card but it was declined. You can purchase the product directly %{link}."
+        header: Could not charge your credit card for %{product}
+        subject: Could not charge your credit card for %{product}
+      preorder_receipt:
+        body_digital: You have successfully pre-ordered %{product}. The product is
+          set to release on %{date}.
+        body_physical: You have successfully pre-ordered %{product}. You'll be charged
+          on %{date}, and shipment will occur soon after.
+        contact_address_note: If you need to update your address, contact the creator
+          immediately with your updated address by replying to this email.
+        shipping_address: Shipping address
+        subject: You pre-ordered %{product}!
+      purchase_review_reminder:
+        body_greeting: Hi%{name}
+        body_message: Hope you're getting great value from %{product}. We'd love to
+          hear your thoughts on it. When you have a moment, could you drop us a quick
+          review?
+        header: Liked %{product}? Give it a review!
+        leave_review: Leave a review
+        subject: Liked %{product}? Give it a review!
+        thank_you: Thank you for your contribution!
+      receipt:
+        amount_on_date: "%{amount} on %{date}"
+        amount_paid: Amount paid
+        bundle: Bundle
+        call_link: Call link
+        call_schedule: Call schedule
+        contact_seller_at: Contact %{seller} at %{email}.
+        contact_seller_reply: Contact %{seller} by replying to this email.
+        credit_card_note: The charge will be listed as %{statement_descriptor} on
+          your credit card statement.
+        donation: Donation
+        duration: Duration
+        final_payment_note: This is the final payment. You will not be charged for
+          this product again.
+        footer_recurring_note: You'll be charged once %{recurrence}.
+        footer_single_charge_note: You won't be charged again for this membership.
+        free_trial_begun: Your free trial has begun!
+        gift_no_autorenew: Note that %{giftee}’s membership will not automatically
+          renew.
+        gift_received_body: bought this as a gift for you. We hope you like it!
+        gift_received_title: You've received a gift!
+        gift_sent_to: Gift sent to
+        gift_someone: Someone
+        giftee_subscription_note_html: Your gift includes a %{period} membership.
+          If you wish to continue your membership, you can visit %{settings_link}.
+        installment_final_charge: Your final charge will be on %{date}.
+        installment_plan_html: Installment plan initiated on %{date}. %{final_charge}
+          You can manage your payment settings %{here_link}.
+        installment_processed: We have successfully processed the installment payment
+          for %{product}.
+        license_key: License key
+        manage_membership_html: You will be charged once %{recurrence}. If you would
+          like to manage your membership you can visit %{settings_link}.
+        membership_paid_until: Membership paid for until
+        number_of_seats: Number of seats
+        order_date: Order date
+        order_id: Order ID
+        payment_info_title: Payment info
+        preorder_delivery_note: You'll get it on %{date}.
+        product_price: Product price
+        questions_about_product:
+          one: Questions about your product?
+          other: Questions about your products?
+        questions_and_contact: Questions about your product? Contact %{seller} by
+          replying to this email.
+        rental_note: Your rental of %{product} will expire in 30 days or 72 hours
+          after you begin viewing it.
+        shipment_preorder_note: The shipment will occur soon after %{date}.
+        shipment_shortly_note: Your order will ship shortly. The creator will notify
+          you when your package is on its way.
+        shipping_address: Shipping address
+        shipping_info: Shipping info
+        shipping_to: Shipping to
+        single_charge_membership_html: You will not be charged again for this membership.
+          Your membership ends on %{date}. If you would like to manage your membership
+          you can visit %{settings_link}.
+        subject_bought: You bought %{product}!
+        subject_bought_multiple: You bought %{first} and %{count} more products
+        subject_bought_two: You bought %{first} and %{second}
+        subject_commission_ready: "%{product} is ready for download!"
+        subject_gift_anonymous: Someone bought %{product} for you!
+        subject_gift_named: "%{gifter} bought %{product} for you!"
+        subject_gift_sent: You bought %{giftee} %{product}!
+        subject_got_free: You got %{product}!
+        subject_membership_upgraded: You've upgraded your membership for %{product}!
+        subject_recurring_charge: Recurring charge for %{product}.
+        subject_rented: You rented %{product}!
+        subject_subscribed: You've subscribed to %{product}!
+        subscription_processed: We have successfully processed the payment for your
+          recurring subscription to %{product}.
+        subscription_settings: subscription settings
+        test_purchase_warning: This was a test purchase — you have not been charged
+          (you are seeing this message because you are logged in as the creator).
+        thank_you_payment: Thank you for your payment!
+        tip: Tip
+        todays_payment: Today's payment
+        upcoming_payments:
+          one: Upcoming payment
+          other: Upcoming payments
+        usd_currency_note: All charges are processed in United States Dollars. Your
+          bank or financial institution may apply their own fees for currency conversion.
+        variant: Variant
+      refund:
+        body: Your purchase of %{product} for %{total} on %{app_name} has been fully
+          refunded. It may take a few business days depending on your bank or payment
+          provider to show up in your account.
+        body_presentment: Your purchase of %{product} for %{total} (%{usd_total} USD)
+          on %{app_name} has been fully refunded. It may take a few business days
+          depending on your bank or payment provider to show up in your account.
+        header: You have been refunded.
+        subject: You have been refunded.
+      rental_expiring_soon:
+        body_html: "<p>Hey there,</p><p>Your rental of %{product} will expire in %{time}.
+          After that, you'll have to rent the title again to watch it. Don't miss
+          out!</p>"
+        body_intro: Hey there
+        subject: Your rental will expire in %{time}
+        watch_now: Watch now
+      review_response:
+        header: "%{seller} responded to your review"
+        subject: "%{seller} responded to your review"
+        view_product: View product
+      subscription_autocancelled:
+        installment_body_1: Due to multiple failed payment attempts, your installment
+          plan for %{product} has been paused and you have lost access to the product.
+        installment_body_2_html: Please %{link} to resume your installment plan.
+        installment_subject: Your installment plan has been paused.
+        subscription_body_1: Your subscription to %{product} has been automatically
+          canceled due to multiple failed payments.
+        subscription_body_2_html: If you would like to subscribe to the product, please
+          purchase it %{link} with an updated credit card.
+        subscription_subject: Your subscription has been canceled.
+        update_payment_method_link: update your payment method
+      subscription_cancelled:
+        body: You have canceled your subscription to %{product}. You will continue
+          to receive any posts that the creator sends to subscribers until the end
+          of your billing cycle on %{date}, but you will no longer be charged.
+        header: Your subscription has been canceled.
+        subject: Your subscription has been canceled.
+      subscription_cancelled_by_seller:
+        installment_body: Your installment plan for %{product} has been canceled by
+          the creator. You will no longer be charged and will lose access to the product
+          immediately.
+        installment_subject: Your installment plan has been canceled.
+        subscription_body: Your subscription to %{product} has been canceled by the
+          creator. You will continue to receive any posts that the creator sends until
+          the end of your billing cycle on %{date}, but you will no longer be charged.
+        subscription_subject: Your subscription has been canceled.
+      subscription_card_declined:
+        card_subject: Your card was declined.
+        header: Your card was declined.
+        installment_body_html: We attempted to charge your card for your installment
+          payment for %{product}, but were unable. Please %{link} to complete the
+          transaction.
+        installment_warning: If a charge to your credit card is not successful within
+          5 days, your installment plan for %{product} will be paused and you will
+          lose access to the product.
+        reauthorize_card_link: re-authorize or update your card
+        subscription_body_html: We attempted to charge your card for your subscription
+          to %{product}, but were unable. Please %{link} to complete the transaction.
+        subscription_warning: If a charge to your credit card is not successful within
+          5 days, your subscription to %{product} will be canceled.
+        update_payment_link: update your payment method
+        upi_body_html: We couldn't process the recurring payment for %{product} using
+          your saved UPI payment method. Please %{link} to complete the transaction.
+        upi_header: Your payment method needs attention.
+        upi_subject: Your payment method needs attention.
+        upi_warning: If a payment is not successful within 5 days, your subscription
+          to %{product} will be canceled.
+      subscription_card_declined_warning:
+        card_subject: Your card was declined.
+        installment_reminder_html: This is a reminder that we attempted to charge
+          your card for your installment plan to %{product}, but were unable. Please
+          %{link} to complete the transaction.
+        installment_reminder_warning: If a charge to your credit card is not successful
+          within 48 hours, your installment plan to %{product} will be paused, and
+          you will lose access to the product.
+        subscription_reminder_html: This is a reminder that we attempted to charge
+          your card for your subscription to %{product}, but were unable. Please %{link}
+          to complete the transaction.
+        subscription_reminder_warning: If a charge to your credit card is not successful
+          within 48 hours, your subscription to %{product} will be canceled.
+        update_card_link: update your card
+        upi_reminder_html: This is a reminder that we couldn't process the recurring
+          payment for %{product} using your saved UPI payment method. Please %{link}
+          to complete the transaction.
+        upi_reminder_warning: If a payment is not successful within 48 hours, your
+          subscription to %{product} will be canceled.
+        upi_subject: Your payment method needs attention.
+      subscription_charge_blocked_location:
+        installment_body_1: We were not able to process the latest payment for your
+          installment plan for %{product}. The address on it is in a location that
+          United States sanctions prevent us from processing payments to or from,
+          so no charge was attempted and there is nothing wrong with your card.
+        installment_body_2_html: If that address is out of date, %{link} and the next
+          payment will go through normally.
+        installment_body_3_html: Otherwise your installment plan for %{product} will
+          be paused within 5 days and you will lose access to the product. You can
+          read more about %{why_link}.
+        installment_subject: Your installment payment could not be processed.
+        installment_update_link: update it from your installment plan
+        subscription_body_1: We were not able to process the latest payment for your
+          membership to %{product}. The address on it is in a location that United
+          States sanctions prevent us from processing payments to or from, so no charge
+          was attempted and there is nothing wrong with your card.
+        subscription_body_2_html: If that address is out of date, %{link} and the
+          next payment will go through normally.
+        subscription_body_3_html: Otherwise your membership to %{product} will be
+          canceled within 5 days. You can read more about %{why_link}.
+        subscription_subject: Your membership could not be renewed.
+        subscription_update_link: update it from your membership
+        why_declined_link: why a payment can be declined
+      subscription_charge_failed:
+        header: Your recurring charge failed.
+        installment_body: We attempted to charge your card for your installment payment
+          for %{product}, but were unable to.
+        installment_header: Your installment payment failed.
+        installment_subject: Your installment payment failed.
+        installment_warning: If a charge to your credit card is not successful within
+          5 days, your installment plan for %{product} will be canceled.
+        subscription_body: We attempted to charge your card for your subscription
+          to %{product}, but were unable to.
+        subscription_subject: Your recurring charge failed.
+        subscription_warning: If a charge to your credit card is not successful within
+          5 days, your subscription to %{product} will be canceled.
+      subscription_early_fraud_warning_notification:
+        body_1: You recently reported as fraud the transaction for your purchase of
+          %{product} for %{price}, made on %{date}. A receipt was sent to %{email}
+          — please check your Spam folder if you are unable to locate it.
+        body_2: If you reported this purchase because you didn't recognize "GUMRD.COM"
+          on your account statement, or if you didn't report this purchase, you can
+          contact your bank to cancel the report.
+        body_manage_html: If you would like to manage your membership you can visit
+          %{link}.
+        subject: Regarding your recent purchase reported as fraud
+      subscription_ended:
+        installment_body_1: You have completed all your installment payments for %{product}.
+          You will no longer be charged.
+        installment_body_2: The product will remain in your library.
+        installment_header: Your installment plan has been paid in full.
+        installment_subject: Your installment plan has been paid in full.
+        questions_contact_creator: If you have any questions, please contact the creator.
+        subscription_body: Your subscription to %{product} has ended. You will no
+          longer be charged, nor will you receive new content.
+        subscription_header: Your subscription has ended.
+        subscription_subject: Your subscription has ended.
+      subscription_giftee_added_card:
+        body: "%{giftee} added a payment method for their gift membership to %{product}."
+        subject: Your gift membership for %{product} has been updated
+      subscription_indian_card_mandate_invalid:
+        body_intro: We could not verify the recurring payment authorization for %{product}.
+        body_paused: We paused automatic renewals and did not retry the payment. You
+          keep access while renewals are paused.
+        body_update_html: Please %{link} to restore automatic renewals.
+        subject: Update your payment method to keep automatic renewals active.
+      subscription_magic_link:
+        body: You requested a magic link to manage your membership for "%{product}".
+          Note that this link expires in %{hours} hours.
+        button: Open magic link
+        header: Here's your magic link
+        ignore_notice: If you didn't request a magic link, you can safely ignore this
+          message.
+        subject: Magic Link
+      subscription_price_change_notification:
+        header: Important changes to your membership
+        manage_subscription_button: Manage your subscription
+        message_future_html: The price of your membership to "%{product}" is changing
+          on %{date}.<br /><br />You can modify or cancel your membership at any time.
+        message_past_html: The price of your membership to "%{product}" changed on
+          %{date}.<br /><br />You will be charged the new price starting with your
+          next billing period. You can modify or cancel your membership at any time.
+        new_price_label: New price
+        next_payment_date_label: Next payment date
+        payment_method_label: Payment method
+        plus_taxes: "(plus taxes)"
+        previous_price_label: Previous price
+        product_label: Product
+        subject: Important changes to your membership
+      subscription_product_deleted:
+        installment_body: Your installment plan for %{product} has been canceled due
+          to the creator deleting the product. You will no longer be charged.
+        installment_subject: Your installment plan has been canceled.
+        subscription_body: Your subscription to %{product} has been canceled due to
+          the creator deleting the product. You will no longer be charged.
+        subscription_subject: Your subscription has been canceled.
+      subscription_restarted:
+        body_installment_manual: You have restarted your installment plan for %{product}.
+        body_installment_resolved: Your installment plan for %{product} has been restarted
+          because a payment issue has been resolved.
+        body_subscription_manual: You have restarted your subscription to %{product}.
+        body_subscription_resolved_html: Your subscription to %{product} has been
+          restarted because a payment issue has been resolved. If you would like to
+          cancel your subscription, you may do so %{link}.
+        future_posts_note: You'll get posts from this creator in the future.
+        installment_subject: Your installment plan has been restarted.
+        subscription_subject: Your subscription has been restarted.
+      upcoming_call_reminder:
+        header: Your scheduled call with %{seller} is tomorrow!
+        subject: Your scheduled call with %{seller} is tomorrow!
+      wishlist_updated:
+        future_updates_note: You'll get updates from this wishlist in the future.
+        header_multiple: "%{user} recently added %{count} new products to their wishlist!"
+        header_single: "%{user} recently added a new product to their wishlist!"
+        subject_multiple: "%{user} recently added %{count} new products to their wishlist!"
+        subject_single: "%{user} recently added a new product to their wishlist!"
+        view_content: View content
+    receipt:
+      order_number: 'Order #%{order_id}'
+      subject: Your receipt for %{product}
+      thank_you: Thank you for your purchase!
+    subscription_renewal_reminder:
+      contact_seller: Contact %{seller} by replying to this email
+      installment_body: This is a reminder that your next installment payment of %{price}
+        for %{product} will be charged on %{date}.
+      installment_subject: Upcoming installment payment reminder
+      membership_body: This is a reminder that your membership to "%{product}" will
+        automatically renew on %{date}.
+      membership_subject: Upcoming automatic membership renewal
+      paying: You're paying %{price}.
+      questions: Questions about your product?
+    two_factor_authentication:
+      authentication_token:
+        action: Login
+        action_notice: You can also click the following button to continue with your
+          login.
+        expires_in: This authentication token and login link will expire in %{time}.
+        header: Two-Factor Authentication
+        instruction: 'We have detected a new login to your %{app_name} account. Please
+          enter this authentication token in the challenge page to continue:'
+        subject: Your authentication token is %{token}
   profile:
-    top_creator: "Top creator"
-    creator_rating: "Creator rating"
-    creator_rating_summary: "%{average} from %{count_reviews} across %{products_count} products"
-    enter_email: "Please enter your email address."
-    enter_valid_email: "Please enter a valid email address."
-    cannot_follow_self: "As the creator of this profile, you can't follow yourself!"
-    your_email_address: "Your email address"
-    subscribe: "Subscribe"
-    subscribed: "Subscribed"
-    subscribing: "Subscribing..."
-    subscribe_updates_from: "Subscribe to receive email updates from %{name}."
-    no_wishlists_selected: "No wishlists selected"
-
+    cannot_follow_self: As the creator of this profile, you can't follow yourself!
+    creator_rating: Creator rating
+    creator_rating_summary: "%{average} from %{count_reviews} across %{products_count}
+      products"
+    enter_email: Please enter your email address.
+    enter_valid_email: Please enter a valid email address.
+    no_wishlists_selected: No wishlists selected
+    subscribe: Subscribe
+    subscribe_updates_from: Subscribe to receive email updates from %{name}.
+    subscribed: Subscribed
+    subscribing: Subscribing...
+    top_creator: Top creator
+    your_email_address: Your email address
+  receipt:
+    account_created_notice: Done! Your account has been created. You'll get a confirmation
+      email shortly.
+    charged_card_and_sent_receipt: We charged your card and sent a receipt to %{email}
+    email: Email
+    enter_password: Enter password
+    generate_invoice: Generate
+    gift_download_note: They'll get an email with your note and a download link.
+    gift_note_only: They'll get an email with your note.
+    invoices:
+      additional_notes: Additional notes
+      address: Address
+      business_name_optional: Business name (optional)
+      city: City
+      confirm_email: Confirm email
+      country: Country
+      download_notice: This invoice will be downloaded as a PDF to your computer.
+      full_name: Full name
+      generate: Generate invoice
+      invoice_date: Invoice date
+      invoice_heading: Invoice
+      item_purchased:
+        one: "%{count} item purchased"
+        other: "%{count} items purchased"
+      order_number: Order number
+      payment: Payment
+      receipt_heading: Receipt
+      save_as_help: Right-click %{here} and "Save as..." if the PDF hasn't been automatically
+        downloaded to your computer.
+      select_country: Select country
+      seller: Seller
+      state: State
+      street_address: Street address
+      supplier: Supplier
+      to: To
+      zip_code: ZIP code
+    keep_everything_desc: Create an account to access all of your purchases anytime.
+    keep_everything_title: Keep everything in one place
+    need_invoice: Need an invoice for this?
+    password: Password
+    sent_receipt_to: We sent a receipt to %{email}
+    something_went_wrong: Sorry, something went wrong.
+    success_title: Your purchase was successful!
+    summary_title: Summary
+    terms_notice: By signing up, you agree to our
+    terms_of_use: Terms of Use
+  storefront:
+    add_to_cart: Add to cart
+    add_to_wishlist: Add to wishlist
+    added_to_wishlist: Added to wishlist!
+    adding_to_wishlist: Adding to wishlist...
+    already_bought_this: Already bought this?
+    already_own_bundle: You already own this bundle
+    already_own_product: You already own this product
+    already_subscribed_desc: You currently have an active subscription to this product.
+      Would you like to start a new subscription?
+    already_subscribed_title: You already have an active subscription
+    buy: Buy
+    buy_description: Watch as many times as you want, forever.
+    buy_this: Buy this
+    choose_an_option: Choose an option
+    content: Content
+    copy: Copy
+    copy_link: Copy link
+    copy_product_url: Copy product URL
+    create_wishlist: Create wishlist
+    creator_rating_from: 'Creator rating: %{average} from %{count_reviews} across
+      %{products_count} other products.'
+    creator_rating_from_profile: 'Creator rating: %{average} from %{count_reviews}
+      across %{products_count} other products.'
+    discount_code_existing_customers_only: Sorry, this discount code is only for existing
+      customers.
+    discount_code_inactive: Sorry, the discount code you wish to use is inactive.
+    discount_code_invalid: Sorry, the discount code you wish to use is invalid.
+    discount_code_limit_reached: Sorry, the discount code you wish to use has reached
+      its usage limit.
+    discount_expires_in: This discount expires in %{time}
+    donate: Donate
+    edit_it_here: Edit it here.
+    free: Free
+    get_download_link: Get your download link
+    i_want_this: I want this!
+    last_updated: Last updated %{date}
+    license_key: License key
+    load_more: Load more
+    manage_membership: Manage membership
+    minimum_price_is: Minimum price for this product is %{price}.
+    must_input_amount: You must input an amount
+    must_select_call_date_time: You must select a date and time for the call
+    name_fair_price: 'Name a fair price:'
+    new_wishlist: New wishlist
+    no_available_times: There are no available times.
+    no_available_times_option: There are no available times for this option.
+    no_reviews_yet: This product has no reviews yet.
+    not_available_location: Sorry, this item is not available in your location.
+    not_currently_for_sale: This product is not currently for sale.
+    one_time_payment: One-time payment
+    pay: Pay
+    pay_in_count_installments: Pay in %{count} installments
+    pay_in_full: Pay in full
+    pay_in_installments: Pay in installments
+    pay_in_n_installments: Pay in %{count} installments of %{amount}
+    payment_option: Payment option
+    please_enter_wishlist_name: Please enter a wishlist name
+    posts: Posts
+    products: Products
+    purchase_again: Purchase again
+    purchased_bundle: You've purchased this bundle
+    purchased_product: You've purchased this product
+    quantity: Quantity
+    quantity_left:
+      one: "%{count} left"
+      other: "%{count} left"
+    rating: Rating
+    ratings: Ratings
+    ratings_count:
+      one: "%{count} rating"
+      other: "%{count} ratings"
+    ratings_histogram: Ratings histogram
+    received_bundle_gift: You've received this bundle as a gift
+    received_product_gift: You've received this product as a gift
+    recurrence: Recurrence
+    rent: Rent
+    rent_description: Your rental will be available for 30 days. Once started, you’ll
+      have 72 hours to watch it as much as you’d like!
+    resend_receipt: Resend your receipt
+    restart_membership: Restart membership
+    resume_subscription: Resume subscription
+    resume_subscription_desc: You've previously subscribed to this product. Would
+      you like to pick up where you left off, or start fresh with a new subscription?
+    resume_subscription_title: Resume your previous subscription?
+    search_products: Search products...
+    seats: Seats
+    select_date: Select a date
+    select_time: Select a time
+    share: Share
+    sold_out_pick_another: Sold out, please go back and pick another option.
+    star_count:
+      one: "%{count} star"
+      other: "%{count} stars"
+    start_new_subscription: Start a new subscription
+    subscribe: Subscribe
+    support: Support
+    tip: Tip
+    verified_reviews_count:
+      one: "%{count} verified review"
+      other: "%{count} verified reviews"
+    view_content: View content
+    view_your_information: View your information
+    wishlist_created: Wishlist created!
+    wishlist_name: Wishlist name
+    you_already_own_this: You already own this
+    you_selected: You selected
+  subscriptions:
+    grace_period_warning: Your membership is in its grace period (%{days} days remaining).
+      Renew now to maintain uninterrupted access.
+    renew_now_for: Renew now for %{price}
+    renewal_banner_title: Subscription Renewal Due
+    renewal_success: Subscription successfully renewed until %{date}.
+    statuses:
+      active: Active
+      cancelled: Cancelled
+      expired: Expired
+      in_grace_period: Grace Period
+      past_due: Past Due
+      renewal_due: Renewal Due
+  time:
+    am: am
+    formats:
+      abbrev_month: "%b %-d, %Y"
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      full_month: "%B %-d, %Y"
+      long: "%B %e, %Y %H:%M"
+      short: "%d %b %H:%M"
+    pm: pm

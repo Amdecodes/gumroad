@@ -209,7 +209,7 @@ export default function BundlesContentEdit() {
       preview={
         <div>
           <header>
-            <h1>{t("navigation.library")}</h1>
+            <h1>{t("content.library")}</h1>
           </header>
           <section>
             <ProductCardGrid>

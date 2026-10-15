@@ -10,6 +10,7 @@ import { SettingPage } from "$app/parsers/settings";
 import type { ComplianceInfo, PayoutMethod, FormFieldName, User, PayoutDebitCardData } from "$app/types/payments";
 import { COLOMBIA_ID_NUMBER_ERROR_MESSAGE, isValidColombiaIdNumber } from "$app/utils/colombiaIdNumbers";
 import { formatPriceCentsWithCurrencySymbol, formatPriceCentsWithoutCurrencySymbol } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 import { accountNumberFormatError } from "$app/utils/payoutAccountNumbers";
 import { normalizeUsTaxId, personalTaxIdError, usesUsTaxId } from "$app/utils/personalTaxId";
 import { countryRequiresPostalCode } from "$app/utils/postalCodes";
@@ -247,6 +248,7 @@ type ErrorMessageInfo = {
 const isFormFieldName = (value: string): value is FormFieldName => value in FIELD_LABELS;
 
 export default function PaymentsPage() {
+  const { t } = useTranslation();
   const page = usePage();
   const props = typia.assert<PaymentsPageProps>(page.props);
   const errors = typia.assert<{ base?: string[]; field?: string } | undefined>(page.props.errors);
@@ -1316,14 +1318,11 @@ export default function PaymentsPage() {
       <Switch
         checked={form.data.payouts_paused_by_user || isPayoutsPausedToggleLocked}
         onChange={(e) => form.setData("payouts_paused_by_user", e.target.checked)}
-        aria-label="Pause payouts"
+        aria-label={t("seller.payments.pause_payouts_label")}
         disabled={props.is_form_disabled || isPayoutsPausedToggleLocked}
-        label="Pause payouts"
+        label={t("seller.payments.pause_payouts_label")}
       />
-      <FieldsetDescription>
-        By pausing payouts, they won't be processed until you decide to resume them, and your balance will remain in
-        your account until then.
-      </FieldsetDescription>
+      <FieldsetDescription>{t("seller.payments.pause_payouts_desc")}</FieldsetDescription>
     </Fieldset>
   );
 
@@ -1391,51 +1390,57 @@ export default function PaymentsPage() {
         <FormSection
           header={
             <>
-              <h2>Payout schedule</h2>
+              <h2>{t("seller.payments.schedule_header")}</h2>
               <p>
-                Payouts will only happen on your chosen schedule once the minimum balance of{" "}
-                {formatPriceCentsWithCurrencySymbol("usd", props.minimum_payout_threshold_cents, {
-                  symbolFormat: "long",
-                })}{" "}
-                is reached.
+                {t("seller.payments.schedule_desc", {
+                  amount: formatPriceCentsWithCurrencySymbol("usd", props.minimum_payout_threshold_cents, {
+                    symbolFormat: "long",
+                  }),
+                })}
               </p>
             </>
           }
         >
           <section className="flex flex-col gap-4">
             <Fieldset>
-              <Label htmlFor="payout_frequency">Schedule</Label>
+              <Label htmlFor="payout_frequency">{t("seller.payments.schedule_label")}</Label>
               <TypeSafeOptionSelect
                 id="payout_frequency"
                 name="Schedule"
                 value={form.data.payout_frequency}
                 onChange={(value) => form.setData("payout_frequency", value)}
-                options={PAYOUT_FREQUENCIES.map((frequency) => ({
-                  id: frequency,
-                  label: frequency.charAt(0).toUpperCase() + frequency.slice(1),
-                  disabled: frequency === "daily" && !props.payout_frequency_daily_supported,
-                }))}
+                options={PAYOUT_FREQUENCIES.map((frequency) => {
+                  const frequencyLabels: Record<PayoutFrequency, string> = {
+                    daily: t("seller.payments.frequency_daily"),
+                    weekly: t("seller.payments.frequency_weekly"),
+                    monthly: t("seller.payments.frequency_monthly"),
+                    quarterly: t("seller.payments.frequency_quarterly"),
+                  };
+                  return {
+                    id: frequency,
+                    label: frequencyLabels[frequency],
+                    disabled: frequency === "daily" && !props.payout_frequency_daily_supported,
+                  };
+                })}
               />
-              <FieldsetDescription>
-                Daily payouts are only available for US users with eligible bank accounts and more than 4 previous
-                payouts.
-              </FieldsetDescription>
+              <FieldsetDescription>{t("seller.payments.schedule_daily_info")}</FieldsetDescription>
             </Fieldset>
             {form.data.payout_frequency === "daily" && props.payout_frequency_daily_supported ? (
               <Alert variant="info" role="status">
                 <div>
-                  Every day, your balance from the previous day will be sent to you via instant payouts, subject to a{" "}
-                  <b>{props.instant_payout_fee_percent}% fee</b> — the same fee as a one-off instant payout.
+                  {t("seller.payments.schedule_daily_alert", {
+                    percent: props.instant_payout_fee_percent,
+                  })}
                 </div>
               </Alert>
             ) : null}
             {form.data.payout_frequency === "daily" && !props.payout_frequency_daily_supported && (
               <Alert variant="danger" role="status">
-                <div>Your account is no longer eligible for daily payouts. Please update your schedule.</div>
+                <div>{t("seller.payments.schedule_daily_ineligible")}</div>
               </Alert>
             )}
             <Fieldset state={payoutThresholdError ? "danger" : undefined}>
-              <Label htmlFor="payout_threshold_cents">Minimum payout threshold</Label>
+              <Label htmlFor="payout_threshold_cents">{t("seller.payments.minimum_threshold_label")}</Label>
               <PriceInput
                 id="payout_threshold_cents"
                 currencyCode="usd"
@@ -1444,17 +1449,18 @@ export default function PaymentsPage() {
                 onChange={(value) => form.setData("payout_threshold_cents", value)}
                 onBlur={handlePayoutThresholdBlur}
                 placeholder={formatPriceCentsWithoutCurrencySymbol("usd", props.minimum_payout_threshold_cents)}
-                ariaLabel="Minimum payout threshold"
+                ariaLabel={t("seller.payments.minimum_threshold_label")}
                 hasError={!!payoutThresholdError}
               />
               <FieldsetDescription>
-                The minimum payout threshold for {props.payout_country_name ?? "your country"} is{" "}
-                {formatPriceCentsWithCurrencySymbol("usd", props.minimum_payout_threshold_cents, {
-                  symbolFormat: "long",
+                {t("seller.payments.minimum_threshold_desc", {
+                  country: props.payout_country_name ?? t("seller.payments.your_country"),
+                  amount: formatPriceCentsWithCurrencySymbol("usd", props.minimum_payout_threshold_cents, {
+                    symbolFormat: "long",
+                  }),
                 })}
-                .
                 {payoutThresholdBelowMinimum && !payoutThresholdEdited
-                  ? " Until you enter a higher amount, your payouts use that minimum."
+                  ? t("seller.payments.minimum_threshold_default_suffix")
                   : null}
               </FieldsetDescription>
             </Fieldset>
@@ -1462,13 +1468,13 @@ export default function PaymentsPage() {
               <WithTooltip
                 tip={
                   props.payouts_paused_by === "stripe"
-                    ? "Your payouts have been paused by Stripe."
+                    ? t("seller.payments.payouts_paused_by_stripe")
                     : props.payouts_paused_by === "admin"
-                      ? "Your payouts have been paused by Gumroad."
+                      ? t("seller.payments.payouts_paused_by_app")
                       : props.payouts_paused_by === "system" && props.payout_reserve_percent
-                        ? "Payout pausing is managed automatically while the reserve hold is active."
+                        ? t("seller.payments.payouts_paused_by_reserve")
                         : props.payouts_paused_by === "system"
-                          ? "Your payouts have been paused for a security review."
+                          ? t("seller.payments.payouts_paused_by_security")
                           : null
                 }
               >
@@ -1481,20 +1487,20 @@ export default function PaymentsPage() {
         </FormSection>
 
         {props.buyer_local_currency_enabled ? (
-          <FormSection header={<h2>Product pages</h2>}>
+          <FormSection header={<h2>{t("seller.payments.product_pages_header")}</h2>}>
             <Fieldset>
               <Switch
                 checked={!form.data.disable_buyer_local_currency}
                 onChange={(e) => form.setData("disable_buyer_local_currency", !e.target.checked)}
-                aria-label="Show buyers their local currency on product pages"
+                aria-label={t("seller.payments.show_local_currency_label")}
                 disabled={props.is_form_disabled}
-                label="Show buyers their local currency on product pages"
+                label={t("seller.payments.show_local_currency_label")}
               />
               <FieldsetDescription>
-                Buyers see an approximate price in their local currency in place of your set price.{" "}
+                {t("seller.payments.show_local_currency_desc")}{" "}
                 {props.buyer_currency_charging_enabled
-                  ? "When this is on, buyers can also choose the currency they pay in at checkout. Your earnings and payouts are unchanged."
-                  : "Checkout still uses USD."}
+                  ? t("seller.payments.buyer_currency_charging_enabled_desc")
+                  : t("seller.payments.checkout_usd_desc")}
               </FieldsetDescription>
             </Fieldset>
             {props.buyer_currency_charging_enabled && !form.data.disable_buyer_local_currency ? (
@@ -1502,17 +1508,11 @@ export default function PaymentsPage() {
                 <Switch
                   checked={!form.data.disable_buyer_currency_rounding}
                   onChange={(e) => form.setData("disable_buyer_currency_rounding", !e.target.checked)}
-                  aria-label="Keep price endings in local currency"
+                  aria-label={t("seller.payments.keep_price_endings_label")}
                   disabled={props.is_form_disabled}
-                  label="Keep price endings in local currency"
+                  label={t("seller.payments.keep_price_endings_label")}
                 />
-                <FieldsetDescription>
-                  Buyers charged in their own currency see the ending of the USD total rather than the exact converted
-                  amount: a $9.99 total shows €8.99 instead of €8.53, and a $10 total shows €9. When tax is added, the
-                  ending mirrored is the taxed total's, so a buyer paying in their own currency sees the same ending a
-                  buyer paying in USD would. Your earnings, taxes and payouts are unchanged — the difference is absorbed
-                  on our side.
-                </FieldsetDescription>
+                <FieldsetDescription>{t("seller.payments.keep_price_endings_desc")}</FieldsetDescription>
               </Fieldset>
             ) : null}
           </FormSection>
@@ -1521,10 +1521,10 @@ export default function PaymentsPage() {
         <FormSection
           header={
             <>
-              <h2>Payout method</h2>
+              <h2>{t("seller.payments.payout_method_header")}</h2>
               <div>
                 <a href="/help/article/260-your-payout-settings-page" target="_blank" rel="noreferrer">
-                  Any questions about these payout settings?
+                  {t("seller.payments.payout_method_questions")}
                 </a>
               </div>
             </>
@@ -1544,7 +1544,7 @@ export default function PaymentsPage() {
                     >
                       <Bank className="size-5" />
                       <div>
-                        <h4 className="font-bold">Bank Account</h4>
+                        <h4 className="font-bold">{t("seller.payments.bank_account")}</h4>
                       </div>
                     </Button>
                   </Tab>
@@ -1559,7 +1559,7 @@ export default function PaymentsPage() {
                       >
                         <CreditCard className="size-5" />
                         <div>
-                          <h4 className="font-bold">Debit Card</h4>
+                          <h4 className="font-bold">{t("seller.payments.debit_card")}</h4>
                         </div>
                       </Button>
                     </Tab>
@@ -1577,7 +1577,7 @@ export default function PaymentsPage() {
                   >
                     <Paypal pack="brands" className="size-5" />
                     <div>
-                      <h4 className="font-bold">PayPal</h4>
+                      <h4 className="font-bold">{t("seller.payments.paypal")}</h4>
                     </div>
                   </Button>
                 </Tab>
@@ -1593,7 +1593,7 @@ export default function PaymentsPage() {
                   >
                     <Stripe pack="brands" className="size-5" />
                     <div>
-                      <h4 className="font-bold">Connect to Stripe</h4>
+                      <h4 className="font-bold">{t("seller.payments.connect_to_stripe")}</h4>
                     </div>
                   </Button>
                 </Tab>
@@ -1685,16 +1685,17 @@ export default function PaymentsPage() {
         <FormSection
           header={
             <>
-              <h2>PayPal</h2>
+              <h2>{t("seller.payments.paypal")}</h2>
               <a href="/help/article/275-paypal-connect" target="_blank" rel="noreferrer">
-                Learn more
+                {t("actions.learn_more")}
               </a>
             </>
           }
         >
           <p>
-            Looking for PayPal Connect? It moved to <a href={Routes.checkout_form_path()}>Checkout settings</a> — it
-            lets buyers pay with PayPal at checkout and is separate from how you receive payouts.
+            {t("seller.payments.paypal_connect_notice_intro")}
+            <a href={Routes.checkout_form_path()}>{t("seller.payments.checkout_settings")}</a>{" "}
+            {t("seller.payments.paypal_connect_notice_suffix")}
           </p>
         </FormSection>
         {props.saved_card ? (

@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { exportPayouts } from "$app/data/balance";
 import { formatPriceCentsWithCurrencySymbol, formatPriceCentsWithoutCurrencySymbol } from "$app/utils/currency";
+import { useTranslation } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError } from "$app/utils/request";
 
@@ -46,6 +47,7 @@ type StripeConnectAccount = { payout_method_type: "stripe_connect"; stripe_conne
 type PayoutPeriodData = CurrentPayoutsDataAndPaymentMethodWithUserPayable | PastPayoutsDataAndPaymentMethod;
 
 const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) => {
+  const { t } = useTranslation();
   const { should_be_shown_currencies_always: showUSDSuffix } = payoutPeriodData;
   const [isCSVDownloadInProgress, setIsCSVDownloadInProgress] = React.useState(false);
 
@@ -59,7 +61,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
 
   const handleRequestPayoutCSV = asyncVoid(async () => {
     if (!("payment_external_id" in payoutPeriodData)) {
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("seller.payouts.export_error", "Sorry, something went wrong. Please try again."), "error");
       return;
     }
 
@@ -67,10 +69,16 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
 
     try {
       await exportPayouts([payoutPeriodData.payment_external_id]);
-      showAlert("You will receive an email in your inbox shortly with the data you've requested.", "success");
+      showAlert(
+        t(
+          "seller.payouts.export_success",
+          "You will receive an email in your inbox shortly with the data you've requested.",
+        ),
+        "success",
+      );
     } catch (e) {
       assertResponseError(e);
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("seller.payouts.export_error", "Sorry, something went wrong. Please try again."), "error");
     }
     setIsCSVDownloadInProgress(false);
   });
@@ -78,11 +86,15 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
   function currentPayoutHeading(payoutStatus: string, payoutDateFormatted: string) {
     switch (payoutStatus) {
       case "processing":
-        return `Payout initiated on ${payoutDateFormatted}`;
+        return t(
+          "seller.payouts.heading_initiated",
+          { date: payoutDateFormatted },
+          `Payout initiated on ${payoutDateFormatted}`,
+        );
       case "payable":
-        return `Next payout: ${payoutDateFormatted}`;
+        return t("seller.payouts.heading_next", { date: payoutDateFormatted }, `Next payout: ${payoutDateFormatted}`);
       case "paused":
-        return "Next payout: paused";
+        return t("seller.payouts.heading_paused", "Next payout: paused");
       case "completed":
         return payoutDateFormatted;
       default:
@@ -93,7 +105,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
   const heading = currentPayoutHeading(payoutPeriodData.status, payoutPeriodData.payout_date_formatted);
 
   return (
-    <section aria-label="Payout period">
+    <section aria-label={t("seller.payouts.period_aria", "Payout period")}>
       <div
         style={{
           display: "flex",
@@ -102,7 +114,9 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
         }}
       >
         {payoutPeriodData.status === "completed" ? <span>{heading}</span> : <h2>{heading}</h2>}
-        {"type" in payoutPeriodData && payoutPeriodData.type === "instant" ? <Pill size="small">Instant</Pill> : null}
+        {"type" in payoutPeriodData && payoutPeriodData.type === "instant" ? (
+          <Pill size="small">{t("seller.payouts.instant", "Instant")}</Pill>
+        ) : null}
         <span style={{ marginLeft: "auto" }}>{payoutPeriodData.displayable_payout_period_range}</span>
         {payoutPeriodData.status === "completed" && payoutPeriodData.payment_external_id ? (
           <Button
@@ -112,24 +126,26 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
             onClick={handleRequestPayoutCSV}
           >
             <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
-            Export
+            {t("seller.payouts.export", "Export")}
           </Button>
         ) : null}
       </div>
       <Card style={{ marginTop: "var(--spacer-4)" }}>
         <CardContent>
-          <h4 className="grow font-bold">Sales</h4>
+          <h4 className="grow font-bold">{t("seller.payouts.sales", "Sales")}</h4>
           <div>{formatDollarAmount(payoutPeriodData.sales_cents)}</div>
         </CardContent>
         {payoutPeriodData.credits_cents > 0 ? (
           <CardContent>
-            <h4 className="grow font-bold">Credits</h4>
+            <h4 className="grow font-bold">{t("seller.payouts.credits", "Credits")}</h4>
             <div>{formatDollarAmount(payoutPeriodData.credits_cents)}</div>
           </CardContent>
         ) : null}
         {payoutPeriodData.affiliate_credits_cents !== 0 ? (
           <CardContent>
-            <h4 className="grow font-bold">Affiliate or collaborator fees received</h4>
+            <h4 className="grow font-bold">
+              {t("seller.payouts.affiliate_credits", "Affiliate or collaborator fees received")}
+            </h4>
             <div>{formatDollarAmount(payoutPeriodData.affiliate_credits_cents)}</div>
           </CardContent>
         ) : null}
@@ -139,15 +155,20 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
               <CardContent>
                 <div className="grow">
                   <h4 className="font-bold">
-                    Discover sales{" "}
+                    {t("seller.payouts.discover_sales", "Discover sales")}{" "}
                     <a href="/help/article/66-gumroads-fees" target="_blank" rel="noreferrer">
-                      fees
+                      {t("seller.payouts.fees", "fees")}
                     </a>
                   </h4>
                   {payoutPeriodData.discover_sales_count > 0 ? (
                     <small className="block text-muted">
-                      on {payoutPeriodData.discover_sales_count}{" "}
-                      {payoutPeriodData.discover_sales_count === 1 ? "sale" : "sales"}
+                      {t(
+                        payoutPeriodData.discover_sales_count === 1
+                          ? "seller.payouts.sales_count.one"
+                          : "seller.payouts.sales_count.other",
+                        { count: payoutPeriodData.discover_sales_count },
+                        `on ${payoutPeriodData.discover_sales_count} ${payoutPeriodData.discover_sales_count === 1 ? "sale" : "sales"}`,
+                      )}
                     </small>
                   ) : null}
                 </div>
@@ -158,15 +179,20 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
               <CardContent>
                 <div className="grow">
                   <h4 className="font-bold">
-                    Direct sales{" "}
+                    {t("seller.payouts.direct_sales", "Direct sales")}{" "}
                     <a href="/help/article/66-gumroads-fees" target="_blank" rel="noreferrer">
-                      fees
+                      {t("seller.payouts.fees", "fees")}
                     </a>
                   </h4>
                   {payoutPeriodData.direct_sales_count > 0 ? (
                     <small className="block text-muted">
-                      on {payoutPeriodData.direct_sales_count}{" "}
-                      {payoutPeriodData.direct_sales_count === 1 ? "sale" : "sales"}
+                      {t(
+                        payoutPeriodData.direct_sales_count === 1
+                          ? "seller.payouts.sales_count.one"
+                          : "seller.payouts.sales_count.other",
+                        { count: payoutPeriodData.direct_sales_count },
+                        `on ${payoutPeriodData.direct_sales_count} ${payoutPeriodData.direct_sales_count === 1 ? "sale" : "sales"}`,
+                      )}
                     </small>
                   ) : null}
                 </div>
@@ -178,7 +204,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/66-gumroads-fees" target="_blank" rel="noreferrer">
-                Fees
+                {t("seller.payouts.fees", "Fees")}
               </a>
             </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.fees_cents)}</div>
@@ -186,7 +212,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
         )}
         {payoutPeriodData.refunds_cents !== 0 ? (
           <CardContent>
-            <h4 className="grow font-bold">Refunds</h4>
+            <h4 className="grow font-bold">{t("seller.payouts.refunds", "Refunds")}</h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.refunds_cents)}</div>
           </CardContent>
         ) : null}
@@ -194,7 +220,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/134-how-does-gumroad-handle-chargebacks" target="_blank" rel="noreferrer">
-                Chargebacks
+                {t("seller.payouts.chargebacks", "Chargebacks")}
               </a>
             </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.chargebacks_cents)}</div>
@@ -204,7 +230,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/269-balance-page" target="_blank" rel="noreferrer">
-                Credits
+                {t("seller.payouts.credits", "Credits")}
               </a>
             </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.credits_cents)}</div>
@@ -212,13 +238,15 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
         ) : null}
         {payoutPeriodData.loan_repayment_cents !== 0 ? (
           <CardContent>
-            <h4 className="grow font-bold">Loan repayments</h4>
+            <h4 className="grow font-bold">{t("seller.payouts.loan_repayments", "Loan repayments")}</h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.loan_repayment_cents)}</div>
           </CardContent>
         ) : null}
         {payoutPeriodData.affiliate_fees_cents !== 0 ? (
           <CardContent>
-            <h4 className="grow font-bold">Affiliate or collaborator fees paid</h4>
+            <h4 className="grow font-bold">
+              {t("seller.payouts.affiliate_fees", "Affiliate or collaborator fees paid")}
+            </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.affiliate_fees_cents)}</div>
           </CardContent>
         ) : null}
@@ -226,7 +254,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/275-paypal-connect" target="_blank" rel="noreferrer">
-                PayPal payouts
+                {t("seller.payouts.paypal_payouts", "PayPal payouts")}
               </a>
             </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.paypal_payout_cents)}</div>
@@ -236,7 +264,7 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/330-stripe-connect" target="_blank" rel="noreferrer">
-                Stripe Connect payouts
+                {t("seller.payouts.stripe_connect_payouts", "Stripe Connect payouts")}
               </a>
             </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.stripe_connect_payout_cents)}</div>
@@ -247,7 +275,13 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
         payoutPeriodData.payout_reserve_cents > 0 &&
         payoutPeriodData.payout_reserve_percent != null ? (
           <CardContent>
-            <h4 className="grow font-bold">Held in reserve ({payoutPeriodData.payout_reserve_percent}%)</h4>
+            <h4 className="grow font-bold">
+              {t(
+                "seller.payouts.held_in_reserve",
+                { percent: payoutPeriodData.payout_reserve_percent },
+                `Held in reserve (${payoutPeriodData.payout_reserve_percent}%)`,
+              )}
+            </h4>
             <div>{formatNegativeDollarAmount(payoutPeriodData.payout_reserve_cents)}</div>
           </CardContent>
         ) : null}
@@ -255,13 +289,16 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
           <CardContent>
             <h4 className="grow font-bold">
               <a href="/help/article/121-sales-tax-on-gumroad" target="_blank" rel="noreferrer">
-                Taxes
+                {t("seller.payouts.taxes", "Taxes")}
               </a>
             </h4>
             <div>
               <WithTooltip
                 position="top"
-                tip="Gumroad does not collect tax for you; this is a calculation to help you with remittance."
+                tip={t(
+                  "seller.payouts.taxes_tooltip",
+                  "{app_name} does not collect tax for you; this is a calculation to help you with remittance.",
+                )}
               >
                 <span>{formatDollarAmount(payoutPeriodData.taxes_cents)}</span>
               </WithTooltip>
@@ -318,19 +355,22 @@ const Period = ({ payoutPeriodData }: { payoutPeriodData: PayoutPeriodData }) =>
   );
 };
 
-const PeriodEmpty = () => (
-  <div className="period period-empty full column">
-    <Placeholder>
-      <PlaceholderImage src={placeholder} />
-      <h2>Let's get you paid.</h2>
-      Reach your minimum payout threshold to be paid out.
-      <NavigationButton color="accent" href="/settings/payments">
-        View payout threshold
-      </NavigationButton>
-      <a href="/help/article/269-balance-page">Learn about payouts</a>
-    </Placeholder>
-  </div>
-);
+const PeriodEmpty = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="period period-empty full column">
+      <Placeholder>
+        <PlaceholderImage src={placeholder} />
+        <h2>{t("seller.payouts.empty_title", "Let's get you paid.")}</h2>
+        {t("seller.payouts.empty_desc", "Reach your minimum payout threshold to be paid out.")}
+        <NavigationButton color="accent" href="/settings/payments">
+          {t("seller.payouts.view_payout_threshold", "View payout threshold")}
+        </NavigationButton>
+        <a href="/help/article/269-balance-page">{t("seller.payouts.learn_about_payouts", "Learn about payouts")}</a>
+      </Placeholder>
+    </div>
+  );
+};
 
 const PeriodStripeConnectAccount = ({
   isCurrentPeriod,
@@ -338,19 +378,26 @@ const PeriodStripeConnectAccount = ({
 }: {
   isCurrentPeriod: boolean;
   stripeConnectAccount: StripeConnectAccount & { payout_currency: string };
-}) => (
-  <h4>
-    {isCurrentPeriod
-      ? stripeConnectAccount.payout_currency.toUpperCase() !== "USD"
-        ? `Will be converted to ${stripeConnectAccount.payout_currency.toUpperCase()} and sent to:`
-        : "Will be sent to:"
-      : null}{" "}
-    {"Stripe account: "}
-    <a href={`https://dashboard.stripe.com/${stripeConnectAccount.stripe_connect_account_id}`}>
-      {stripeConnectAccount.stripe_connect_account_id}
-    </a>
-  </h4>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <h4>
+      {isCurrentPeriod
+        ? stripeConnectAccount.payout_currency.toUpperCase() !== "USD"
+          ? t(
+              "seller.payouts.will_be_converted_and_sent_to",
+              { currency: stripeConnectAccount.payout_currency.toUpperCase() },
+              `Will be converted to ${stripeConnectAccount.payout_currency.toUpperCase()} and sent to:`,
+            )
+          : t("seller.payouts.will_be_sent_to", "Will be sent to:")
+        : null}{" "}
+      {t("seller.payouts.stripe_account", "Stripe account: ")}
+      <a href={`https://dashboard.stripe.com/${stripeConnectAccount.stripe_connect_account_id}`}>
+        {stripeConnectAccount.stripe_connect_account_id}
+      </a>
+    </h4>
+  );
+};
 
 const PeriodBankAccount = ({
   isCurrentPeriod,
@@ -358,62 +405,82 @@ const PeriodBankAccount = ({
 }: {
   isCurrentPeriod: boolean;
   bankAccount: BankAccount & { arrival_date?: string | null; status?: string; payout_currency: string };
-}) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacer-2)" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacer-2)" }}>
-      {bankAccount.arrival_date ? (
-        bankAccount.status === "completed" ? (
-          <CheckCircle pack="filled" className="size-5" />
-        ) : (
-          <Clock className="size-5" />
-        )
-      ) : null}
-      <h4>
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacer-2)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacer-2)" }}>
         {bankAccount.arrival_date ? (
+          bankAccount.status === "completed" ? (
+            <CheckCircle pack="filled" className="size-5" />
+          ) : (
+            <Clock className="size-5" />
+          )
+        ) : null}
+        <h4>
+          {bankAccount.arrival_date ? (
+            <>
+              {bankAccount.status === "completed"
+                ? t("seller.payouts.deposited_prefix", "Deposited ")
+                : t("seller.payouts.expected_deposit_prefix", "Expected deposit ")}
+              {"bank_name" in bankAccount && (
+                <span>
+                  {t("seller.payouts.to_bank", { bank_name: bankAccount.bank_name }, `to ${bankAccount.bank_name} `)}
+                </span>
+              )}
+              <span>
+                {t("seller.payouts.on_date", { date: bankAccount.arrival_date }, `on ${bankAccount.arrival_date}`)}
+              </span>
+            </>
+          ) : (
+            <>
+              {isCurrentPeriod
+                ? bankAccount.payout_currency.toUpperCase() !== "USD"
+                  ? t(
+                      "seller.payouts.will_be_converted_and_sent_to",
+                      { currency: bankAccount.payout_currency.toUpperCase() },
+                      `Will be converted to ${bankAccount.payout_currency.toUpperCase()} and sent to: `,
+                    )
+                  : t("seller.payouts.will_be_sent_to", "Will be sent to: ")
+                : null}
+              {"bank_name" in bankAccount && <span>{bankAccount.bank_name}</span>}
+            </>
+          )}
+        </h4>
+      </div>
+      <p className="text-xs">
+        {bankAccount.bank_account_type === "CANADIAN" ? (
           <>
-            {bankAccount.status === "completed" ? "Deposited " : "Expected deposit "}
-            {"bank_name" in bankAccount && <span>to {bankAccount.bank_name} </span>}
-            <span>on {bankAccount.arrival_date}</span>
+            <span>
+              {t("seller.payouts.transit_number", "Transit number: ")}
+              <span>{"transit_number" in bankAccount ? bankAccount.transit_number : ""}</span>
+            </span>{" "}
+            <span>
+              {t("seller.payouts.institution_number", "Institution number: ")}
+              <span>{"institution_number" in bankAccount ? bankAccount.institution_number : ""}</span>
+            </span>
           </>
-        ) : (
-          <>
-            {isCurrentPeriod
-              ? bankAccount.payout_currency.toUpperCase() !== "USD"
-                ? `Will be converted to ${bankAccount.payout_currency.toUpperCase()} and sent to: `
-                : "Will be sent to: "
-              : null}
-            {"bank_name" in bankAccount && <span>{bankAccount.bank_name}</span>}
-          </>
-        )}
-      </h4>
-    </div>
-    <p className="text-xs">
-      {bankAccount.bank_account_type === "CANADIAN" ? (
-        <>
+        ) : bankAccount.bank_account_type === "CARD" ? (
           <span>
-            Transit number: <span>{"transit_number" in bankAccount ? bankAccount.transit_number : ""}</span>
-          </span>{" "}
-          <span>
-            Institution number: <span>{"institution_number" in bankAccount ? bankAccount.institution_number : ""}</span>
+            {t("seller.payouts.card", "Card: ")}
+            <span>{"routing_number" in bankAccount ? bankAccount.routing_number : ""}</span>
           </span>
-        </>
-      ) : bankAccount.bank_account_type === "CARD" ? (
-        <span>
-          Card: <span>{"routing_number" in bankAccount ? bankAccount.routing_number : ""}</span>
-        </span>
-      ) : "routing_number" in bankAccount ? (
-        <span>
-          Routing number: <span>{bankAccount.routing_number}</span>
-        </span>
-      ) : null}{" "}
-      {"account_number" in bankAccount ? (
-        <span>
-          Account: <span>{bankAccount.account_number}</span>
-        </span>
-      ) : null}
-    </p>
-  </div>
-);
+        ) : "routing_number" in bankAccount ? (
+          <span>
+            {t("seller.payouts.routing_number", "Routing number: ")}
+            <span>{bankAccount.routing_number}</span>
+          </span>
+        ) : null}{" "}
+        {"account_number" in bankAccount ? (
+          <span>
+            {t("seller.payouts.account", "Account: ")}
+            <span>{bankAccount.account_number}</span>
+          </span>
+        ) : null}
+      </p>
+    </div>
+  );
+};
 
 const PeriodPaypalAccount = ({
   isCurrentPeriod,
@@ -421,14 +488,22 @@ const PeriodPaypalAccount = ({
 }: {
   isCurrentPeriod: boolean;
   paypalAccount: PaypalAccount;
-}) => (
-  <h4>
-    {isCurrentPeriod ? "Will be sent to PayPal account:" : "Sent to PayPal account:"}{" "}
-    <span>{paypalAccount.paypal_address}</span>
-  </h4>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <h4>
+      {isCurrentPeriod
+        ? t("seller.payouts.will_be_sent_to_paypal", "Will be sent to PayPal account: ")
+        : t("seller.payouts.sent_to_paypal", "Sent to PayPal account: ")}{" "}
+      <span>{paypalAccount.paypal_address}</span>
+    </h4>
+  );
+};
 
-const PeriodNoAccount = () => <h4>Will be sent to:</h4>;
+const PeriodNoAccount = () => {
+  const { t } = useTranslation();
+  return <h4>{t("seller.payouts.will_be_sent_to", "Will be sent to:")}</h4>;
+};
 
 function PayoutLineItem({
   title,
@@ -511,10 +586,12 @@ export default function PayoutsIndex() {
 
   if (!loggedInUser) return null;
 
+  const { t } = useTranslation();
+
   const settingsAction = loggedInUser.policies.settings_payments_user.show ? (
     <NavigationButtonInertia href={Routes.settings_payments_path()}>
       <Cog pack="filled" className="size-5" />
-      Settings
+      {t("seller.payouts.settings", "Settings")}
     </NavigationButtonInertia>
   ) : null;
 
@@ -523,7 +600,7 @@ export default function PayoutsIndex() {
   return (
     <div>
       <PageHeader
-        title="Payouts"
+        title={t("seller.payouts.title", "Payouts")}
         actions={
           settingsAction || bulkExportAction ? (
             <div className="flex gap-2">
@@ -536,10 +613,10 @@ export default function PayoutsIndex() {
         {tax_center_enabled ? (
           <Tabs>
             <Tab isSelected asChild>
-              <Link href={Routes.balance_path()}>Payouts</Link>
+              <Link href={Routes.balance_path()}>{t("seller.payouts.title", "Payouts")}</Link>
             </Tab>
             <Tab isSelected={false} asChild>
-              <Link href={Routes.tax_center_path()}>Taxes</Link>
+              <Link href={Routes.tax_center_path()}>{t("seller.payouts.taxes", "Taxes")}</Link>
             </Tab>
           </Tabs>
         ) : null}
@@ -550,38 +627,42 @@ export default function PayoutsIndex() {
             <p>
               {scheduled_payout.action === "payout" ? (
                 scheduled_payout.status === "executed" ? (
-                  <>
-                    Your balance
-                    {scheduled_payout.payout_amount_cents != null
-                      ? ` of ${formatPriceCentsWithCurrencySymbol("usd", scheduled_payout.payout_amount_cents, { symbolFormat: "short", noCentsIfWhole: false })}`
-                      : ""}{" "}
-                    has been paid out.
-                  </>
+                  scheduled_payout.payout_amount_cents != null ? (
+                    t("seller.payouts.scheduled_payout_executed_with_amount", {
+                      amount: formatPriceCentsWithCurrencySymbol("usd", scheduled_payout.payout_amount_cents, {
+                        symbolFormat: "short",
+                        noCentsIfWhole: false,
+                      }),
+                    })
+                  ) : (
+                    t("seller.payouts.scheduled_payout_executed")
+                  )
                 ) : (
                   <>
-                    Your balance
                     {scheduled_payout.payout_amount_cents != null
-                      ? ` of ${formatPriceCentsWithCurrencySymbol("usd", scheduled_payout.payout_amount_cents, { symbolFormat: "short", noCentsIfWhole: false })}`
-                      : ""}{" "}
-                    is scheduled for payout on{" "}
-                    <strong>{new Date(scheduled_payout.scheduled_at).toLocaleDateString()}</strong>.
-                    {scheduled_payout.status === "flagged" &&
-                      " Your payout is under review. Please contact support for details."}
+                      ? t("seller.payouts.scheduled_payout_scheduled_with_amount", {
+                          amount: formatPriceCentsWithCurrencySymbol("usd", scheduled_payout.payout_amount_cents, {
+                            symbolFormat: "short",
+                            noCentsIfWhole: false,
+                          }),
+                          date: new Date(scheduled_payout.scheduled_at).toLocaleDateString(),
+                        })
+                      : t("seller.payouts.scheduled_payout_scheduled", {
+                          date: new Date(scheduled_payout.scheduled_at).toLocaleDateString(),
+                        })}
+                    {scheduled_payout.status === "flagged" ? ` ${t("seller.payouts.scheduled_payout_flagged")}` : null}
                   </>
                 )
               ) : scheduled_payout.action === "refund" ? (
                 scheduled_payout.status === "executed" ? (
-                  <>Your unpaid sales have been refunded to buyers.</>
+                  t("seller.payouts.scheduled_refund_executed")
                 ) : (
-                  <>
-                    Your balance will not be paid out. Unpaid sales are scheduled to be refunded to buyers on{" "}
-                    <strong>{new Date(scheduled_payout.scheduled_at).toLocaleDateString()}</strong>.
-                  </>
+                  t("seller.payouts.scheduled_refund_scheduled", {
+                    date: new Date(scheduled_payout.scheduled_at).toLocaleDateString(),
+                  })
                 )
               ) : (
-                <>
-                  Your balance is on hold. Please <a href="mailto:support@gumroad.com">contact support</a> for details.
-                </>
+                t("seller.payouts.scheduled_on_hold")
               )}
             </p>
           </Alert>
@@ -603,27 +684,33 @@ export default function PayoutsIndex() {
           <Alert variant="info" role="status">
             <div>
               <b>
-                You have{" "}
-                {formatPriceCentsWithCurrencySymbol("usd", instant_payout.payable_amount_cents, {
-                  symbolFormat: "short",
-                  noCentsIfWhole: false,
-                })}{" "}
-                available for instant payout:
+                {t(
+                  "seller.payouts.instant_payout_available_intro",
+                  {
+                    amount: formatPriceCentsWithCurrencySymbol("usd", instant_payout.payable_amount_cents, {
+                      symbolFormat: "short",
+                      noCentsIfWhole: false,
+                    }),
+                  },
+                  "You have {amount} available for instant payout:",
+                )}
               </b>{" "}
-              No need to wait—get paid now!
+              {t("seller.payouts.instant_payout_no_need_to_wait", "No need to wait—get paid now!")}
               <div style={{ marginTop: "var(--spacer-3)" }}>
                 {instant_payout.payable_balances.some(
                   (balance) => balance.amount_cents > MAXIMUM_INSTANT_PAYOUT_AMOUNT_CENTS,
                 ) ? (
-                  <a href="mailto:support@gumroad.com">Contact us for an instant payout</a>
+                  <a href="mailto:support@gumroad.com">
+                    {t("seller.payouts.contact_us_for_instant_payout", "Contact us for an instant payout")}
+                  </a>
                 ) : (
                   <Button
                     size="sm"
                     color="primary"
-                    aria-label="Get paid now"
+                    aria-label={t("seller.payouts.get_paid", "Get paid!")}
                     onClick={() => setIsInstantPayoutModalOpen(true)}
                   >
-                    Get paid!
+                    {t("seller.payouts.get_paid", "Get paid!")}
                   </Button>
                 )}
               </div>
@@ -633,20 +720,26 @@ export default function PayoutsIndex() {
               onClose={() => setIsInstantPayoutModalOpen(false)}
               footer={
                 <>
-                  <Button onClick={() => setIsInstantPayoutModalOpen(false)}>Cancel</Button>
+                  <Button onClick={() => setIsInstantPayoutModalOpen(false)}>
+                    {t("seller.payouts.cancel", "Cancel")}
+                  </Button>
                   <Button color="primary" disabled={isNavigating} onClick={onRequestInstantPayout}>
-                    Get paid!
+                    {t("seller.payouts.get_paid", "Get paid!")}
                   </Button>
                 </>
               }
-              title="Instant payout"
+              title={t("seller.payouts.instant_payout_modal_title", "Instant payout")}
             >
               <p>
-                You can request instant payouts 24/7, including weekends and holidays. Funds typically appear in your
-                bank account within 30 minutes, though some payouts may take longer to be credited.
+                {t(
+                  "seller.payouts.instant_payout_modal_desc",
+                  "You can request instant payouts 24/7, including weekends and holidays. Funds typically appear in your bank account within 30 minutes, though some payouts may take longer to be credited.",
+                )}
               </p>
               <Fieldset>
-                <Label htmlFor="instant-payout-date">Pay out balance up to</Label>
+                <Label htmlFor="instant-payout-date">
+                  {t("seller.payouts.pay_out_balance_up_to", "Pay out balance up to")}
+                </Label>
                 <InputGroup className="cursor-pointer pr-0">
                   <Calendar className="size-5" />
                   <Select
@@ -669,11 +762,11 @@ export default function PayoutsIndex() {
                 </InputGroup>
               </Fieldset>
               <Fieldset>
-                <FieldsetTitle>Payout details</FieldsetTitle>
+                <FieldsetTitle>{t("seller.payouts.payout_details", "Payout details")}</FieldsetTitle>
                 <div className="rounded-sm border border-border bg-background not-first:border-t">
                   <div className="grid gap-4 p-4">
                     <div className="grid grid-flow-col justify-between gap-4">
-                      <h4 className="inline-flex flex-wrap gap-2">Sent to</h4>
+                      <h4 className="inline-flex flex-wrap gap-2">{t("seller.payouts.sent_to", "Sent to")}</h4>
                       <div>
                         {instant_payout.bank_account_type === "CARD" ? (
                           <p>
@@ -685,27 +778,33 @@ export default function PayoutsIndex() {
                           <div>
                             {instant_payout.bank_name ? <p className="text-right">{instant_payout.bank_name}</p> : null}
                             <p className="text-right">
-                              Routing number: <span>{instant_payout.routing_number}</span>
+                              {t("seller.payouts.routing_number", "Routing number: ")}
+                              <span>{instant_payout.routing_number}</span>
                             </p>
                             <p className="text-right">
-                              Account: <span>{instant_payout.account_number}</span>
+                              {t("seller.payouts.account", "Account: ")}
+                              <span>{instant_payout.account_number}</span>
                             </p>
                           </div>
                         )}
                       </div>
                     </div>
                     <PayoutLineItem
-                      title="Amount"
+                      title={t("seller.payouts.amount", "Amount")}
                       price={`$${formatPriceCentsWithoutCurrencySymbol("usd", instantPayoutAmountCents)}`}
                     />
                     <PayoutLineItem
-                      title={`Instant payout fee (${instant_payout.instant_payout_fee_percent}%)`}
+                      title={t(
+                        "seller.payouts.instant_payout_fee",
+                        { percent: instant_payout.instant_payout_fee_percent },
+                        `Instant payout fee (${instant_payout.instant_payout_fee_percent}%)`,
+                      )}
                       price={`-$${formatPriceCentsWithoutCurrencySymbol("usd", instantPayoutFee)}`}
                     />
                   </div>
                   <footer className="grid gap-4 border-t border-border p-4">
                     <PayoutLineItem
-                      title="You'll receive"
+                      title={t("seller.payouts.you_will_receive", "You'll receive")}
                       price={`$${formatPriceCentsWithoutCurrencySymbol("usd", instantPayoutAmountCents - instantPayoutFee)}`}
                       className="text-lg"
                     />
@@ -713,8 +812,10 @@ export default function PayoutsIndex() {
                 </div>
                 {instantPayoutAmountCents > MAXIMUM_INSTANT_PAYOUT_AMOUNT_CENTS ? (
                   <Alert variant="info" role="status">
-                    Your balance exceeds the maximum amount for a single instant payout, so we'll automatically split
-                    your balance into multiple payouts.
+                    {t(
+                      "seller.payouts.instant_payout_split_notice",
+                      "Your balance exceeds the maximum amount for a single instant payout, so we'll automatically split your balance into multiple payouts.",
+                    )}
                   </Alert>
                 ) : null}
               </Fieldset>
@@ -724,18 +825,24 @@ export default function PayoutsIndex() {
           <Alert variant="info" role="status">
             <div>
               <b>
-                You have{" "}
-                {formatPriceCentsWithCurrencySymbol("usd", instant_payout.unpaid_amount_cents, {
-                  symbolFormat: "short",
-                  noCentsIfWhole: false,
-                })}{" "}
-                that hasn't settled yet.
+                {t(
+                  "seller.payouts.instant_payout_unsettled_intro",
+                  {
+                    amount: formatPriceCentsWithCurrencySymbol("usd", instant_payout.unpaid_amount_cents, {
+                      symbolFormat: "short",
+                      noCentsIfWhole: false,
+                    }),
+                  },
+                  "You have {amount} that hasn't settled yet.",
+                )}
               </b>{" "}
-              Instant payout will be available here as soon as at least $1 of that balance clears, usually within a few
-              days.
+              {t(
+                "seller.payouts.instant_payout_unsettled_desc",
+                "Instant payout will be available here as soon as at least $1 of that balance clears, usually within a few days.",
+              )}
               <div style={{ marginTop: "var(--spacer-3)" }}>
-                <Button size="sm" color="primary" aria-label="Get paid now" disabled>
-                  Get paid!
+                <Button size="sm" color="primary" aria-label={t("seller.payouts.get_paid", "Get paid!")} disabled>
+                  {t("seller.payouts.get_paid", "Get paid!")}
                 </Button>
               </div>
             </div>
@@ -746,25 +853,36 @@ export default function PayoutsIndex() {
             <p>
               {payouts_paused_by === "stripe" ? (
                 <strong>
-                  Your payouts are currently paused by Stripe. Please check your{" "}
-                  <a href="/settings/payments">Payment Settings</a> for any verification requirements.
+                  {t(
+                    "seller.payouts.payouts_paused_by_stripe",
+                    "Your payouts are currently paused by Stripe. Please check your Payment Settings for any verification requirements.",
+                  )}
                 </strong>
               ) : payouts_paused_by === "admin" ? (
-                <strong>Your payouts have been paused by Gumroad.</strong>
+                <strong>
+                  {t("seller.payouts.payouts_paused_by_app", "Your payouts have been paused by {app_name}.")}
+                </strong>
               ) : payouts_paused_by === "system" && payout_reserve_percent ? (
                 <strong>
-                  We're holding {payout_reserve_percent}% of your balance in reserve while your chargeback rate is above
-                  1.5%. The rest pays out on the normal weekly schedule.
+                  {t(
+                    "seller.payouts.payouts_paused_by_reserve",
+                    { percent: payout_reserve_percent },
+                    "We're holding {percent}% of your balance in reserve while your chargeback rate is above 1.5%. The rest pays out on the normal weekly schedule.",
+                  )}
                 </strong>
               ) : payouts_paused_by === "system" ? (
                 <strong>
-                  Your payouts have been automatically paused for a security review and will be resumed once the review
-                  completes.
+                  {t(
+                    "seller.payouts.payouts_paused_by_security",
+                    "Your payouts have been automatically paused for a security review and will be resumed once the review completes.",
+                  )}
                 </strong>
               ) : (
                 <strong>
-                  You have paused your payouts. Please go to <a href="/settings/payments">Payment Settings</a> to resume
-                  payouts.
+                  {t(
+                    "seller.payouts.payouts_paused_by_user",
+                    "You have paused your payouts. Please go to Payment Settings to resume payouts.",
+                  )}
                 </strong>
               )}
             </p>
@@ -773,7 +891,12 @@ export default function PayoutsIndex() {
         {next_payout_period_data != null ? (
           next_payout_period_data.has_stripe_connect ? (
             <Alert variant="info" role="status">
-              <p>For Stripe Connect users, all future payouts will be deposited directly to your Stripe account</p>
+              <p>
+                {t(
+                  "seller.payouts.stripe_connect_notice",
+                  "For Stripe Connect users, all future payouts will be deposited directly to your Stripe account",
+                )}
+              </p>
             </Alert>
           ) : (
             <section className="grid gap-4">
@@ -794,34 +917,45 @@ export default function PayoutsIndex() {
                 next_payout_period_data.balance_cents < next_payout_period_data.minimum_payout_amount_cents ? (
                   <Alert variant="info" role="status">
                     <p>
-                      Your balance is{" "}
-                      {formatPriceCentsWithCurrencySymbol("usd", next_payout_period_data.balance_cents, {
-                        symbolFormat: "short",
-                        noCentsIfWhole: false,
-                      })}
-                      , below the{" "}
-                      {formatPriceCentsWithCurrencySymbol("usd", next_payout_period_data.minimum_payout_amount_cents, {
-                        symbolFormat: "short",
-                      })}{" "}
-                      minimum
-                      {next_payout_period_data.skipped_payout_date != null
-                        ? ` — so your ${next_payout_period_data.skipped_payout_date} payout was skipped`
-                        : ""}
-                      . You'll be paid out automatically once your balance reaches{" "}
-                      {formatPriceCentsWithCurrencySymbol("usd", next_payout_period_data.minimum_payout_amount_cents, {
-                        symbolFormat: "short",
-                      })}
-                      .
+                      {t(
+                        "seller.payouts.balance_below_minimum",
+                        {
+                          balance: formatPriceCentsWithCurrencySymbol("usd", next_payout_period_data.balance_cents, {
+                            symbolFormat: "short",
+                            noCentsIfWhole: false,
+                          }),
+                          minimum: formatPriceCentsWithCurrencySymbol(
+                            "usd",
+                            next_payout_period_data.minimum_payout_amount_cents,
+                            { symbolFormat: "short" },
+                          ),
+                          skipped:
+                            next_payout_period_data.skipped_payout_date != null
+                              ? t(
+                                  "seller.payouts.balance_skipped_suffix",
+                                  { date: next_payout_period_data.skipped_payout_date },
+                                  ` — so your ${next_payout_period_data.skipped_payout_date} payout was skipped`,
+                                )
+                              : "",
+                        },
+                        "Your balance is {balance}, below the {minimum} minimum{skipped}. You'll be paid out automatically once your balance reaches {minimum}.",
+                      )}
                     </p>
                   </Alert>
                 ) : past_payout_period_data.length > 0 ? (
                   <Alert variant="info" role="status">
                     <p>
-                      Reach a balance of at least{" "}
-                      {formatPriceCentsWithCurrencySymbol("usd", next_payout_period_data.minimum_payout_amount_cents, {
-                        symbolFormat: "short",
-                      })}{" "}
-                      to be paid out for your sales.
+                      {t(
+                        "seller.payouts.balance_reach_minimum",
+                        {
+                          minimum: formatPriceCentsWithCurrencySymbol(
+                            "usd",
+                            next_payout_period_data.minimum_payout_amount_cents,
+                            { symbolFormat: "short" },
+                          ),
+                        },
+                        "Reach a balance of at least {minimum} to be paid out for your sales.",
+                      )}
                     </p>
                   </Alert>
                 ) : (
@@ -845,7 +979,7 @@ export default function PayoutsIndex() {
         {past_payout_period_data.length > 0 ? (
           <>
             <section>
-              <h2>Past payouts</h2>
+              <h2>{t("seller.payouts.past_payouts", "Past payouts")}</h2>
               <section className="flex flex-col gap-4">
                 {past_payout_period_data.map((payoutPeriodData, idx) => (
                   <Period key={idx} payoutPeriodData={payoutPeriodData} />
@@ -854,7 +988,7 @@ export default function PayoutsIndex() {
             </section>
             {pagination.page < pagination.pages ? (
               <Button color="primary" onClick={loadNextPage} disabled={isNavigating}>
-                Show older payouts
+                {t("seller.payouts.show_older_payouts", "Show older payouts")}
               </Button>
             ) : null}
           </>

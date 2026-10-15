@@ -31,7 +31,7 @@ class ReceiptPresenter::FooterInfo
   end
 
   def manage_subscription_link
-    link_to(I18n.t("subscriptions.manage_membership", default: "Manage membership"), manage_subscription_url)
+    link_to(I18n.t("actions.manage_membership", default: "Manage membership"), manage_subscription_url)
   end
 
   def manage_subscription_url

@@ -395,3 +395,43 @@ The following strings were updated or introduced in the P0 and P1 platform de-br
 | `flash.users.unsubscribed_announcements` | You have been unsubscribed from %{app_name} announcements. | የ "%{app_name}" ማስታወቂያዎች ምዝገባዎ ተሰርዟል። | Marketing unsubscribe confirmation. |
 | `flash.users.account_deleted` | Your account has been successfully deleted. Thank you for using %{app_name}. | አካውንትዎ በተሳካ ሁኔታ ተሰርዟል። "%{app_name}"ን ስለተጠቀሙ እናመሰግናለን። | Account deletion confirmation. |
 
+---
+
+## 10. Phase 4b Seller Payouts & Payment Settings Strings
+
+The following Amharic strings cover seller payouts (`/payouts`), payment settings (`/settings/payments`), payout frequency schedules, minimum payout thresholds, payout method choices (Bank Account, Debit Card, PayPal, Stripe Connect), payout pausing, and currency price-ending rounding:
+
+### 10.1 Payouts & Scheduled Disbursements
+
+| Key | English Source | Amharic Draft | Review Focus / Questions |
+| :--- | :--- | :--- | :--- |
+| `seller.payouts.scheduled_payout_executed` | Your balance has been paid out. | የእርስዎ ቀሪ ሂሳብ ተከፍሏል። | Disbursement execution notice. |
+| `seller.payouts.scheduled_payout_executed_with_amount` | Your balance of {amount} has been paid out. | የ {amount} ቀሪ ሂሳብዎ ተከፍሏል። | Disbursement with dynamic formatted balance. |
+| `seller.payouts.scheduled_payout_scheduled` | Your balance is scheduled for payout on {date}. | የእርስዎ ቀሪ ሂሳብ በ {date} እንዲከፈል የጊዜ ሰሌዳ ተይዞለታል። | Scheduled disbursement date notice. |
+| `seller.payouts.scheduled_payout_scheduled_with_amount` | Your balance of {amount} is scheduled for payout on {date}. | የ {amount} ቀሪ ሂሳብዎ በ {date} እንዲከፈል የጊዜ ሰሌዳ ተይዞለታል። | Scheduled disbursement with amount and date. |
+| `seller.payouts.scheduled_payout_flagged` | Your payout is under review. Please contact support for details. | የክፍያዎ ሁኔታ በመገምገም ላይ ነው። እባክዎ ለዝርዝሩ ድጋፍ ሰጪን ያነጋግሩ። | Under review hold notice. |
+| `seller.payouts.scheduled_refund_executed` | Your unpaid sales have been refunded to buyers. | ያልተከፈሉ ሽያጮችዎ ለገዢዎች ተመላሽ ተደርገዋል። | Merchant unpaid sales refunded notice. |
+| `seller.payouts.scheduled_refund_scheduled` | Your balance will not be paid out. Unpaid sales are scheduled to be refunded to buyers on {date}. | የእርስዎ ቀሪ ሂሳብ አይከፈልም። ያልተከፈሉ ሽያጮች በ {date} ለገዢዎች ተመላሽ እንዲደረጉ የጊዜ ሰሌዳ ተይዞላቸዋል። | Scheduled refund notice. |
+| `seller.payouts.scheduled_on_hold` | Your balance is on hold. Please contact support for details. | የእርስዎ ቀሪ ሂሳብ ታግዷል። እባክዎ ለዝርዝሩ ድጋፍ ሰጪን ያነጋግሩ። | General hold notice. |
+
+### 10.2 Payment Settings & Payout Schedules
+
+| Key | English Source | Amharic Draft | Review Focus / Questions |
+| :--- | :--- | :--- | :--- |
+| `seller.payments.schedule_header` | Payout schedule | የሻጭ ክፍያ የጊዜ ሰሌዳ | Payout schedule section title. |
+| `seller.payments.schedule_desc` | Payouts will only happen on your chosen schedule once the minimum balance of {amount} is reached. | የሻጭ ክፍያዎች የሚከናወኑት ዝቅተኛው የቀሪ ሂሳብ መጠን {amount} ሲደርስ በመረጡት የጊዜ ሰሌዳ መሰረት ብቻ ነው። | Minimum threshold requirement for schedule. |
+| `seller.payments.schedule_daily_alert` | Every day, your balance from the previous day will be sent to you via instant payouts, subject to a {percent}% fee — the same fee as a one-off instant payout. | በየቀኑ፣ ካለፈው ቀን የቀረው ቀሪ ሂሳብዎ በፈጣን የሻጭ ክፍያ በ {percent}% ክፍያ ይላክልዎታል — ይህም ከአንድ ጊዜ ፈጣን ክፍያ ጋር ተመሳሳይ ክፍያ ነው። | Daily payout fee explanation. |
+| `seller.payments.minimum_threshold_label` | Minimum payout threshold | ዝቅተኛው የሻጭ ክፍያ ገደብ | Threshold field label. |
+| `seller.payments.minimum_threshold_desc` | The minimum payout threshold for {country} is {amount}. | ለ {country} ዝቅተኛው የሻጭ ክፍያ ገደብ {amount} ነው። | Country-specific threshold explanation. |
+| `seller.payments.pause_payouts_label` | Pause payouts | የሻጭ ክፍያዎችን ለጊዜው አቁም | Pause toggle label. |
+| `seller.payments.pause_payouts_desc` | By pausing payouts, they won't be processed until you decide to resume them, and your balance will remain in your account until then. | የሻጭ ክፍያዎችን ለጊዜው በማቆም፣ እንደገና እንዲቀጥሉ እስኪወስኑ ድረስ አይከናወኑም፣ እና ቀሪ ሂሳብዎ እስከዚያ ድረስ በመለያዎ ውስጥ ይቆያል። | Payout pause impact explanation. |
+| `seller.payments.keep_price_endings_desc` | Buyers charged in their own currency see the ending of the USD total rather than the exact converted amount... | በራሳቸው ገንዘብ ክፍያ የሚፈጽሙ ገዢዎች ትክክለኛውን የተለወጠ መጠን ሳይሆን የ USD ድምር ማብቂያን ያያሉ... | Local currency price rounding explanation. |
+| `seller.payments.payout_method_header` | Payout method | የሻጭ ክፍያ ዘዴ | Payout rails section header. |
+| `seller.payments.bank_account` | Bank Account | የባንክ ሂሳብ | Bank payout rail tab. |
+| `seller.payments.debit_card` | Debit Card | ዴቢት ካርድ | Debit card payout rail tab. |
+| `seller.payments.payouts_paused_by_stripe` | Your payouts have been paused by Stripe. | የሻጭ ክፍያዎችዎ በ Stripe ለጊዜው ቆመዋል። | Stripe rail pause alert. |
+| `seller.payments.payouts_paused_by_app` | Your payouts have been paused by {app_name}. | የሻጭ ክፍያዎችዎ በ "{app_name}" ለጊዜው ቆመዋል። | Platform-level pause alert. |
+| `seller.payments.payouts_paused_by_reserve` | Payout pausing is managed automatically while the reserve hold is active. | የመጠባበቂያ ክፍያው ንቁ ሆኖ ሳለ የክፍያ ማቆም በራስ-ሰር ይተዳደራል። | Reserve hold automated pause note. |
+| `seller.payments.payouts_paused_by_security` | Your payouts have been paused for a security review. | የሻጭ ክፍያዎችዎ ለደህንነት ግምገማ ለጊዜው ቆመዋል። | Security pause notice. |
+
+

@@ -2,23 +2,36 @@ import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
 import { SettingPage as Page } from "$app/parsers/settings";
+import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { PageHeader } from "$app/components/ui/PageHeader";
-import { Tabs, Tab } from "$app/components/ui/Tabs";
+import { Tab, Tabs } from "$app/components/ui/Tabs";
 import { useReactNativeMessage } from "$app/components/useReactNativeMessage";
 
-const PAGE_TITLES = {
-  main: "Settings",
-  profile: "Profile",
-  team: "Team",
-  payments: "Payments",
-  billing: "Billing",
-  authorized_applications: "Applications",
-  password: "Password and authentication",
-  social_connections: "Social connections",
-  third_party_analytics: "Third-party analytics",
-  advanced: "Advanced",
+const getTabTitle = (page: Page, t: (k: string, fb: string) => string): string => {
+  switch (page) {
+    case "main":
+      return t("seller.settings.tabs.main", "Settings");
+    case "profile":
+      return t("seller.settings.tabs.profile", "Profile");
+    case "team":
+      return t("seller.settings.tabs.team", "Team");
+    case "payments":
+      return t("seller.settings.tabs.payments", "Payments");
+    case "billing":
+      return t("seller.settings.tabs.billing", "Billing");
+    case "authorized_applications":
+      return t("seller.settings.tabs.authorized_applications", "Applications");
+    case "password":
+      return t("seller.settings.tabs.password", "Password and authentication");
+    case "social_connections":
+      return t("seller.settings.tabs.social_connections", "Social connections");
+    case "third_party_analytics":
+      return t("seller.settings.tabs.third_party_analytics", "Third-party analytics");
+    case "advanced":
+      return t("seller.settings.tabs.advanced", "Advanced");
+  }
 };
 
 type Props = {
@@ -32,6 +45,7 @@ type Props = {
 export const postToMobileApp = (message: object) => window.ReactNativeWebView?.postMessage(JSON.stringify(message));
 
 export const Layout = ({ onSave, pages, currentPage, children, canUpdate }: Props) => {
+  const { t } = useTranslation();
   const isMobileAppWebView = Boolean(usePage<{ is_mobile_app_web_view?: boolean }>().props.is_mobile_app_web_view);
 
   useReactNativeMessage((data) => {
@@ -50,11 +64,11 @@ export const Layout = ({ onSave, pages, currentPage, children, canUpdate }: Prop
     <>
       <PageHeader
         className="sticky-top"
-        title="Settings"
+        title={t("seller.settings.title", "Settings")}
         actions={
           onSave ? (
             <Button color="accent" onClick={onSave} disabled={!canUpdate}>
-              Update settings
+              {t("seller.settings.update_settings", "Update settings")}
             </Button>
           ) : null
         }
@@ -62,7 +76,7 @@ export const Layout = ({ onSave, pages, currentPage, children, canUpdate }: Prop
         <Tabs>
           {pages.map((page) => (
             <Tab key={page} isSelected={currentPage === page} asChild>
-              <Link href={Routes[`settings_${page}_path`]()}>{PAGE_TITLES[page]}</Link>
+              <Link href={Routes[`settings_${page}_path`]()}>{getTabTitle(page, t)}</Link>
             </Tab>
           ))}
         </Tabs>

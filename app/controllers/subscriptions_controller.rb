@@ -24,7 +24,7 @@ class SubscriptionsController < ApplicationController
 
   def unsubscribe_by_user
     @subscription.cancel!(by_seller: false)
-    subscription_entity = @subscription.is_installment_plan ? t("installment_plan") : t("membership")
+    subscription_entity = @subscription.is_installment_plan ? t("actions.installment_plan") : t("actions.membership")
     redirect_to manage_subscription_path(@subscription.external_id), notice: t("flash.subscriptions.cancelled", entity: subscription_entity)
   rescue ActiveRecord::RecordInvalid => e
     redirect_to manage_subscription_path(@subscription.external_id), alert: e.message
@@ -93,7 +93,7 @@ class SubscriptionsController < ApplicationController
     product = @subscription.link
     @body_id = "product_page"
 
-    set_meta_tag(title: @subscription.is_installment_plan ? t("manage_installment_plan") : t("manage_membership"))
+    set_meta_tag(title: @subscription.is_installment_plan ? t("actions.manage_installment_plan") : t("actions.manage_membership"))
     set_product_page_meta(product)
 
     props = CheckoutPresenter.new(logged_in_user:, ip: request.remote_ip)

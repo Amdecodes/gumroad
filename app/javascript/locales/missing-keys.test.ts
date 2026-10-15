@@ -120,7 +120,11 @@ describe("Missing i18n keys", () => {
   it("reports all translation keys used in source that are absent from en or am dictionaries", () => {
     const repoRoot = path.resolve(process.cwd());
 
-    const scanDirs = [path.join(repoRoot, "app/javascript/components"), path.join(repoRoot, "app/javascript/utils")];
+    const scanDirs = [
+      path.join(repoRoot, "app/javascript/components"),
+      path.join(repoRoot, "app/javascript/pages"),
+      path.join(repoRoot, "app/javascript/utils"),
+    ];
 
     const files = scanDirs.flatMap((d) => collectTsFiles(d));
     const allUsages = files.flatMap((f) => extractKeysFromFile(f));
