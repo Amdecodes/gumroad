@@ -112,6 +112,8 @@ class Link < ApplicationRecord
 
   DEFAULT_BOOSTED_DISCOVER_FEE_PER_THOUSAND = 300
 
+  attribute :discover_fee_per_thousand, default: 300
+
   # Longest custom permalink a seller can set. Matches the varchar(255) column;
   # the editor's input uses the same number as its maxLength so the field stops
   # accepting characters at the point the server would reject the value.
@@ -245,7 +247,7 @@ class Link < ApplicationRecord
   validate :max_purchase_count_is_greater_than_or_equal_to_inventory_sold
   validate :free_trial_only_enabled_if_recurring_billing
   validates :native_type, inclusion: { in: NATIVE_TYPES }
-  validates :discover_fee_per_thousand, inclusion: { in: [100, *(300..1000)], message: "must be between 30% and 100%" }
+  validates :discover_fee_per_thousand, inclusion: { in: [300], message: "must be 30%" }
   validates :free_trial_duration_unit, presence: true, if: :free_trial_enabled?
   # Only allow "1 week" and "1 month" free trials for now
   validates :free_trial_duration_amount, presence: true,
@@ -445,16 +447,11 @@ class Link < ApplicationRecord
 
   scope :eligible_for_content_upsells, -> { visible_and_not_archived.not_is_tiered_membership }
 
-  before_create :set_default_discover_fee_per_thousand
   after_create :initialize_tier_if_needed
   after_create :add_to_profile_sections
   after_create :initialize_suggested_amount_if_needed!
   after_create :initialize_call_limitation_info_if_needed!
   after_create :initialize_duration_variant_category_for_calls!
-
-  def set_default_discover_fee_per_thousand
-    self.discover_fee_per_thousand = DEFAULT_BOOSTED_DISCOVER_FEE_PER_THOUSAND if user.discover_boost_enabled?
-  end
 
   def initialize_tier_if_needed
     if is_tiered_membership
@@ -474,7 +471,8 @@ class Link < ApplicationRecord
       default_tier.save_recurring_prices!(
         subscription_duration.to_s => {
           enabled: true,
-          price: formatted_dollar_amount(initial_price_cents)
+          price: (initial_price_cents / 100.0).to_s,
+          price_cents: initial_price_cents
         }
       )
     end

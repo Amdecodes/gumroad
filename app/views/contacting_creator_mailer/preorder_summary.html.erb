@@ -1,7 +1,7 @@
 <%= header_section("Your pre-order was successfully released!") %>
 <div>
   <p>
-    You made <%= formatted_dollar_amount(@revenue_cents) %> from <%= pluralize(@preorders_charged_successfully_count, "pre-order") %>.
+    You made <%= MoneyFormatter.format(@revenue_cents, @product.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true) %> from <%= pluralize(@preorders_charged_successfully_count, "pre-order") %>.
     <%= @preorders_charged_successfully_count > 1 ? "Buyers have" : "The buyer has" %> been charged, and <%= @product.is_physical ? "they're ready to have #{@product.name} shipped to them." : "they have received the product." %>
     You can view your new <%= "customers".pluralize(@preorders_charged_successfully_count) %> by <a href="<%= customers_url %>">clicking here</a>.
   </p>

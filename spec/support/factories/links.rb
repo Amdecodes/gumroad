@@ -7,6 +7,7 @@ FactoryBot.define do
     user { create(:user) }
     price_cents { 100 }
     display_product_reviews { true }
+    discover_fee_per_thousand { 300 }
 
     transient do
       tag { nil }

@@ -126,7 +126,7 @@ module User::PayoutSchedule
         user: self,
         amount_cents: payout_amount,
         payout_period_end_date:,
-        currency: Currency::USD,
+        currency: Currency::ETB,
         state: payouts_status,
         created_at: upcoming_payout_date,
         processor: current_payout_processor,

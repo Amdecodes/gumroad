@@ -21,11 +21,13 @@ class Purchase < ApplicationRecord
   SKU_ID_PREFIX_FOR_PRODUCT_WITH_NO_SKUS = "pid_"
 
   # Gumroad's fees per transaction
-  GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND = 100
+  GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND = 150
 
-  GUMROAD_FLAT_FEE_PER_THOUSAND = 100
+  GUMROAD_FLAT_FEE_PER_THOUSAND = 150
   GUMROAD_DISCOVER_FEE_PER_THOUSAND = 300
-  GUMROAD_FIXED_FEE_CENTS = 50
+  GUMROAD_FIXED_FEE_CENTS = 0
+  CHAPA_PROCESSOR_FEE_PER_THOUSAND = 0
+  CHAPA_PROCESSOR_FIXED_FEE_CENTS = 0
   PROCESSOR_FEE_PER_THOUSAND = 29
   PROCESSOR_FIXED_FEE_CENTS = 30
   # Brazilian IOF (3.5%) on Pix that leaves Brazil. This constant is the RECOVERY fee, billed
@@ -2321,7 +2323,7 @@ class Purchase < ApplicationRecord
   end
 
   def amount_refundable_cents
-    return 0 unless charge_processor_id.in?(ChargeProcessor.charge_processor_ids) # We can't refund purchases where we've removed support for the payment method
+    return 0 unless charge_processor_id.in?(ChargeProcessor.charge_processor_ids) || chapa? # We can't refund purchases where we've removed support for the payment method
     price_cents - amount_refunded_cents
   end
 
@@ -5485,7 +5487,11 @@ class Purchase < ApplicationRecord
 
       variable_fee_cents = (price_cents * fee_per_thousand / 1000.0).round
 
-      fixed_processor_fee_cents = charged_using_gumroad_merchant_account? ? PROCESSOR_FIXED_FEE_CENTS : 0
+      fixed_processor_fee_cents = if charged_using_gumroad_merchant_account?
+        chapa? ? CHAPA_PROCESSOR_FIXED_FEE_CENTS : PROCESSOR_FIXED_FEE_CENTS
+      else
+        0
+      end
       fixed_fee_cents = if is_recurring_subscription_charge
         if subscription.mor_fee_applicable?
           was_discover_fee_charged? ? 0 : GUMROAD_FIXED_FEE_CENTS + fixed_processor_fee_cents
@@ -5502,19 +5508,26 @@ class Purchase < ApplicationRecord
     public :calculate_fees
 
     def calculate_additional_discover_fee_per_thousand
-      if is_recurring_subscription_charge || is_updated_original_subscription_purchase
-        subscription.original_purchase.discover_fee_per_thousand - (custom_fee_per_thousand.presence || GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND) - (subscription.mor_fee_applicable? && charged_using_gumroad_merchant_account? ? PROCESSOR_FEE_PER_THOUSAND : 0)
-      elsif is_preorder_charge?
-        preorder.authorization_purchase.discover_fee_per_thousand - (custom_fee_per_thousand.presence || GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND) - PROCESSOR_FEE_PER_THOUSAND
+      processor_fee = if charged_using_gumroad_merchant_account?
+        chapa? ? CHAPA_PROCESSOR_FEE_PER_THOUSAND : PROCESSOR_FEE_PER_THOUSAND
       else
-        GUMROAD_DISCOVER_FEE_PER_THOUSAND - (custom_fee_per_thousand.presence || GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND) - (charged_using_gumroad_merchant_account? ? PROCESSOR_FEE_PER_THOUSAND : 0)
+        0
       end
+      base_fee = custom_fee_per_thousand.presence || gumroad_flat_fee_per_thousand
+
+      [GUMROAD_DISCOVER_FEE_PER_THOUSAND - base_fee - processor_fee, 0].max
     end
 
     def calculate_gumroad_fee_per_thousand
       calculate_custom_fee_per_thousand
+      processor_fee = if charged_using_gumroad_merchant_account?
+        chapa? ? CHAPA_PROCESSOR_FEE_PER_THOUSAND : PROCESSOR_FEE_PER_THOUSAND
+      else
+        0
+      end
+
       (custom_fee_per_thousand.presence || gumroad_flat_fee_per_thousand) +
-        (charged_using_gumroad_merchant_account? ? PROCESSOR_FEE_PER_THOUSAND : 0) +
+        processor_fee +
         pix_iof_fee_per_thousand
     end
 

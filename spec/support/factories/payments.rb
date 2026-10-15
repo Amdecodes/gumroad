@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :payment do
     user
+    currency { Currency::ETB }
     state { "processing" }
     processor { PayoutProcessorType::PAYPAL }
     correlation_id { "12345" }

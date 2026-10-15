@@ -13,7 +13,7 @@
           <%= @seller.last_weeks_followers %>
         </td>
         <td>
-          <strong><%= formatted_dollar_amount(@seller.last_weeks_sales) %></strong>
+          <strong><%= MoneyFormatter.format(@seller.last_weeks_sales, :etb, no_cents_if_whole: true, symbol: true) %></strong>
         </td>
       </tr>
       <tr>
@@ -45,20 +45,20 @@
               <% if new_subs.count > 0 %>
                 <%= pluralize(new_subs.count, "new subscription") %>
                 →
-                <%= Money.new(new_subs.sum(:price_cents), "USD").format.gsub(".00", "") %>
+                <%= MoneyFormatter.format(new_subs.sum(:price_cents), link.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true) %>
                 <br>
               <% end %>
               <% if existing_subs.count > 0 %>
                 <%= pluralize(existing_subs.count, "existing subscription") %>
                 →
-                <%= Money.new(existing_subs.sum(:price_cents), "USD").format.gsub(".00", "") %>
+                <%= MoneyFormatter.format(existing_subs.sum(:price_cents), link.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true) %>
               <% end %>
             </td>
           <% else %>
             <td>
               <%= pluralize(sales.count, "sale") %>
               →
-              <%= Money.new(sales.sum(:price_cents), "USD").format.gsub(".00", "") %>
+              <%= MoneyFormatter.format(sales.sum(:price_cents), link.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true) %>
             </td>
           <% end %>
         </tr>

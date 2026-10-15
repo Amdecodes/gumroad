@@ -30,7 +30,7 @@
   <div class="max-w-xl space-y-12 md:space-y-8">
   <div class="space-y-8">
     <h3 class="font-medium text-5xl lg:text-6xl">
-      10% + $0.50
+      <%= PlatformConfig.flat_fee_percent.to_i %>%
     </h3>
     <p class="text-xl lg:text-2xl">
       Per transaction for all sales through your profile or direct links to your customers.
@@ -42,7 +42,7 @@
     <div class="max-w-xl space-y-12 md:space-y-8">
       <div class="space-y-8">
         <h3 class="font-medium text-5xl lg:text-6xl">
-          30%
+          <%= PlatformConfig.discover_fee_percent.to_i %>%
         </h3>
         <p class="text-xl lg:text-2xl">
         Per transaction when new customers find and buy from you through our discover marketplace.

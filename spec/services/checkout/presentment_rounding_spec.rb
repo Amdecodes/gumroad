@@ -124,7 +124,7 @@ describe Checkout::PresentmentRounding do
     it "is the flat Gumroad fee on the cart's price and tips" do
       seller = create(:user)
 
-      expect(described_class.absorbable_gumroad_cents(seller:, canonical_price_and_tip_cents: 10_00)).to eq(1_00)
+      expect(described_class.absorbable_gumroad_cents(seller:, canonical_price_and_tip_cents: 10_00)).to eq(1_50)
     end
 
     it "uses the seller's negotiated fee when they have one" do
@@ -183,7 +183,7 @@ describe Checkout::PresentmentRounding do
 
       expect(
         described_class.absorbable_gumroad_cents(seller:, canonical_price_and_tip_cents: 10_00, merchant_account:)
-      ).to eq(1_00)
+      ).to eq(1_50)
     end
   end
 

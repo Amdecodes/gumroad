@@ -1,7 +1,7 @@
 <!-- IMPORTANT:
 Do not include route helpers (`root_url`), because the URL options (e.g. the hostname) won't be correct. -->
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>" class="<%= "lang-am" if I18n.locale == :am %>">
   <head>
     <title>{{subject}}</title>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">

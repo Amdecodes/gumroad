@@ -23,7 +23,13 @@ class ReceiptPresenter::ChargeInfo
     if presentment_currency.present?
       StripeChargeProcessor.format_charge_presentment_amount(presentment_total_cents, presentment_currency)
     else
-      formatted_dollar_amount(chargeable.charged_amount_cents)
+      first_purchase = chargeable.successful_purchases.first
+      purchase_currency = first_purchase&.displayed_price_currency_type&.to_s&.downcase
+      if purchase_currency == "etb"
+        formatted_price(:etb, chargeable.charged_amount_cents)
+      else
+        formatted_dollar_amount(chargeable.charged_amount_cents)
+      end
     end
   end
 

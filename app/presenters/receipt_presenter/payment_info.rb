@@ -208,6 +208,8 @@ class ReceiptPresenter::PaymentInfo
       if !purchase.is_free_trial_purchase?
         amount_cents = if presentment_currency.present?
           purchase.buyer_presentment_price_cents
+        elsif purchase.displayed_price_currency_type.to_s.casecmp("etb").zero?
+          purchase.displayed_price_cents
         else
           get_usd_cents(
             purchase.displayed_price_currency_type,
@@ -395,7 +397,13 @@ class ReceiptPresenter::PaymentInfo
     def format_today_amount(amount_cents)
       return StripeChargeProcessor.format_charge_presentment_amount(amount_cents, presentment_currency) if presentment_currency.present?
 
-      formatted_dollar_amount(amount_cents)
+      first_purchase = chargeable.successful_purchases.first
+      purchase_currency = first_purchase&.displayed_price_currency_type&.to_s&.downcase
+      if purchase_currency == "etb"
+        formatted_price(:etb, amount_cents)
+      else
+        formatted_dollar_amount(amount_cents)
+      end
     end
 
     def subscription_charge_progress(purchase)

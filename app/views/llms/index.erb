@@ -13,7 +13,7 @@ Every product is sold by an individual creator. Each creator has a storefront on
 
 ## Pricing
 
-- [Pricing](https://gumroad.com/pricing): no monthly fee; Gumroad charges 10% + $0.50 per transaction on sales made through a creator's own profile or direct links, and 30% per transaction when a new customer finds the product through Discover. Gumroad is the merchant of record and handles sales tax collection and remittance worldwide.
+- [Pricing](<%= pricing_url %>): no monthly fee; <%= PlatformConfig.app_name %> charges <%= PlatformConfig.flat_fee_percent.to_i %>% per transaction on sales made through a creator's own profile or direct links, and <%= PlatformConfig.discover_fee_percent.to_i %>% per transaction when a new customer finds the product through Discover. <%= PlatformConfig.app_name %> is the merchant of record and handles sales tax collection and remittance worldwide.
 
 ## API
 

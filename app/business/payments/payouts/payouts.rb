@@ -572,7 +572,7 @@ class Payouts
           payout_type:,
           created_at: under_reserve ? Time.current : claimed_at,
           payment_address: (user.paypal_payout_email if processor_type == ::PayoutProcessorType::PAYPAL),
-          currency: payout_currency || Currency::USD,
+          currency: payout_currency.presence || Currency::ETB,
           stripe_connect_account_id: merchant_account&.charge_processor_merchant_id,
           bank_account:
         )
