@@ -11,6 +11,7 @@ import { PageHeader } from "$app/components/ui/PageHeader";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Textarea } from "$app/components/ui/Textarea";
+import { useTranslation } from "$app/utils/i18n";
 
 export type PayoutDetailProps = {
   payout: {
@@ -87,12 +88,16 @@ const formatDate = (isoString?: string | null) => {
   }
 };
 
-const renderPayoutStatusPill = (status: string) => {
+const renderPayoutStatusPill = (
+  status: string,
+  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
+) => {
+  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
   switch (status.toLowerCase()) {
     case "completed":
       return (
         <Pill color="success" size="small">
-          Completed
+          {translate("admin.status.completed", undefined, "Completed")}
         </Pill>
       );
     case "pending":
@@ -102,23 +107,24 @@ const renderPayoutStatusPill = (status: string) => {
     case "flagged":
       return (
         <Pill color="warning" size="small">
-          Pending
+          {translate("admin.status.pending", undefined, "Pending")}
         </Pill>
       );
     case "failed":
       return (
         <Pill color="danger" size="small">
-          Failed
+          {translate("admin.status.failed", undefined, "Failed")}
         </Pill>
       );
     case "cancelled":
-      return <Pill size="small">Cancelled</Pill>;
+      return <Pill size="small">{translate("admin.status.cancelled", undefined, "Cancelled")}</Pill>;
     default:
       return <Pill size="small">{status}</Pill>;
   }
 };
 
 export default function Show({ payout, creator, destination, breakdown, audit_history }: PayoutDetailProps) {
+  const { t } = useTranslation();
   const [isMarkPaidModalOpen, setIsMarkPaidModalOpen] = React.useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
 
@@ -173,16 +179,16 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
             className="flex items-center gap-1.5 text-sm font-medium text-muted no-underline hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
-            <span>Back to payouts</span>
+            <span>{t("admin.payouts_page.back_to_payouts", {}, "Back to payouts")}</span>
           </Link>
         </div>
 
         {/* Hero Header */}
         <PageHeader
-          title={`Payout #${payout.reference}`}
+          title={t("admin.payouts_page.payout_title", { reference: payout.reference }, `Payout #${payout.reference}`)}
           actions={
             <div className="flex items-center gap-3">
-              {renderPayoutStatusPill(payout.status)}
+              {renderPayoutStatusPill(payout.status, t)}
 
               {payout.can_mark_paid ? (
                 <Button
@@ -192,14 +198,14 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
                 >
                   <CheckCircle className="mr-1.5 size-4" />
-                  Mark as Paid
+                  {t("admin.payouts_page.mark_as_paid", {}, "Mark as Paid")}
                 </Button>
               ) : null}
 
               {payout.can_cancel ? (
                 <Button type="button" color="danger" outline onClick={() => setIsCancelModalOpen(true)}>
                   <XCircle className="mr-1.5 size-4" />
-                  Cancel / Hold
+                  {t("admin.payouts_page.cancel_hold", {}, "Cancel / Hold")}
                 </Button>
               ) : null}
             </div>
@@ -207,7 +213,7 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
         >
           {creator ? (
             <p className="text-muted-foreground text-sm">
-              Recipient:{" "}
+              {t("admin.payouts_page.recipient", {}, "Recipient:")}{" "}
               <Link href={creator.admin_path} className="font-semibold text-foreground no-underline hover:underline">
                 {creator.name} (@{creator.username || "creator"})
               </Link>
@@ -220,19 +226,27 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
           <div className="space-y-6 lg:col-span-2">
             {/* Overview & Financial Breakdown Card */}
             <Card>
-              <div className="border-b border-border p-4 text-base font-semibold">Financial Breakdown</div>
+              <div className="border-b border-border p-4 text-base font-semibold">
+                {t("admin.payouts_page.financial_breakdown", {}, "Financial Breakdown")}
+              </div>
               <CardContent className="space-y-6 p-6">
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   <div>
-                    <div className="text-xs text-muted">Net Payout Amount</div>
+                    <div className="text-xs text-muted">
+                      {t("admin.payouts_page.net_payout_amount", {}, "Net Payout Amount")}
+                    </div>
                     <div className="text-2xl font-bold text-foreground">{payout.formatted_amount}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-muted">Payment Processor</div>
+                    <div className="text-xs text-muted">
+                      {t("admin.payouts_page.payment_processor", {}, "Payment Processor")}
+                    </div>
                     <div className="text-base font-medium text-foreground">{payout.processor}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-muted">Requested Date</div>
+                    <div className="text-xs text-muted">
+                      {t("admin.payouts_page.requested_date", {}, "Requested Date")}
+                    </div>
                     <div className="text-sm font-medium text-foreground">{formatDate(payout.date_requested)}</div>
                   </div>
                 </div>
@@ -240,25 +254,33 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                 <div className="rounded-lg border border-border bg-muted/5 p-4">
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted">Included Sales Volume</span>
+                      <span className="text-muted">
+                        {t("admin.payouts_page.included_sales_volume", {}, "Included Sales Volume")}
+                      </span>
                       <span className="font-medium text-foreground">{breakdown.formatted_sales_volume}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted">Platform Fee Deductions</span>
+                      <span className="text-muted">
+                        {t("admin.payouts_page.platform_fee_deductions", {}, "Platform Fee Deductions")}
+                      </span>
                       <span className="font-medium text-muted">-{breakdown.formatted_platform_fee}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted">Processor Fee Deductions</span>
+                      <span className="text-muted">
+                        {t("admin.payouts_page.processor_fee_deductions", {}, "Processor Fee Deductions")}
+                      </span>
                       <span className="font-medium text-muted">-{breakdown.formatted_processor_fee}</span>
                     </div>
                     {breakdown.adjustments_cents !== 0 ? (
                       <div className="flex justify-between">
-                        <span className="text-muted">Adjustments / Credits</span>
+                        <span className="text-muted">
+                          {t("admin.payouts_page.adjustments_credits", {}, "Adjustments / Credits")}
+                        </span>
                         <span className="font-medium text-foreground">{breakdown.formatted_adjustments}</span>
                       </div>
                     ) : null}
                     <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
-                      <span>Total Net Disbursement</span>
+                      <span>{t("admin.payouts_page.total_net_disbursement", {}, "Total Net Disbursement")}</span>
                       <span className="text-foreground">{breakdown.formatted_net_amount}</span>
                     </div>
                   </div>
@@ -267,7 +289,13 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                 {payout.date_processed ? (
                   <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
                     <CheckCircle className="size-4 shrink-0" />
-                    <span>Processed and confirmed on {formatDate(payout.date_processed)}.</span>
+                    <span>
+                      {t(
+                        "admin.payouts_page.processed_and_confirmed",
+                        { date: formatDate(payout.date_processed) },
+                        `Processed and confirmed on ${formatDate(payout.date_processed)}.`,
+                      )}
+                    </span>
                   </div>
                 ) : null}
               </CardContent>
@@ -275,11 +303,15 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
 
             {/* Destination Account Information */}
             <Card>
-              <div className="border-b border-border p-4 text-base font-semibold">Destination Account Information</div>
+              <div className="border-b border-border p-4 text-base font-semibold">
+                {t("admin.payouts_page.destination_account_info", {}, "Destination Account Information")}
+              </div>
               <CardContent className="space-y-4 p-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="text-xs text-muted">Transfer Method</div>
+                    <div className="text-xs text-muted">
+                      {t("admin.payouts_page.transfer_method", {}, "Transfer Method")}
+                    </div>
                     <div className="text-sm font-semibold tracking-wide text-foreground uppercase">
                       {destination.method_type} ({destination.processor})
                     </div>
@@ -287,14 +319,16 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
 
                   {destination.bank_name ? (
                     <div>
-                      <div className="text-xs text-muted">Bank Name</div>
+                      <div className="text-xs text-muted">{t("admin.payouts_page.bank_name", {}, "Bank Name")}</div>
                       <div className="text-sm font-medium text-foreground">{destination.bank_name}</div>
                     </div>
                   ) : null}
 
                   {destination.account_number_visual ? (
                     <div>
-                      <div className="text-xs text-muted">Account Number</div>
+                      <div className="text-xs text-muted">
+                        {t("admin.payouts_page.account_number", {}, "Account Number")}
+                      </div>
                       <div className="font-mono text-sm font-medium text-foreground">
                         {destination.account_number_visual}
                       </div>
@@ -303,21 +337,27 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
 
                   {destination.routing_number ? (
                     <div>
-                      <div className="text-xs text-muted">Routing / Bank Number</div>
+                      <div className="text-xs text-muted">
+                        {t("admin.payouts_page.routing_bank_number", {}, "Routing / Bank Number")}
+                      </div>
                       <div className="font-mono text-sm font-medium text-foreground">{destination.routing_number}</div>
                     </div>
                   ) : null}
 
                   {destination.account_holder_name ? (
                     <div>
-                      <div className="text-xs text-muted">Account Holder Name</div>
+                      <div className="text-xs text-muted">
+                        {t("admin.payouts_page.account_holder_name", {}, "Account Holder Name")}
+                      </div>
                       <div className="text-sm font-medium text-foreground">{destination.account_holder_name}</div>
                     </div>
                   ) : null}
 
                   {destination.paypal_email ? (
                     <div>
-                      <div className="text-xs text-muted">PayPal Account Email</div>
+                      <div className="text-xs text-muted">
+                        {t("admin.payouts_page.paypal_account_email", {}, "PayPal Account Email")}
+                      </div>
                       <div className="text-sm font-medium text-foreground">{destination.paypal_email}</div>
                     </div>
                   ) : null}
@@ -327,21 +367,27 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
 
             {/* Audit Log & Status History */}
             <Card>
-              <div className="border-b border-border p-4 text-base font-semibold">Audit History & Admin Activity</div>
+              <div className="border-b border-border p-4 text-base font-semibold">
+                {t("admin.payouts_page.audit_history_title", {}, "Audit History & Admin Activity")}
+              </div>
               <CardContent className="p-0">
                 {audit_history.length === 0 ? (
                   <div className="p-6 text-center text-sm text-muted">
-                    No administrative audit actions recorded for this payout.
+                    {t(
+                      "admin.payouts_page.no_audit_history",
+                      {},
+                      "No administrative audit actions recorded for this payout.",
+                    )}
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Admin Actor</TableHead>
-                          <TableHead>Action</TableHead>
-                          <TableHead>Note / Reason</TableHead>
+                          <TableHead>{t("admin.payouts_page.date", {}, "Date")}</TableHead>
+                          <TableHead>{t("admin.payouts_page.admin_actor", {}, "Admin Actor")}</TableHead>
+                          <TableHead>{t("admin.payouts_page.action", {}, "Action")}</TableHead>
+                          <TableHead>{t("admin.payouts_page.note_reason", {}, "Note / Reason")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -366,7 +412,9 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
           {/* Right Column (1 col): Creator Details */}
           <div className="space-y-6">
             <Card>
-              <div className="border-b border-border p-4 text-base font-semibold">Creator Profile</div>
+              <div className="border-b border-border p-4 text-base font-semibold">
+                {t("admin.payouts_page.creator_profile", {}, "Creator Profile")}
+              </div>
               <CardContent className="space-y-4 p-6">
                 {creator ? (
                   <>
@@ -390,23 +438,25 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
 
                     <div className="space-y-2 border-t border-border pt-3 text-sm">
                       <div>
-                        <div className="text-xs text-muted">Email</div>
+                        <div className="text-xs text-muted">{t("admin.payouts_page.email", {}, "Email")}</div>
                         <div className="font-medium text-foreground">{creator.email}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted">Creator ID</div>
+                        <div className="text-xs text-muted">{t("admin.payouts_page.creator_id", {}, "Creator ID")}</div>
                         <div className="font-mono text-xs text-muted">{creator.external_id}</div>
                       </div>
                     </div>
 
                     <div className="pt-2">
                       <Button type="button" outline className="w-full" onClick={() => router.visit(creator.admin_path)}>
-                        View Creator Management
+                        {t("admin.payouts_page.view_creator_management", {}, "View Creator Management")}
                       </Button>
                     </div>
                   </>
                 ) : (
-                  <div className="text-sm text-muted">No creator profile linked to this record.</div>
+                  <div className="text-sm text-muted">
+                    {t("admin.payouts_page.no_creator_linked", {}, "No creator profile linked to this record.")}
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -417,7 +467,7 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
         <Modal
           open={isMarkPaidModalOpen}
           onClose={() => setIsMarkPaidModalOpen(false)}
-          title="Approve & Mark Payout as Paid"
+          title={t("admin.payouts_page.mark_paid_modal_title", {}, "Approve & Mark Payout as Paid")}
           footer={
             <div className="flex w-full justify-end gap-3">
               <Button
@@ -426,7 +476,7 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                 disabled={isSubmittingMarkPaid}
                 onClick={() => setIsMarkPaidModalOpen(false)}
               >
-                Cancel
+                {t("admin.payouts_page.cancel", {}, "Cancel")}
               </Button>
               <Button
                 type="button"
@@ -435,42 +485,59 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                 onClick={handleMarkPaidSubmit}
                 className="bg-emerald-600 text-white hover:bg-emerald-700"
               >
-                {isSubmittingMarkPaid ? "Executing..." : "Confirm & Release Payout"}
+                {isSubmittingMarkPaid
+                  ? t("admin.payouts_page.executing", {}, "Executing...")
+                  : t("admin.payouts_page.confirm_release_payout", {}, "Confirm & Release Payout")}
               </Button>
             </div>
           }
         >
           <div className="space-y-4">
             <p className="text-sm text-muted">
-              You are about to approve and execute this payout of{" "}
-              <strong className="text-foreground">{payout.formatted_amount}</strong> to{" "}
-              <strong className="text-foreground">{creator?.name || "the creator"}</strong>.
+              {t(
+                "admin.payouts_page.mark_paid_confirm_intro",
+                {},
+                "You are about to approve and execute this payout of",
+              )}{" "}
+              <strong className="text-foreground">{payout.formatted_amount}</strong>{" "}
+              {t("admin.payouts_page.to", {}, "to")}{" "}
+              <strong className="text-foreground">
+                {creator?.name || t("admin.payouts_page.the_creator", {}, "the creator")}
+              </strong>
+              .
             </p>
 
             <div className="space-y-1 rounded border border-border bg-muted/5 p-3 text-xs">
               <div>
-                <strong>Destination:</strong> {destination.method_type} ({destination.processor})
+                <strong>{t("admin.payouts_page.destination_label", {}, "Destination:")}</strong>{" "}
+                {destination.method_type} ({destination.processor})
               </div>
               {destination.account_number_visual ? (
                 <div>
-                  <strong>Account:</strong> {destination.account_number_visual}
+                  <strong>{t("admin.payouts_page.account_label", {}, "Account:")}</strong>{" "}
+                  {destination.account_number_visual}
                 </div>
               ) : null}
               {destination.paypal_email ? (
                 <div>
-                  <strong>PayPal Email:</strong> {destination.paypal_email}
+                  <strong>{t("admin.payouts_page.paypal_email_label", {}, "PayPal Email:")}</strong>{" "}
+                  {destination.paypal_email}
                 </div>
               ) : null}
             </div>
 
             <div className="space-y-1">
               <label htmlFor="payout-note" className="text-xs font-semibold text-foreground">
-                Administrative Reference / Note (Optional)
+                {t("admin.payouts_page.admin_reference_optional", {}, "Administrative Reference / Note (Optional)")}
               </label>
               <Input
                 id="payout-note"
                 type="text"
-                placeholder="e.g. Bank wire reference #12345 or approval note"
+                placeholder={t(
+                  "admin.payouts_page.admin_reference_placeholder",
+                  {},
+                  "e.g. Bank wire reference #12345 or approval note",
+                )}
                 value={paymentNote}
                 onChange={(e) => setPaymentNote(e.target.value)}
               />
@@ -482,11 +549,11 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
         <Modal
           open={isCancelModalOpen}
           onClose={() => setIsCancelModalOpen(false)}
-          title="Cancel Payout"
+          title={t("admin.payouts_page.cancel_modal_title", {}, "Cancel Payout")}
           footer={
             <div className="flex w-full justify-end gap-3">
               <Button type="button" outline disabled={isSubmittingCancel} onClick={() => setIsCancelModalOpen(false)}>
-                Keep Payout
+                {t("admin.payouts_page.keep_payout", {}, "Keep Payout")}
               </Button>
               <Button
                 type="button"
@@ -494,32 +561,44 @@ export default function Show({ payout, creator, destination, breakdown, audit_hi
                 disabled={isSubmittingCancel || !cancelReason.trim()}
                 onClick={handleCancelSubmit}
               >
-                {isSubmittingCancel ? "Cancelling..." : "Confirm Cancellation"}
+                {isSubmittingCancel
+                  ? t("admin.payouts_page.cancelling", {}, "Cancelling...")
+                  : t("admin.payouts_page.confirm_cancellation", {}, "Confirm Cancellation")}
               </Button>
             </div>
           }
         >
           <div className="space-y-4">
             <p className="text-sm text-muted">
-              Are you sure you want to cancel this pending payout of{" "}
-              <strong className="text-foreground">{payout.formatted_amount}</strong>? Cancelled payouts will not be
-              disbursed, and associated balances will be returned to the creator’s unpaid balance.
+              {t(
+                "admin.payouts_page.cancel_confirm_msg",
+                { amount: payout.formatted_amount },
+                `Are you sure you want to cancel this pending payout of ${payout.formatted_amount}? Cancelled payouts will not be disbursed, and associated balances will be returned to the creator’s unpaid balance.`,
+              )}
             </p>
 
             <div className="space-y-1">
               <label htmlFor="cancel-reason" className="text-xs font-semibold text-foreground">
-                Cancellation Reason (Mandatory)
+                {t("admin.payouts_page.cancellation_reason_label", {}, "Cancellation Reason (Mandatory)")}
               </label>
               <Textarea
                 id="cancel-reason"
                 rows={3}
-                placeholder="Please state the administrative reason for cancelling or holding this payout..."
+                placeholder={t(
+                  "admin.payouts_page.cancellation_reason_placeholder",
+                  {},
+                  "Please state the administrative reason for cancelling or holding this payout...",
+                )}
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 required
               />
               <p className="text-[11px] text-muted">
-                This explanation will be recorded in the administrative audit history.
+                {t(
+                  "admin.payouts_page.cancellation_audit_note",
+                  {},
+                  "This explanation will be recorded in the administrative audit history.",
+                )}
               </p>
             </div>
           </div>

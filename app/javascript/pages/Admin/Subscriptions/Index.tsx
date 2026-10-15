@@ -119,10 +119,11 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
   return (
     <AdminLayout currentPath="/admin/subscriptions">
       <div className="space-y-6">
-        <PageHeader
-          title="Subscriptions"
-          description={`Showing ${subscriptions.length} of ${pagination.count.toLocaleString()} subscriptions across the platform.`}
-        />
+        <PageHeader title="Subscriptions">
+          <p className="text-sm text-muted">
+            {`Showing ${subscriptions.length} of ${pagination.count.toLocaleString()} subscriptions across the platform.`}
+          </p>
+        </PageHeader>
 
         <Card>
           <CardContent className="p-4 sm:p-6">
@@ -144,7 +145,7 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                   <select
                     value={status}
                     onChange={handleStatusChange}
-                    className="border-input bg-background text-foreground focus:ring-accent flex h-9 items-center rounded-md border px-3 py-1 text-sm shadow-xs focus:ring-1 focus:outline-hidden"
+                    className="border-input flex h-9 items-center rounded-md border bg-background px-3 py-1 text-sm text-foreground shadow-xs focus:ring-1 focus:ring-accent focus:outline-hidden"
                     aria-label="Filter by subscription status"
                   >
                     <option value="">All Statuses</option>
@@ -155,13 +156,13 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                   </select>
                 </div>
 
-                <Button type="submit" variant="secondary" size="small">
+                <Button type="submit" color="primary" size="sm">
                   <Filter className="mr-1.5 size-4" />
                   Filter
                 </Button>
 
                 {hasActiveFilters ? (
-                  <Button type="button" variant="ghost" size="small" onClick={handleClearFilters} aria-label="Clear filters">
+                  <Button type="button" outline size="sm" onClick={handleClearFilters} aria-label="Clear filters">
                     <X className="mr-1 size-4" />
                     Clear
                   </Button>
@@ -176,14 +177,14 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
             {subscriptions.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-12 text-center">
                 <Repeat className="text-muted-foreground/40 mb-3 size-12" />
-                <h3 className="text-foreground text-base font-semibold">No subscriptions found</h3>
+                <h3 className="text-base font-semibold text-foreground">No subscriptions found</h3>
                 <p className="text-muted-foreground mt-1 max-w-sm text-sm">
                   {hasActiveFilters
                     ? "No subscriptions match your current search or filter criteria. Try clearing filters to see all subscriptions."
                     : "No subscriptions have been created on the platform yet."}
                 </p>
                 {hasActiveFilters ? (
-                  <Button variant="secondary" size="small" onClick={handleClearFilters} className="mt-4">
+                  <Button outline size="sm" onClick={handleClearFilters} className="mt-4">
                     Clear Filters
                   </Button>
                 ) : null}
@@ -208,7 +209,7 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                       <TableCell className="font-medium">
                         <Link
                           href={`/admin/subscriptions/${sub.id}`}
-                          className="text-foreground hover:text-accent font-semibold hover:underline"
+                          className="font-semibold text-foreground hover:text-accent hover:underline"
                         >
                           {sub.subscriber_email}
                         </Link>
@@ -218,7 +219,7 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                       </TableCell>
 
                       <TableCell>
-                        <div className="text-foreground max-w-[200px] truncate text-sm font-medium">
+                        <div className="max-w-[200px] truncate text-sm font-medium text-foreground">
                           {sub.product_name}
                         </div>
                       </TableCell>
@@ -228,7 +229,7 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                       </TableCell>
 
                       <TableCell>
-                        <div className="text-foreground text-sm font-semibold">{sub.amount_formatted}</div>
+                        <div className="text-sm font-semibold text-foreground">{sub.amount_formatted}</div>
                         <div className="text-muted-foreground text-xs capitalize">{sub.frequency}</div>
                       </TableCell>
 
@@ -238,14 +239,12 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
                         {formatSubDate(sub.current_period_end)}
                       </TableCell>
 
-                      <TableCell className="text-muted-foreground text-sm">
-                        {formatSubDate(sub.created_at)}
-                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">{formatSubDate(sub.created_at)}</TableCell>
 
                       <TableCell className="text-right">
                         <Link
                           href={`/admin/subscriptions/${sub.id}`}
-                          className="text-accent text-sm font-medium hover:underline"
+                          className="text-sm font-medium text-accent hover:underline"
                         >
                           View Details
                         </Link>
@@ -261,9 +260,8 @@ export default function SubscriptionsIndex({ subscriptions, pagination, filters 
         {pagination.pages > 1 ? (
           <div className="flex justify-center">
             <Pagination
-              page={pagination.page}
-              pages={pagination.pages}
-              onPageChange={(nextPage) => applyFilters({ page: nextPage })}
+              pagination={{ page: pagination.page, pages: pagination.pages }}
+              onChangePage={(nextPage) => applyFilters({ page: nextPage })}
             />
           </div>
         ) : null}

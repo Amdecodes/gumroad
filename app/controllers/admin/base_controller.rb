@@ -23,7 +23,7 @@ class Admin::BaseController < ApplicationController
       impersonate_user(user)
       redirect_to products_path
     else
-      flash[:alert] = "User not found"
+      flash[:alert] = t("admin.user_not_found", default: "User not found")
       redirect_to root_path
     end
   end
@@ -45,11 +45,11 @@ class Admin::BaseController < ApplicationController
         base_url += "/test" unless Rails.env.production?
         redirect_to "#{base_url}/connect/accounts/#{merchant_account.charge_processor_merchant_id}", allow_other_host: true
       else
-        flash[:alert] = "Stripe account not found"
+        flash[:alert] = t("admin.stripe_account_not_found", default: "Stripe account not found")
         redirect_to root_path
       end
     else
-      flash[:alert] = "User not found"
+      flash[:alert] = t("admin.user_not_found", default: "User not found")
       redirect_to root_path
     end
   end

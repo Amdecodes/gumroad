@@ -10,6 +10,7 @@ import { Card, CardContent } from "$app/components/ui/Card";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Textarea } from "$app/components/ui/Textarea";
+import { useTranslation } from "$app/utils/i18n";
 
 export type CreatorProfile = {
   external_id: string;
@@ -96,24 +97,28 @@ const formatDateTime = (isoString?: string | null) => {
   }
 };
 
-const renderCreatorStatusPill = (status: string) => {
+const renderCreatorStatusPill = (
+  status: string,
+  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
+) => {
+  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
   switch (status) {
     case "active":
       return (
         <Pill color="success" size="small">
-          Active
+          {translate("admin.status.active", undefined, "Active")}
         </Pill>
       );
     case "suspended":
       return (
         <Pill color="danger" size="small">
-          Suspended
+          {translate("admin.status.suspended", undefined, "Suspended")}
         </Pill>
       );
     case "deleted":
       return (
         <Pill color="warning" size="small">
-          Deleted
+          {translate("admin.status.deleted", undefined, "Deleted")}
         </Pill>
       );
     default:
@@ -129,6 +134,7 @@ export default function Show({
   impersonate_url,
   audit_history,
 }: CreatorShowProps) {
+  const { t } = useTranslation();
   const [suspendModalOpen, setSuspendModalOpen] = React.useState(false);
   const [unsuspendModalOpen, setUnsuspendModalOpen] = React.useState(false);
 
@@ -217,7 +223,7 @@ export default function Show({
               className="text-muted-foreground inline-flex items-center gap-1.5 text-sm font-medium no-underline hover:text-foreground"
             >
               <ArrowLeft className="size-4" />
-              <span>Back to creators</span>
+              <span>{t("admin.creators_page.back_to_creators", undefined, "Back to creators")}</span>
             </Link>
           </div>
 
@@ -227,7 +233,7 @@ export default function Show({
               className="inline-flex items-center gap-1.5 rounded border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground no-underline transition-colors hover:bg-muted"
             >
               <UserCheck className="text-muted-foreground size-4" />
-              <span>Impersonate</span>
+              <span>{t("admin.creators_page.impersonate", undefined, "Impersonate")}</span>
             </a>
 
             {isSuspended ? (
@@ -241,7 +247,7 @@ export default function Show({
                   setUnsuspendModalOpen(true);
                 }}
               >
-                Unsuspend Creator
+                {t("admin.creators_page.unsuspend_creator", undefined, "Unsuspend Creator")}
               </Button>
             ) : (
               <Button
@@ -254,7 +260,7 @@ export default function Show({
                   setSuspendModalOpen(true);
                 }}
               >
-                Suspend Creator
+                {t("admin.creators_page.suspend_creator", undefined, "Suspend Creator")}
               </Button>
             )}
           </div>
@@ -276,20 +282,30 @@ export default function Show({
                 <div>
                   <div className="flex items-center gap-3">
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">{profile.display_name}</h1>
-                    {renderCreatorStatusPill(profile.status)}
+                    {renderCreatorStatusPill(profile.status, t)}
                     {profile.verified_status ? (
                       <span className="inline-flex items-center gap-1 rounded bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
                         <CheckCircle className="size-3.5" />
-                        Verified
+                        {t("admin.creators_page.verified", undefined, "Verified")}
                       </span>
                     ) : null}
                   </div>
                   <div className="text-muted-foreground flex flex-wrap items-center gap-3 pt-1 text-sm">
-                    <span>{profile.username ? `@${profile.username}` : "No username"}</span>
+                    <span>
+                      {profile.username
+                        ? `@${profile.username}`
+                        : t("admin.creators_page.no_username", undefined, "No username")}
+                    </span>
                     <span>•</span>
                     <span>{profile.email}</span>
                     <span>•</span>
-                    <span>Joined {formatDate(profile.joined_at)}</span>
+                    <span>
+                      {t(
+                        "admin.creators_page.joined_date",
+                        { date: formatDate(profile.joined_at) },
+                        `Joined ${formatDate(profile.joined_at)}`,
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -302,7 +318,9 @@ export default function Show({
           <Card>
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs font-medium uppercase">Lifetime Volume</span>
+                <span className="text-muted-foreground text-xs font-medium uppercase">
+                  {t("admin.creators_page.lifetime_volume", undefined, "Lifetime Volume")}
+                </span>
                 <DollarCircle className="text-muted-foreground size-5 opacity-70" />
               </div>
               <p className="mt-2 text-2xl font-bold text-foreground">{metrics.formatted_lifetime_revenue}</p>
@@ -312,7 +330,9 @@ export default function Show({
           <Card>
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs font-medium uppercase">Total Sales</span>
+                <span className="text-muted-foreground text-xs font-medium uppercase">
+                  {t("admin.creators_page.total_sales", undefined, "Total Sales")}
+                </span>
                 <Package className="text-muted-foreground size-5 opacity-70" />
               </div>
               <p className="mt-2 text-2xl font-bold text-foreground">{metrics.sales_count}</p>
@@ -322,7 +342,9 @@ export default function Show({
           <Card>
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs font-medium uppercase">Active Products</span>
+                <span className="text-muted-foreground text-xs font-medium uppercase">
+                  {t("admin.creators_page.active_products", undefined, "Active Products")}
+                </span>
                 <Store className="text-muted-foreground size-5 opacity-70" />
               </div>
               <p className="mt-2 text-2xl font-bold text-foreground">{metrics.active_products_count}</p>
@@ -332,7 +354,9 @@ export default function Show({
           <Card>
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs font-medium uppercase">Customers</span>
+                <span className="text-muted-foreground text-xs font-medium uppercase">
+                  {t("admin.creators_page.customers", undefined, "Customers")}
+                </span>
                 <User className="text-muted-foreground size-5 opacity-70" />
               </div>
               <p className="mt-2 text-2xl font-bold text-foreground">{metrics.customer_count}</p>
@@ -344,76 +368,112 @@ export default function Show({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Profile & Account Details */}
           <Card>
-            <div className="border-b border-border p-4 text-base font-semibold">Profile & Account Details</div>
+            <div className="border-b border-border p-4 text-base font-semibold">
+              {t("admin.creators_page.profile_details", undefined, "Profile & Account Details")}
+            </div>
             <CardContent className="divide-y divide-border p-0 text-sm">
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">External ID</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.external_id", undefined, "External ID")}
+                </span>
                 <span className="font-mono text-xs text-foreground">{profile.external_id}</span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Username</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.username", undefined, "Username")}
+                </span>
                 <span className="font-medium text-foreground">{profile.username ? `@${profile.username}` : "—"}</span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Email</span>
+                <span className="text-muted-foreground">{t("admin.creators_page.email", undefined, "Email")}</span>
                 <span className="font-medium text-foreground">{profile.email}</span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Bio</span>
+                <span className="text-muted-foreground">{t("admin.creators_page.bio", undefined, "Bio")}</span>
                 <span className="text-muted-foreground max-w-xs truncate text-right">
-                  {profile.bio || "None provided"}
+                  {profile.bio || t("admin.creators_page.none_provided", undefined, "None provided")}
                 </span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Account Status</span>
-                <div>{renderCreatorStatusPill(profile.status)}</div>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.account_status", undefined, "Account Status")}
+                </span>
+                <div>{renderCreatorStatusPill(profile.status, t)}</div>
               </div>
             </CardContent>
           </Card>
 
           {/* Compliance & Payout Information */}
           <Card>
-            <div className="border-b border-border p-4 text-base font-semibold">Compliance & Payout Status</div>
+            <div className="border-b border-border p-4 text-base font-semibold">
+              {t("admin.creators_page.compliance_payout_status", undefined, "Compliance & Payout Status")}
+            </div>
             <CardContent className="divide-y divide-border p-0 text-sm">
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Payout Setup</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.payout_setup", undefined, "Payout Setup")}
+                </span>
                 <span className="font-medium">
                   {payment_info.payout_setup ? (
-                    <span className="text-green-600 dark:text-green-400">Configured</span>
+                    <span className="text-green-600 dark:text-green-400">
+                      {t("admin.creators_page.configured", undefined, "Configured")}
+                    </span>
                   ) : (
-                    <span className="text-muted-foreground">Not Configured</span>
+                    <span className="text-muted-foreground">
+                      {t("admin.creators_page.not_configured", undefined, "Not Configured")}
+                    </span>
                   )}
                 </span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Payouts Standing</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.payouts_standing", undefined, "Payouts Standing")}
+                </span>
                 <span>
                   {payment_info.payouts_paused ? (
                     <Pill color="danger" size="small">
-                      Paused: {payment_info.payouts_paused_reason || "Administrative hold"}
+                      {t(
+                        "admin.creators_page.paused_reason",
+                        {
+                          reason:
+                            payment_info.payouts_paused_reason ||
+                            t("admin.creators_page.administrative_hold", undefined, "Administrative hold"),
+                        },
+                        `Paused: ${payment_info.payouts_paused_reason || "Administrative hold"}`,
+                      )}
                     </Pill>
                   ) : (
                     <Pill color="success" size="small">
-                      Active
+                      {t("admin.status.active", undefined, "Active")}
                     </Pill>
                   )}
                 </span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Payout Email (PayPal)</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.payout_email", undefined, "Payout Email (PayPal)")}
+                </span>
                 <span className="font-medium text-foreground">{payment_info.paypal_email || "—"}</span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Payment Address</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.payment_address", undefined, "Payment Address")}
+                </span>
                 <span className="font-medium text-foreground">{payment_info.payment_address || "—"}</span>
               </div>
               <div className="flex items-center justify-between p-4">
-                <span className="text-muted-foreground">Compliance Verified</span>
+                <span className="text-muted-foreground">
+                  {t("admin.creators_page.compliance_verified", undefined, "Compliance Verified")}
+                </span>
                 <span>
                   {payment_info.verified ? (
-                    <span className="font-medium text-green-600 dark:text-green-400">Yes</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">
+                      {t("admin.creators_page.yes", undefined, "Yes")}
+                    </span>
                   ) : (
-                    <span className="text-muted-foreground">Unverified</span>
+                    <span className="text-muted-foreground">
+                      {t("admin.creators_page.unverified", undefined, "Unverified")}
+                    </span>
                   )}
                 </span>
               </div>
@@ -423,23 +483,25 @@ export default function Show({
 
         {/* Recent Products Table */}
         <Card>
-          <div className="border-b border-border p-4 text-base font-semibold">Recent Products</div>
+          <div className="border-b border-border p-4 text-base font-semibold">
+            {t("admin.creators_page.recent_products", undefined, "Recent Products")}
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Product Title</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Sales</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Published Date</TableHead>
+                  <TableHead>{t("admin.creators_page.product_title", undefined, "Product Title")}</TableHead>
+                  <TableHead>{t("admin.creators_page.price", undefined, "Price")}</TableHead>
+                  <TableHead>{t("admin.creators_page.sales", undefined, "Sales")}</TableHead>
+                  <TableHead>{t("admin.table.status", undefined, "Status")}</TableHead>
+                  <TableHead>{t("admin.creators_page.published_date", undefined, "Published Date")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {products.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-muted-foreground h-32 text-center">
-                      No products found for this creator.
+                      {t("admin.creators_page.no_products", undefined, "No products found for this creator.")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -450,7 +512,9 @@ export default function Show({
                       <TableCell>{product.sales_count}</TableCell>
                       <TableCell>
                         <Pill color={product.status === "published" ? "success" : undefined} size="small">
-                          {product.status}
+                          {product.status === "published"
+                            ? t("admin.status.published", undefined, "published")
+                            : product.status}
                         </Pill>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs">
@@ -467,15 +531,17 @@ export default function Show({
         {/* Audit History */}
         {audit_history && audit_history.length > 0 ? (
           <Card>
-            <div className="border-b border-border p-4 text-base font-semibold">Recent Administrative Actions</div>
+            <div className="border-b border-border p-4 text-base font-semibold">
+              {t("admin.creators_page.recent_actions", undefined, "Recent Administrative Actions")}
+            </div>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Action</TableHead>
-                    <TableHead>Admin Actor</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Timestamp</TableHead>
+                    <TableHead>{t("admin.table.action", undefined, "Action")}</TableHead>
+                    <TableHead>{t("admin.creators_page.admin_actor", undefined, "Admin Actor")}</TableHead>
+                    <TableHead>{t("admin.table.status", undefined, "Status")}</TableHead>
+                    <TableHead>{t("admin.creators_page.timestamp", undefined, "Timestamp")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -485,7 +551,9 @@ export default function Show({
                       <TableCell>{log.actor_name}</TableCell>
                       <TableCell>
                         <span className="text-xs font-medium">
-                          {log.response_status ? `HTTP ${log.response_status}` : "Completed"}
+                          {log.response_status
+                            ? `HTTP ${log.response_status}`
+                            : t("admin.creators_page.completed", undefined, "Completed")}
                         </span>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs">{formatDateTime(log.created_at)}</TableCell>
@@ -505,11 +573,11 @@ export default function Show({
               setSuspendModalOpen(false);
             }
           }}
-          title="Suspend Creator Account"
+          title={t("admin.creators_page.suspend_modal_title", undefined, "Suspend Creator Account")}
           footer={
             <div className="flex items-center gap-3">
               <Button type="button" outline disabled={suspendSubmitting} onClick={() => setSuspendModalOpen(false)}>
-                Cancel
+                {t("admin.creators_page.cancel", undefined, "Cancel")}
               </Button>
               <Button
                 type="button"
@@ -517,7 +585,9 @@ export default function Show({
                 disabled={suspendSubmitting || !suspendReason.trim()}
                 onClick={handleSuspendSubmit}
               >
-                {suspendSubmitting ? "Suspending..." : "Confirm Suspension"}
+                {suspendSubmitting
+                  ? t("admin.creators_page.suspending", undefined, "Suspending...")
+                  : t("admin.creators_page.confirm_suspension", undefined, "Confirm Suspension")}
               </Button>
             </div>
           }
@@ -527,8 +597,11 @@ export default function Show({
           </Dialog.Description>
           <div className="space-y-4">
             <p className="text-muted-foreground text-sm">
-              Suspending this creator will disable their store listings, prevent future purchases, and pause payout
-              distributions.
+              {t(
+                "admin.creators_page.suspend_warning",
+                undefined,
+                "Suspending this creator will disable their store listings, prevent future purchases, and pause payout distributions.",
+              )}
             </p>
 
             {suspendError ? (
@@ -539,7 +612,7 @@ export default function Show({
 
             <div>
               <label htmlFor="suspend-reason-type" className="block text-sm font-medium text-foreground">
-                Violation Type
+                {t("admin.creators_page.violation_type", undefined, "Violation Type")}
               </label>
               <select
                 id="suspend-reason-type"
@@ -547,18 +620,25 @@ export default function Show({
                 onChange={(e) => setSuspendReasonType(e.target.value)}
                 className="mt-1 h-9 w-full rounded border border-border bg-background px-3 text-sm focus:outline-hidden"
               >
-                <option value="tos_violation">Terms of Service / Policy Violation</option>
-                <option value="fraud">Fraud / High Risk</option>
+                <option value="tos_violation">
+                  {t("admin.creators_page.tos_violation", undefined, "Terms of Service / Policy Violation")}
+                </option>
+                <option value="fraud">{t("admin.creators_page.fraud_risk", undefined, "Fraud / High Risk")}</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="suspend-reason" className="block text-sm font-medium text-foreground">
-                Reason for suspension <span className="text-red-500">*</span>
+                {t("admin.creators_page.reason_for_suspension", undefined, "Reason for suspension")}{" "}
+                <span className="text-red-500">*</span>
               </label>
               <Textarea
                 id="suspend-reason"
-                placeholder="Describe the reason for suspension (recorded in audit logs)..."
+                placeholder={t(
+                  "admin.creators_page.suspend_reason_placeholder",
+                  undefined,
+                  "Describe the reason for suspension (recorded in audit logs)...",
+                )}
                 value={suspendReason}
                 onChange={(e) => setSuspendReason(e.target.value)}
                 className="mt-1 min-h-[90px]"
@@ -566,7 +646,11 @@ export default function Show({
                 required
               />
               <p className="text-muted-foreground mt-1 text-xs">
-                This note will be attached to the account audit record.
+                {t(
+                  "admin.creators_page.suspend_audit_note",
+                  undefined,
+                  "This note will be attached to the account audit record.",
+                )}
               </p>
             </div>
           </div>
@@ -580,11 +664,11 @@ export default function Show({
               setUnsuspendModalOpen(false);
             }
           }}
-          title="Unsuspend Creator Account"
+          title={t("admin.creators_page.unsuspend_modal_title", undefined, "Unsuspend Creator Account")}
           footer={
             <div className="flex items-center gap-3">
               <Button type="button" outline disabled={unsuspendSubmitting} onClick={() => setUnsuspendModalOpen(false)}>
-                Cancel
+                {t("admin.creators_page.cancel", undefined, "Cancel")}
               </Button>
               <Button
                 type="button"
@@ -592,7 +676,9 @@ export default function Show({
                 disabled={unsuspendSubmitting || !unsuspendReason.trim()}
                 onClick={handleUnsuspendSubmit}
               >
-                {unsuspendSubmitting ? "Unsuspending..." : "Lift Suspension"}
+                {unsuspendSubmitting
+                  ? t("admin.creators_page.unsuspending", undefined, "Unsuspending...")
+                  : t("admin.creators_page.lift_suspension", undefined, "Lift Suspension")}
               </Button>
             </div>
           }
@@ -602,8 +688,11 @@ export default function Show({
           </Dialog.Description>
           <div className="space-y-4">
             <p className="text-muted-foreground text-sm">
-              Lifting the suspension will mark this creator compliant, re-enable active product listings, and restore
-              store functionality.
+              {t(
+                "admin.creators_page.unsuspend_warning",
+                undefined,
+                "Lifting the suspension will mark this creator compliant, re-enable active product listings, and restore store functionality.",
+              )}
             </p>
 
             {unsuspendError ? (
@@ -614,18 +703,29 @@ export default function Show({
 
             <div>
               <label htmlFor="unsuspend-reason" className="block text-sm font-medium text-foreground">
-                Reason for lifting suspension <span className="text-red-500">*</span>
+                {t("admin.creators_page.reason_for_lifting", undefined, "Reason for lifting suspension")}{" "}
+                <span className="text-red-500">*</span>
               </label>
               <Textarea
                 id="unsuspend-reason"
-                placeholder="Enter justification for lifting suspension..."
+                placeholder={t(
+                  "admin.creators_page.unsuspend_reason_placeholder",
+                  undefined,
+                  "Enter justification for lifting suspension...",
+                )}
                 value={unsuspendReason}
                 onChange={(e) => setUnsuspendReason(e.target.value)}
                 className="mt-1 min-h-[90px]"
                 rows={3}
                 required
               />
-              <p className="text-muted-foreground mt-1 text-xs">This note will be recorded in the audit log.</p>
+              <p className="text-muted-foreground mt-1 text-xs">
+                {t(
+                  "admin.creators_page.unsuspend_audit_note",
+                  undefined,
+                  "This note will be recorded in the audit log.",
+                )}
+              </p>
             </div>
           </div>
         </Modal>

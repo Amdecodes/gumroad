@@ -84,7 +84,7 @@ class Admin::ActivityLogsController < Admin::BaseController
       if request.inertia? || request.format.html?
         render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
       else
-        render json: { success: false, message: "Activity log not found" }, status: :not_found
+        render json: { success: false, message: t("admin.activity_log_not_found", default: "Activity log not found") }, status: :not_found
       end
       return
     end

@@ -95,7 +95,7 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
         <div>
           <Link
             href="/admin/subscriptions"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+            className="text-muted-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
             Back to Subscriptions
@@ -103,10 +103,9 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <PageHeader
-            title={`Subscription ${subscription.id}`}
-            description={`Managed recurring subscription for ${subscription.product.name}`}
-          />
+          <PageHeader title={`Subscription ${subscription.id}`}>
+            <p className="text-sm text-muted">{`Managed recurring subscription for ${subscription.product.name}`}</p>
+          </PageHeader>
           <div className="flex items-center gap-3">
             {subscription.status === "active" && <Pill color="success">Active</Pill>}
             {subscription.status === "failing" && <Pill color="warning">Failing / Grace Period</Pill>}
@@ -114,12 +113,7 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
             {subscription.status === "deactivated" && <Pill>Expired / Deactivated</Pill>}
 
             {canCancel ? (
-              <Button
-                variant="danger"
-                size="small"
-                onClick={() => setShowConfirm(true)}
-                disabled={isCancelling}
-              >
+              <Button color="danger" size="sm" onClick={() => setShowConfirm(true)} disabled={isCancelling}>
                 Cancel Subscription
               </Button>
             ) : null}
@@ -129,15 +123,16 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
         {showConfirm ? (
           <Card className="border-danger/30 bg-danger/5">
             <CardContent className="p-4 sm:p-6">
-              <h3 className="text-danger text-base font-semibold">Confirm Cancellation</h3>
+              <h3 className="text-base font-semibold text-danger">Confirm Cancellation</h3>
               <p className="text-muted-foreground mt-1 text-sm">
-                Are you sure you want to cancel subscription <span className="font-mono">{subscription.id}</span>? The customer will no longer be prompted for renewals.
+                Are you sure you want to cancel subscription <span className="font-mono">{subscription.id}</span>? The
+                customer will no longer be prompted for renewals.
               </p>
               <div className="mt-4 flex gap-2">
-                <Button variant="danger" size="small" onClick={handleCancel} disabled={isCancelling}>
+                <Button color="danger" size="sm" onClick={handleCancel} disabled={isCancelling}>
                   {isCancelling ? "Cancelling..." : "Yes, Cancel Subscription"}
                 </Button>
-                <Button variant="secondary" size="small" onClick={() => setShowConfirm(false)}>
+                <Button outline size="sm" onClick={() => setShowConfirm(false)}>
                   Cancel
                 </Button>
               </div>
@@ -148,30 +143,34 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">Subscriber</CardTitle>
+              <CardTitle className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
+                Subscriber
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-foreground font-semibold">{subscription.subscriber.email}</div>
+              <div className="font-semibold text-foreground">{subscription.subscriber.email}</div>
               {subscription.subscriber.name ? (
                 <div className="text-muted-foreground text-sm">{subscription.subscriber.name}</div>
               ) : null}
               {subscription.subscriber.id ? (
-                <div className="text-xs text-muted-foreground">User ID: {subscription.subscriber.id}</div>
+                <div className="text-muted-foreground text-xs">User ID: {subscription.subscriber.id}</div>
               ) : null}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">Creator</CardTitle>
+              <CardTitle className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
+                Creator
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-foreground font-semibold">{subscription.seller.name}</div>
+              <div className="font-semibold text-foreground">{subscription.seller.name}</div>
               <div className="text-muted-foreground text-sm">{subscription.seller.email}</div>
               {subscription.seller.id ? (
                 <Link
                   href={`/admin/creators/${subscription.seller.id}`}
-                  className="text-accent text-xs font-medium hover:underline inline-block mt-1"
+                  className="mt-1 inline-block text-xs font-medium text-accent hover:underline"
                 >
                   View Creator Profile →
                 </Link>
@@ -181,14 +180,14 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">Plan & Pricing</CardTitle>
+              <CardTitle className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
+                Plan & Pricing
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-foreground text-lg font-bold">{subscription.amount_formatted}</div>
+              <div className="text-lg font-bold text-foreground">{subscription.amount_formatted}</div>
               <div className="text-muted-foreground text-sm capitalize">Recurrence: {subscription.frequency}</div>
-              <div className="text-muted-foreground text-xs">
-                Completed Payments: {subscription.charges_completed}
-              </div>
+              <div className="text-muted-foreground text-xs">Completed Payments: {subscription.charges_completed}</div>
             </CardContent>
           </Card>
         </div>
@@ -201,19 +200,23 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div>
                 <span className="text-muted-foreground text-xs">Created At</span>
-                <p className="text-foreground mt-0.5 text-sm font-medium">{formatDate(subscription.created_at)}</p>
+                <p className="mt-0.5 text-sm font-medium text-foreground">{formatDate(subscription.created_at)}</p>
               </div>
               <div>
                 <span className="text-muted-foreground text-xs">Next Renewal Date</span>
-                <p className="text-foreground mt-0.5 text-sm font-medium">{formatDate(subscription.next_charge_date)}</p>
+                <p className="mt-0.5 text-sm font-medium text-foreground">
+                  {formatDate(subscription.next_charge_date)}
+                </p>
               </div>
               <div>
                 <span className="text-muted-foreground text-xs">Grace Period Deadline</span>
-                <p className="text-foreground mt-0.5 text-sm font-medium">{formatDate(subscription.grace_period_deadline)}</p>
+                <p className="mt-0.5 text-sm font-medium text-foreground">
+                  {formatDate(subscription.grace_period_deadline)}
+                </p>
               </div>
               <div>
                 <span className="text-muted-foreground text-xs">Cancelled At</span>
-                <p className="text-foreground mt-0.5 text-sm font-medium">{formatDate(subscription.cancelled_at)}</p>
+                <p className="mt-0.5 text-sm font-medium text-foreground">{formatDate(subscription.cancelled_at)}</p>
               </div>
             </div>
           </CardContent>
@@ -225,7 +228,7 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
           </CardHeader>
           <CardContent className="p-0">
             {subscription.charges.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground text-sm">
+              <div className="text-muted-foreground p-6 text-center text-sm">
                 No renewal payment records found for this subscription.
               </div>
             ) : (
@@ -248,20 +251,17 @@ export default function SubscriptionsShow({ subscription }: SubscriptionsShowPro
                           {charge.id}
                         </Link>
                       </TableCell>
-                      <TableCell className="font-semibold text-sm">{charge.amount_formatted}</TableCell>
+                      <TableCell className="text-sm font-semibold">{charge.amount_formatted}</TableCell>
                       <TableCell>
-                        <Pill
-                          color={charge.status === "successful" ? "success" : "danger"}
-                          size="small"
-                        >
+                        <Pill color={charge.status === "successful" ? "success" : "danger"} size="small">
                           {charge.status}
                         </Pill>
                       </TableCell>
                       <TableCell className="text-xs uppercase">{charge.payment_processor}</TableCell>
-                      <TableCell className="font-mono text-xs text-muted-foreground">
+                      <TableCell className="text-muted-foreground font-mono text-xs">
                         {charge.transaction_id || "—"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{formatDate(charge.created_at)}</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">{formatDate(charge.created_at)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

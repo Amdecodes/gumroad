@@ -82,12 +82,12 @@ class Admin::SubscriptionsController < Admin::BaseController
 
   def cancel
     if @subscription.cancelled_at.present? || @subscription.deactivated_at.present?
-      return redirect_to admin_subscription_path(@subscription.external_id), alert: "Subscription is already cancelled or deactivated"
+      return redirect_to admin_subscription_path(@subscription.external_id), alert: t("admin.subscription_already_cancelled", default: "Subscription is already cancelled or deactivated")
     end
 
     @subscription.cancel!(by_seller: false)
 
-    redirect_to admin_subscription_path(@subscription.external_id), notice: "Successfully cancelled subscription"
+    redirect_to admin_subscription_path(@subscription.external_id), notice: t("admin.subscription_cancelled_success", default: "Successfully cancelled subscription")
   rescue StandardError => e
     redirect_to admin_subscription_path(@subscription.external_id), alert: "Failed to cancel subscription: #{e.message}"
   end
@@ -97,7 +97,7 @@ class Admin::SubscriptionsController < Admin::BaseController
       @subscription = Subscription.find_by_external_id(params[:id])
       return if @subscription.present?
 
-      redirect_to admin_subscriptions_path, alert: "Subscription not found"
+      redirect_to admin_subscriptions_path, alert: t("admin.subscription_not_found", default: "Subscription not found")
     end
 
     def current_admin_props

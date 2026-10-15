@@ -99,10 +99,28 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
   ];
 
   const systemNavItems: NavItem[] = [
-    { label: "Activity Log", href: "/admin/activity-log", icon: <History className="size-5 shrink-0" /> },
-    { label: "Team", href: "/admin/team", icon: <Shield className="size-5 shrink-0" /> },
-    { label: "Jobs", href: "/admin/sidekiq", icon: <Server className="size-5 shrink-0" />, isExternal: true },
-    { label: "Feature Flags", href: "/admin/features", icon: <Flag className="size-5 shrink-0" />, isExternal: true },
+    {
+      label: t("admin.activity_log", undefined, "Activity Log"),
+      href: "/admin/activity-log",
+      icon: <History className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.team", undefined, "Team"),
+      href: "/admin/team",
+      icon: <Shield className="size-5 shrink-0" />,
+    },
+    {
+      label: t("admin.jobs", undefined, "Jobs"),
+      href: "/admin/sidekiq",
+      icon: <Server className="size-5 shrink-0" />,
+      isExternal: true,
+    },
+    {
+      label: t("admin.feature_flags", undefined, "Feature Flags"),
+      href: "/admin/features",
+      icon: <Flag className="size-5 shrink-0" />,
+      isExternal: true,
+    },
   ];
 
   const isItemActive = (href?: string) => {
@@ -124,7 +142,7 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
               <span className="truncate">{item.label}</span>
             </div>
             <span className="shrink-0 rounded border border-white/20 px-1.5 py-0.5 text-[10px] tracking-wider text-white/30 uppercase">
-              Soon
+              {t("admin.soon", undefined, "Soon")}
             </span>
           </div>
         </li>
@@ -185,7 +203,7 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
           <div className="flex items-center gap-2.5">
             <span className="text-lg font-bold tracking-wide">ARIFDROP</span>
             <span className="rounded bg-accent/20 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-accent uppercase">
-              Admin
+              {t("admin.badge", undefined, "Admin")}
             </span>
           </div>
           <button
@@ -204,7 +222,9 @@ export const AdminSidebar = ({ isOpen, onClose, currentPath }: AdminSidebarProps
           </div>
 
           <div>
-            <div className="px-3 pb-2 text-[11px] font-bold tracking-wider text-white/40 uppercase">System</div>
+            <div className="px-3 pb-2 text-[11px] font-bold tracking-wider text-white/40 uppercase">
+              {t("admin.system", undefined, "System")}
+            </div>
             <ul className="m-0 list-none space-y-1 p-0">{systemNavItems.map(renderItem)}</ul>
           </div>
         </div>

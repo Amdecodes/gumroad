@@ -88,7 +88,7 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
         <div>
           <Link
             href="/admin/customers"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+            className="text-muted-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
             Back to Customers
@@ -96,20 +96,15 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <PageHeader
-            title={customer.email}
-            description={
-              customer.is_registered
+          <PageHeader title={customer.email}>
+            <p className="text-sm text-muted">
+              {customer.is_registered
                 ? `Registered user account (User ID: ${customer.user_id || "—"})`
-                : "Guest buyer account"
-            }
-          />
+                : "Guest buyer account"}
+            </p>
+          </PageHeader>
           <div>
-            {customer.is_registered ? (
-              <Pill color="success">Registered Account</Pill>
-            ) : (
-              <Pill>Guest Buyer</Pill>
-            )}
+            {customer.is_registered ? <Pill color="success">Registered Account</Pill> : <Pill>Guest Buyer</Pill>}
           </div>
         </div>
 
@@ -117,28 +112,28 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Total Spent</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{customer.total_spent_formatted}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">{customer.total_spent_formatted}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Orders Placed</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{customer.orders_count}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">{customer.orders_count}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Active Subscriptions</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{customer.active_subscriptions_count}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">{customer.active_subscriptions_count}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Refunds</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{customer.refunds_count}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">{customer.refunds_count}</div>
             </CardContent>
           </Card>
         </div>
@@ -150,9 +145,7 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
           </CardHeader>
           <CardContent className="p-0">
             {purchases.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground text-sm">
-                No orders found for this customer.
-              </div>
+              <div className="text-muted-foreground p-6 text-center text-sm">No orders found for this customer.</div>
             ) : (
               <Table>
                 <TableHeader>
@@ -174,11 +167,9 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
                           {order.id}
                         </Link>
                       </TableCell>
-                      <TableCell className="font-medium text-sm">
-                        {order.product_name}
-                      </TableCell>
+                      <TableCell className="text-sm font-medium">{order.product_name}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">{order.seller_name}</TableCell>
-                      <TableCell className="font-semibold text-sm">{order.amount_formatted}</TableCell>
+                      <TableCell className="text-sm font-semibold">{order.amount_formatted}</TableCell>
                       <TableCell>
                         <Pill
                           color={
@@ -200,14 +191,14 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
                               href={order.download_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-accent hover:underline inline-flex items-center gap-1"
+                              className="inline-flex items-center gap-1 text-accent hover:underline"
                             >
                               <ArchiveArrowDown className="size-3.5" />
                               Download File
                             </a>
                           ) : null}
                           {order.license_serial ? (
-                            <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
+                            <span className="text-muted-foreground inline-flex items-center gap-1 font-mono">
                               <Key className="size-3.5 text-accent" />
                               {order.license_serial}
                             </span>
@@ -260,18 +251,12 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
                       </TableCell>
                       <TableCell className="text-sm font-medium">{sub.product_name}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">{sub.seller_name}</TableCell>
-                      <TableCell className="font-semibold text-sm">
+                      <TableCell className="text-sm font-semibold">
                         {sub.amount_formatted} / {sub.frequency}
                       </TableCell>
                       <TableCell>
                         <Pill
-                          color={
-                            sub.status === "active"
-                              ? "success"
-                              : sub.status === "failing"
-                                ? "warning"
-                                : "danger"
-                          }
+                          color={sub.status === "active" ? "success" : sub.status === "failing" ? "warning" : "danger"}
                           size="small"
                         >
                           {sub.status}
@@ -320,10 +305,10 @@ export default function CustomersShow({ customer, purchases, subscriptions, refu
                       </TableCell>
                       <TableCell className="text-sm font-medium">{refund.product_name}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">{refund.seller_name}</TableCell>
-                      <TableCell className="text-warning font-semibold text-sm">
-                        -{refund.amount_formatted}
+                      <TableCell className="text-sm font-semibold text-warning">-{refund.amount_formatted}</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {refund.reason || "Standard refund"}
                       </TableCell>
-                      <TableCell className="text-muted-foreground text-sm">{refund.reason || "Standard refund"}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">{formatDate(refund.created_at)}</TableCell>
                     </TableRow>
                   ))}

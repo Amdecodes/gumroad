@@ -10,6 +10,7 @@ import { Input } from "$app/components/ui/Input";
 import { PageHeader } from "$app/components/ui/PageHeader";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
+import { useTranslation } from "$app/utils/i18n";
 
 export type CreatorSummary = {
   external_id: string;
@@ -53,24 +54,28 @@ const formatJoinedDate = (isoString: string) => {
   }
 };
 
-const renderCreatorStatusPill = (status: string) => {
+const renderCreatorStatusPill = (
+  status: string,
+  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
+) => {
+  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
   switch (status) {
     case "active":
       return (
         <Pill color="success" size="small">
-          Active
+          {translate("admin.status.active", undefined, "Active")}
         </Pill>
       );
     case "suspended":
       return (
         <Pill color="danger" size="small">
-          Suspended
+          {translate("admin.status.suspended", undefined, "Suspended")}
         </Pill>
       );
     case "deleted":
       return (
         <Pill color="warning" size="small">
-          Deleted
+          {translate("admin.status.deleted", undefined, "Deleted")}
         </Pill>
       );
     default:
@@ -79,6 +84,7 @@ const renderCreatorStatusPill = (status: string) => {
 };
 
 export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = React.useState(filters.q || "");
   const [status, setStatus] = React.useState(filters.status || "");
 
@@ -121,9 +127,13 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <PageHeader title="Creators">
+        <PageHeader title={t("admin.creators", undefined, "Creators")}>
           <p className="text-muted-foreground text-sm">
-            Manage creator accounts, store policies, and account standing.
+            {t(
+              "admin.creators_page.subtitle",
+              undefined,
+              "Manage creator accounts, store policies, and account standing.",
+            )}
           </p>
         </PageHeader>
 
@@ -136,14 +146,18 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
                   <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                   <Input
                     type="search"
-                    placeholder="Search by name, @username, or email..."
+                    placeholder={t(
+                      "admin.creators_page.search_placeholder",
+                      undefined,
+                      "Search by name, @username, or email...",
+                    )}
                     className="pl-9"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                   />
                 </div>
                 <Button type="submit" size="sm" outline>
-                  Search
+                  {t("admin.creators_page.search", undefined, "Search")}
                 </Button>
               </form>
 
@@ -151,26 +165,26 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
                 <div className="flex items-center gap-2">
                   <Filter className="text-muted-foreground size-4" />
                   <label htmlFor="status-filter" className="text-sm font-medium">
-                    Status:
+                    {t("admin.creators_page.status_label", undefined, "Status:")}
                   </label>
                   <select
                     id="status-filter"
-                    aria-label="Status filter"
+                    aria-label={t("admin.creators_page.status_filter", undefined, "Status filter")}
                     value={status}
                     onChange={handleStatusChange}
                     className="h-9 rounded border border-border bg-background px-3 text-sm focus:outline-hidden"
                   >
-                    <option value="">All (Alive)</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="deleted">Deleted</option>
+                    <option value="">{t("admin.creators_page.all_alive", undefined, "All (Alive)")}</option>
+                    <option value="active">{t("admin.status.active", undefined, "Active")}</option>
+                    <option value="suspended">{t("admin.status.suspended", undefined, "Suspended")}</option>
+                    <option value="deleted">{t("admin.status.deleted", undefined, "Deleted")}</option>
                   </select>
                 </div>
 
                 {hasActiveFilters ? (
                   <Button type="button" size="sm" outline onClick={clearFilters} className="flex items-center gap-1.5">
                     <X className="size-3.5" />
-                    Reset
+                    {t("admin.creators_page.reset", undefined, "Reset")}
                   </Button>
                 ) : null}
               </div>
@@ -184,13 +198,13 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Creator</TableHead>
-                  <TableHead>Username</TableHead>
-                  <TableHead>Products</TableHead>
-                  <TableHead>Sales</TableHead>
-                  <TableHead>Lifetime Volume</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Joined</TableHead>
+                  <TableHead>{t("admin.table.creator", undefined, "Creator")}</TableHead>
+                  <TableHead>{t("admin.creators_page.username", undefined, "Username")}</TableHead>
+                  <TableHead>{t("admin.creators_page.products", undefined, "Products")}</TableHead>
+                  <TableHead>{t("admin.creators_page.sales", undefined, "Sales")}</TableHead>
+                  <TableHead>{t("admin.creators_page.lifetime_volume", undefined, "Lifetime Volume")}</TableHead>
+                  <TableHead>{t("admin.table.status", undefined, "Status")}</TableHead>
+                  <TableHead>{t("admin.creators_page.joined", undefined, "Joined")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -199,8 +213,16 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
                     <TableCell colSpan={7} className="text-muted-foreground h-48 text-center">
                       <div className="flex flex-col items-center justify-center gap-2">
                         <User className="size-8 opacity-40" />
-                        <p className="text-base font-medium">No creators found</p>
-                        <p className="text-sm">Try adjusting your search criteria or clearing filters.</p>
+                        <p className="text-base font-medium">
+                          {t("admin.creators_page.empty_title", undefined, "No creators found")}
+                        </p>
+                        <p className="text-sm">
+                          {t(
+                            "admin.creators_page.empty_filtered",
+                            undefined,
+                            "Try adjusting your search criteria or clearing filters.",
+                          )}
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -246,7 +268,7 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
                         <TableCell>
                           <span className="text-sm font-medium">{creator.formatted_lifetime_volume}</span>
                         </TableCell>
-                        <TableCell>{renderCreatorStatusPill(creator.status)}</TableCell>
+                        <TableCell>{renderCreatorStatusPill(creator.status, t)}</TableCell>
                         <TableCell>
                           <span className="text-muted-foreground text-xs">{formatJoinedDate(creator.joined_at)}</span>
                         </TableCell>
@@ -262,8 +284,11 @@ export default function Index({ creators, pagy, filters }: CreatorsIndexProps) {
           {pagy.pages > 1 ? (
             <div className="flex items-center justify-between border-t border-border px-4 py-3 sm:px-6">
               <p className="text-muted-foreground text-xs">
-                Showing page <span className="font-medium text-foreground">{pagy.page}</span> of{" "}
-                <span className="font-medium text-foreground">{pagy.pages}</span> ({pagy.count} creators)
+                {t(
+                  "admin.creators_page.showing_creators",
+                  { page: pagy.page, pages: pagy.pages, count: pagy.count },
+                  `Showing page ${pagy.page} of ${pagy.pages} (${pagy.count} creators)`,
+                )}
               </p>
               <Pagination
                 pagination={{ page: pagy.page, pages: pagy.pages }}

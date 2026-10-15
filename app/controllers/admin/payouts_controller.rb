@@ -70,8 +70,8 @@ class Admin::PayoutsController < Admin::BaseController
       end
 
       respond_to do |format|
-        format.html { redirect_to admin_payout_path(@payout.external_id), notice: "Payout marked as paid." }
-        format.json { render json: { success: true, message: result.data["message"] || "Payout executed successfully." } }
+        format.html { redirect_to admin_payout_path(@payout.external_id), notice: t("admin.payout_marked_paid", default: "Payout marked as paid.") }
+        format.json { render json: { success: true, message: result.data["message"] || t("admin.payout_executed_successfully", default: "Payout executed successfully.") } }
       end
     else
       error_message = result.error_message
@@ -81,7 +81,7 @@ class Admin::PayoutsController < Admin::BaseController
 
   def cancel
     if params[:reason].blank?
-      return render json: { success: false, message: "Reason is required to cancel a payout." }, status: :unprocessable_entity
+      return render json: { success: false, message: t("admin.payout_cancel_reason_required", default: "Reason is required to cancel a payout.") }, status: :unprocessable_entity
     end
 
     unless @payout.is_a?(ScheduledPayout)
@@ -105,8 +105,8 @@ class Admin::PayoutsController < Admin::BaseController
       )
 
       respond_to do |format|
-        format.html { redirect_to admin_payout_path(@payout.external_id), notice: "Payout cancelled." }
-        format.json { render json: { success: true, message: "Payout cancelled successfully." } }
+        format.html { redirect_to admin_payout_path(@payout.external_id), notice: t("admin.payout_cancelled", default: "Payout cancelled.") }
+        format.json { render json: { success: true, message: t("admin.payout_cancelled_successfully", default: "Payout cancelled successfully.") } }
       end
     else
       error_message = result.error_message

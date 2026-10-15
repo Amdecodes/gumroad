@@ -10,6 +10,7 @@ import { Input } from "$app/components/ui/Input";
 import { PageHeader } from "$app/components/ui/PageHeader";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
+import { useTranslation } from "$app/utils/i18n";
 
 export type PayoutCreator = {
   external_id: string;
@@ -77,12 +78,16 @@ const formatDate = (isoString?: string | null) => {
   }
 };
 
-const renderPayoutStatusPill = (status: string) => {
+const renderPayoutStatusPill = (
+  status: string,
+  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
+) => {
+  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
   switch (status.toLowerCase()) {
     case "completed":
       return (
         <Pill color="success" size="small">
-          Completed
+          {translate("admin.status.completed", undefined, "Completed")}
         </Pill>
       );
     case "pending":
@@ -92,23 +97,24 @@ const renderPayoutStatusPill = (status: string) => {
     case "flagged":
       return (
         <Pill color="warning" size="small">
-          Pending
+          {translate("admin.status.pending", undefined, "Pending")}
         </Pill>
       );
     case "failed":
       return (
         <Pill color="danger" size="small">
-          Failed
+          {translate("admin.status.failed", undefined, "Failed")}
         </Pill>
       );
     case "cancelled":
-      return <Pill size="small">Cancelled</Pill>;
+      return <Pill size="small">{translate("admin.status.cancelled", undefined, "Cancelled")}</Pill>;
     default:
       return <Pill size="small">{status}</Pill>;
   }
 };
 
 export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = React.useState(filters.q || "");
   const [status, setStatus] = React.useState(filters.status || "all");
 
@@ -155,9 +161,13 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <PageHeader title="Payouts">
+        <PageHeader title={t("admin.payouts", {}, "Payouts")}>
           <p className="text-muted-foreground text-sm">
-            Review creator payout requests, release manual payouts, and track bank transfers.
+            {t(
+              "admin.payouts_page.subtitle",
+              {},
+              "Review creator payout requests, release manual payouts, and track bank transfers.",
+            )}
           </p>
         </PageHeader>
 
@@ -169,13 +179,19 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                 <Timer className="size-6" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-medium tracking-wider text-muted uppercase">Pending Payouts</div>
+                <div className="text-xs font-medium tracking-wider text-muted uppercase">
+                  {t("admin.payouts_page.pending_payouts", {}, "Pending Payouts")}
+                </div>
                 <div className="mt-1 flex items-baseline gap-2">
                   <span className="text-2xl font-bold tracking-tight text-foreground">
                     {metrics.formatted_pending_amount}
                   </span>
                   <span className="text-xs font-semibold text-muted">
-                    ({metrics.pending_count} {metrics.pending_count === 1 ? "payout" : "payouts"})
+                    ({metrics.pending_count}{" "}
+                    {metrics.pending_count === 1
+                      ? t("admin.payouts_page.payout", {}, "payout")
+                      : t("admin.payouts_page.payouts", {}, "payouts")}
+                    )
                   </span>
                 </div>
               </div>
@@ -188,13 +204,19 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                 <CheckCircle className="size-6" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-medium tracking-wider text-muted uppercase">Completed (Last 30 Days)</div>
+                <div className="text-xs font-medium tracking-wider text-muted uppercase">
+                  {t("admin.payouts_page.completed_30d", {}, "Completed (Last 30 Days)")}
+                </div>
                 <div className="mt-1 flex items-baseline gap-2">
                   <span className="text-2xl font-bold tracking-tight text-foreground">
                     {metrics.formatted_completed_amount_30d}
                   </span>
                   <span className="text-xs font-semibold text-muted">
-                    ({metrics.completed_count_30d} {metrics.completed_count_30d === 1 ? "payout" : "payouts"})
+                    ({metrics.completed_count_30d}{" "}
+                    {metrics.completed_count_30d === 1
+                      ? t("admin.payouts_page.payout", {}, "payout")
+                      : t("admin.payouts_page.payouts", {}, "payouts")}
+                    )
                   </span>
                 </div>
               </div>
@@ -210,7 +232,11 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                 <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
                 <Input
                   type="text"
-                  placeholder="Search by creator name, email, or payout reference..."
+                  placeholder={t(
+                    "admin.payouts_page.search_placeholder",
+                    {},
+                    "Search by creator name, email, or payout reference...",
+                  )}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="pl-9"
@@ -222,26 +248,31 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                   <select
                     value={status}
                     onChange={handleStatusChange}
-                    aria-label="Filter by status"
+                    aria-label={t("admin.payouts_page.filter_by_status", {}, "Filter by status")}
                     className="h-10 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground focus:ring-2 focus:ring-accent focus:outline-hidden"
                   >
-                    <option value="all">All statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
-                    <option value="failed">Failed</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="all">{t("admin.payouts_page.all_statuses", {}, "All statuses")}</option>
+                    <option value="pending">{t("admin.status.pending", {}, "Pending")}</option>
+                    <option value="completed">{t("admin.status.completed", {}, "Completed")}</option>
+                    <option value="failed">{t("admin.status.failed", {}, "Failed")}</option>
+                    <option value="cancelled">{t("admin.status.cancelled", {}, "Cancelled")}</option>
                   </select>
                 </div>
 
                 <Button type="submit" outline>
                   <Filter className="mr-1.5 size-4" />
-                  Filter
+                  {t("admin.payouts_page.filter", {}, "Filter")}
                 </Button>
 
                 {hasActiveFilters ? (
-                  <Button type="button" outline onClick={handleClearFilters} aria-label="Reset filters">
+                  <Button
+                    type="button"
+                    outline
+                    onClick={handleClearFilters}
+                    aria-label={t("admin.payouts_page.reset", {}, "Reset filters")}
+                  >
                     <X className="mr-1.5 size-4" />
-                    Reset
+                    {t("admin.payouts_page.reset", {}, "Reset")}
                   </Button>
                 ) : null}
               </div>
@@ -255,12 +286,12 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Payout Reference</TableHead>
-                  <TableHead>Creator</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Destination Method</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Requested Date</TableHead>
+                  <TableHead>{t("admin.payouts_page.payout_reference", {}, "Payout Reference")}</TableHead>
+                  <TableHead>{t("admin.payouts_page.creator", {}, "Creator")}</TableHead>
+                  <TableHead>{t("admin.table.amount", {}, "Amount")}</TableHead>
+                  <TableHead>{t("admin.payouts_page.destination_method", {}, "Destination Method")}</TableHead>
+                  <TableHead>{t("admin.table.status", {}, "Status")}</TableHead>
+                  <TableHead>{t("admin.payouts_page.requested_date", {}, "Requested Date")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -269,15 +300,21 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                     <TableCell colSpan={6} className="py-12 text-center text-muted">
                       <div className="flex flex-col items-center justify-center gap-2">
                         <DollarCircle className="size-8 text-muted/50" />
-                        <div className="text-base font-medium text-foreground">No payouts found</div>
+                        <div className="text-base font-medium text-foreground">
+                          {t("admin.payouts_page.empty_title", {}, "No payouts found")}
+                        </div>
                         <div className="text-sm">
                           {hasActiveFilters
-                            ? "Try adjusting or clearing your search and filters."
-                            : "There are currently no recorded payouts."}
+                            ? t(
+                                "admin.payouts_page.empty_filtered",
+                                {},
+                                "Try adjusting or clearing your search and filters.",
+                              )
+                            : t("admin.payouts_page.empty_unfiltered", {}, "There are currently no recorded payouts.")}
                         </div>
                         {hasActiveFilters ? (
                           <Button type="button" outline className="mt-2" onClick={handleClearFilters}>
-                            Clear filters
+                            {t("admin.payouts_page.clear_filters", {}, "Clear filters")}
                           </Button>
                         ) : null}
                       </div>
@@ -330,7 +367,9 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                             </div>
                           </div>
                         ) : (
-                          <span className="text-sm text-muted">Unknown creator</span>
+                          <span className="text-sm text-muted">
+                            {t("admin.payouts_page.unknown_creator", {}, "Unknown creator")}
+                          </span>
                         )}
                       </TableCell>
 
@@ -341,7 +380,7 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
                       <TableCell className="text-sm text-muted">{payout.destination_method}</TableCell>
 
                       {/* Status */}
-                      <TableCell>{renderPayoutStatusPill(payout.status)}</TableCell>
+                      <TableCell>{renderPayoutStatusPill(payout.status, t)}</TableCell>
 
                       {/* Requested Date */}
                       <TableCell className="text-sm text-muted">{formatDate(payout.created_at)}</TableCell>
@@ -356,8 +395,11 @@ export default function Index({ payouts, pagy, metrics, filters }: PayoutsIndexP
           {pagy.pages > 1 ? (
             <div className="flex items-center justify-between border-t border-border px-4 py-3 sm:px-6">
               <p className="text-xs text-muted">
-                Showing page <span className="font-medium text-foreground">{pagy.page}</span> of{" "}
-                <span className="font-medium text-foreground">{pagy.pages}</span> ({pagy.count} payouts)
+                {t(
+                  "admin.payouts_page.showing_payouts",
+                  { page: pagy.page, pages: pagy.pages, count: pagy.count },
+                  `Showing page ${pagy.page} of ${pagy.pages} (${pagy.count} payouts)`,
+                )}
               </p>
               <Pagination pagination={{ page: pagy.page, pages: pagy.pages }} onChangePage={handlePageChange} />
             </div>

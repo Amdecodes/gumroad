@@ -197,9 +197,9 @@ class Admin::OrdersController < Admin::BaseController
       return if @order.present?
 
       if request.inertia? || request.format.html?
-        redirect_to admin_orders_path, alert: "Order not found"
+        redirect_to admin_orders_path, alert: t("admin.order_not_found", default: "Order not found")
       else
-        render json: { success: false, message: "Order not found" }, status: :not_found
+        render json: { success: false, message: t("admin.order_not_found", default: "Order not found") }, status: :not_found
       end
     end
 

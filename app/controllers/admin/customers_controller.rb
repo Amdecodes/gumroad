@@ -146,7 +146,7 @@ class Admin::CustomersController < Admin::BaseController
 
       return if @customer_email.present? && Purchase.where(email: @customer_email).exists?
 
-      redirect_to admin_customers_path, alert: "Customer not found"
+      redirect_to admin_customers_path, alert: t("admin.customer_not_found", default: "Customer not found")
     end
 
     def current_admin_props

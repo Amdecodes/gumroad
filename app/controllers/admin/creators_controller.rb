@@ -214,7 +214,7 @@ class Admin::CreatorsController < Admin::BaseController
       if request.inertia? || request.format.html?
         render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
       else
-        render json: { success: false, message: "Creator not found" }, status: :not_found
+        render json: { success: false, message: t("admin.creator_not_found", default: "Creator not found") }, status: :not_found
       end
     end
 

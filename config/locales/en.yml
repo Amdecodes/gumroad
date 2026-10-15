@@ -69,18 +69,40 @@ en:
               variants_changed: The product's variants have changed, please refresh the page!
   admin:
     activity_log: Activity Log
+    activity_log_not_found: Activity log not found
+    badge: Admin
+    creator_not_found: Creator not found
     creators: Creators
+    customer_not_found: Customer not found
     customers: Customers
     exit_to_storefront: Exit to Storefront
+    feature_flags: Feature Flags
+    jobs: Jobs
     marketing: Marketing
+    order_not_found: Order not found
     orders: Orders
     overview: Overview
+    payout_cancel_reason_required: Reason is required to cancel a payout.
+    payout_cancelled: Payout cancelled.
+    payout_cancelled_successfully: Payout cancelled successfully.
+    payout_executed_successfully: Payout executed successfully.
+    payout_marked_paid: Payout marked as paid.
+    payout_not_found: Payout not found
     payouts: Payouts
+    product_not_found: Product not found
     products: Products
     reports: Reports
+    store: Store
+    stripe_account_not_found: Stripe account not found
+    subscription_already_cancelled: Subscription is already cancelled or deactivated
+    subscription_cancelled_success: Successfully cancelled subscription
+    subscription_not_found: Subscription not found
     subscriptions: Subscriptions
+    system: System
     team: Team
+    team_member_not_found: Team member not found
     title: Admin Portal
+    user_not_found: User not found
   checkout:
     accept_terms_error: Please accept the Terms and Conditions.
     accept_terms_prefix: I accept
@@ -123,7 +145,7 @@ en:
     full_name: Full name
     future_installments: Future installments
     gift_email_hidden: "%{name}'s email has been hidden for privacy purposes."
-    gift_membership_note: 'Note: Free trials will be charged immediately. The membership will not auto-renew. The recipient must update the payment method to renew the membership.'
+    gift_membership_note: "Note: Free trials will be charged immediately. The membership will not auto-renew. The recipient must update the payment method to renew the membership."
     gift_message_placeholder: A personalized message (optional)
     gift_note_label: Gift note
     give_as_gift: Give as a gift?
@@ -163,7 +185,7 @@ en:
     processing_pending_title: Your payment is being processed
     province: Province
     quantity: Quantity
-    quantity_short: 'Qty:'
+    quantity_short: "Qty:"
     recipient_email: Recipient email
     recipient_email_placeholder: Recipient email address
     redirecting: Redirecting to Chapa checkout...
@@ -194,7 +216,7 @@ en:
     test_purchase_notice: This will be a test purchase as you are the creator of at least one of the products. Your payment method will not be charged.
     these_items: these items
     this_item: this item
-    time_short: 'Time:'
+    time_short: "Time:"
     tip: Tip
     tip_confirmation_message: You're about to leave a tip of %{tip} on a %{price} purchase. Are you sure?
     title: Checkout
@@ -207,7 +229,7 @@ en:
     zip_code: ZIP code
   common:
     date: Date
-    'false': 'No'
+    "false": "No"
     free: Free
     here: here
     loading: Loading...
@@ -216,12 +238,12 @@ en:
     other: Other
     something_went_wrong: Something went wrong.
     time: Time
-    'true': 'Yes'
+    "true": "Yes"
   content:
     access_expired_desc: It looks like your access to this product has expired. Please contact the creator for further assistance.
     access_expired_title: Access expired
     add_to_library: Add to library
-    add_to_library_prompt: 'Access this product from anywhere, forever:'
+    add_to_library_prompt: "Access this product from anywhere, forever:"
     adding_to_library: Adding...
     back_to_library: Back to Library
     confirm_email: Confirm email
@@ -277,35 +299,35 @@ en:
     symbol: ETB
   date:
     abbr_day_names:
-    - Sun
-    - Mon
-    - Tue
-    - Wed
-    - Thu
-    - Fri
-    - Sat
+      - Sun
+      - Mon
+      - Tue
+      - Wed
+      - Thu
+      - Fri
+      - Sat
     abbr_month_names:
-    -
-    - Jan
-    - Feb
-    - Mar
-    - Apr
-    - May
-    - Jun
-    - Jul
-    - Aug
-    - Sep
-    - Oct
-    - Nov
-    - Dec
+      -
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
     day_names:
-    - Sunday
-    - Monday
-    - Tuesday
-    - Wednesday
-    - Thursday
-    - Friday
-    - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     formats:
       abbrev_month: "%b %-d, %Y"
       default: "%Y-%m-%d"
@@ -313,23 +335,23 @@ en:
       long: "%B %e, %Y"
       short: "%b %d"
     month_names:
-    -
-    - January
-    - February
-    - March
-    - April
-    - May
-    - June
-    - July
-    - August
-    - September
-    - October
-    - November
-    - December
+      -
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
     order:
-    - :year
-    - :month
-    - :day
+      - :year
+      - :month
+      - :day
   devise:
     confirmations:
       confirmed: Your email address has been successfully confirmed.
@@ -348,14 +370,14 @@ en:
         header: Confirm your email address
         ignore_notice: If you didn't request this, please ignore this email. You won't get another one!
         instruction: Please confirm your account by clicking the button below.
-        or_click: 'Or you can click here:'
+        or_click: "Or you can click here:"
         subject: Confirm your email address
       email_changed:
         header: Your %{app_name} account email is being changed
         notification: We're contacting you to notify that your %{app_name} account email is being changed from %{old_email} to %{new_email}.
         subject: Your %{app_name} account email is being changed
         support_notice: If you did not make this change, please contact support immediately by replying to this email.
-        user_id: 'User ID: %{user_id}'
+        user_id: "User ID: %{user_id}"
       password_change:
         header: Your password has been changed
         notification: We're contacting you to notify you that your password has been changed.
@@ -369,14 +391,14 @@ en:
         denied_subject: Forgotten password request denied
         header: Forgotten password request
         ignore_notice: If you didn't request this, please ignore this email. You won't get another one!
-        instruction: 'It seems you forgot the password for your %{app_name} account. You can change your password by clicking the button below:'
-        or_click: 'Or you can click here:'
+        instruction: "It seems you forgot the password for your %{app_name} account. You can change your password by clicking the button below:"
+        or_click: "Or you can click here:"
         subject: Forgotten password request
       unlock_instructions:
         action: Unlock my account
         header: Unlock your account
         instruction: Your account has been locked due to an excessive number of unsuccessful sign in attempts.
-        or_click: 'Or you can click here:'
+        or_click: "Or you can click here:"
         subject: Unlock instructions
     passwords:
       send_instructions: You will receive an email with instructions on how to reset your password in a few minutes.
@@ -435,8 +457,8 @@ en:
       other: You are attaching %{count} files, in addition to the file you already saved.
     confirm_and_save: Confirm and save
     confirm_save_title: Save your response?
-    customer_disputed_multiple: 'A customer of yours (%{email}) has disputed their purchase made on %{date} of the following %{count} items for %{amount}:'
-    customer_disputed_single: 'A customer of yours (%{email}) has disputed their purchase made on %{date} of %{product} for %{amount}:'
+    customer_disputed_multiple: "A customer of yours (%{email}) has disputed their purchase made on %{date} of the following %{count} items for %{amount}:"
+    customer_disputed_single: "A customer of yours (%{email}) has disputed their purchase made on %{date} of %{product} for %{amount}:"
     deadline_note: Our payment processor accepts one submission per dispute, so we hold your response and send it at the deadline. Come back any time before then to add files or revise what you wrote — after the deadline nothing more can be added, not even by contacting support.
     deadline_reminder: We send this to our payment processor at the deadline, not now, so you can come back and add to it until then.
     no_files_attached: You have not attached any files. You can add them here any time before the deadline.
@@ -507,7 +529,7 @@ en:
     subscriptions:
       cancelled: Your %{entity} has been cancelled.
       magic_link_sent: Magic link sent to %{email}
-      payment_initiate_failed: 'Unable to initiate payment: %{error}'
+      payment_initiate_failed: "Unable to initiate payment: %{error}"
     two_factor:
       cannot_resend: Cannot resend token for authenticator app.
       invalid_token: Invalid token, please try again.
@@ -608,7 +630,7 @@ en:
         why_heading: Why am I getting this?
       files_ready_for_download:
         body: Your files for %{product} are now ready for download.
-        click_below: 'Click the button below to access your files:'
+        click_below: "Click the button below to access your files:"
         header: Your files are ready for download!
         subject: Your files are ready for download!
       free_trial_expiring_soon:
@@ -627,7 +649,7 @@ en:
       order_shipped:
         body_no_tracking: Your order of %{product} has been shipped and should arrive soon.
         body_tracking: Your order of %{product} is en route and should arrive soon.
-        destination: 'Destination: %{host}'
+        destination: "Destination: %{host}"
         header: Your order has shipped!
         questions_reply: If you have any questions about the status of the shipment, you can reach out by replying to this email.
         subject: Your order has shipped!
@@ -640,7 +662,7 @@ en:
         body_intro: I'm part of the %{app_name} team, and we power the payment process you tried to complete recently.
         body_notification: I got a notification that you attempted to purchase %{product} using PayPal, but it looks like the transaction ultimately did not go through.
         body_pending_note: Sometimes your PayPal statement will say 'pending' even in this scenario — rest assured, this will go away in a few days' time.
-        body_retry_note: 'Please try again by clicking here (if it still doesn''t go through, please try with another credit card):'
+        body_retry_note: "Please try again by clicking here (if it still doesn't go through, please try with another credit card):"
         greeting: Hi there
         header: Your purchase with PayPal failed.
         subject: Your purchase with PayPal failed.
@@ -872,7 +894,7 @@ en:
         subject_single: "%{user} recently added a new product to their wishlist!"
         view_content: View content
     receipt:
-      order_number: 'Order #%{order_id}'
+      order_number: "Order #%{order_id}"
       subject: Your receipt for %{product}
       thank_you: Thank you for your purchase!
     subscription_renewal_reminder:
@@ -889,7 +911,7 @@ en:
         action_notice: You can also click the following button to continue with your login.
         expires_in: This authentication token and login link will expire in %{time}.
         header: Two-Factor Authentication
-        instruction: 'We have detected a new login to your %{app_name} account. Please enter this authentication token in the challenge page to continue:'
+        instruction: "We have detected a new login to your %{app_name} account. Please enter this authentication token in the challenge page to continue:"
         subject: Your authentication token is %{token}
     accounting:
       ytd_sales_report:
@@ -942,7 +964,7 @@ en:
       cannot_pay:
         subject: We were unable to pay you.
       chargeback_evidence_due_soon:
-        subject: 'Reminder: Submit dispute evidence within 24 hours'
+        subject: "Reminder: Submit dispute evidence within 24 hours"
       chargeback_lost_no_refund_policy:
         subject: A dispute has been lost
       chargeback_notice:
@@ -979,7 +1001,7 @@ en:
         giftee_email: Giftee email
         link_label: Link
         medium: Medium
-        'off': "%{amount} off"
+        "off": "%{amount} off"
         order_total: Order total
         product_price: Product price
         quantity: Quantity
@@ -1019,7 +1041,7 @@ en:
       paypal_payout_permanently_failed:
         subject: Your PayPal account can't receive your payout.
       paypal_suspension_notification:
-        subject: 'Important: Update Your Payout Method on %{app_name}'
+        subject: "Important: Update Your Payout Method on %{app_name}"
       preorder_cancelled:
         subject: A preorder has been canceled.
       preorder_release_reminder:
@@ -1027,15 +1049,15 @@ en:
       preorder_summary:
         subject: Your pre-order was successfully released!
       product_level_refund_policies_reverted:
-        subject: 'Important: Refund policy changes effective immediately'
+        subject: "Important: Refund policy changes effective immediately"
       purchase_refunded:
         subject: A sale has been refunded
       purchase_refunded_for_fraud:
         subject: Fraud was detected on your %{app_name} account.
       refund_policy_enabled_email:
-        subject: 'Important: Refund policy changes to your account'
+        subject: "Important: Refund policy changes to your account"
       refund_policy_enforced_notification:
-        subject: 'Important: Your refund policy has been updated'
+        subject: "Important: Your refund policy has been updated"
       remind:
         subject: Please add a payment account to %{app_name}.
       review_submitted:
@@ -1067,7 +1089,7 @@ en:
       upcoming_call_reminder:
         subject: Your scheduled call with %{buyer} is tomorrow!
       upcoming_refund_policy_change:
-        subject: 'Important: Upcoming refund policy changes effective January 1, 2025'
+        subject: "Important: Upcoming refund policy changes effective January 1, 2025"
       user_sales_data:
         subject: Here's your customer data!
       video_preview_conversion_error:
@@ -1099,9 +1121,9 @@ en:
       stripe_account_rejected:
         subject: You can no longer accept payments on %{app_name}
       stripe_charges_disabled:
-        subject: 'Action required: Your sales have stopped'
+        subject: "Action required: Your sales have stopped"
       stripe_payouts_disabled:
-        subject: 'Action required: Your payouts are paused'
+        subject: "Action required: Your payouts are paused"
       stripe_payouts_under_review:
         subject: Your payouts are temporarily paused
     team:
@@ -1185,8 +1207,8 @@ en:
     copy_link: Copy link
     copy_product_url: Copy product URL
     create_wishlist: Create wishlist
-    creator_rating_from: 'Creator rating: %{average} from %{count_reviews} across %{products_count} other products.'
-    creator_rating_from_profile: 'Creator rating: %{average} from %{count_reviews} across %{products_count} other products.'
+    creator_rating_from: "Creator rating: %{average} from %{count_reviews} across %{products_count} other products."
+    creator_rating_from_profile: "Creator rating: %{average} from %{count_reviews} across %{products_count} other products."
     discount_code_existing_customers_only: Sorry, this discount code is only for existing customers.
     discount_code_inactive: Sorry, the discount code you wish to use is inactive.
     discount_code_invalid: Sorry, the discount code you wish to use is invalid.
@@ -1204,7 +1226,7 @@ en:
     minimum_price_is: Minimum price for this product is %{price}.
     must_input_amount: You must input an amount
     must_select_call_date_time: You must select a date and time for the call
-    name_fair_price: 'Name a fair price:'
+    name_fair_price: "Name a fair price:"
     new_wishlist: New wishlist
     no_available_times: There are no available times.
     no_available_times_option: There are no available times for this option.

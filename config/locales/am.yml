@@ -69,18 +69,40 @@ am:
               variants_changed: የምርቱ አይነቶች ተቀይረዋል፣ እባክዎ ገጹን ያድሱ!
   admin:
     activity_log: የእንቅስቃሴ መዝገብ
+    activity_log_not_found: የእንቅስቃሴ መዝገብ አልተገኘም
+    badge: አስተዳዳሪ
+    creator_not_found: ሻጩ አልተገኘም
     creators: ሻጮች
+    customer_not_found: ደንበኛው አልተገኘም
     customers: ደንበኞች
     exit_to_storefront: ወደ መደብር ተመለስ
+    feature_flags: የባህሪ ባንዲራዎች
+    jobs: ተግባራት
     marketing: ግብይት
+    order_not_found: ትዕዛዙ አልተገኘም
     orders: ትዕዛዞች
     overview: አጠቃላይ እይታ
+    payout_cancel_reason_required: የክፍያ ስረዛ ምክንያት ያስፈልጋል።
+    payout_cancelled: የሻጭ ክፍያው ተሰርዟል።
+    payout_cancelled_successfully: የሻጭ ክፍያው በተሳካ ሁኔታ ተሰርዟል።
+    payout_executed_successfully: የሻጭ ክፍያው በተሳካ ሁኔታ ተፈጽሟል።
+    payout_marked_paid: የሻጭ ክፍያው እንደተከፈለ ተመዝግቧል።
+    payout_not_found: የሻጭ ክፍያው አልተገኘም
     payouts: የሻጭ ክፍያዎች
+    product_not_found: ምርቱ አልተገኘም
     products: ምርቶች
     reports: ሪፖርቶች
+    store: መደብር
+    stripe_account_not_found: የ Stripe መለያ አልተገኘም
+    subscription_already_cancelled: ምዝገባው አስቀድሞ ተሰርዟል ወይም ቦዝኗል
+    subscription_cancelled_success: ምዝገባው በተሳካ ሁኔታ ተሰርዟል
+    subscription_not_found: ምዝገባው አልተገኘም
     subscriptions: ምዝገባዎች
+    system: ስርዓት
     team: ቡድን
+    team_member_not_found: የቡድኑ አባል አልተገኘም
     title: የአስተዳዳሪ ፖርታል
+    user_not_found: ተጠቃሚው አልተገኘም
   checkout:
     accept_terms_error: እባክዎ ውሎችን እና ግዴታዎችን ይቀበሉ።
     accept_terms_prefix: እስማማለሁ
@@ -163,7 +185,7 @@ am:
     processing_pending_title: ክፍያዎ በመከናወን ላይ ነው
     province: ግዛት
     quantity: ብዛት
-    quantity_short: 'ብዛት:'
+    quantity_short: "ብዛት:"
     recipient_email: የተቀባይ ኢሜይል
     recipient_email_placeholder: የተቀባይ ኢሜይል አድራሻ
     redirecting: ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ...
@@ -194,7 +216,7 @@ am:
     test_purchase_notice: የአንዱ ምርት ሻጭ ስለሆኑ ይህ የሙከራ ግዢ ነው። የክፍያ ዘዴዎ አይከፈልም።
     these_items: እነዚህን እቃዎች
     this_item: ይህን እቃ
-    time_short: 'ሰዓት:'
+    time_short: "ሰዓት:"
     tip: ጉርሻ
     tip_confirmation_message: በ%{price} ግዢ ላይ %{tip} ጉርሻ ሊጨምሩ ነው። እርግጠኛ ነዎት?
     title: ክፍያ መፈጸሚያ
@@ -207,7 +229,7 @@ am:
     zip_code: የፖስታ ቁጥር
   common:
     date: ቀን
-    'false': አይ
+    "false": አይ
     free: ነፃ
     here: እዚህ
     loading: በመጫን ላይ...
@@ -216,7 +238,7 @@ am:
     other: ሌላ
     something_went_wrong: ችግር ተፈጥሯል።
     time: ሰዓት
-    'true': አዎ
+    "true": አዎ
   content:
     access_expired_desc: የዚህ ምርት መዳረሻዎ ጊዜው ያለፈበት ይመስላል። እባክዎ ለተጨማሪ እርዳታ ሻጩን ያነጋግሩ።
     access_expired_title: የመዳረሻ ጊዜ አልቋል
@@ -277,35 +299,35 @@ am:
     symbol: ብር
   date:
     abbr_day_names:
-    - እሑድ
-    - ሰኞ
-    - ማክሰኞ
-    - ረቡዕ
-    - ሐሙስ
-    - ዓርብ
-    - ቅዳሜ
+      - እሑድ
+      - ሰኞ
+      - ማክሰኞ
+      - ረቡዕ
+      - ሐሙስ
+      - ዓርብ
+      - ቅዳሜ
     abbr_month_names:
-    -
-    - ጃንዋሪ
-    - ፌብሩዋሪ
-    - ማርች
-    - አፕሪል
-    - ሜይ
-    - ጁን
-    - ጁላይ
-    - ኦገስት
-    - ሴፕቴምበር
-    - ኦክቶበር
-    - ኖቬምበር
-    - ዲሴምበር
+      -
+      - ጃንዋሪ
+      - ፌብሩዋሪ
+      - ማርች
+      - አፕሪል
+      - ሜይ
+      - ጁን
+      - ጁላይ
+      - ኦገስት
+      - ሴፕቴምበር
+      - ኦክቶበር
+      - ኖቬምበር
+      - ዲሴምበር
     day_names:
-    - እሑድ
-    - ሰኞ
-    - ማክሰኞ
-    - ረቡዕ
-    - ሐሙስ
-    - ዓርብ
-    - ቅዳሜ
+      - እሑድ
+      - ሰኞ
+      - ማክሰኞ
+      - ረቡዕ
+      - ሐሙስ
+      - ዓርብ
+      - ቅዳሜ
     formats:
       abbrev_month: "%b %-d, %Y"
       default: "%Y-%m-%d"
@@ -313,23 +335,23 @@ am:
       long: "%B %e, %Y"
       short: "%b %d"
     month_names:
-    -
-    - ጃንዋሪ
-    - ፌብሩዋሪ
-    - ማርች
-    - አፕሪል
-    - ሜይ
-    - ጁን
-    - ጁላይ
-    - ኦገስት
-    - ሴፕቴምበር
-    - ኦክቶበር
-    - ኖቬምበር
-    - ዲሴምበር
+      -
+      - ጃንዋሪ
+      - ፌብሩዋሪ
+      - ማርች
+      - አፕሪል
+      - ሜይ
+      - ጁን
+      - ጁላይ
+      - ኦገስት
+      - ሴፕቴምበር
+      - ኦክቶበር
+      - ኖቬምበር
+      - ዲሴምበር
     order:
-    - :year
-    - :month
-    - :day
+      - :year
+      - :month
+      - :day
   devise:
     confirmations:
       confirmed: የኢሜይል አድራሻዎ በተሳካ ሁኔታ ተረጋግጧል።
@@ -872,7 +894,7 @@ am:
         subject_single: "%{user} ወደ ምኞት ዝርዝራቸው አዲስ ምርት አክለዋል!"
         view_content: ይዘትን ይመልከቱ
     receipt:
-      order_number: 'Order #%{order_id}'
+      order_number: "Order #%{order_id}"
       subject: Your receipt for %{product}
       thank_you: Thank you for your purchase!
     subscription_renewal_reminder:
@@ -979,7 +1001,7 @@ am:
         giftee_email: የስጦታ ተቀባይ ኢሜይል
         link_label: አገናኝ
         medium: ሚዲየም
-        'off': "%{amount} ቅናሽ"
+        "off": "%{amount} ቅናሽ"
         order_total: ጠቅላላ ትዕዛዝ
         product_price: የምርት ዋጋ
         quantity: ብዛት
@@ -1204,7 +1226,7 @@ am:
     minimum_price_is: የዚህ ምርት ዝቅተኛ ዋጋ %{price} ነው።
     must_input_amount: መጠን ማስገባት አለብዎት
     must_select_call_date_time: ለጥሪው ቀን እና ሰዓት መምረጥ አለብዎት
-    name_fair_price: 'ተመጣጣኝ ዋጋ ይጥቀሱ:'
+    name_fair_price: "ተመጣጣኝ ዋጋ ይጥቀሱ:"
     new_wishlist: አዲስ የምኞት ዝርዝር
     no_available_times: ምንም ክፍት ሰዓት የለም።
     no_available_times_option: ለዚህ አማራጭ ክፍት ሰዓት የለም።

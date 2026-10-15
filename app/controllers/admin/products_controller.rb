@@ -135,9 +135,9 @@ class Admin::ProductsController < Admin::BaseController
       return if @product.present?
 
       if request.inertia? || request.format.html?
-        redirect_to admin_products_path, alert: "Product not found"
+        redirect_to admin_products_path, alert: t("admin.product_not_found", default: "Product not found")
       else
-        render json: { success: false, message: "Product not found" }, status: :not_found
+        render json: { success: false, message: t("admin.product_not_found", default: "Product not found") }, status: :not_found
       end
     end
 

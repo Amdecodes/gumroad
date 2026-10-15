@@ -81,36 +81,39 @@ const formatOrderDate = (isoString: string) => {
   }
 };
 
-const renderOrderStatusPill = (status: string) => {
+const renderOrderStatusPill = (
+  status: string,
+  t: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
+) => {
   switch (status) {
     case "successful":
       return (
         <Pill color="success" size="small">
-          Successful
+          {t("admin.status.successful", undefined, "Successful")}
         </Pill>
       );
     case "failed":
       return (
         <Pill color="danger" size="small">
-          Failed
+          {t("admin.status.failed", undefined, "Failed")}
         </Pill>
       );
     case "refunded":
       return (
         <Pill color="warning" size="small">
-          Refunded
+          {t("admin.status.refunded", undefined, "Refunded")}
         </Pill>
       );
     case "in_progress":
       return (
         <Pill color="primary" size="small">
-          In progress
+          {t("admin.status.in_progress", undefined, "In progress")}
         </Pill>
       );
     case "preorder_authorization_successful":
       return (
         <Pill color="success" size="small">
-          Preorder
+          {t("admin.status.preorder", undefined, "Preorder")}
         </Pill>
       );
     default:
@@ -118,12 +121,21 @@ const renderOrderStatusPill = (status: string) => {
   }
 };
 
-const TrendTooltip = ({ point }: { point: TrendPoint }) => (
+const TrendTooltip = ({
+  point,
+  t,
+}: {
+  point: TrendPoint;
+  t: (key: string, vars?: Record<string, any>, defaultVal?: string) => string;
+}) => (
   <div className="space-y-1">
     <div className="text-xs font-bold text-muted">{point.date}</div>
     <div className="text-sm font-semibold">{point.revenue_formatted}</div>
     <div className="text-xs text-muted">
-      {point.orders_count} {point.orders_count === 1 ? "order" : "orders"}
+      {point.orders_count}{" "}
+      {point.orders_count === 1
+        ? t("admin.overview_page.trend_order", undefined, "order")
+        : t("admin.overview_page.trend_orders", undefined, "orders")}
     </div>
   </div>
 );
@@ -165,24 +177,42 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
     <div className="space-y-8">
       <PageHeader title={t("admin.overview", undefined, "Overview")} showTitleOnMobile className="px-0 pt-0 pb-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-muted">Platform health, key metrics, and operational overview</p>
+          <p className="text-sm text-muted">
+            {t("admin.overview_page.subtitle", undefined, "Platform health, key metrics, and operational overview")}
+          </p>
           <LanguageToggle />
         </div>
       </PageHeader>
 
       {/* KPI Cards */}
       <section aria-label="Key metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        <Stats title="Revenue" description="All-time gross sales volume" value={metrics.revenue.formatted} />
-        <Stats title="Orders" description="Total completed paid orders" value={metrics.orders_count.toLocaleString()} />
         <Stats
-          title="Creators"
-          description="Creators with active products"
+          title={t("admin.overview_page.revenue", undefined, "Revenue")}
+          description={t("admin.overview_page.revenue_description", undefined, "All-time gross sales volume")}
+          value={metrics.revenue.formatted}
+        />
+        <Stats
+          title={t("admin.overview_page.orders", undefined, "Orders")}
+          description={t("admin.overview_page.orders_description", undefined, "Total completed paid orders")}
+          value={metrics.orders_count.toLocaleString()}
+        />
+        <Stats
+          title={t("admin.overview_page.creators", undefined, "Creators")}
+          description={t("admin.overview_page.creators_description", undefined, "Creators with active products")}
           value={metrics.creators_count.toLocaleString()}
         />
-        <Stats title="Customers" description="Unique paying buyers" value={metrics.customers_count.toLocaleString()} />
         <Stats
-          title="Subscriptions"
-          description="Currently active recurring subscriptions"
+          title={t("admin.overview_page.customers", undefined, "Customers")}
+          description={t("admin.overview_page.customers_description", undefined, "Unique paying buyers")}
+          value={metrics.customers_count.toLocaleString()}
+        />
+        <Stats
+          title={t("admin.overview_page.subscriptions", undefined, "Subscriptions")}
+          description={t(
+            "admin.overview_page.subscriptions_description",
+            undefined,
+            "Currently active recurring subscriptions",
+          )}
           value={metrics.subscriptions_count.toLocaleString()}
         />
       </section>
@@ -191,13 +221,21 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
       <section aria-label="Needs attention" className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-base font-bold">Needs attention</h2>
-            <p className="text-xs text-muted">Operational items requiring review or resolution</p>
+            <h2 className="text-base font-bold">
+              {t("admin.overview_page.needs_attention", undefined, "Needs attention")}
+            </h2>
+            <p className="text-xs text-muted">
+              {t(
+                "admin.overview_page.needs_attention_subtitle",
+                undefined,
+                "Operational items requiring review or resolution",
+              )}
+            </p>
           </div>
           {!hasNeedsAttentionItems ? (
             <div className="flex items-center gap-1.5 text-xs text-muted">
               <CheckCircle className="size-4 text-green" />
-              <span>All queues clear</span>
+              <span>{t("admin.overview_page.all_queues_clear", undefined, "All queues clear")}</span>
             </div>
           ) : null}
         </div>
@@ -207,54 +245,70 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted">Creators review</span>
+                  <span className="text-xs font-medium text-muted">
+                    {t("admin.overview_page.creators_review", undefined, "Creators review")}
+                  </span>
                   {needs_attention.creators_requiring_review > 0 ? (
                     <Pill color="warning" size="small">
-                      Review
+                      {t("admin.overview_page.review_badge", undefined, "Review")}
                     </Pill>
                   ) : null}
                 </div>
                 <div className="mt-2 text-2xl font-bold">{needs_attention.creators_requiring_review}</div>
-                <div className="mt-1 text-xs text-muted">Flagged for fraud or TOS</div>
+                <div className="mt-1 text-xs text-muted">
+                  {t("admin.overview_page.creators_review_detail", undefined, "Flagged for fraud or TOS")}
+                </div>
               </div>
 
               <div className="rounded border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted">Payments pending</span>
+                  <span className="text-xs font-medium text-muted">
+                    {t("admin.overview_page.payments_pending", undefined, "Payments pending")}
+                  </span>
                   {needs_attention.payments_pending > 0 ? (
                     <Pill color="primary" size="small">
-                      Settling
+                      {t("admin.overview_page.settling_badge", undefined, "Settling")}
                     </Pill>
                   ) : null}
                 </div>
                 <div className="mt-2 text-2xl font-bold">{needs_attention.payments_pending}</div>
-                <div className="mt-1 text-xs text-muted">Payments currently settling</div>
+                <div className="mt-1 text-xs text-muted">
+                  {t("admin.overview_page.payments_pending_detail", undefined, "Payments currently settling")}
+                </div>
               </div>
 
               <div className="rounded border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted">Failing subscriptions</span>
+                  <span className="text-xs font-medium text-muted">
+                    {t("admin.overview_page.failing_subscriptions", undefined, "Failing subscriptions")}
+                  </span>
                   {needs_attention.subscriptions_failing > 0 ? (
                     <Pill color="danger" size="small">
-                      Action
+                      {t("admin.overview_page.action_badge", undefined, "Action")}
                     </Pill>
                   ) : null}
                 </div>
                 <div className="mt-2 text-2xl font-bold">{needs_attention.subscriptions_failing}</div>
-                <div className="mt-1 text-xs text-muted">Failed payment retries</div>
+                <div className="mt-1 text-xs text-muted">
+                  {t("admin.overview_page.failing_subscriptions_detail", undefined, "Failed payment retries")}
+                </div>
               </div>
 
               <div className="rounded border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted">Open disputes</span>
+                  <span className="text-xs font-medium text-muted">
+                    {t("admin.overview_page.open_disputes", undefined, "Open disputes")}
+                  </span>
                   {needs_attention.disputes_open > 0 ? (
                     <Pill color="danger" size="small">
-                      Urgent
+                      {t("admin.overview_page.urgent_badge", undefined, "Urgent")}
                     </Pill>
                   ) : null}
                 </div>
                 <div className="mt-2 text-2xl font-bold">{needs_attention.disputes_open}</div>
-                <div className="mt-1 text-xs text-muted">Disputes requiring response</div>
+                <div className="mt-1 text-xs text-muted">
+                  {t("admin.overview_page.open_disputes_detail", undefined, "Disputes requiring response")}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -265,25 +319,31 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
       <section aria-label="Sales trend" className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-base font-bold">Sales trend</h2>
-            <p className="text-xs text-muted">Daily gross revenue across the selected period</p>
+            <h2 className="text-base font-bold">{t("admin.overview_page.sales_trend", undefined, "Sales trend")}</h2>
+            <p className="text-xs text-muted">
+              {t(
+                "admin.overview_page.sales_trend_subtitle",
+                undefined,
+                "Daily gross revenue across the selected period",
+              )}
+            </p>
           </div>
           <Tabs variant="pills">
             <Tab isSelected={selectedRange === 7} onClick={() => handleRangeChange(7)}>
-              7 days
+              {t("admin.overview_page.range_7_days", undefined, "7 days")}
             </Tab>
             <Tab isSelected={selectedRange === 30} onClick={() => handleRangeChange(30)}>
-              30 days
+              {t("admin.overview_page.range_30_days", undefined, "30 days")}
             </Tab>
             <Tab isSelected={selectedRange === 90} onClick={() => handleRangeChange(90)}>
-              90 days
+              {t("admin.overview_page.range_90_days", undefined, "90 days")}
             </Tab>
           </Tabs>
         </div>
 
         <Chart
           containerRef={containerRef}
-          tooltip={tooltipPoint ? <TrendTooltip point={tooltipPoint} /> : null}
+          tooltip={tooltipPoint ? <TrendTooltip point={tooltipPoint} t={t} /> : null}
           tooltipPosition={tooltip?.position ?? null}
           data={chartData}
           {...events}
@@ -297,23 +357,27 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
       {/* Recent Orders */}
       <section aria-label="Recent orders" className="space-y-4">
         <div>
-          <h2 className="text-base font-bold">Recent orders</h2>
-          <p className="text-xs text-muted">Latest purchases across the platform</p>
+          <h2 className="text-base font-bold">{t("admin.overview_page.recent_orders", undefined, "Recent orders")}</h2>
+          <p className="text-xs text-muted">
+            {t("admin.overview_page.recent_orders_subtitle", undefined, "Latest purchases across the platform")}
+          </p>
         </div>
 
         {recent_orders.length === 0 ? (
           <Card>
-            <CardContent className="p-8 text-center text-muted">No orders have been recorded yet.</CardContent>
+            <CardContent className="p-8 text-center text-muted">
+              {t("admin.overview_page.no_orders_yet", undefined, "No orders have been recorded yet.")}
+            </CardContent>
           </Card>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Product</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>{t("admin.table.customer", undefined, "Customer")}</TableHead>
+                <TableHead>{t("admin.table.product", undefined, "Product")}</TableHead>
+                <TableHead>{t("admin.table.amount", undefined, "Amount")}</TableHead>
+                <TableHead>{t("admin.table.status", undefined, "Status")}</TableHead>
+                <TableHead>{t("admin.table.date", undefined, "Date")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -324,12 +388,14 @@ export default function Overview({ metrics, needs_attention, sales_trend, recent
                   </TableCell>
                   <TableCell label="Product">
                     <div className="truncate">{order.product_name}</div>
-                    <div className="truncate text-xs text-muted">by {order.seller_name}</div>
+                    <div className="truncate text-xs text-muted">
+                      {t("admin.overview_page.by_seller", { name: order.seller_name }, `by ${order.seller_name}`)}
+                    </div>
                   </TableCell>
                   <TableCell label="Amount">
                     <span className="font-semibold">{order.amount_formatted}</span>
                   </TableCell>
-                  <TableCell label="Status">{renderOrderStatusPill(order.status)}</TableCell>
+                  <TableCell label="Status">{renderOrderStatusPill(order.status, t)}</TableCell>
                   <TableCell label="Date">
                     <span className="text-xs text-muted">{formatOrderDate(order.created_at)}</span>
                   </TableCell>

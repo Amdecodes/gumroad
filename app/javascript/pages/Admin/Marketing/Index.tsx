@@ -89,45 +89,56 @@ export default function MarketingIndex({
   active_tab = "overview",
 }: MarketingIndexProps) {
   const [tab, setTab] = React.useState<"overview" | "offers" | "affiliates" | "audience" | "workflows">(
-    active_tab as any || "overview"
+    (active_tab as any) || "overview",
   );
 
   return (
     <AdminLayout currentPath="/admin/marketing">
       <div className="space-y-6">
-        <PageHeader
-          title="Marketing & Growth"
-          description="Platform-wide management for discounts, affiliates, audience engagement, and creator email campaigns."
-        />
+        <PageHeader title="Marketing & Growth">
+          <p className="text-sm text-muted">
+            Platform-wide management for discounts, affiliates, audience engagement, and creator email campaigns.
+          </p>
+        </PageHeader>
 
         {/* KPI Metrics */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Active Coupons / Offers</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{metrics.total_offers_count.toLocaleString()}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">
+                {metrics.total_offers_count.toLocaleString()}
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Registered Affiliates</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{metrics.total_affiliates_count.toLocaleString()}</div>
-              <div className="text-muted-foreground text-xs mt-0.5">{metrics.formatted_affiliate_volume} sales volume</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">
+                {metrics.total_affiliates_count.toLocaleString()}
+              </div>
+              <div className="text-muted-foreground mt-0.5 text-xs">
+                {metrics.formatted_affiliate_volume} sales volume
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Total Audience Reach</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{metrics.total_audience_count.toLocaleString()}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">
+                {metrics.total_audience_count.toLocaleString()}
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 sm:p-6">
               <span className="text-muted-foreground text-xs font-medium uppercase">Email Broadcasts</span>
-              <div className="text-foreground mt-1 text-2xl font-bold">{metrics.total_broadcasts_count.toLocaleString()}</div>
+              <div className="mt-1 text-2xl font-bold text-foreground">
+                {metrics.total_broadcasts_count.toLocaleString()}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -146,10 +157,10 @@ export default function MarketingIndex({
                 key={t.id}
                 type="button"
                 onClick={() => setTab(t.id as any)}
-                className={`border-b-2 py-3 px-2 text-sm font-medium transition-colors ${
+                className={`border-b-2 px-2 py-3 text-sm font-medium transition-colors ${
                   tab === t.id
-                    ? "border-accent text-accent font-semibold"
-                    : "border-transparent text-muted-foreground hover:border-muted-foreground hover:text-foreground"
+                    ? "border-accent font-semibold text-accent"
+                    : "text-muted-foreground hover:border-muted-foreground border-transparent hover:text-foreground"
                 }`}
               >
                 {t.label}
@@ -165,7 +176,7 @@ export default function MarketingIndex({
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base font-semibold">Recent Discounts & Coupons</CardTitle>
-                  <Button variant="ghost" size="small" onClick={() => setTab("offers")}>
+                  <Button outline size="sm" onClick={() => setTab("offers")}>
                     View All
                   </Button>
                 </CardHeader>
@@ -182,8 +193,8 @@ export default function MarketingIndex({
                     <TableBody>
                       {offers.slice(0, 5).map((o) => (
                         <TableRow key={o.id}>
-                          <TableCell className="font-mono font-bold text-sm text-foreground">{o.code}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{o.seller_name}</TableCell>
+                          <TableCell className="font-mono text-sm font-bold text-foreground">{o.code}</TableCell>
+                          <TableCell className="text-muted-foreground text-sm">{o.seller_name}</TableCell>
                           <TableCell className="text-sm font-semibold">{o.discount_formatted}</TableCell>
                           <TableCell className="text-sm">{o.uses_count}</TableCell>
                         </TableRow>
@@ -196,7 +207,7 @@ export default function MarketingIndex({
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base font-semibold">Top Affiliates</CardTitle>
-                  <Button variant="ghost" size="small" onClick={() => setTab("affiliates")}>
+                  <Button outline size="sm" onClick={() => setTab("affiliates")}>
                     View All
                   </Button>
                 </CardHeader>
@@ -235,7 +246,7 @@ export default function MarketingIndex({
             </CardHeader>
             <CardContent className="p-0">
               {offers.length === 0 ? (
-                <div className="p-6 text-center text-muted-foreground text-sm">No discount codes found.</div>
+                <div className="text-muted-foreground p-6 text-center text-sm">No discount codes found.</div>
               ) : (
                 <Table>
                   <TableHeader>
@@ -251,9 +262,9 @@ export default function MarketingIndex({
                   <TableBody>
                     {offers.map((offer) => (
                       <TableRow key={offer.id}>
-                        <TableCell className="font-mono font-bold text-accent text-sm">{offer.code}</TableCell>
+                        <TableCell className="font-mono text-sm font-bold text-accent">{offer.code}</TableCell>
                         <TableCell className="text-sm text-foreground">{offer.seller_name}</TableCell>
-                        <TableCell className="font-semibold text-sm">{offer.discount_formatted}</TableCell>
+                        <TableCell className="text-sm font-semibold">{offer.discount_formatted}</TableCell>
                         <TableCell className="text-sm">
                           {offer.uses_count} {offer.max_uses ? `/ ${offer.max_uses}` : "uses"}
                         </TableCell>
@@ -276,7 +287,7 @@ export default function MarketingIndex({
             </CardHeader>
             <CardContent className="p-0">
               {affiliates.length === 0 ? (
-                <div className="p-6 text-center text-muted-foreground text-sm">No affiliate accounts found.</div>
+                <div className="text-muted-foreground p-6 text-center text-sm">No affiliate accounts found.</div>
               ) : (
                 <Table>
                   <TableHeader>
@@ -291,14 +302,16 @@ export default function MarketingIndex({
                   <TableBody>
                     {affiliates.map((aff) => (
                       <TableRow key={aff.id}>
-                        <TableCell className="font-medium text-sm text-foreground">
+                        <TableCell className="text-sm font-medium text-foreground">
                           {aff.email}
                           {aff.name ? <div className="text-muted-foreground text-xs">{aff.name}</div> : null}
                         </TableCell>
-                        <TableCell className="font-semibold text-sm">{aff.fee_percentage}%</TableCell>
+                        <TableCell className="text-sm font-semibold">{aff.fee_percentage}%</TableCell>
                         <TableCell className="text-sm">
                           {aff.applies_to_all ? (
-                            <Pill color="success" size="small">All Products</Pill>
+                            <Pill color="success" size="small">
+                              All Products
+                            </Pill>
                           ) : (
                             <Pill size="small">Selected Products</Pill>
                           )}
@@ -322,7 +335,7 @@ export default function MarketingIndex({
             </CardHeader>
             <CardContent className="p-0">
               {audience_samples.length === 0 ? (
-                <div className="p-6 text-center text-muted-foreground text-sm">No audience members recorded.</div>
+                <div className="text-muted-foreground p-6 text-center text-sm">No audience members recorded.</div>
               ) : (
                 <Table>
                   <TableHeader>
@@ -336,13 +349,25 @@ export default function MarketingIndex({
                   <TableBody>
                     {audience_samples.map((aud) => (
                       <TableRow key={aud.id}>
-                        <TableCell className="font-medium text-sm text-foreground">{aud.email}</TableCell>
+                        <TableCell className="text-sm font-medium text-foreground">{aud.email}</TableCell>
                         <TableCell className="text-muted-foreground text-sm">{aud.seller_name}</TableCell>
                         <TableCell className="text-sm">
                           <div className="flex gap-1.5">
-                            {aud.is_customer ? <Pill color="success" size="small">Customer</Pill> : null}
-                            {aud.is_follower ? <Pill color="accent" size="small">Follower</Pill> : null}
-                            {aud.is_affiliate ? <Pill color="warning" size="small">Affiliate</Pill> : null}
+                            {aud.is_customer ? (
+                              <Pill color="success" size="small">
+                                Customer
+                              </Pill>
+                            ) : null}
+                            {aud.is_follower ? (
+                              <Pill color="primary" size="small">
+                                Follower
+                              </Pill>
+                            ) : null}
+                            {aud.is_affiliate ? (
+                              <Pill color="warning" size="small">
+                                Affiliate
+                              </Pill>
+                            ) : null}
                           </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{formatDate(aud.created_at)}</TableCell>
@@ -363,7 +388,9 @@ export default function MarketingIndex({
             </CardHeader>
             <CardContent className="p-0">
               {workflows.length === 0 ? (
-                <div className="p-6 text-center text-muted-foreground text-sm">No email campaigns or workflows found.</div>
+                <div className="text-muted-foreground p-6 text-center text-sm">
+                  No email campaigns or workflows found.
+                </div>
               ) : (
                 <Table>
                   <TableHeader>
@@ -378,10 +405,10 @@ export default function MarketingIndex({
                   <TableBody>
                     {workflows.map((wf) => (
                       <TableRow key={wf.id}>
-                        <TableCell className="font-semibold text-sm text-foreground">{wf.name}</TableCell>
+                        <TableCell className="text-sm font-semibold text-foreground">{wf.name}</TableCell>
                         <TableCell className="text-muted-foreground text-sm">{wf.seller_name}</TableCell>
                         <TableCell>
-                          <Pill color={wf.status === "published" ? "success" : "default"} size="small">
+                          <Pill color={wf.status === "published" ? "success" : undefined} size="small">
                             {wf.status}
                           </Pill>
                         </TableCell>

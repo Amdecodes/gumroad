@@ -552,3 +552,52 @@ The following Amharic strings cover notifications sent to sellers, affiliates, a
 | `mailers.affiliate.collaborator_invitation_accepted.subject`     | %{invitee} has accepted your invitation to collaborate on %{app_name} | %{invitee} በ%{app_name} ላይ አብሮ ለመስራት የቀረበለትን ግብዣ ተቀብሏል | Seller notification that collaborator accepted.   |
 | `mailers.affiliate_request.notify_seller_of_new_request.subject` | %{name} has applied to be an affiliate                                | %{name} አፊሊዬት ለመሆን አመልክቷል                              | Seller notification of pending affiliate request. |
 | `mailers.team.invite.subject`                                    | %{app_name} team invitation                                           | የ%{app_name} የቡድን ግብዣ                                  | Team member invitation email subject.             |
+
+---
+
+## 14. Admin Interfaces (Disputes, Creator Suspensions, Payout Operations & Audit Trails)
+
+The following Amharic translations cover internal platform administration interfaces, including creator moderation, dispute handling, manual payout execution, and administrative compliance audit records:
+
+### 14.1 Admin Overview & System Navigation
+
+| Key                     | English Source  | Amharic Draft | Review Focus / Questions                                 |
+| :---------------------- | :-------------- | :------------ | :------------------------------------------------------- |
+| `admin.nav.overview`    | Overview        | አጠቃላይ እይታ     | High-level admin dashboard.                              |
+| `admin.nav.orders`      | Orders          | ትዕዛዞች         | Centralized order and dispute list.                      |
+| `admin.nav.creators`    | Creators        | ሻጮች           | Merchant registry & moderation directory.                |
+| `admin.nav.payouts`     | Payouts         | ሻጭ ክፍያዎች      | Creator earnings disbursements and bank transfers.       |
+| `admin.overview.system` | System Admin    | የስርዓት አስተዳዳሪ  | Platform administrative role badge.                      |
+| `admin.overview.kpis`   | Needs attention | ትኩረት የሚሹ      | Alert section for pending disputes and payout holdbacks. |
+
+### 14.2 Orders, Refunds & Subscription Interventions (`Admin::Orders`)
+
+| Key                                 | English Source                                                        | Amharic Draft                                    | Review Focus / Questions                           |
+| :---------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------- | :------------------------------------------------- |
+| `admin.orders_page.issue_refund`    | Issue Refund                                                          | ተመላሽ ገንዘብ ስጥ                                     | Administrative refund action button.               |
+| `admin.orders_page.cancel_sub`      | Cancel Subscription                                                   | ምዝገባን ሰርዝ                                        | Immediate or period-end cancellation trigger.      |
+| `admin.orders_page.refund_warning`  | This action will reverse charges and immediately notify the customer. | ይህ እርምጃ ክፍያውን የሚመልስ ሲሆን ወዲያውኑ ለደንበኛው ማሳወቂያ ይልካል። | Staff warning before executing financial reversal. |
+| `admin.orders_page.cancel_sub_desc` | The customer will lose access immediately and billing will halt.      | ደንበኛው ወዲያውኑ አገልግሎቱን የሚያጣ ሲሆን ተጨማሪ ክፍያም አይጠየቅም።   | Subscription revocation consequence confirmation.  |
+| `admin.orders_page.disputed`        | Disputed                                                              | ክርክር የተነሳበት                                      | Payment chargeback / dispute status flag.          |
+
+### 14.3 Creator Moderation, Risk & Suspensions (`Admin::Creators`)
+
+| Key                                     | English Source                                                                                                               | Amharic Draft                                                                               | Review Focus / Questions                                     |
+| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
+| `admin.creators_page.suspend_creator`   | Suspend Creator                                                                                                              | ሻጭ እገድ                                                                                      | Merchant account limitation modal trigger.                   |
+| `admin.creators_page.unsuspend_creator` | Unsuspend Creator                                                                                                            | እገዳ አንሳ                                                                                     | Restoration of merchant store access.                        |
+| `admin.creators_page.tos_violation`     | Terms of Service / Policy Violation                                                                                          | የአገልግሎት ውል / ፖሊሲ ጥሰት                                                                        | Suspension categorization reason.                            |
+| `admin.creators_page.fraud_risk`        | Fraud / High Risk                                                                                                            | ማጭበርበር / ከፍተኛ ስጋት                                                                           | Severe risk flag suspension categorization.                  |
+| `admin.creators_page.suspend_warning`   | Suspending this creator will disable their store listings, prevent future purchases, and pause payout distributions.         | ይህን ሻጭ ማገድ የመደብር ዝርዝሮቻቸውን ያሰናክላል፣ የወደፊት ግዢዎችን ይከለክላል እና የክፍያ ስርጭቶችን ያቆማል።                   | Legal and operational warning on creator account suspension. |
+| `admin.creators_page.unsuspend_warning` | Lifting the suspension will mark this creator compliant, re-enable active product listings, and restore store functionality. | እገዳውን ማንሳት ይህንን ሻጭ ተገዢ ያደርገዋል፣ ንቁ የምርት ዝርዝሮችን እንደገና ያነቃቃል እንዲሁም የመደብር ተግባራትን ወደነበረበት ይመልሳል። | Account reinstatement consequences confirmation.             |
+
+### 14.4 Payout Disbursements, Holds & Cancellations (`Admin::Payouts`)
+
+| Key                                          | English Source                                                                                                                                                                      | Amharic Draft                                                                                                       | Review Focus / Questions                                           |
+| :------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------- |
+| `admin.payouts_page.mark_as_paid`            | Mark as Paid                                                                                                                                                                        | እንደተከፈለ ምልክት አድርግ                                                                                                   | Manual bank disbursement confirmation action.                      |
+| `admin.payouts_page.cancel_hold`             | Cancel / Hold                                                                                                                                                                       | ሰርዝ / አግድ                                                                                                           | Payout stoppage action.                                            |
+| `admin.payouts_page.financial_breakdown`     | Financial Breakdown                                                                                                                                                                 | የፋይናንስ ዝርዝር መግለጫ                                                                                                    | Net seller proceeds deduction formula header.                      |
+| `admin.payouts_page.total_net_disbursement`  | Total Net Disbursement                                                                                                                                                              | አጠቃላይ የተጣራ ክፍያ                                                                                                      | Final creator bank transfer amount.                                |
+| `admin.payouts_page.cancel_confirm_msg`      | Are you sure you want to cancel this pending payout of {amount}? Cancelled payouts will not be disbursed, and associated balances will be returned to the creator’s unpaid balance. | እርግጠኛ ነዎት ይህን በመጠባበቅ ላይ ያለውን የ {amount} ክፍያ መሰረዝ ይፈልጋሉ? የተሰረዙ ክፍያዎች አይከፈሉም፣ እና ተዛማጅ ሂሳቦች ወደ ሻጩ ያልተከፈለ ቀሪ ሂሳብ ይመለሳሉ። | Accounting reversal explanation when cancelling pending payout.    |
+| `admin.payouts_page.cancellation_audit_note` | This explanation will be recorded in the administrative audit history.                                                                                                              | ይህ ማብራሪያ በአስተዳደራዊ የኦዲት ታሪክ ውስጥ ይመዘገባል።                                                                              | Legal compliance reminder requiring staff to input justified note. |

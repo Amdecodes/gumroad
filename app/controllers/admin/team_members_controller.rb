@@ -186,7 +186,7 @@ class Admin::TeamMembersController < Admin::BaseController
       if request.inertia? || request.format.html?
         render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
       else
-        render json: { success: false, message: "Team member not found" }, status: :not_found
+        render json: { success: false, message: t("admin.team_member_not_found", default: "Team member not found") }, status: :not_found
       end
     end
 

@@ -1,4 +1,4 @@
-import { Group, Search, UserCheck, X } from "@boxicons/react";
+import { Group, Search, X } from "@boxicons/react";
 import { Link, router } from "@inertiajs/react";
 import * as React from "react";
 
@@ -79,10 +79,11 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
   return (
     <AdminLayout currentPath="/admin/customers">
       <div className="space-y-6">
-        <PageHeader
-          title="Customers"
-          description={`Showing ${customers.length} of ${pagination.count.toLocaleString()} customers across ArifDrop.`}
-        />
+        <PageHeader title="Customers">
+          <p className="text-sm text-muted">
+            {`Showing ${customers.length} of ${pagination.count.toLocaleString()} customers across ArifDrop.`}
+          </p>
+        </PageHeader>
 
         <Card>
           <CardContent className="p-4 sm:p-6">
@@ -100,12 +101,12 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
               </div>
 
               <div className="flex items-center gap-2">
-                <Button type="submit" variant="secondary" size="small">
+                <Button type="submit" color="primary" size="sm">
                   Search
                 </Button>
 
                 {hasActiveFilters ? (
-                  <Button type="button" variant="ghost" size="small" onClick={handleClearFilters} aria-label="Clear filters">
+                  <Button type="button" outline size="sm" onClick={handleClearFilters} aria-label="Clear filters">
                     <X className="mr-1 size-4" />
                     Clear
                   </Button>
@@ -120,14 +121,14 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
             {customers.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-12 text-center">
                 <Group className="text-muted-foreground/40 mb-3 size-12" />
-                <h3 className="text-foreground text-base font-semibold">No customers found</h3>
+                <h3 className="text-base font-semibold text-foreground">No customers found</h3>
                 <p className="text-muted-foreground mt-1 max-w-sm text-sm">
                   {hasActiveFilters
                     ? "No customers match your current search query. Try searching by another email or clearing the query."
                     : "No customers have made purchases on the platform yet."}
                 </p>
                 {hasActiveFilters ? (
-                  <Button variant="secondary" size="small" onClick={handleClearFilters} className="mt-4">
+                  <Button outline size="sm" onClick={handleClearFilters} className="mt-4">
                     Clear Search
                   </Button>
                 ) : null}
@@ -151,13 +152,11 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
                       <TableCell className="font-medium">
                         <Link
                           href={`/admin/customers/${cust.id}`}
-                          className="text-foreground hover:text-accent font-semibold hover:underline"
+                          className="font-semibold text-foreground hover:text-accent hover:underline"
                         >
                           {cust.email}
                         </Link>
-                        {cust.name ? (
-                          <div className="text-muted-foreground text-xs">{cust.name}</div>
-                        ) : null}
+                        {cust.name ? <div className="text-muted-foreground text-xs">{cust.name}</div> : null}
                       </TableCell>
 
                       <TableCell>
@@ -171,11 +170,11 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
                       </TableCell>
 
                       <TableCell>
-                        <span className="text-foreground text-sm font-semibold">{cust.orders_count}</span>
+                        <span className="text-sm font-semibold text-foreground">{cust.orders_count}</span>
                       </TableCell>
 
                       <TableCell>
-                        <span className="text-foreground text-sm font-semibold">{cust.total_spent_formatted}</span>
+                        <span className="text-sm font-semibold text-foreground">{cust.total_spent_formatted}</span>
                       </TableCell>
 
                       <TableCell>
@@ -188,14 +187,12 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
                         )}
                       </TableCell>
 
-                      <TableCell className="text-muted-foreground text-sm">
-                        {formatDate(cust.last_seen_at)}
-                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">{formatDate(cust.last_seen_at)}</TableCell>
 
                       <TableCell className="text-right">
                         <Link
                           href={`/admin/customers/${cust.id}`}
-                          className="text-accent text-sm font-medium hover:underline"
+                          className="text-sm font-medium text-accent hover:underline"
                         >
                           Inspect Customer
                         </Link>
@@ -211,9 +208,8 @@ export default function CustomersIndex({ customers, pagination, filters }: Custo
         {pagination.pages > 1 ? (
           <div className="flex justify-center">
             <Pagination
-              page={pagination.page}
-              pages={pagination.pages}
-              onPageChange={(nextPage) => applyFilters({ page: nextPage })}
+              pagination={{ page: pagination.page, pages: pagination.pages }}
+              onChangePage={(nextPage) => applyFilters({ page: nextPage })}
             />
           </div>
         ) : null}
