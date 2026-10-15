@@ -37,7 +37,7 @@ class ReceiptPresenter::ChargeInfo
     question = I18n.t("mailers.customer.receipt.questions_about_product", count: order_items_count)
 
     action = \
-      if for_email
+      if for_email || chargeable.support_email.blank?
         I18n.t("mailers.customer.receipt.contact_seller_reply", seller: h(seller.display_name))
       else
         I18n.t("mailers.customer.receipt.contact_seller_at", seller: h(seller.display_name), email: mail_to(chargeable.support_email))

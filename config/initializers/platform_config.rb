@@ -32,7 +32,7 @@ module PlatformConfig
     end
 
     def support_email
-      SUPPORT_EMAIL
+      SUPPORT_EMAIL.presence || (defined?(DEFAULT_EMAIL_DOMAIN) && DEFAULT_EMAIL_DOMAIN.present? ? "support@#{DEFAULT_EMAIL_DOMAIN}" : "support@arifdrop.com")
     end
 
     def statement_descriptor
@@ -129,7 +129,7 @@ module PlatformConfig
         app_name: app_name(locale),
         app_name_en: APP_NAME,
         app_name_am: APP_NAME_AM,
-        support_email: SUPPORT_EMAIL,
+        support_email:,
         statement_descriptor: STATEMENT_DESCRIPTOR,
         legal_name:,
         legal_address:,

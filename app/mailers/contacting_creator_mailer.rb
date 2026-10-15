@@ -163,7 +163,7 @@ class ContactingCreatorMailer < ApplicationMailer
 
     @unsub_link = user_unsubscribe_url(id: @seller.secure_external_id(scope: "email_unsubscribe"), email_type: :product_update)
     @sales_count = @seller.sales.successful.count
-    @subject = "Please add a payment account to Gumroad."
+    @subject = "Please add a payment account to #{PlatformConfig.app_name}."
   end
 
   def video_preview_conversion_error(link_id)
@@ -316,13 +316,13 @@ class ContactingCreatorMailer < ApplicationMailer
     @seller = User.find_by(id: user_id)
     @amount = Money.new(amount_cents * get_rate(@seller.currency_type).to_f, @seller.currency_type.to_sym).format(no_cents_if_whole: true, symbol: true)
     @reason = reason
-    @subject = "You've received Gumroad credit!"
+    @subject = "You've received #{PlatformConfig.app_name} credit!"
   end
 
   def gumroad_day_credit_notification(user_id, amount_cents)
     @seller = User.find_by(id: user_id)
     @amount = Money.new(amount_cents * get_rate(@seller.currency_type).to_f, @seller.currency_type.to_sym).format(no_cents_if_whole: true, symbol: true)
-    @subject = "You've received Gumroad credit!"
+    @subject = "You've received #{PlatformConfig.app_name} credit!"
   end
 
   def subscription_cancelled(subscription_id)
@@ -516,7 +516,7 @@ class ContactingCreatorMailer < ApplicationMailer
       Purchase.includes(:seller).find_by(id: purchase_id)
     end
     @seller = @purchase.seller
-    @subject = "Fraud was detected on your Gumroad account."
+    @subject = "Fraud was detected on your #{PlatformConfig.app_name} account."
   end
 
   # refund_id is optional: when the refund carries a note (the reason a team member
@@ -537,7 +537,7 @@ class ContactingCreatorMailer < ApplicationMailer
   def payment_returned(payment_id)
     @payment = Payment.find(payment_id)
     @seller = @payment.user
-    @subject = "Gumroad payout returned"
+    @subject = "#{PlatformConfig.app_name} payout returned"
   end
 
   def payouts_may_be_blocked(user_id)
@@ -790,7 +790,7 @@ class ContactingCreatorMailer < ApplicationMailer
 
   def paypal_suspension_notification(user_id)
     @seller = User.find(user_id)
-    @subject = "Important: Update Your Payout Method on Gumroad"
+    @subject = "Important: Update Your Payout Method on #{PlatformConfig.app_name}"
   end
 
   private
