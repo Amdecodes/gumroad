@@ -13,7 +13,7 @@ class User::HighVolumeSellerFeeTest < ActiveSupport::TestCase
   end
 
   test "gumroad_fee_per_thousand is 10% when the seller is not volume-eligible" do
-    assert_equal Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
+    assert_equal Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
     assert_not @seller.high_volume_seller_fee?
   end
 
@@ -29,7 +29,7 @@ class User::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     mark_volume_eligible!(@seller)
 
     assert_not @seller.high_volume_seller_fee?
-    assert_equal Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
+    assert_equal Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
   end
 
   test "a negotiated custom fee wins over the volume rate" do
@@ -48,7 +48,7 @@ class User::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     travel_to Time.utc(2026, 9, 1, 0, 5) do
       assert_not @seller.high_volume_fee_eligible?
       assert_not @seller.high_volume_seller_fee?
-      assert_equal Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
+      assert_equal Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND, @seller.gumroad_fee_per_thousand
     end
   end
 

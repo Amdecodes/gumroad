@@ -24,9 +24,9 @@ class LlmsControllerTest < ActionController::TestCase
   test "llms.txt pricing matches the fee constants" do
     get :index, format: :txt
 
-    flat_pct = Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 10
-    fixed_fee = Purchase::GUMROAD_FIXED_FEE_CENTS / 100.0
-    discover_pct = Purchase::GUMROAD_DISCOVER_FEE_PER_THOUSAND / 10
+    flat_pct = Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 10
+    fixed_fee = Purchase::PLATFORM_FIXED_FEE_CENTS / 100.0
+    discover_pct = Purchase::DISCOVER_FLAT_FEE_PER_THOUSAND / 10
 
     assert_includes response.body, "#{flat_pct}% + $#{format("%.2f", fixed_fee)} per transaction"
     assert_includes response.body, "#{discover_pct}% per transaction"

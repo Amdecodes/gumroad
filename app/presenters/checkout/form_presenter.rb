@@ -78,11 +78,11 @@ class Checkout::FormPresenter
       if seller.alive_user_compliance_info&.country_code == Compliance::Countries::BRA.alpha2
         "All sales will incur a 0% Gumroad fee."
       else
-        discover_fee_percent = (Purchase::GUMROAD_DISCOVER_FEE_PER_THOUSAND / 10.0).round(1)
+        discover_fee_percent = (Purchase::DISCOVER_FLAT_FEE_PER_THOUSAND / 10.0).round(1)
         discover_fee_percent = discover_fee_percent.to_i == discover_fee_percent ? discover_fee_percent.to_i : discover_fee_percent
         direct_fee_percent = (seller.gumroad_fee_per_thousand / 10.0).round(1)
         direct_fee_percent = direct_fee_percent.to_i == direct_fee_percent ? direct_fee_percent.to_i : direct_fee_percent
-        fixed_fee_cents = Purchase::GUMROAD_FIXED_FEE_CENTS
+        fixed_fee_cents = Purchase::PLATFORM_FIXED_FEE_CENTS
 
         "All sales will incur fees based on how customers find your product:\n\n• Direct sales: #{direct_fee_percent}% + #{fixed_fee_cents}¢\n• Discover sales: #{discover_fee_percent}% flat\n"
       end

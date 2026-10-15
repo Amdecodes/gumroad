@@ -53,15 +53,15 @@ module PlatformConfig
     alias_method :kindle_email, :kindle_sender_email
 
     def flat_fee_percent
-      Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 10.0
+      Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 10.0
     end
 
     def discover_fee_percent
-      Purchase::GUMROAD_DISCOVER_FEE_PER_THOUSAND / 10.0
+      Purchase::DISCOVER_FLAT_FEE_PER_THOUSAND / 10.0
     end
 
     def fixed_fee_cents
-      Purchase::GUMROAD_FIXED_FEE_CENTS
+      Purchase::PLATFORM_FIXED_FEE_CENTS
     end
 
     def processor_fee_percent

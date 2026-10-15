@@ -3788,8 +3788,8 @@ describe Order::PreparePaymentIntentService, :vcr do
 
         purchase = order.purchases.first.reload
         expect(purchase.card_type).to be_nil
-        expected_variable_fee_cents = (purchase.price_cents * Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 1000.0).round
-        expect(purchase.fee_cents).to eq(expected_variable_fee_cents + Purchase::GUMROAD_FIXED_FEE_CENTS)
+        expected_variable_fee_cents = (purchase.price_cents * Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 1000.0).round
+        expect(purchase.fee_cents).to eq(expected_variable_fee_cents + Purchase::PLATFORM_FIXED_FEE_CENTS)
       end
 
       # Stripe caps a single Pix payment at 3,000 USD and validates it against the intent's final

@@ -288,7 +288,7 @@ class User < ApplicationRecord
     return custom_fee_per_thousand if custom_fee_per_thousand.present?
     return HIGH_VOLUME_FEE_PER_THOUSAND if high_volume_seller_fee?
 
-    Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND
+    Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND
   end
 
   def month_to_date_gross_sales_cents

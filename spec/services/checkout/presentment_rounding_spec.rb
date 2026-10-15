@@ -109,7 +109,7 @@ describe Checkout::PresentmentRounding do
     it "can never move an amount by more than Gumroad's flat fee across the whole price range" do
       # The real guarantee this feature rests on: the difference is absorbed out of
       # Gumroad's share, so no move may exceed the fee Gumroad actually collects.
-      flat_fee_percent = Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 10.0
+      flat_fee_percent = Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 10.0
 
       [9_99, 10_00, 12_34, 4_50].each do |canonical|
         (1_00..500_00).step(7).each do |cents|

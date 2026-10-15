@@ -50,9 +50,9 @@ RSpec.describe "Localization Parity" do
   end
 
   it "derives fee values in PlatformConfig directly from Purchase constants" do
-    expect(PlatformConfig.flat_fee_percent).to eq(Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 10.0)
-    expect(PlatformConfig.discover_fee_percent).to eq(Purchase::GUMROAD_DISCOVER_FEE_PER_THOUSAND / 10.0)
-    expect(PlatformConfig.fixed_fee_cents).to eq(Purchase::GUMROAD_FIXED_FEE_CENTS)
+    expect(PlatformConfig.flat_fee_percent).to eq(Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 10.0)
+    expect(PlatformConfig.discover_fee_percent).to eq(Purchase::DISCOVER_FLAT_FEE_PER_THOUSAND / 10.0)
+    expect(PlatformConfig.fixed_fee_cents).to eq(Purchase::PLATFORM_FIXED_FEE_CENTS)
   end
 
   describe "Kindle whitelist address" do

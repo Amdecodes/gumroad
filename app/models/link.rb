@@ -1382,11 +1382,11 @@ class Link < ApplicationRecord
     fee_per_thousand = if !was_recommended && user.high_volume_seller_fee?
       User::HIGH_VOLUME_FEE_PER_THOUSAND
     else
-      Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND
+      Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND
     end
 
     if was_recommended
-      gumroad_fee_cents = (amount_cents * (fee_per_thousand + discover_fee_per_thousand - Purchase::GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND)) / 1000
+      gumroad_fee_cents = (amount_cents * (fee_per_thousand + discover_fee_per_thousand - Purchase::DISCOVER_DEFAULT_BASE_FEE_PER_THOUSAND)) / 1000
     else
       gumroad_fee_cents = (amount_cents * fee_per_thousand) / 1000
     end

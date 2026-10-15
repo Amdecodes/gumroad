@@ -25,7 +25,7 @@ class Purchase::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     mark_volume_eligible!(@seller)
     purchase = create_purchase(link: @product, seller: @seller, purchase_state: "in_progress", price_cents: 1000)
 
-    assert_equal Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND, purchase.send(:gumroad_flat_fee_per_thousand)
+    assert_equal Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND, purchase.send(:gumroad_flat_fee_per_thousand)
   end
 
   test "a negotiated custom fee still wins over the volume rate" do
@@ -42,7 +42,7 @@ class Purchase::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     purchase = create_purchase(link: @product, seller: @seller, purchase_state: "in_progress", price_cents: 10_000)
     purchase.stubs(:charge_discover_fee?).returns(true)
 
-    assert_equal Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND, purchase.send(:gumroad_flat_fee_per_thousand)
+    assert_equal Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND, purchase.send(:gumroad_flat_fee_per_thousand)
   end
 
   test "a sale that crosses the threshold makes the seller eligible before the next fee calculation" do
@@ -139,7 +139,7 @@ class Purchase::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     recommended = @product.gumroad_amount_for_paypal_order(amount_cents: 10_000, was_recommended: true)
 
     assert_equal 10_000 * User::HIGH_VOLUME_FEE_PER_THOUSAND / 1000, direct
-    assert_equal 10_000 * (Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND + @product.discover_fee_per_thousand - Purchase::GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND) / 1000, recommended
+    assert_equal 10_000 * (Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND + @product.discover_fee_per_thousand - Purchase::DISCOVER_DEFAULT_BASE_FEE_PER_THOUSAND) / 1000, recommended
   end
 
   test "paypal order fee is unchanged when the flag is off, even with a custom fee" do
@@ -147,7 +147,7 @@ class Purchase::HighVolumeSellerFeeTest < ActiveSupport::TestCase
     mark_volume_eligible!(@seller)
     @seller.update!(custom_fee_per_thousand: 40)
 
-    assert_equal 10_000 * Purchase::GUMROAD_FLAT_FEE_PER_THOUSAND / 1000,
+    assert_equal 10_000 * Purchase::PLATFORM_FLAT_FEE_PER_THOUSAND / 1000,
                  @product.gumroad_amount_for_paypal_order(amount_cents: 10_000)
   end
 

@@ -20,12 +20,16 @@ class Purchase < ApplicationRecord
   # If a sku-enabled product has no skus (i.e. the product has no variants), then the sku id of the purchase will be "pid_#{external_product_id}".
   SKU_ID_PREFIX_FOR_PRODUCT_WITH_NO_SKUS = "pid_"
 
-  # Gumroad's fees per transaction
-  GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND = 150
+  PLATFORM_FLAT_FEE_PER_THOUSAND = 150
+  PLATFORM_FIXED_FEE_CENTS = 0
+  DISCOVER_FLAT_FEE_PER_THOUSAND = 300
+  DISCOVER_DEFAULT_BASE_FEE_PER_THOUSAND = 150
 
-  GUMROAD_FLAT_FEE_PER_THOUSAND = 150
-  GUMROAD_DISCOVER_FEE_PER_THOUSAND = 300
-  GUMROAD_FIXED_FEE_CENTS = 0
+  # Backward compatibility aliases
+  GUMROAD_FLAT_FEE_PER_THOUSAND = PLATFORM_FLAT_FEE_PER_THOUSAND
+  GUMROAD_FIXED_FEE_CENTS = PLATFORM_FIXED_FEE_CENTS
+  GUMROAD_DISCOVER_FEE_PER_THOUSAND = DISCOVER_FLAT_FEE_PER_THOUSAND
+  GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND = DISCOVER_DEFAULT_BASE_FEE_PER_THOUSAND
   CHAPA_PROCESSOR_FEE_PER_THOUSAND = 0
   CHAPA_PROCESSOR_FIXED_FEE_CENTS = 0
   PROCESSOR_FEE_PER_THOUSAND = 29
@@ -3780,7 +3784,7 @@ class Purchase < ApplicationRecord
   end
 
   def discover_fee_per_thousand
-    recommended_purchase_info&.discover_fee_per_thousand || GUMROAD_DISCOVER_EXTRA_FEE_PER_THOUSAND
+    recommended_purchase_info&.discover_fee_per_thousand || DISCOVER_DEFAULT_BASE_FEE_PER_THOUSAND
   end
 
   def is_direct_to_australian_customer?
@@ -5494,12 +5498,12 @@ class Purchase < ApplicationRecord
       end
       fixed_fee_cents = if is_recurring_subscription_charge
         if subscription.mor_fee_applicable?
-          was_discover_fee_charged? ? 0 : GUMROAD_FIXED_FEE_CENTS + fixed_processor_fee_cents
+          was_discover_fee_charged? ? 0 : PLATFORM_FIXED_FEE_CENTS + fixed_processor_fee_cents
         else
           fixed_processor_fee_cents
         end
       else
-        was_discover_fee_charged? ? 0 : GUMROAD_FIXED_FEE_CENTS + fixed_processor_fee_cents
+        was_discover_fee_charged? ? 0 : PLATFORM_FIXED_FEE_CENTS + fixed_processor_fee_cents
       end
 
       self.fee_cents = variable_fee_cents + fixed_fee_cents
@@ -5515,7 +5519,7 @@ class Purchase < ApplicationRecord
       end
       base_fee = custom_fee_per_thousand.presence || gumroad_flat_fee_per_thousand
 
-      [GUMROAD_DISCOVER_FEE_PER_THOUSAND - base_fee - processor_fee, 0].max
+      [DISCOVER_FLAT_FEE_PER_THOUSAND - base_fee - processor_fee, 0].max
     end
 
     def calculate_gumroad_fee_per_thousand
@@ -5570,7 +5574,7 @@ class Purchase < ApplicationRecord
       # so don't let it lower the base under the discover surcharge.
       return User::HIGH_VOLUME_FEE_PER_THOUSAND if seller.high_volume_seller_fee? && !charge_discover_fee?
 
-      GUMROAD_FLAT_FEE_PER_THOUSAND
+      PLATFORM_FLAT_FEE_PER_THOUSAND
     end
 
     def vat_exempt_territory_location
