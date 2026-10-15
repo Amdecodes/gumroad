@@ -18,6 +18,7 @@ end
 group :development, :test do
   gem "bundler"
   gem "dotenv-rails", "~> 2.8"
+  gem "i18n-tasks", "~> 1.0", require: false
   gem "knapsack_pro", "~> 10.0"
   gem "pry-byebug", "~> 3.10"
   gem "pry-rails", "~> 0.3", require: "pry-rails/console"

@@ -1,0 +1,44 @@
+# i18n-tasks configuration for ArifDrop
+# Checks en and am locale files for missing/unused keys.
+base_locale: en
+locales: [en, am]
+
+# Search patterns for I18n calls in Ruby/ERB
+search:
+  paths:
+    - app
+  only:
+    - "**/*.rb"
+    - "**/*.erb"
+    - "**/*.haml"
+  exclude:
+    - spec/**
+    - test/**
+
+# Locale files
+data:
+  paths:
+    - config/locales/*.yml
+
+# Keys to ignore in missing/unused checks
+ignore_missing:
+  - "devise.*"
+  - "date.*"
+  - "time.*"
+  - "number.*"
+  - "errors.messages.*"
+  - "activerecord.*"
+  - "activemodel.*"
+  - "helpers.*"
+  - "mailer.*"
+
+ignore_unused:
+  - "devise.*"
+  - "date.*"
+  - "time.*"
+  - "number.*"
+  - "errors.messages.*"
+  - "activerecord.*"
+  - "activemodel.*"
+  - "helpers.*"
+  - "mailer.*"

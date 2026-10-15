@@ -68,7 +68,7 @@ configuration_by_env = {
     discover_domain: "localhost:#{dev_lane_port}",
     api_domain: "api.localhost:#{dev_lane_port}",
     third_party_analytics_domain: "analytics.localhost:#{dev_lane_port}",
-    valid_request_hosts: ["app.localhost", "localhost", "app.localhost:#{dev_lane_port}", "localhost:#{dev_lane_port}"],
+    valid_request_hosts: ["app.localhost", "localhost", "127.0.0.1", "app.localhost:#{dev_lane_port}", "localhost:#{dev_lane_port}"],
     valid_api_request_hosts: ["api.localhost", "api.localhost:#{dev_lane_port}"],
     valid_discover_host: "localhost",
     valid_cors_origins: [],

@@ -1,0 +1,19 @@
+{
+  "_generated": "2026-10-15",
+  "_description": "Hardcoded string counts per directory. Fail if count rises.",
+  "auto-imports.d.ts": 0,
+  "channels": 0,
+  "components": 2496,
+  "data": 0,
+  "entrypoints": 0,
+  "hooks": 0,
+  "inertia": 1,
+  "json_schemas": 0,
+  "layouts": 0,
+  "packs": 0,
+  "pages": 1430,
+  "parsers": 0,
+  "types": 0,
+  "utils": 0,
+  "widget": 0
+}

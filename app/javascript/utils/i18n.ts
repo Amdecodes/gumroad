@@ -6,40 +6,45 @@ import { en } from "$app/locales/en";
 
 export type SupportedLocale = "en" | "am";
 
+// Includes 'pseudo' for non-production locale verification workflows.
+export type ActiveLocale = SupportedLocale | "pseudo";
+
+export const PSEUDO_LOCALE = "pseudo" as const;
+
 export const SUPPORTED_LOCALES: readonly SupportedLocale[] = ["en", "am"];
 
 export const isSupportedLocale = (val: string): val is SupportedLocale => val === "en" || val === "am";
+
+// Only true outside of production builds.
+export const isPseudoLocale = (val: string): boolean => val === PSEUDO_LOCALE && import.meta.env.PROD !== true;
 
 const dictionaries: Record<SupportedLocale, Record<string, unknown>> = {
   en,
   am,
 };
 
-export const getCookieLocale = (): SupportedLocale => {
+export const getCookieLocale = (): ActiveLocale => {
   if (typeof document === "undefined") return "en";
   const match = /(?:^|;\s*)locale=([^;]+)/u.exec(document.cookie);
   if (match) {
     const val = match[1] ?? "";
-    if (isSupportedLocale(val)) {
-      return val;
-    }
+    if (isPseudoLocale(val)) return PSEUDO_LOCALE;
+    if (isSupportedLocale(val)) return val;
   }
   return "en";
 };
 
-export const resolveCurrentLocale = (): SupportedLocale => {
+export const resolveCurrentLocale = (): ActiveLocale => {
   if (typeof document !== "undefined") {
     const match = /(?:^|;\s*)locale=([^;]+)/u.exec(document.cookie);
     if (match) {
       const val = match[1] ?? "";
-      if (isSupportedLocale(val)) {
-        return val;
-      }
+      if (isPseudoLocale(val)) return PSEUDO_LOCALE;
+      if (isSupportedLocale(val)) return val;
     }
     const lang = document.documentElement.lang;
-    if (isSupportedLocale(lang)) {
-      return lang;
-    }
+    if (isPseudoLocale(lang)) return PSEUDO_LOCALE;
+    if (isSupportedLocale(lang)) return lang;
   }
   return "en";
 };
@@ -97,6 +102,39 @@ export const DEFAULT_PLATFORM_PARAMS: Record<SupportedLocale, Record<string, str
     kindle_email: "noreply@customers.arifdrop.com",
     kindleEmail: "noreply@customers.arifdrop.com",
   },
+};
+
+// Maps ASCII vowels to their accented equivalents for pseudo-locale simulation.
+const VOWEL_ACCENTS: Record<string, string> = {
+  a: "á",
+  e: "é",
+  i: "í",
+  o: "ó",
+  u: "ú",
+  A: "Á",
+  E: "É",
+  I: "Í",
+  O: "Ó",
+  U: "Ú",
+};
+
+// Replaces vowels with accented equivalents, then pads to ~130% of original length.
+const pseudoExpand = (text: string): string => {
+  const accented = text.replace(/[aeiouAEIOU]/gu, (c) => VOWEL_ACCENTS[c] ?? c);
+  const targetLen = Math.ceil(text.length * 1.3);
+  const pad = "ẋ".repeat(Math.max(0, targetLen - accented.length));
+  return accented + pad;
+};
+
+// Applies parameter substitution against the English dictionary, then wraps in ⟦…⟧ with pseudo-expansion.
+const pseudoTranslate = (
+  key: string,
+  params?: Record<string, string | number> | string,
+  fallback?: string | Record<string, string | number>,
+): string => {
+  // Resolve the English text first (reuse translate with 'en').
+  const englishText = translate(key, "en", params, fallback);
+  return `\u27E6${pseudoExpand(englishText)}\u27E7`;
 };
 
 export const translate = (
@@ -168,30 +206,36 @@ export const t: TFunction = (
   fallback?: string | Record<string, string | number>,
 ): string => {
   const locale = resolveCurrentLocale();
+  if (locale === PSEUDO_LOCALE) return pseudoTranslate(key, params, fallback);
   return translate(key, locale, params, fallback);
 };
 
 export const switchLocale = async (newLocale: string): Promise<void> => {
-  if (!isSupportedLocale(newLocale)) return;
+  // Allow 'pseudo' only in non-production environments.
+  const isAllowed = isSupportedLocale(newLocale) || isPseudoLocale(newLocale);
+  if (!isAllowed) return;
 
   if (typeof document !== "undefined") {
     document.cookie = `locale=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
     document.documentElement.lang = newLocale;
   }
 
-  try {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
-    await fetch("/locale", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
-      },
-      body: JSON.stringify({ locale: newLocale }),
-    });
-  } catch {
-    // Fall back to reload
+  // Only POST to server for real (server-persisted) locales; pseudo is client-only.
+  if (isSupportedLocale(newLocale)) {
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+      await fetch("/locale", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
+        body: JSON.stringify({ locale: newLocale }),
+      });
+    } catch {
+      // Fall back to reload
+    }
   }
 
   if (typeof window !== "undefined") {
@@ -200,11 +244,13 @@ export const switchLocale = async (newLocale: string): Promise<void> => {
 };
 
 export const useTranslation = () => {
-  let locale: SupportedLocale = "en";
+  let locale: ActiveLocale = "en";
   try {
     const page = usePage<{ locale?: string }>();
     const pageLocale = page.props.locale;
-    if (pageLocale && isSupportedLocale(pageLocale)) {
+    if (pageLocale && isPseudoLocale(pageLocale)) {
+      locale = PSEUDO_LOCALE;
+    } else if (pageLocale && isSupportedLocale(pageLocale)) {
       locale = pageLocale;
     } else {
       locale = getCookieLocale();
@@ -213,23 +259,29 @@ export const useTranslation = () => {
     locale = getCookieLocale();
   }
 
+  // Use the resolved SupportedLocale for DOM class/attr effects; pseudo behaves like 'en' visually.
+  const domLocale: SupportedLocale = locale === PSEUDO_LOCALE ? "en" : locale;
+
   React.useEffect(() => {
     if (typeof document !== "undefined") {
       document.documentElement.lang = locale;
-      if (locale === "am") {
+      if (domLocale === "am") {
         document.documentElement.classList.add("lang-am");
       } else {
         document.documentElement.classList.remove("lang-am");
       }
     }
-  }, [locale]);
+  }, [locale, domLocale]);
 
   const translateWithCurrentLocale = React.useCallback(
     (
       key: string,
       params?: Record<string, string | number> | string,
       fallback?: string | Record<string, string | number>,
-    ) => translate(key, locale, params, fallback),
+    ) => {
+      if (locale === PSEUDO_LOCALE) return pseudoTranslate(key, params, fallback);
+      return translate(key, locale, params, fallback);
+    },
     [locale],
   );
 
