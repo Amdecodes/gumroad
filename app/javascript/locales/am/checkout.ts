@@ -16,6 +16,7 @@ export const checkout = {
   redirecting: "ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ...",
   card_label: "ካርድ",
   pay_with: "ይክፈሉ በ",
+  pay_with_chapa: "በ Chapa ይክፈሉ",
   payment_form_aria: "የክፍያ ቅጽ",
   use_saved_card: "የተቀመጠ ካርድ ይጠቀሙ",
   save_card_for_future: "ለቀጣይ ግዢዎች ካርዱን ያስቀምጡ",

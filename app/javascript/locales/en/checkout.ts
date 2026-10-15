@@ -16,6 +16,7 @@ export const checkout = {
   redirecting: "Redirecting to Chapa checkout...",
   card_label: "Card",
   pay_with: "Pay with",
+  pay_with_chapa: "Pay with Chapa",
   payment_form_aria: "Payment form",
   use_saved_card: "Use saved card",
   save_card_for_future: "Save card for future purchases",

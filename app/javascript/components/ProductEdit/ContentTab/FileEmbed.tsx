@@ -557,7 +557,7 @@ const FileEmbedNodeView = ({
                         "The thumbnail image is shown as a preview in the embedded video player. Your image should have a 16:9 aspect ratio, at least 1280x720px, and be in JPG, PNG, or GIF format.",
                       )}
                     </div>
-                    <Separator>{t("common.common.or", "or")}</Separator>
+                    <Separator>{t("common.or", "or")}</Separator>
                     <div>
                       <Button onClick={generateThumbnail}>
                         {t("seller.productEdit.generate_thumbnail", "Generate a thumbnail")}
