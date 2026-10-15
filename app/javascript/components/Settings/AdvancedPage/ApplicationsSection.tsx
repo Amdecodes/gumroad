@@ -1,6 +1,8 @@
 import { Link, router } from "@inertiajs/react";
 import * as React from "react";
 
+import { useTranslate } from "$app/hooks/useTranslate";
+
 import { Button } from "$app/components/Button";
 import { showAlert } from "$app/components/server-components/Alert";
 import ApplicationForm from "$app/components/Settings/AdvancedPage/ApplicationForm";
@@ -15,14 +17,18 @@ export type Application = {
   icon_url: string | null;
 };
 
-const CreateApplication = () => (
-  <>
-    <h3>Create application</h3>
-    <ApplicationForm />
-  </>
-);
+const CreateApplication = () => {
+  const { t } = useTranslate();
+  return (
+    <>
+      <h3>{t("seller.settings.advanced.create_application")}</h3>
+      <ApplicationForm />
+    </>
+  );
+};
 
 const ApplicationList = (props: { applications: Application[] }) => {
+  const { t } = useTranslate();
   const [applications, setApplications] = React.useState(props.applications);
 
   const removeApplication = (id: string) => () => {
@@ -31,7 +37,7 @@ const ApplicationList = (props: { applications: Application[] }) => {
 
   return applications.length > 0 ? (
     <>
-      <h3>Your applications</h3>
+      <h3>{t("seller.settings.advanced.your_applications")}</h3>
       <Rows role="list">
         {applications.map((app) => (
           <ApplicationRow key={app.id} application={app} onRemove={removeApplication(app.id)} />
@@ -42,18 +48,19 @@ const ApplicationList = (props: { applications: Application[] }) => {
 };
 
 const ApplicationRow = ({ application, onRemove }: { application: Application; onRemove: () => void }) => {
+  const { t } = useTranslate();
   const deleteApp = () => {
     // eslint-disable-next-line no-alert
-    if (!confirm("Delete this application forever?")) return;
+    if (!confirm(t("seller.settings.advanced.delete_application_forever_confirm"))) return;
 
     router.delete(Routes.oauth_application_path(application.id), {
       preserveScroll: true,
       onSuccess: () => {
-        showAlert("Application deleted.", "success");
+        showAlert(t("seller.settings.advanced.application_deleted"), "success");
         onRemove(); // This will update the local state immediately
       },
       onError: () => {
-        showAlert("Failed to delete app.", "error");
+        showAlert(t("seller.settings.advanced.failed_to_delete_app"), "error");
       },
     });
   };
@@ -67,30 +74,33 @@ const ApplicationRow = ({ application, onRemove }: { application: Application; o
       <RowActions>
         <Button>
           <Link className="no-underline" href={Routes.oauth_application_path(application.id)}>
-            Edit
+            {t("actions.edit")}
           </Link>
         </Button>
         <Button color="danger" onClick={deleteApp}>
-          Delete
+          {t("actions.remove")}
         </Button>
       </RowActions>
     </Row>
   );
 };
 
-const ApplicationsSection = (props: { applications: Application[] }) => (
-  <FormSection
-    header={
-      <>
-        <h2>Applications</h2>
-        <a href="/help/article/280-create-application-api" target="_blank" rel="noreferrer">
-          Learn more
-        </a>
-      </>
-    }
-  >
-    <CreateApplication />
-    <ApplicationList applications={props.applications} />
-  </FormSection>
-);
+const ApplicationsSection = (props: { applications: Application[] }) => {
+  const { t } = useTranslate();
+  return (
+    <FormSection
+      header={
+        <>
+          <h2>{t("seller.settings.advanced.applications")}</h2>
+          <a href="/help/article/280-create-application-api" target="_blank" rel="noreferrer">
+            {t("actions.learn_more")}
+          </a>
+        </>
+      }
+    >
+      <CreateApplication />
+      <ApplicationList applications={props.applications} />
+    </FormSection>
+  );
+};
 export default ApplicationsSection;

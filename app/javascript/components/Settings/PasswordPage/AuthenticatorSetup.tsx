@@ -2,6 +2,7 @@ import { router } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/utils/i18n";
 import { request } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -22,6 +23,7 @@ type SetupData = {
 };
 
 export const AuthenticatorSetup = ({ onCancel }: { onCancel: () => void }) => {
+  const { t } = useTranslate();
   const [step, setStep] = React.useState<Step>("setup");
   const [setupData, setSetupData] = React.useState<SetupData | null>(null);
   const [code, setCode] = React.useState("");
@@ -94,7 +96,7 @@ export const AuthenticatorSetup = ({ onCancel }: { onCancel: () => void }) => {
       <div className="grid gap-4">
         <Alert variant="danger">{error}</Alert>
         <div>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>{t("seller.settings.password.cancel")}</Button>
         </div>
       </div>
     );
@@ -115,17 +117,21 @@ export const AuthenticatorSetup = ({ onCancel }: { onCancel: () => void }) => {
           )}
         </div>
         <p className="text-muted">
-          Scan this QR code with your authenticator app. Can't scan? Use the{" "}
+          {t("seller.settings.password.scan_qr_desc_prefix")}
           <LinkButton
             className="disabled:cursor-default disabled:opacity-50"
             onClick={() => setShowSecret(true)}
             disabled={!setupData}
           >
-            setup key
-          </LinkButton>{" "}
-          instead.
+            {t("seller.settings.password.scan_qr_desc_link")}
+          </LinkButton>
+          {t("seller.settings.password.scan_qr_desc_suffix")}
         </p>
-        <Modal open={showSecret ? setupData !== null : false} title="Setup key" onClose={() => setShowSecret(false)}>
+        <Modal
+          open={showSecret ? setupData !== null : false}
+          title={t("seller.settings.password.setup_key_title")}
+          onClose={() => setShowSecret(false)}
+        >
           <div className="grid gap-4">
             <code className="rounded border border-border bg-background p-3 font-mono text-sm break-all">
               {setupData?.secret}
@@ -134,19 +140,19 @@ export const AuthenticatorSetup = ({ onCancel }: { onCancel: () => void }) => {
               onClick={() => {
                 if (setupData?.secret) {
                   void navigator.clipboard.writeText(setupData.secret).then(
-                    () => showAlert("Copied to clipboard.", "success"),
-                    () => showAlert("Failed to copy.", "error"),
+                    () => showAlert(t("seller.settings.password.copied_to_clipboard"), "success"),
+                    () => showAlert(t("seller.settings.password.failed_to_copy"), "error"),
                   );
                 }
               }}
             >
-              Copy
+              {t("seller.settings.password.copy")}
             </Button>
           </div>
         </Modal>
         {error ? <Alert variant="danger">{error}</Alert> : null}
         <div className="grid gap-2">
-          <Label htmlFor={`${uid}-code`}>Enter the code from your authenticator app</Label>
+          <Label htmlFor={`${uid}-code`}>{t("seller.settings.password.enter_code_from_app")}</Label>
           <Input
             id={`${uid}-code`}
             type="text"
@@ -161,9 +167,9 @@ export const AuthenticatorSetup = ({ onCancel }: { onCancel: () => void }) => {
         </div>
         <div className="flex gap-2">
           <Button color="accent" onClick={() => void handleVerify()} disabled={loading || code.length < 6 || verifying}>
-            {verifying ? "Verifying..." : "Verify"}
+            {verifying ? t("seller.settings.password.verifying") : t("seller.settings.password.verify")}
           </Button>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>{t("seller.settings.password.cancel")}</Button>
         </div>
       </div>
     );

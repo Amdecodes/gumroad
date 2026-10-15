@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { formatDate } from "$app/utils/date";
+import { useTranslate } from "$app/utils/i18n";
 import { PASSKEY_ADD_ERROR, type Passkey, registerPasskey } from "$app/utils/passkeyRegistration";
 import { asyncVoid } from "$app/utils/promise";
 import { request, ResponseError } from "$app/utils/request";
@@ -25,6 +26,7 @@ export type { Passkey };
 const formatPasskeyDate = (value: string) => formatDate(parseISO(value), { dateStyle: "medium" });
 
 export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passkey[] }) => {
+  const { t } = useTranslate();
   const [passkeys, setPasskeys] = React.useState(initialPasskeys);
   const [adding, setAdding] = React.useState(false);
   const [editingId, setEditingId] = React.useState<string | null>(null);
@@ -40,7 +42,7 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
     try {
       const added = await registerPasskey();
       setPasskeys((current) => [...current, added]);
-      showAlert("Passkey added.", "success");
+      showAlert(t("seller.settings.password.passkey_added"), "success");
     } catch (e) {
       if (e instanceof DOMException && (e.name === "NotAllowedError" || e.name === "AbortError")) return;
       showAlert(e instanceof ResponseError ? e.message : PASSKEY_ADD_ERROR, "error");
@@ -98,7 +100,7 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
 
       setPasskeys((current) => current.filter((item) => item.id !== pendingDeletion.id));
       setPendingDeletion(null);
-      showAlert("Passkey removed.", "success");
+      showAlert(t("seller.settings.password.passkey_removed"), "success");
     } catch (e) {
       showAlert(e instanceof ResponseError ? e.message : GENERIC_ERROR, "error");
     } finally {
@@ -109,10 +111,7 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
   return (
     <>
       {passkeys.length === 0 ? (
-        <Alert variant="info">
-          Passkeys are an easier, more secure alternative to passwords. Sign in with your fingerprint, face, or screen
-          lock.
-        </Alert>
+        <Alert variant="info">{t("seller.settings.password.passkeys_desc")}</Alert>
       ) : (
         <Rows role="list">
           {passkeys.map((passkey) =>
@@ -131,7 +130,7 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
                         setEditingId(null);
                       }
                     }}
-                    aria-label="Passkey name"
+                    aria-label={t("seller.settings.password.passkey_name_aria")}
                     maxLength={MAX_NICKNAME_LENGTH}
                     autoFocus
                     disabled={savingRename}
@@ -143,10 +142,10 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
                     onClick={() => handleRename(passkey)}
                     disabled={savingRename || !editingNickname.trim()}
                   >
-                    {savingRename ? "Saving..." : "Save"}
+                    {savingRename ? t("seller.settings.password.saving") : t("seller.settings.password.save")}
                   </Button>
                   <Button onClick={() => setEditingId(null)} disabled={savingRename}>
-                    Cancel
+                    {t("seller.settings.password.cancel")}
                   </Button>
                 </RowActions>
               </Row>
@@ -156,8 +155,12 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
                   <div className="grid gap-1">
                     <div className="font-bold">{passkey.nickname}</div>
                     <FieldsetDescription>
-                      Added {formatPasskeyDate(passkey.created_at)} ·{" "}
-                      {passkey.last_used_at ? `last used ${formatPasskeyDate(passkey.last_used_at)}` : "never used"}
+                      {t("seller.settings.password.added_date", { date: formatPasskeyDate(passkey.created_at) })} ·{" "}
+                      {passkey.last_used_at
+                        ? t("seller.settings.password.last_used_date", {
+                            date: formatPasskeyDate(passkey.last_used_at),
+                          })
+                        : t("seller.settings.password.never_used")}
                     </FieldsetDescription>
                   </div>
                 </RowContent>
@@ -168,10 +171,10 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
                       setEditingNickname(passkey.nickname);
                     }}
                   >
-                    Rename
+                    {t("seller.settings.password.rename")}
                   </Button>
                   <Button color="danger" outline onClick={() => setPendingDeletion(passkey)}>
-                    Remove
+                    {t("seller.settings.password.remove")}
                   </Button>
                 </RowActions>
               </Row>
@@ -182,37 +185,37 @@ export const PasskeysSection = ({ passkeys: initialPasskeys }: { passkeys: Passk
 
       {supported ? (
         reachedLimit ? (
-          <FieldsetDescription>You've reached the maximum of {MAX_PASSKEYS} passkeys.</FieldsetDescription>
+          <FieldsetDescription>
+            {t("seller.settings.password.passkey_limit_reached", { count: MAX_PASSKEYS })}
+          </FieldsetDescription>
         ) : (
           <div>
             <Button color="accent" onClick={handleAdd} disabled={adding}>
-              {adding ? "Waiting for passkey..." : "Add a passkey"}
+              {adding ? t("seller.settings.password.waiting_for_passkey") : t("seller.settings.password.add_a_passkey")}
             </Button>
           </div>
         )
       ) : (
-        <FieldsetDescription>This browser doesn't support passkeys.</FieldsetDescription>
+        <FieldsetDescription>{t("seller.settings.password.passkey_browser_unsupported")}</FieldsetDescription>
       )}
 
       {pendingDeletion ? (
         <Modal
           open
           onClose={() => (deleting ? null : setPendingDeletion(null))}
-          title="Remove passkey"
+          title={t("seller.settings.password.remove_passkey_modal_title")}
           footer={
             <>
               <Button onClick={() => setPendingDeletion(null)} disabled={deleting}>
-                Cancel
+                {t("seller.settings.password.cancel")}
               </Button>
               <Button color="danger" onClick={handleConfirmDelete} disabled={deleting}>
-                {deleting ? "Removing..." : "Remove"}
+                {deleting ? t("seller.settings.password.removing") : t("seller.settings.password.remove")}
               </Button>
             </>
           }
         >
-          <p>
-            Remove <strong>{pendingDeletion.nickname}</strong>? You won't be able to use it to sign in anymore.
-          </p>
+          <p>{t("seller.settings.password.remove_passkey_modal_body", { name: pendingDeletion.nickname })}</p>
         </Modal>
       ) : null}
     </>

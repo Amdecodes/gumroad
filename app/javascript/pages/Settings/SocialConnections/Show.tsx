@@ -5,6 +5,7 @@ import typia from "typia";
 
 import { unlinkInstagram, unlinkTiktok, unlinkTwitter, unlinkYoutube } from "$app/data/profile_settings";
 import { SettingPage } from "$app/parsers/settings";
+import { useTranslate } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError } from "$app/utils/request";
 
@@ -57,6 +58,7 @@ const formatHandle = (handle: string | null) => {
 };
 
 export default function SocialConnectionsPage() {
+  const { t } = useTranslate();
   const {
     settings_pages,
     social_connect_return,
@@ -97,8 +99,13 @@ export default function SocialConnectionsPage() {
 
   const disconnectConsequences = ({ key, name, handle }: Provider) => {
     const account = formatHandle(handle) ?? name;
-    const signIn = key === "twitter" ? ` If you sign in with ${name}, connect it again to keep signing in.` : "";
-    return `Gumroad will forget ${account} and the access it stored. You can connect ${name} again at any time.${signIn}`;
+    const signIn = key === "twitter" ? t("seller.settings.social.disconnect_sign_in_note", { name }) : "";
+    return t("seller.settings.social.disconnect_consequences", {
+      app_name: "Gumroad",
+      account,
+      name,
+      sign_in_note: signIn,
+    });
   };
 
   const providers: Provider[] = [
@@ -166,11 +173,8 @@ export default function SocialConnectionsPage() {
       <FormSection
         header={
           <>
-            <h2>Social connections</h2>
-            <FieldsetDescription>
-              Connecting a social account is optional. It gives us extra context when we review your account. We read
-              your public profile. On X, we post only the launch posts you write and approve.
-            </FieldsetDescription>
+            <h2>{t("seller.settings.social.social_connections_title")}</h2>
+            <FieldsetDescription>{t("seller.settings.social.social_connections_desc")}</FieldsetDescription>
           </>
         }
       >
@@ -202,27 +206,31 @@ export default function SocialConnectionsPage() {
                     <div className="font-bold">{name}</div>
                     {connected ? (
                       <FieldsetDescription className="flex items-center gap-1">
-                        <span className="truncate">{displayHandle ?? "Connected"}</span>
+                        <span className="truncate">{displayHandle ?? t("seller.settings.social.connected")}</span>
                         {writePermissionMissing ? (
                           <AlertCircle
                             pack="filled"
                             className="size-4 shrink-0 text-warning"
-                            aria-label="Cannot post"
+                            aria-label={t("seller.settings.social.cannot_post_aria")}
                           />
                         ) : (
-                          <CheckCircle pack="filled" className="size-4 shrink-0 text-success" aria-label="Connected" />
+                          <CheckCircle
+                            pack="filled"
+                            className="size-4 shrink-0 text-success"
+                            aria-label={t("seller.settings.social.connected")}
+                          />
                         )}
                       </FieldsetDescription>
                     ) : displayLegacyHandle ? (
                       <FieldsetDescription>
-                        {displayLegacyHandle} was added by hand and is not verified.
+                        {t("seller.settings.social.legacy_unverified", { handle: displayLegacyHandle })}
                       </FieldsetDescription>
                     ) : (
-                      <FieldsetDescription>Not connected</FieldsetDescription>
+                      <FieldsetDescription>{t("seller.settings.social.not_connected")}</FieldsetDescription>
                     )}
                     {writePermissionMissing ? (
                       <FieldsetDescription className="text-warning">
-                        This connection can't post launch posts. Reconnect to fix it.
+                        {t("seller.settings.social.write_permission_missing")}
                       </FieldsetDescription>
                     ) : null}
                   </div>
@@ -234,7 +242,7 @@ export default function SocialConnectionsPage() {
                           must not require Disconnect first: that clears twitter_user_id, the login
                           identity for a seller who signed up with X. */}
                       <SocialAuthButton provider={key} href={connectHref} aria-label={`Reconnect ${accountLabel}`}>
-                        Reconnect
+                        {t("seller.settings.social.reconnect")}
                       </SocialAuthButton>
                       {/* Phone width has no room for a second full-size button — the handle column
                           collapses a character per line — so the row menu keeps Disconnect there. */}
@@ -244,7 +252,7 @@ export default function SocialConnectionsPage() {
                         onClick={() => setPendingDisconnect(provider)}
                         className="hidden sm:inline-flex"
                       >
-                        Disconnect
+                        {t("seller.settings.social.disconnect")}
                       </Button>
                       <Popover>
                         <PopoverTrigger
@@ -260,7 +268,7 @@ export default function SocialConnectionsPage() {
                               aria-label={`Disconnect ${accountLabel}`}
                               onClick={() => setPendingDisconnect(provider)}
                             >
-                              Disconnect
+                              {t("seller.settings.social.disconnect")}
                             </MenuItem>
                           </Menu>
                         </PopoverContent>
@@ -274,7 +282,7 @@ export default function SocialConnectionsPage() {
                           aria-label={`Remove ${displayLegacyHandle} from ${name}`}
                           onClick={disconnect}
                         >
-                          Remove
+                          {t("seller.settings.password.remove")}
                         </Button>
                       ) : null}
                       <SocialAuthButton
@@ -283,7 +291,7 @@ export default function SocialConnectionsPage() {
                         color="primary"
                         aria-label={`Connect to ${name}`}
                       >
-                        Connect
+                        {t("seller.settings.social.connect")}
                       </SocialAuthButton>
                     </>
                   )}
@@ -297,14 +305,14 @@ export default function SocialConnectionsPage() {
         <Modal
           open
           onClose={() => setPendingDisconnect(null)}
-          title={`Disconnect ${pendingDisconnect.name}?`}
+          title={t("seller.settings.social.disconnect_modal_title", { name: pendingDisconnect.name })}
           footer={
             <>
               <Button type="button" onClick={() => setPendingDisconnect(null)}>
-                Cancel
+                {t("seller.settings.password.cancel")}
               </Button>
               <Button type="button" color="danger" onClick={confirmDisconnect}>
-                Disconnect
+                {t("seller.settings.social.disconnect")}
               </Button>
             </>
           }

@@ -17,6 +17,7 @@ import * as React from "react";
 
 import { PROFILE_SORT_KEYS, type ProfileSortKey } from "$app/parsers/product";
 import GuidGenerator from "$app/utils/guid_generator";
+import { useTranslate } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -48,13 +49,16 @@ export type ProfileSectionsFormProps = ProfileEditorProps & {
   disabled?: boolean;
 };
 
-const SECTION_TYPE_LABELS: Record<Section["type"], string> = {
-  SellerProfileProductsSection: "Products",
-  SellerProfilePostsSection: "Posts",
-  SellerProfileFeaturedProductSection: "Featured product",
-  SellerProfileRichTextSection: "Rich text",
-  SellerProfileSubscribeSection: "Subscribe",
-  SellerProfileWishlistsSection: "Wishlists",
+const useSectionTypeLabels = (): Record<Section["type"], string> => {
+  const { t } = useTranslate();
+  return {
+    SellerProfileProductsSection: t("seller.settings.profile.section_products"),
+    SellerProfilePostsSection: t("seller.settings.profile.section_posts"),
+    SellerProfileFeaturedProductSection: t("seller.settings.profile.section_featured_product"),
+    SellerProfileRichTextSection: t("seller.settings.profile.section_rich_text"),
+    SellerProfileSubscribeSection: t("seller.settings.profile.section_subscribe"),
+    SellerProfileWishlistsSection: t("seller.settings.profile.section_wishlists"),
+  };
 };
 
 const SECTION_TYPE_ICONS: Record<Section["type"], React.ReactNode> = {
@@ -123,6 +127,7 @@ const PageRow = ({
   onDelete: () => void;
   children: React.ReactNode;
 }) => {
+  const { t } = useTranslate();
   const nameInputRef = React.useRef<HTMLInputElement>(null);
   React.useEffect(() => {
     if (!shouldFocusName) return;
@@ -131,21 +136,21 @@ const PageRow = ({
   }, [shouldFocusName]);
 
   return (
-    <Row role="listitem" aria-label={`${tab.name || "Untitled"} page settings`}>
+    <Row role="listitem" aria-label={`${tab.name || t("seller.settings.profile.untitled")} page settings`}>
       <RowContent className="grow">
         <PageDragHandle disabled={disabled} />
         <Input
           ref={nameInputRef}
           type="text"
-          aria-label="Page name"
+          aria-label={t("seller.settings.profile.page_name")}
           value={tab.name}
           onChange={(evt) => updateName(evt.target.value)}
         />
       </RowContent>
       <RowActions>
         <DrawerToggle isOpen={isOpen} onToggle={onToggle} label="page" />
-        <WithTooltip tip="Remove">
-          <Button size="icon" onClick={onDelete} aria-label="Remove page">
+        <WithTooltip tip={t("seller.settings.profile.remove")}>
+          <Button size="icon" onClick={onDelete} aria-label={t("seller.settings.profile.remove_page_aria")}>
             <Trash className="size-5" />
           </Button>
         </WithTooltip>
@@ -173,13 +178,16 @@ const SortableWishlistRows = React.forwardRef<HTMLDivElement, React.HTMLProps<HT
 ));
 SortableWishlistRows.displayName = "SortableWishlistRows";
 
-const DrawerToggle = ({ isOpen, onToggle, label }: { isOpen: boolean; onToggle: () => void; label: string }) => (
-  <WithTooltip tip={isOpen ? "Close drawer" : "Open drawer"}>
-    <Button size="icon" onClick={onToggle} aria-label={`${isOpen ? "Collapse" : "Expand"} ${label}`}>
-      {isOpen ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
-    </Button>
-  </WithTooltip>
-);
+const DrawerToggle = ({ isOpen, onToggle, label }: { isOpen: boolean; onToggle: () => void; label: string }) => {
+  const { t } = useTranslate();
+  return (
+    <WithTooltip tip={isOpen ? t("seller.settings.profile.close_drawer") : t("seller.settings.profile.open_drawer")}>
+      <Button size="icon" onClick={onToggle} aria-label={`${isOpen ? "Collapse" : "Expand"} ${label}`}>
+        {isOpen ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
+      </Button>
+    </WithTooltip>
+  );
+};
 
 const OptionRow = ({
   name,
@@ -275,6 +283,8 @@ const SectionRow = ({
   onDuplicate: () => void;
   onDelete: () => void;
 }) => {
+  const { t } = useTranslate();
+  const sectionTypeLabels = useSectionTypeLabels();
   const uid = React.useId();
   const [isOpen, setIsOpen] = React.useState(true);
   const headerInputRef = React.useRef<HTMLInputElement>(null);
@@ -283,7 +293,7 @@ const SectionRow = ({
     const frame = requestAnimationFrame(() => headerInputRef.current?.focus());
     return () => cancelAnimationFrame(frame);
   }, [shouldFocusHeader]);
-  const sectionTitle = section.header || SECTION_TYPE_LABELS[section.type];
+  const sectionTitle = section.header || sectionTypeLabels[section.type];
   const update = (updated: Section) => updateSection(updated);
   const copyLink = () => {
     const profileUrl = state.creator_profile.subdomain
@@ -292,10 +302,10 @@ const SectionRow = ({
     try {
       void navigator.clipboard
         .writeText(new URL(`?section=${section.id}#${section.id}`, profileUrl).toString())
-        .then(() => showAlert("Section link copied!", "success"))
-        .catch(() => showAlert("Clipboard is not available.", "error"));
+        .then(() => showAlert(t("seller.settings.profile.section_link_copied"), "success"))
+        .catch(() => showAlert(t("seller.settings.profile.clipboard_not_available"), "error"));
     } catch {
-      showAlert("Clipboard is not available.", "error");
+      showAlert(t("seller.settings.profile.clipboard_not_available"), "error");
     }
   };
 
@@ -307,16 +317,21 @@ const SectionRow = ({
         <h3>{sectionTitle}</h3>
         {/* A named section otherwise shows only its own heading, so several sections on one page
             read as a list of unrelated titles with no clue which block each one labels. */}
-        {section.header ? <small>{SECTION_TYPE_LABELS[section.type]}</small> : null}
+        {section.header ? <small>{sectionTypeLabels[section.type]}</small> : null}
       </RowContent>
       <RowActions>
-        <WithTooltip tip="Copy link">
-          <Button size="icon" onClick={copyLink} aria-label="Copy link">
+        <WithTooltip tip={t("seller.settings.profile.copy_link")}>
+          <Button size="icon" onClick={copyLink} aria-label={t("seller.settings.profile.copy_link")}>
             <Copy className="size-5" />
           </Button>
         </WithTooltip>
-        <WithTooltip tip="Duplicate">
-          <Button size="icon" onClick={onDuplicate} disabled={disabled} aria-label="Duplicate section">
+        <WithTooltip tip={t("seller.settings.profile.duplicate")}>
+          <Button
+            size="icon"
+            onClick={onDuplicate}
+            disabled={disabled}
+            aria-label={t("seller.settings.profile.duplicate_section_aria")}
+          >
             <CopyPlus className="size-5" />
           </Button>
         </WithTooltip>
@@ -325,8 +340,8 @@ const SectionRow = ({
           onToggle={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
           label={`${sectionTitle} section`}
         />
-        <WithTooltip tip="Remove">
-          <Button size="icon" onClick={onDelete} aria-label="Remove section">
+        <WithTooltip tip={t("seller.settings.profile.remove")}>
+          <Button size="icon" onClick={onDelete} aria-label={t("seller.settings.profile.remove_section_aria")}>
             <Trash className="size-5" />
           </Button>
         </WithTooltip>
@@ -335,7 +350,7 @@ const SectionRow = ({
         <RowDetails asChild>
           <Drawer className="grid gap-6">
             <Fieldset>
-              <Label htmlFor={`${uid}-header`}>Section name</Label>
+              <Label htmlFor={`${uid}-header`}>{t("seller.settings.profile.section_name")}</Label>
               <Input
                 ref={headerInputRef}
                 id={`${uid}-header`}
@@ -343,7 +358,7 @@ const SectionRow = ({
                 value={section.header}
                 onChange={(evt) => update({ ...section, header: evt.target.value })}
               />
-              <small>Leave blank to hide the section name.</small>
+              <small>{t("seller.settings.profile.section_name_hint")}</small>
             </Fieldset>
             {section.type === "SellerProfileProductsSection" ? (
               <ProductsSectionFields section={section} state={state} update={update} disabled={disabled} />
@@ -402,10 +417,11 @@ const ProductsSectionFields = ({
     if (!isEqual(reordered, section.shown_products)) update({ ...section, shown_products: reordered });
   };
 
+  const { t } = useTranslate();
   return (
     <>
       <Fieldset>
-        <Label htmlFor={`${uid}-default-sort`}>Default sort order</Label>
+        <Label htmlFor={`${uid}-default-sort`}>{t("seller.settings.profile.default_sort_order")}</Label>
         <Select
           id={`${uid}-default-sort`}
           value={section.default_product_sort}
@@ -424,16 +440,16 @@ const ProductsSectionFields = ({
       <Switch
         checked={section.show_filters}
         onChange={() => update({ ...section, show_filters: !section.show_filters })}
-        label="Show product filters"
+        label={t("seller.settings.profile.show_product_filters")}
       />
       <Switch
         checked={section.add_new_products}
         onChange={() => update({ ...section, add_new_products: !section.add_new_products })}
-        label="Add new products by default"
+        label={t("seller.settings.profile.add_new_products_by_default")}
       />
       <Fieldset>
         <FieldsetTitle>
-          Products
+          {t("seller.settings.profile.section_products")}
           {orderedProducts.length ? (
             <button
               type="button"
@@ -448,7 +464,7 @@ const ProductsSectionFields = ({
                 })
               }
             >
-              {allShown ? "Deselect all" : "Select all"}
+              {allShown ? t("seller.settings.profile.deselect_all") : t("seller.settings.profile.select_all")}
             </button>
           ) : null}
         </FieldsetTitle>
@@ -471,7 +487,7 @@ const ProductsSectionFields = ({
             ))}
           </SortableList>
         ) : (
-          <p>No products available.</p>
+          <p>{t("seller.settings.profile.no_products_available")}</p>
         )}
       </Fieldset>
     </>
@@ -487,6 +503,7 @@ const PostsSectionFields = ({
   state: ProfileEditorProps;
   update: (section: Section) => void;
 }) => {
+  const { t } = useTranslate();
   const togglePost = (id: string) =>
     update({
       ...section,
@@ -497,7 +514,7 @@ const PostsSectionFields = ({
 
   return (
     <Fieldset>
-      <FieldsetTitle>Posts</FieldsetTitle>
+      <FieldsetTitle>{t("seller.settings.profile.section_posts")}</FieldsetTitle>
       {state.posts.length ? (
         <Rows role="list" aria-label="Posts">
           {state.posts.map((post) => (
@@ -510,7 +527,7 @@ const PostsSectionFields = ({
           ))}
         </Rows>
       ) : (
-        <p>No published profile posts available.</p>
+        <p>{t("seller.settings.profile.no_published_posts_available")}</p>
       )}
     </Fieldset>
   );
@@ -525,8 +542,13 @@ const RichTextSectionFields = ({
   update: (section: Section) => void;
   disabled: boolean;
 }) => {
+  const { t } = useTranslate();
   const [initialValue] = React.useState(section.text);
-  const editor = useRichTextEditor({ initialValue, placeholder: "Enter text here", editable: !disabled });
+  const editor = useRichTextEditor({
+    initialValue,
+    placeholder: t("seller.settings.profile.enter_text_placeholder"),
+    editable: !disabled,
+  });
   const sectionRef = React.useRef(section);
   React.useEffect(() => {
     sectionRef.current = section;
@@ -556,7 +578,7 @@ const RichTextSectionFields = ({
 
   return (
     <Fieldset>
-      <FieldsetTitle>Text</FieldsetTitle>
+      <FieldsetTitle>{t("seller.settings.profile.section_rich_text")}</FieldsetTitle>
       <ImageUploadSettingsContext.Provider value={imageUploadSettings}>
         <div className="grid grid-rows-[max-content_1fr] rounded">
           {editor && !disabled ? (
@@ -578,17 +600,20 @@ const SubscribeSectionFields = ({
 }: {
   section: Extract<Section, { type: "SellerProfileSubscribeSection" }>;
   update: (section: Section) => void;
-}) => (
-  <Fieldset>
-    <Label htmlFor={`${section.id}-button-label`}>Button label</Label>
-    <Input
-      id={`${section.id}-button-label`}
-      type="text"
-      value={section.button_label}
-      onChange={(evt) => update({ ...section, button_label: evt.target.value })}
-    />
-  </Fieldset>
-);
+}) => {
+  const { t } = useTranslate();
+  return (
+    <Fieldset>
+      <Label htmlFor={`${section.id}-button-label`}>{t("seller.settings.profile.button_label")}</Label>
+      <Input
+        id={`${section.id}-button-label`}
+        type="text"
+        value={section.button_label}
+        onChange={(evt) => update({ ...section, button_label: evt.target.value })}
+      />
+    </Fieldset>
+  );
+};
 
 const FeaturedProductSectionFields = ({
   section,
@@ -598,23 +623,26 @@ const FeaturedProductSectionFields = ({
   section: Extract<Section, { type: "SellerProfileFeaturedProductSection" }>;
   state: ProfileEditorProps;
   update: (section: Section) => void;
-}) => (
-  <Fieldset>
-    <Label htmlFor={`${section.id}-featured-product`}>Featured product</Label>
-    <Select
-      id={`${section.id}-featured-product`}
-      value={section.featured_product_id ?? ""}
-      onChange={(evt) => update({ ...section, featured_product_id: evt.target.value || undefined })}
-    >
-      <option value="">Choose a product</option>
-      {state.products.map((product) => (
-        <option key={product.id} value={product.id}>
-          {product.name}
-        </option>
-      ))}
-    </Select>
-  </Fieldset>
-);
+}) => {
+  const { t } = useTranslate();
+  return (
+    <Fieldset>
+      <Label htmlFor={`${section.id}-featured-product`}>{t("seller.settings.profile.section_featured_product")}</Label>
+      <Select
+        id={`${section.id}-featured-product`}
+        value={section.featured_product_id ?? ""}
+        onChange={(evt) => update({ ...section, featured_product_id: evt.target.value || undefined })}
+      >
+        <option value="">{t("seller.settings.profile.choose_a_product")}</option>
+        {state.products.map((product) => (
+          <option key={product.id} value={product.id}>
+            {product.name}
+          </option>
+        ))}
+      </Select>
+    </Fieldset>
+  );
+};
 
 const WishlistsSectionFields = ({
   section,
@@ -627,6 +655,7 @@ const WishlistsSectionFields = ({
   update: (section: Section) => void;
   disabled: boolean;
 }) => {
+  const { t } = useTranslate();
   const [orderedWishlistIds, setOrderedWishlistIds] = React.useState(() =>
     optionOrder(
       state.wishlist_options.map(({ id }) => id),
@@ -654,7 +683,7 @@ const WishlistsSectionFields = ({
 
   return (
     <Fieldset>
-      <FieldsetTitle>Wishlists</FieldsetTitle>
+      <FieldsetTitle>{t("seller.settings.profile.section_wishlists")}</FieldsetTitle>
       {orderedWishlists.length ? (
         <SortableList
           currentOrder={orderedWishlistIds}
@@ -674,13 +703,15 @@ const WishlistsSectionFields = ({
           ))}
         </SortableList>
       ) : (
-        <p>No wishlists available.</p>
+        <p>{t("seller.settings.profile.no_wishlists_available")}</p>
       )}
     </Fieldset>
   );
 };
 
 export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: ProfileSectionsFormProps) => {
+  const { t } = useTranslate();
+  const sectionTypeLabels = useSectionTypeLabels();
   const [sections, setSections] = React.useState(props.sections);
   const { tabs, setTabs, selectedTab, setSelectedTab } = useTabs(props.tabs);
   const [deletionModalPageId, setDeletionModalPageId] = React.useState<string | null>(null);
@@ -703,7 +734,7 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
   const deletionModalPage = tabs.find(({ id }) => id === deletionModalPageId);
   const deletionModalSection = sections.find(({ id }) => id === deletionModalSectionId);
   const deletionModalSectionTitle = deletionModalSection
-    ? deletionModalSection.header || SECTION_TYPE_LABELS[deletionModalSection.type]
+    ? deletionModalSection.header || sectionTypeLabels[deletionModalSection.type]
     : "";
 
   React.useEffect(() => {
@@ -720,7 +751,7 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
   const addPage = () => {
     if (disabled) return;
 
-    const tab = { id: GuidGenerator.generate(), name: "New page", sections: [] };
+    const tab = { id: GuidGenerator.generate(), name: t("seller.settings.profile.new_page"), sections: [] };
     setLastAddedPageId(tab.id);
     setSelectedTab(tab);
     setCollapsed(false);
@@ -859,7 +890,7 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
   const addPageButton = (
     <Button color="primary" onClick={addPage}>
       <Plus className="size-5" />
-      Add page
+      {t("seller.settings.profile.add_page")}
     </Button>
   );
 
@@ -868,7 +899,7 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
       <PopoverTrigger asChild>
         <Button color="primary">
           <Plus className="size-5" />
-          Add section
+          {t("seller.settings.profile.add_section")}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="border-0 p-0 shadow-none">
@@ -876,7 +907,7 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
           {SECTION_TYPES.map((type) => (
             <MenuItem key={type} onClick={() => addSection(type)}>
               {SECTION_TYPE_ICONS[type]}
-              {SECTION_TYPE_LABELS[type]}
+              {sectionTypeLabels[type]}
             </MenuItem>
           ))}
         </Menu>
@@ -887,8 +918,8 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
   const sectionsBlock =
     visibleSections.length === 0 ? (
       <Placeholder>
-        <h2>Build your page</h2>
-        Add sections to showcase your products, posts, and more.
+        <h2>{t("seller.settings.profile.build_your_page")}</h2>
+        {t("seller.settings.profile.build_your_page_desc")}
         {addSectionButton}
       </Placeholder>
     ) : (
@@ -922,10 +953,12 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
         <Modal
           open
           onClose={() => setDeletionModalPageId(null)}
-          title={`Remove ${deletionModalPage.name || "Untitled"}?`}
+          title={t("seller.settings.profile.remove_page_confirm_title", {
+            name: deletionModalPage.name || t("seller.settings.profile.untitled"),
+          })}
           footer={
             <>
-              <Button onClick={() => setDeletionModalPageId(null)}>No, cancel</Button>
+              <Button onClick={() => setDeletionModalPageId(null)}>{t("seller.settings.profile.no_cancel")}</Button>
               <Button
                 color="accent"
                 onClick={() => {
@@ -933,22 +966,24 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
                   removePage(deletionModalPage.id);
                 }}
               >
-                Yes, remove
+                {t("seller.settings.profile.yes_remove")}
               </Button>
             </>
           }
         >
-          If you remove this page, all of its sections will be deleted as well. This action cannot be undone.
+          {t("seller.settings.profile.remove_page_confirm_body")}
         </Modal>
       ) : null}
       {deletionModalSection ? (
         <Modal
           open
           onClose={() => setDeletionModalSectionId(null)}
-          title={`Remove ${deletionModalSectionTitle}?`}
+          title={t("seller.settings.profile.remove_section_confirm_title", {
+            name: deletionModalSectionTitle,
+          })}
           footer={
             <>
-              <Button onClick={() => setDeletionModalSectionId(null)}>No, cancel</Button>
+              <Button onClick={() => setDeletionModalSectionId(null)}>{t("seller.settings.profile.no_cancel")}</Button>
               <Button
                 color="accent"
                 onClick={() => {
@@ -956,26 +991,25 @@ export const ProfileSectionsForm = ({ onChange, disabled = false, ...props }: Pr
                   removeSection(deletionModalSection.id);
                 }}
               >
-                Yes, remove
+                {t("seller.settings.profile.yes_remove")}
               </Button>
             </>
           }
         >
-          This will permanently delete the section and its settings. Your products, posts, and wishlists themselves
-          won't be affected.
+          {t("seller.settings.profile.remove_section_confirm_body")}
         </Modal>
       ) : null}
 
       <section className="grid gap-8 border-t border-border p-4! md:p-8!">
         <header className="grid content-start gap-3">
-          <h2>Pages</h2>
-          <small>Each page is a tab on your profile.</small>
+          <h2>{t("seller.settings.profile.pages_header")}</h2>
+          <small>{t("seller.settings.profile.pages_header_desc")}</small>
         </header>
         <Fieldset disabled={disabled}>
           {tabs.length === 0 ? (
             <Placeholder>
-              <h2>Build your profile</h2>
-              Add a page to start showcasing your products, posts, and more.
+              <h2>{t("seller.settings.profile.build_your_profile")}</h2>
+              {t("seller.settings.profile.build_your_profile_desc")}
               {addPageButton}
             </Placeholder>
           ) : (

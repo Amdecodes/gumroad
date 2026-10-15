@@ -1,6 +1,7 @@
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
@@ -28,6 +29,7 @@ const CustomDomain = ({
   includeLearnMoreLink?: boolean;
   productId?: string | null;
 }) => {
+  const { t } = useTranslate();
   const [verificationInfo, setVerificationInfo] = React.useState<{
     buttonState: VerificationState;
     state: VerificationState;
@@ -79,7 +81,7 @@ const CustomDomain = ({
         <Label htmlFor={uid}>{label}</Label>
         {includeLearnMoreLink ? (
           <a href="/help/article/153-setting-up-a-custom-domain" target="_blank" rel="noreferrer">
-            Learn more
+            {t("actions.learn_more")}
           </a>
         ) : null}
       </FieldsetTitle>
@@ -104,10 +106,10 @@ const CustomDomain = ({
               <div>
                 {
                   {
-                    initial: "Verify",
-                    verifying: "Verifying...",
-                    success: "Verified!",
-                    failure: "Verify",
+                    initial: t("seller.settings.advanced.verify"),
+                    verifying: t("seller.settings.advanced.verifying"),
+                    success: t("seller.settings.advanced.verified"),
+                    failure: t("seller.settings.advanced.verify"),
                   }[verificationInfo.buttonState]
                 }
               </div>

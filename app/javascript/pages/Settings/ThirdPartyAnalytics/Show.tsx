@@ -5,6 +5,7 @@ import typia from "typia";
 
 import { Snippet, SNIPPET_LOCATIONS, ThirdPartyAnalytics } from "$app/data/third_party_analytics";
 import { SettingPage } from "$app/parsers/settings";
+import { useTranslate } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Dropdown } from "$app/components/Dropdown";
@@ -32,6 +33,7 @@ type ThirdPartyAnalyticsPageProps = {
 };
 
 export default function ThirdPartyAnalyticsPage() {
+  const { t } = useTranslate();
   const props = typia.assert<ThirdPartyAnalyticsPageProps>(usePage().props);
   const loggedInUser = useLoggedInUser();
 
@@ -61,7 +63,7 @@ export default function ThirdPartyAnalyticsPage() {
       }
     >
       <Plus className="size-5" />
-      Add snippet
+      {t("seller.settings.analytics.add_snippet")}
     </Button>
   );
   const handleSave = () => {
@@ -91,14 +93,11 @@ export default function ThirdPartyAnalyticsPage() {
         <FormSection
           header={
             <>
-              <h2>Third-party analytics</h2>
+              <h2>{t("seller.settings.analytics.third_party_analytics_title")}</h2>
               <a href="/help/article/174-third-party-analytics" target="_blank" rel="noreferrer">
-                Learn more
+                {t("seller.settings.team.learn_more")}
               </a>
-              <div>
-                You can add a Facebook or TikTok tracking pixel and link your Google Analytics properties to track your
-                visitors.
-              </div>
+              <div>{t("seller.settings.analytics.third_party_analytics_desc")}</div>
             </>
           }
         >
@@ -107,19 +106,21 @@ export default function ThirdPartyAnalyticsPage() {
               <Switch
                 checked={!thirdPartyAnalytics.disable_third_party_analytics}
                 onChange={(evt) => updateThirdPartyAnalytics({ disable_third_party_analytics: !evt.target.checked })}
-                label="Enable third-party analytics services"
+                label={t("seller.settings.analytics.enable_third_party_analytics")}
               />
             </DetailsToggle>
             <Dropdown className="flex flex-col gap-4">
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}googleAnalyticsId`}>Google Analytics Property ID</Label>
+                  <Label htmlFor={`${uid}googleAnalyticsId`}>
+                    {t("seller.settings.analytics.google_analytics_id")}
+                  </Label>
                   <a
                     href="/help/article/174-third-party-analytics#Google-Analytics-Ib1dB"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Learn more
+                    {t("seller.settings.team.learn_more")}
                   </a>
                 </FieldsetTitle>
                 <Input
@@ -132,9 +133,9 @@ export default function ThirdPartyAnalyticsPage() {
               </Fieldset>
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}facebookPixel`}>Facebook Pixel</Label>
+                  <Label htmlFor={`${uid}facebookPixel`}>{t("seller.settings.analytics.facebook_pixel")}</Label>
                   <a href="/help/article/174-third-party-analytics#Meta-Pixel-Yisi6" target="_blank" rel="noreferrer">
-                    Learn more
+                    {t("seller.settings.team.learn_more")}
                   </a>
                 </FieldsetTitle>
                 <Input
@@ -147,9 +148,9 @@ export default function ThirdPartyAnalyticsPage() {
               </Fieldset>
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}tiktokPixel`}>TikTok Pixel</Label>
+                  <Label htmlFor={`${uid}tiktokPixel`}>{t("seller.settings.analytics.tiktok_pixel")}</Label>
                   <a href="/help/article/174-third-party-analytics#TikTok-Pixel-zK9mP" target="_blank" rel="noreferrer">
-                    Learn more
+                    {t("seller.settings.team.learn_more")}
                   </a>
                 </FieldsetTitle>
                 <Input
@@ -165,12 +166,12 @@ export default function ThirdPartyAnalyticsPage() {
                   checked={!thirdPartyAnalytics.skip_free_sale_analytics}
                   onChange={(evt) => updateThirdPartyAnalytics({ skip_free_sale_analytics: !evt.target.checked })}
                 />
-                Send 'Purchase' events for free ($0) sales
+                {t("seller.settings.analytics.send_purchase_events_free_sales")}
               </Label>
             </Dropdown>
           </Details>
         </FormSection>
-        <FormSection header={<h2>Domain verification</h2>}>
+        <FormSection header={<h2>{t("seller.settings.analytics.domain_verification")}</h2>}>
           <Details open={thirdPartyAnalytics.enable_verify_domain_third_party_services}>
             <DetailsToggle chevronPosition="none" className="mb-0">
               <Switch
@@ -178,15 +179,15 @@ export default function ThirdPartyAnalyticsPage() {
                 onChange={(evt) =>
                   updateThirdPartyAnalytics({ enable_verify_domain_third_party_services: evt.target.checked })
                 }
-                label="Verify domain in third-party services"
+                label={t("seller.settings.analytics.verify_domain_third_party")}
               />
             </DetailsToggle>
             <Dropdown className="flex flex-col gap-4">
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}facebookMetaTag`}>Facebook Business</Label>
+                  <Label htmlFor={`${uid}facebookMetaTag`}>{t("seller.settings.analytics.facebook_business")}</Label>
                   <a href="/help/article/290-facebook-domain-verification" target="_blank" rel="noreferrer">
-                    Learn more
+                    {t("seller.settings.team.learn_more")}
                   </a>
                 </FieldsetTitle>
                 <Textarea
@@ -195,9 +196,7 @@ export default function ThirdPartyAnalyticsPage() {
                   value={thirdPartyAnalytics.facebook_meta_tag}
                   onChange={(evt) => updateThirdPartyAnalytics({ facebook_meta_tag: evt.target.value })}
                 />
-                <FieldsetDescription>
-                  Enter meta tag containing the Facebook domain verification code.
-                </FieldsetDescription>
+                <FieldsetDescription>{t("seller.settings.analytics.enter_meta_tag_desc")}</FieldsetDescription>
               </Fieldset>
             </Dropdown>
           </Details>
@@ -205,10 +204,10 @@ export default function ThirdPartyAnalyticsPage() {
         <FormSection
           header={
             <>
-              <h2>Snippets</h2>
-              <div>Add custom JavaScript to pages in the checkout flow.</div>
+              <h2>{t("seller.settings.analytics.snippets")}</h2>
+              <div>{t("seller.settings.analytics.snippets_desc")}</div>
               <a href="/help/article/174-third-party-analytics#Snippets-j1elc" target="_blank" rel="noreferrer">
-                Learn more
+                {t("seller.settings.team.learn_more")}
               </a>
             </>
           }
@@ -239,10 +238,13 @@ export default function ThirdPartyAnalyticsPage() {
 
 const NEW_SNIPPET_ID_PREFIX = "__GUMROAD";
 
-const LOCATION_TITLES: Record<string, string> = {
-  receipt: "Receipt",
-  product: "Product page",
-  all: "All pages",
+const useLocationTitles = (): Record<string, string> => {
+  const { t } = useTranslate();
+  return {
+    receipt: t("seller.settings.analytics.location_receipt"),
+    product: t("seller.settings.analytics.location_product"),
+    all: t("seller.settings.analytics.location_all"),
+  };
 };
 
 const SnippetRow = ({
@@ -256,6 +258,8 @@ const SnippetRow = ({
   updateThirdPartyAnalytics: (update: Partial<ThirdPartyAnalytics>) => void;
   products: Products;
 }) => {
+  const { t } = useTranslate();
+  const locationTitles = useLocationTitles();
   const [expanded, setExpanded] = React.useState(!!snippet.id?.startsWith(NEW_SNIPPET_ID_PREFIX));
 
   const updateSnippet = (update: Partial<Snippet>) => {
@@ -276,15 +280,22 @@ const SnippetRow = ({
       <RowContent>
         <CodeAlt className="type-icon size-5" />
         <div>
-          <h4>{snippet.name || "Untitled"}</h4>
+          <h4>{snippet.name || t("seller.settings.analytics.snippet_untitled")}</h4>
           <InlineList>
-            <li>{products.find(({ permalink }) => permalink === snippet.product)?.name ?? "All products"}</li>
-            <li>{LOCATION_TITLES[snippet.location]}</li>
+            <li>
+              {products.find(({ permalink }) => permalink === snippet.product)?.name ??
+                t("seller.settings.analytics.all_products")}
+            </li>
+            <li>{locationTitles[snippet.location]}</li>
           </InlineList>
         </div>
       </RowContent>
       <RowActions>
-        <Button size="icon" onClick={() => setExpanded((prevExpanded) => !prevExpanded)} aria-label="Edit snippet">
+        <Button
+          size="icon"
+          onClick={() => setExpanded((prevExpanded) => !prevExpanded)}
+          aria-label={t("seller.settings.analytics.edit_snippet_aria")}
+        >
           {expanded ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
         </Button>
         <Button
@@ -294,7 +305,7 @@ const SnippetRow = ({
               snippets: thirdPartyAnalytics.snippets.filter(({ id }) => id !== snippet.id),
             })
           }
-          aria-label="Delete snippet"
+          aria-label={t("seller.settings.analytics.delete_snippet_aria")}
         >
           <Trash className="size-5" />
         </Button>
@@ -302,7 +313,7 @@ const SnippetRow = ({
       {expanded ? (
         <RowDetails className="flex flex-col gap-4">
           <Fieldset>
-            <Label htmlFor={`${uid}name`}>Name</Label>
+            <Label htmlFor={`${uid}name`}>{t("seller.settings.analytics.snippet_name")}</Label>
             <Input
               id={`${uid}name`}
               type="text"
@@ -311,25 +322,25 @@ const SnippetRow = ({
             />
           </Fieldset>
           <Fieldset>
-            <Label htmlFor={`${uid}location`}>Location</Label>
+            <Label htmlFor={`${uid}location`}>{t("seller.settings.analytics.snippet_location")}</Label>
             <TypeSafeOptionSelect
               id={`${uid}location`}
               value={snippet.location}
               onChange={(key) => updateSnippet({ location: key })}
               options={SNIPPET_LOCATIONS.map((location) => ({
                 id: location,
-                label: LOCATION_TITLES[location] ?? "Receipt",
+                label: locationTitles[location] ?? t("seller.settings.analytics.location_receipt"),
               }))}
             />
           </Fieldset>
           <Fieldset>
-            <Label htmlFor={`${uid}product`}>Products</Label>
+            <Label htmlFor={`${uid}product`}>{t("seller.settings.analytics.snippet_product")}</Label>
             <TypeSafeOptionSelect
               id={`${uid}product`}
               value={snippet.product ?? ""}
               onChange={(key) => updateSnippet({ product: key || null })}
               options={[
-                { id: "", label: "All products" },
+                { id: "", label: t("seller.settings.analytics.all_products") },
                 ...products.map(({ permalink, name }) => ({
                   id: permalink,
                   label: name,
@@ -338,7 +349,7 @@ const SnippetRow = ({
             />
           </Fieldset>
           <Fieldset>
-            <Label htmlFor={`${uid}code`}>Code</Label>
+            <Label htmlFor={`${uid}code`}>{t("seller.settings.analytics.snippet_code")}</Label>
             <Textarea
               id={`${uid}code`}
               value={snippet.code}

@@ -5,6 +5,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { SettingPage } from "$app/parsers/settings";
+import { useTranslate } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -45,25 +46,28 @@ type Scope =
   | "helper_api"
   | "creator_api";
 
-const SCOPE_DESCRIPTIONS: Record<Scope, string> = {
-  account: "Full access to your account.",
-  edit_emails: "Create and manage your audience emails.",
-  edit_products: "Create new products and edit your existing products.",
-  ifttt: "See your sales data.",
-  mark_sales_as_shipped: "Mark your sales as shipped.",
-  refund_sales: "Refund your sales.",
-  edit_sales: "Refund your sales, revoke or restore buyer access, and resend purchase receipts to customers.",
-  unfurl: "Fetch public information of any product to preview it in Notion.",
-  view_profile: "See your profile data.",
-  edit_profile: "Edit your profile name and bio.",
-  view_public: "See your public information (name, bio).",
-  view_sales: "See your sales data.",
-  view_payouts: "See your payouts data.",
-  view_tax_data: "See your tax forms and annual earnings summary.",
-  revenue_share: "Revenue Share",
-  mobile_api: "Mobile API",
-  helper_api: "Helper API",
-  creator_api: "Creator API",
+const useScopeDescriptions = (): Record<Scope, string> => {
+  const { t } = useTranslate();
+  return {
+    account: t("seller.settings.applications.scope_account"),
+    edit_emails: t("seller.settings.applications.scope_edit_emails"),
+    edit_products: t("seller.settings.applications.scope_edit_products"),
+    ifttt: t("seller.settings.applications.scope_ifttt"),
+    mark_sales_as_shipped: t("seller.settings.applications.scope_mark_sales_as_shipped"),
+    refund_sales: t("seller.settings.applications.scope_refund_sales"),
+    edit_sales: t("seller.settings.applications.scope_edit_sales"),
+    unfurl: t("seller.settings.applications.scope_unfurl"),
+    view_profile: t("seller.settings.applications.scope_view_profile"),
+    edit_profile: t("seller.settings.applications.scope_edit_profile"),
+    view_public: t("seller.settings.applications.scope_view_public"),
+    view_sales: t("seller.settings.applications.scope_view_sales"),
+    view_payouts: t("seller.settings.applications.scope_view_payouts"),
+    view_tax_data: t("seller.settings.applications.scope_view_tax_data"),
+    revenue_share: t("seller.settings.applications.scope_revenue_share"),
+    mobile_api: t("seller.settings.applications.scope_mobile_api"),
+    helper_api: t("seller.settings.applications.scope_helper_api"),
+    creator_api: t("seller.settings.applications.scope_creator_api"),
+  };
 };
 
 type Props = {
@@ -72,6 +76,8 @@ type Props = {
 };
 
 export default function AuthorizedApplicationsPage() {
+  const { t } = useTranslate();
+  const scopeDescriptions = useScopeDescriptions();
   const props = typia.assert<Props>(usePage().props);
   const userAgentInfo = useUserAgentInfo();
   const [applications, setApplications] = React.useState(props.authorized_applications);
@@ -101,12 +107,14 @@ export default function AuthorizedApplicationsPage() {
       {applications.length > 0 ? (
         <section className="p-4! md:p-8!">
           <Table>
-            <TableCaption>You've authorized the following applications to use your Gumroad account.</TableCaption>
+            <TableCaption>
+              {t("seller.settings.applications.authorized_apps_caption", { app_name: "Gumroad" })}
+            </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Application</TableHead>
-                <TableHead>Permissions</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t("seller.settings.applications.application")}</TableHead>
+                <TableHead>{t("seller.settings.applications.permissions")}</TableHead>
+                <TableHead>{t("seller.settings.applications.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,15 +134,18 @@ export default function AuthorizedApplicationsPage() {
                       <div>
                         <h3 style={{ marginBottom: "var(--spacer-1)" }}>
                           {application.name}
-                          {application.is_own_app ? <span> (Your application)</span> : null}
+                          {application.is_own_app ? (
+                            <span>{t("seller.settings.applications.your_application")}</span>
+                          ) : null}
                         </h3>
                         <p>
                           <small className="block">
-                            First authorized on:{" "}
-                            {parseISO(application.first_authorized_at).toLocaleDateString(userAgentInfo.locale, {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
+                            {t("seller.settings.applications.first_authorized_on", {
+                              date: parseISO(application.first_authorized_at).toLocaleDateString(userAgentInfo.locale, {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              }),
                             })}
                           </small>
                         </p>
@@ -144,14 +155,14 @@ export default function AuthorizedApplicationsPage() {
                   <TableCell>
                     <ul>
                       {application.scopes.map((scope) => (
-                        <li key={scope}>{SCOPE_DESCRIPTIONS[scope]}</li>
+                        <li key={scope}>{scopeDescriptions[scope]}</li>
                       ))}
                     </ul>
                   </TableCell>
                   <TableCell hideLabel>
                     <Button color="danger" outline onClick={() => setRevokingAccessForApp({ id: application.id })}>
                       <XSquare className="size-5" />
-                      Revoke access
+                      {t("seller.settings.applications.revoke_access")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -162,26 +173,29 @@ export default function AuthorizedApplicationsPage() {
             <Modal
               open
               allowClose={!revokingAccessForApp.revoking}
-              title="Revoke access"
+              title={t("seller.settings.applications.revoke_access_title")}
               onClose={() => {
                 setRevokingAccessForApp(null);
               }}
               footer={
                 <>
-                  <Button onClick={() => setRevokingAccessForApp(null)}>Cancel</Button>
+                  <Button onClick={() => setRevokingAccessForApp(null)}>{t("seller.settings.password.cancel")}</Button>
                   <Button
                     color="danger"
                     disabled={revokingAccessForApp.revoking}
                     onClick={() => handleRevokeAccess(revokingAccessForApp.id)}
                   >
-                    {revokingAccessForApp.revoking ? "Revoking access..." : "Yes, revoke access"}
+                    {revokingAccessForApp.revoking
+                      ? t("seller.settings.applications.revoking_access")
+                      : t("seller.settings.applications.yes_revoke_access")}
                   </Button>
                 </>
               }
             >
               <p>
-                Are you sure you want to revoke access to{" "}
-                {applications.find((app) => app.id === revokingAccessForApp.id)?.name ?? ""}?
+                {t("seller.settings.applications.revoke_access_confirm", {
+                  name: applications.find((app) => app.id === revokingAccessForApp.id)?.name ?? "",
+                })}
               </p>
             </Modal>
           ) : null}
@@ -189,8 +203,8 @@ export default function AuthorizedApplicationsPage() {
       ) : (
         <div className="p-4 md:p-8">
           <Placeholder>
-            <h3>Your account doesn't have any authorized applications.</h3>
-            <p>Applications authorized to access your Gumroad account on your behalf will appear here.</p>
+            <h3>{t("seller.settings.applications.empty_title")}</h3>
+            <p>{t("seller.settings.applications.empty_description", { app_name: "Gumroad" })}</p>
           </Placeholder>
         </div>
       )}

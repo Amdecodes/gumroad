@@ -2,6 +2,7 @@ import { Copy, DotsHorizontalRounded, Link as LinkIcon, Pencil, Trash } from "@b
 import { Link, router, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { SavedUtmLink, SortKey, UtmLinkStats, UtmLinksStats } from "$app/types/utm_link";
 import { classNames } from "$app/utils/classNames";
 
@@ -80,6 +81,7 @@ export const extractSortParam = (searchParams: URLSearchParams): Sort<SortKey> |
 };
 
 export default function UtmLinksIndex() {
+  const { t } = useTranslate();
   const {
     utm_links: utmLinks,
     pagination,
@@ -154,7 +156,7 @@ export default function UtmLinksIndex() {
       preserveScroll: true,
       onStart: () => setDeletingUtmLink((prev) => prev && { ...prev, state: "deleting" }),
       onSuccess: () => setSelectedUtmLink(null),
-      onError: () => showAlert("Failed to delete link. Please try again.", "error"),
+      onError: () => showAlert(t("seller.utm_links.failed_to_delete_link"), "error"),
       onFinish: () => setDeletingUtmLink(null),
     });
   };
@@ -166,7 +168,7 @@ export default function UtmLinksIndex() {
         <>
           <Search value={query} onSearch={onSearch} />
           <NavigationButtonInertia href={Routes.new_dashboard_utm_link_path()} color="accent">
-            Create link
+            {t("seller.utm_links.create_link")}
           </NavigationButtonInertia>
         </>
       }
@@ -181,14 +183,14 @@ export default function UtmLinksIndex() {
             <TableHeader>
               <TableRow>
                 <TableHead {...thProps("link")} style={{ width: "30%" }}>
-                  Link
+                  {t("seller.utm_links.col_link")}
                 </TableHead>
-                <TableHead {...thProps("source")}>Source</TableHead>
-                <TableHead {...thProps("medium")}>Medium</TableHead>
-                <TableHead {...thProps("campaign")}>Campaign</TableHead>
-                <TableHead {...thProps("clicks")}>Clicks</TableHead>
-                <TableHead {...thProps("revenue_cents")}>Revenue</TableHead>
-                <TableHead {...thProps("conversion_rate")}>Conversion</TableHead>
+                <TableHead {...thProps("source")}>{t("seller.utm_links.col_source")}</TableHead>
+                <TableHead {...thProps("medium")}>{t("seller.utm_links.col_medium")}</TableHead>
+                <TableHead {...thProps("campaign")}>{t("seller.utm_links.col_campaign")}</TableHead>
+                <TableHead {...thProps("clicks")}>{t("seller.utm_links.col_clicks")}</TableHead>
+                <TableHead {...thProps("revenue_cents")}>{t("seller.utm_links.col_revenue")}</TableHead>
+                <TableHead {...thProps("conversion_rate")}>{t("seller.utm_links.col_conversion")}</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -266,25 +268,25 @@ export default function UtmLinksIndex() {
               open
               allowClose={deletingUtmLink.state === "delete-confirmation"}
               onClose={() => setDeletingUtmLink(null)}
-              title="Delete link?"
+              title={t("seller.utm_links.delete_link_title")}
               footer={
                 <>
                   <Button disabled={deletingUtmLink.state === "deleting"} onClick={() => setDeletingUtmLink(null)}>
-                    Cancel
+                    {t("actions.cancel")}
                   </Button>
                   {deletingUtmLink.state === "deleting" ? (
                     <Button color="danger" disabled>
-                      Deleting...
+                      {t("seller.utm_links.deleting")}
                     </Button>
                   ) : (
                     <Button color="danger" onClick={() => handleDelete(deletingUtmLink.id)}>
-                      Delete
+                      {t("seller.utm_links.delete")}
                     </Button>
                   )}
                 </>
               }
             >
-              <h4>Are you sure you want to delete the link "{deletingUtmLink.title}"? This action cannot be undone.</h4>
+              <h4>{t("seller.utm_links.delete_link_confirm", { title: deletingUtmLink.title })}</h4>
             </Modal>
           ) : null}
         </section>
@@ -292,18 +294,18 @@ export default function UtmLinksIndex() {
         <div className="p-4 md:p-8">
           <Placeholder>
             <PlaceholderImage src={noLinksFoundPlaceholder} />
-            <h4>No links found for "{query}"</h4>
+            <h4>{t("seller.utm_links.no_links_found", { query })}</h4>
           </Placeholder>
         </div>
       ) : (
         <div className="p-4 md:p-8">
           <Placeholder>
             <PlaceholderImage src={noLinksYetPlaceholder} />
-            <h2>No links yet</h2>
-            <h4>Use UTM links to track which sources are driving the most conversions and revenue</h4>
+            <h2>{t("seller.utm_links.no_links_yet")}</h2>
+            <h4>{t("seller.utm_links.no_links_yet_desc")}</h4>
 
             <a href="/help/article/74-the-analytics-dashboard" target="_blank" rel="noreferrer">
-              Learn more about UTM tracking
+              {t("seller.utm_links.learn_more_utm")}
             </a>
           </Placeholder>
         </div>
@@ -318,18 +320,19 @@ const TruncatedTextWithTooltip = ({ text, maxLength }: { text: string; maxLength
 };
 
 const UtmLinkActions = ({ link, onDelete }: { link: SavedUtmLink; onDelete: () => void }) => {
+  const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
 
   return (
     <div className="flex flex-wrap gap-3 lg:justify-end" onClick={(e) => e.stopPropagation()}>
-      <CopyToClipboard copyTooltip="Copy short link" text={link.short_url}>
-        <Button size="icon" aria-label="Copy link">
+      <CopyToClipboard copyTooltip={t("seller.utm_links.copy_short_link")} text={link.short_url}>
+        <Button size="icon" aria-label={t("seller.affiliates.copy_link")}>
           <LinkIcon className="size-5" />
         </Button>
       </CopyToClipboard>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverAnchor>
-          <PopoverTrigger aria-label="Open action menu" asChild>
+          <PopoverTrigger aria-label={t("seller.utm_links.open_action_menu_aria")} asChild>
             <Button size="icon">
               <DotsHorizontalRounded className="size-5" />
             </Button>
@@ -340,18 +343,18 @@ const UtmLinkActions = ({ link, onDelete }: { link: SavedUtmLink; onDelete: () =
             <MenuItem asChild>
               <Link href={Routes.edit_dashboard_utm_link_path(link.id)} className="no-underline">
                 <Pencil className="size-5" />
-                Edit
+                {t("actions.edit")}
               </Link>
             </MenuItem>
             <MenuItem asChild>
               <Link href={Routes.new_dashboard_utm_link_path({ copy_from: link.id })} className="no-underline">
                 <Copy className="size-5" />
-                Duplicate
+                {t("seller.utm_links.duplicate")}
               </Link>
             </MenuItem>
             <MenuItem variant="danger" onClick={onDelete}>
               <Trash className="size-5" />
-              Delete
+              {t("seller.utm_links.delete")}
             </MenuItem>
           </Menu>
         </PopoverContent>
@@ -369,6 +372,7 @@ const UtmLinkDetails = ({
   onClose: () => void;
   onDelete: () => void;
 }) => {
+  const { t } = useTranslate();
   const userAgentInfo = useUserAgentInfo();
   const isNavigating = useRouteLoading();
 
@@ -378,10 +382,10 @@ const UtmLinkDetails = ({
       <Card asChild>
         <section>
           <CardContent>
-            <h3 className="grow">Details</h3>
+            <h3 className="grow">{t("seller.utm_links.details")}</h3>
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Date</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.date")}</h5>
             {new Date(utmLink.created_at).toLocaleDateString(userAgentInfo.locale, {
               month: "short",
               day: "numeric",
@@ -390,33 +394,33 @@ const UtmLinkDetails = ({
           </CardContent>
           {utmLink.destination_option ? (
             <CardContent>
-              <h5 className="grow font-bold">Destination</h5>
+              <h5 className="grow font-bold">{t("seller.utm_links.destination")}</h5>
               <a href={utmLink.destination_option.url} target="_blank" rel="noopener noreferrer">
                 {utmLink.destination_option.label}
               </a>
             </CardContent>
           ) : null}
           <CardContent>
-            <h5 className="grow font-bold">Source</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.source")}</h5>
             {utmLink.source}
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Medium</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.medium")}</h5>
             {utmLink.medium}
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Campaign</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.campaign")}</h5>
             {utmLink.campaign}
           </CardContent>
           {utmLink.term ? (
             <CardContent>
-              <h5 className="grow font-bold">Term</h5>
+              <h5 className="grow font-bold">{t("seller.utm_links.term")}</h5>
               {utmLink.term}
             </CardContent>
           ) : null}
           {utmLink.content ? (
             <CardContent>
-              <h5 className="grow font-bold">Content</h5>
+              <h5 className="grow font-bold">{t("seller.utm_links.content")}</h5>
               {utmLink.content}
             </CardContent>
           ) : null}
@@ -425,20 +429,20 @@ const UtmLinkDetails = ({
       <Card asChild>
         <section>
           <CardContent>
-            <h3 className="grow">Statistics</h3>
+            <h3 className="grow">{t("seller.utm_links.statistics")}</h3>
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Clicks</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.clicks")}</h5>
             {utmLink.clicks}
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Sales</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.sales")}</h5>
             <div aria-busy={utmLink.sales_count === null} aria-live="polite">
               {utmLink.sales_count !== null ? utmLink.sales_count : <LoadingSpinner />}
             </div>
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Revenue</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.revenue")}</h5>
             <div aria-busy={utmLink.revenue_cents === null} aria-live="polite">
               {utmLink.revenue_cents !== null ? (
                 `$${fixedDecimalPointNumber(utmLink.revenue_cents / 100)}`
@@ -448,7 +452,7 @@ const UtmLinkDetails = ({
             </div>
           </CardContent>
           <CardContent>
-            <h5 className="grow font-bold">Conversion rate</h5>
+            <h5 className="grow font-bold">{t("seller.utm_links.conversion_rate")}</h5>
             <div aria-busy={utmLink.conversion_rate === null} aria-live="polite">
               {utmLink.conversion_rate !== null ? (
                 `${fixedDecimalPointNumber(utmLink.conversion_rate * 100)}%`
@@ -462,9 +466,9 @@ const UtmLinkDetails = ({
       <Card asChild>
         <section>
           <CardContent>
-            <h3 className="grow">Short link</h3>
-            <CopyToClipboard text={utmLink.short_url} copyTooltip="Copy short link">
-              <Button aria-label="Copy short link">
+            <h3 className="grow">{t("seller.utm_links.short_link")}</h3>
+            <CopyToClipboard text={utmLink.short_url} copyTooltip={t("seller.utm_links.copy_short_link")}>
+              <Button aria-label={t("seller.utm_links.copy_short_link")}>
                 <LinkIcon className="size-5" />
               </Button>
             </CopyToClipboard>
@@ -477,9 +481,9 @@ const UtmLinkDetails = ({
       <Card asChild>
         <section>
           <CardContent>
-            <h3 className="grow">UTM link</h3>
-            <CopyToClipboard text={utmLink.utm_url} copyTooltip="Copy UTM link">
-              <Button aria-label="Copy UTM link">
+            <h3 className="grow">{t("seller.utm_links.utm_link")}</h3>
+            <CopyToClipboard text={utmLink.utm_url} copyTooltip={t("seller.utm_links.copy_utm_link")}>
+              <Button aria-label={t("seller.utm_links.copy_utm_link")}>
                 <LinkIcon className="size-5" />
               </Button>
             </CopyToClipboard>
@@ -491,13 +495,15 @@ const UtmLinkDetails = ({
       </Card>
       <div style={{ display: "grid", gridAutoFlow: "column", gap: "var(--spacer-4)" }}>
         <Button asChild>
-          <Link href={Routes.new_dashboard_utm_link_path({ copy_from: utmLink.id })}>Duplicate</Link>
+          <Link href={Routes.new_dashboard_utm_link_path({ copy_from: utmLink.id })}>
+            {t("seller.utm_links.duplicate")}
+          </Link>
         </Button>
         <NavigationButtonInertia href={Routes.edit_dashboard_utm_link_path(utmLink.id)} disabled={isNavigating}>
-          Edit
+          {t("actions.edit")}
         </NavigationButtonInertia>
         <Button color="danger" onClick={onDelete}>
-          Delete
+          {t("seller.utm_links.delete")}
         </Button>
       </div>
     </Sheet>

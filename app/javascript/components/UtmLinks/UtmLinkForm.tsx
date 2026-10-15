@@ -3,6 +3,7 @@ import { router, useForm } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { UtmLink, UtmLinkDestinationOption, SavedUtmLink } from "$app/types/utm_link";
 import { assertDefined } from "$app/utils/assert";
 
@@ -92,6 +93,7 @@ const computeTargetResource = (dest: UtmLinkDestinationOption | null) => {
 const duplicatedTitle = (title?: string) => (title ? `${title} (copy)` : "");
 
 export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
+  const { t } = useTranslate();
   const { context, utm_link } = pageProps;
 
   const isEditing = utm_link?.id !== undefined;
@@ -226,28 +228,28 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
     form.clearErrors();
 
     if (data.utm_link.title.trim().length === 0) {
-      form.setError("utm_link.title", "Must be present");
+      form.setError("utm_link.title", t("seller.utm_links.must_be_present"));
       titleRef.current?.focus();
       return false;
     }
 
     if (!isEditing && !destination) {
-      form.setError("utm_link.target_resource_id", "Must be present");
+      form.setError("utm_link.target_resource_id", t("seller.utm_links.must_be_present"));
       return false;
     }
 
     if (!data.utm_link.utm_source || data.utm_link.utm_source.trim().length === 0) {
-      form.setError("utm_link.utm_source", "Must be present");
+      form.setError("utm_link.utm_source", t("seller.utm_links.must_be_present"));
       return false;
     }
 
     if (!data.utm_link.utm_medium || data.utm_link.utm_medium.trim().length === 0) {
-      form.setError("utm_link.utm_medium", "Must be present");
+      form.setError("utm_link.utm_medium", t("seller.utm_links.must_be_present"));
       return false;
     }
 
     if (!data.utm_link.utm_campaign || data.utm_link.utm_campaign.trim().length === 0) {
-      form.setError("utm_link.utm_campaign", "Must be present");
+      form.setError("utm_link.utm_campaign", t("seller.utm_links.must_be_present"));
       return false;
     }
 
@@ -281,15 +283,15 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
     <AnalyticsLayout
       selectedTab="utm_links"
       showTabs={false}
-      title={isEditing ? "Edit link" : "Create link"}
+      title={isEditing ? t("seller.utm_links.edit_link") : t("seller.utm_links.create_link")}
       actions={
         <>
           <NavigationButtonInertia href={Routes.dashboard_utm_links_path()} disabled={processing}>
             <XSquare className="size-5" />
-            Cancel
+            {t("actions.cancel")}
           </NavigationButtonInertia>
           <Button color="accent" onClick={handleSubmit} disabled={processing}>
-            {processing ? "Saving..." : isEditing ? "Save changes" : "Add link"}
+            {processing ? t("actions.saving") : isEditing ? t("actions.save_changes") : t("seller.utm_links.add_link")}
           </Button>
         </>
       }
@@ -298,17 +300,17 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
         <FormSection
           header={
             <>
-              <p>Create UTM links to track where your traffic is coming from.</p>
-              <p>Once set up, simply share the links to see which sources are driving more conversions and revenue.</p>
+              <p>{t("seller.utm_links.form_desc_1")}</p>
+              <p>{t("seller.utm_links.form_desc_2")}</p>
               <a href="/help/article/74-the-analytics-dashboard" target="_blank" rel="noreferrer">
-                Learn more
+                {t("actions.learn_more")}
               </a>
             </>
           }
         >
           <Fieldset state={getFieldError("title") ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`title-${uid}`}>Title</Label>
+              <Label htmlFor={`title-${uid}`}>{t("seller.utm_links.title")}</Label>
             </FieldsetTitle>
             <Input
               id={`title-${uid}`}
@@ -326,7 +328,7 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
             state={getFieldError("target_resource_id") || getFieldError("target_resource_type") ? "danger" : undefined}
           >
             <FieldsetTitle>
-              <Label htmlFor={`destination-${uid}`}>Destination</Label>
+              <Label htmlFor={`destination-${uid}`}>{t("seller.utm_links.destination")}</Label>
             </FieldsetTitle>
             <Select
               inputId={`destination-${uid}`}
@@ -351,7 +353,7 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
           </Fieldset>
           <Fieldset state={getFieldError("permalink") ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-link-text`}>Link</Label>
+              <Label htmlFor={`${uid}-link-text`}>{t("seller.utm_links.link")}</Label>
             </FieldsetTitle>
             <div className="grid grid-cols-[1fr_auto] gap-2">
               <InputGroup disabled={isEditing}>
@@ -366,20 +368,20 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
               </InputGroup>
               <div className="flex gap-2">
                 <CopyToClipboard
-                  copyTooltip="Copy short link"
+                  copyTooltip={t("seller.utm_links.copy_short_link")}
                   text={`${shortUrlProtocol}//${shortUrlPrefix}${isEditing ? permalink : data.utm_link.permalink}`}
                 >
-                  <Button type="button" size="icon" aria-label="Copy short link">
+                  <Button type="button" size="icon" aria-label={t("seller.utm_links.copy_short_link")}>
                     <Link className="size-5" />
                   </Button>
                 </CopyToClipboard>
                 {!isEditing && (
-                  <WithTooltip tip="Generate new short link">
+                  <WithTooltip tip={t("seller.utm_links.generate_new_short_link")}>
                     <Button
                       size="icon"
                       onClick={generateNewPermalink}
                       disabled={isLoadingNewPermalink}
-                      aria-label="Generate new short link"
+                      aria-label={t("seller.utm_links.generate_new_short_link")}
                     >
                       <RefreshCcw className="size-5" />
                     </Button>
@@ -390,7 +392,7 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
             {getFieldError("permalink") ? (
               <FieldsetDescription>{getFieldError("permalink")}</FieldsetDescription>
             ) : (
-              <FieldsetDescription>This is your short UTM link to share</FieldsetDescription>
+              <FieldsetDescription>{t("seller.utm_links.short_link_help")}</FieldsetDescription>
             )}
           </Fieldset>
           <div
@@ -402,7 +404,7 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
           >
             <Fieldset state={getFieldError("utm_source") ? "danger" : undefined}>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-source`}>Source</Label>
+                <Label htmlFor={`${uid}-source`}>{t("seller.utm_links.source")}</Label>
               </FieldsetTitle>
               <UtmFieldSelect
                 id={`${uid}-source`}
@@ -416,12 +418,12 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
               {getFieldError("utm_source") ? (
                 <FieldsetDescription>{getFieldError("utm_source")}</FieldsetDescription>
               ) : (
-                <FieldsetDescription>Where the traffic comes from e.g Twitter, Instagram</FieldsetDescription>
+                <FieldsetDescription>{t("seller.utm_links.source_help")}</FieldsetDescription>
               )}
             </Fieldset>
             <Fieldset state={getFieldError("utm_medium") ? "danger" : undefined}>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-medium`}>Medium</Label>
+                <Label htmlFor={`${uid}-medium`}>{t("seller.utm_links.medium")}</Label>
               </FieldsetTitle>
               <UtmFieldSelect
                 id={`${uid}-medium`}
@@ -435,13 +437,13 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
               {getFieldError("utm_medium") ? (
                 <FieldsetDescription>{getFieldError("utm_medium")}</FieldsetDescription>
               ) : (
-                <FieldsetDescription>Medium by which the traffic arrived e.g. email, ads, story</FieldsetDescription>
+                <FieldsetDescription>{t("seller.utm_links.medium_help")}</FieldsetDescription>
               )}
             </Fieldset>
           </div>
           <Fieldset state={getFieldError("utm_campaign") ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-campaign`}>Campaign</Label>
+              <Label htmlFor={`${uid}-campaign`}>{t("seller.utm_links.campaign")}</Label>
             </FieldsetTitle>
             <UtmFieldSelect
               id={`${uid}-campaign`}
@@ -455,12 +457,12 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
             {getFieldError("utm_campaign") ? (
               <FieldsetDescription>{getFieldError("utm_campaign")}</FieldsetDescription>
             ) : (
-              <FieldsetDescription>Name of the campaign</FieldsetDescription>
+              <FieldsetDescription>{t("seller.utm_links.campaign_help")}</FieldsetDescription>
             )}
           </Fieldset>
           <Fieldset state={getFieldError("utm_term") ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-term`}>Term</Label>
+              <Label htmlFor={`${uid}-term`}>{t("seller.utm_links.term")}</Label>
             </FieldsetTitle>
             <UtmFieldSelect
               id={`${uid}-term`}
@@ -474,12 +476,12 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
             {getFieldError("utm_term") ? (
               <FieldsetDescription>{getFieldError("utm_term")}</FieldsetDescription>
             ) : (
-              <FieldsetDescription>Keywords used in ads</FieldsetDescription>
+              <FieldsetDescription>{t("seller.utm_links.term_help")}</FieldsetDescription>
             )}
           </Fieldset>
           <Fieldset state={getFieldError("utm_content") ? "danger" : undefined}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-content`}>Content</Label>
+              <Label htmlFor={`${uid}-content`}>{t("seller.utm_links.content")}</Label>
             </FieldsetTitle>
             <UtmFieldSelect
               id={`${uid}-content`}
@@ -493,13 +495,13 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
             {getFieldError("utm_content") ? (
               <FieldsetDescription>{getFieldError("utm_content")}</FieldsetDescription>
             ) : (
-              <FieldsetDescription>Use to differentiate ads</FieldsetDescription>
+              <FieldsetDescription>{t("seller.utm_links.content_help")}</FieldsetDescription>
             )}
           </Fieldset>
           {finalUrl ? (
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-utm-url`}>Generated URL with UTM tags</Label>
+                <Label htmlFor={`${uid}-utm-url`}>{t("seller.utm_links.generated_url_label")}</Label>
               </FieldsetTitle>
               <InputGroup>
                 <ResizableTextarea
@@ -509,8 +511,8 @@ export const UtmLinkForm = (pageProps: UtmLinkFormProps | UtmLinkEditProps) => {
                   value={finalUrl}
                   onChange={() => {}}
                 />
-                <CopyToClipboard copyTooltip="Copy UTM link" text={finalUrl}>
-                  <Button type="button" size="icon" aria-label="Copy UTM link">
+                <CopyToClipboard copyTooltip={t("seller.utm_links.copy_utm_link")} text={finalUrl}>
+                  <Button type="button" size="icon" aria-label={t("seller.utm_links.copy_utm_link")}>
                     <Link className="size-5" />
                   </Button>
                 </CopyToClipboard>
@@ -536,6 +538,7 @@ const UtmFieldSelect = ({
   value: string | null;
   onChange: (value: string | null) => void;
 }) => {
+  const { t } = useTranslate();
   const [inputValue, setInputValue] = React.useState<string | null>(null);
   const options = [...new Set([value, inputValue, ...baseOptionValues])]
     .flatMap((val) => (val !== null && val !== "" ? [{ id: val, label: val }] : []))
@@ -562,7 +565,7 @@ const UtmFieldSelect = ({
             .slice(0, MAX_UTM_PARAM_LENGTH),
         )
       }
-      noOptionsMessage={() => "Enter something..."}
+      noOptionsMessage={() => t("seller.utm_links.enter_something")}
     />
   );
 };

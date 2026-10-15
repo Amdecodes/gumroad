@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { isValidEmail } from "$app/utils/email";
 
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -12,6 +13,7 @@ type Props = {
   setBlockedEmails: (emails: string) => void;
 };
 const BlockEmailsSection = ({ blockedEmails, setBlockedEmails }: Props) => {
+  const { t } = useTranslate();
   const uid = React.useId();
   const sanitizeBlockedEmails = () => {
     if (blockedEmails.length === 0) {
@@ -47,16 +49,16 @@ const BlockEmailsSection = ({ blockedEmails, setBlockedEmails }: Props) => {
     <FormSection
       header={
         <>
-          <h2>Mass-block emails</h2>
+          <h2>{t("seller.settings.advanced.mass_block_emails")}</h2>
           <a href="/help/article/329-customer-moderation" target="_blank" rel="noreferrer">
-            Learn more
+            {t("actions.learn_more")}
           </a>
         </>
       }
     >
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor={uid}>Block emails from purchasing</Label>
+          <Label htmlFor={uid}>{t("seller.settings.advanced.block_emails_label")}</Label>
         </FieldsetTitle>
         <Textarea
           id={uid}
@@ -65,7 +67,7 @@ const BlockEmailsSection = ({ blockedEmails, setBlockedEmails }: Props) => {
           onChange={(e) => setBlockedEmails(e.target.value)}
           onBlur={sanitizeBlockedEmails}
         />
-        <FieldsetDescription>Please enter each email address on a new line.</FieldsetDescription>
+        <FieldsetDescription>{t("seller.settings.advanced.block_emails_desc")}</FieldsetDescription>
       </Fieldset>
     </FormSection>
   );

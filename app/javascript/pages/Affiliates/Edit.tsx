@@ -3,6 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { isUrlValid } from "$app/utils/url";
 
 import { Button } from "$app/components/Button";
@@ -31,6 +32,7 @@ type Props = {
 };
 
 export default function AffiliatesEdit() {
+  const { t } = useTranslate();
   const props = typia.assert<Props>(usePage().props);
   const loggedInUser = useLoggedInUser();
 
@@ -85,14 +87,14 @@ export default function AffiliatesEdit() {
       data.affiliate.apply_to_all_products &&
       (!data.affiliate.fee_percent || data.affiliate.fee_percent < 1 || data.affiliate.fee_percent > 75)
     ) {
-      form.setError("affiliate.fee_percent", "Commission must be between 1% and 75%");
-      showAlert("Commission must be between 1% and 75%", "error");
+      form.setError("affiliate.fee_percent", t("seller.affiliates.commission_range_error"));
+      showAlert(t("seller.affiliates.commission_range_error"), "error");
       return;
     }
 
     if (!data.affiliate.apply_to_all_products && data.affiliate.products.every((p) => !p.enabled)) {
-      form.setError("affiliate.products", "Please enable at least one product");
-      showAlert("Please enable at least one product", "error");
+      form.setError("affiliate.products", t("seller.affiliates.enable_at_least_one_product"));
+      showAlert(t("seller.affiliates.enable_at_least_one_product"), "error");
       return;
     }
 
@@ -100,8 +102,8 @@ export default function AffiliatesEdit() {
       !data.affiliate.apply_to_all_products &&
       data.affiliate.products.some((p) => p.enabled && (!p.fee_percent || p.fee_percent < 1 || p.fee_percent > 75))
     ) {
-      form.setError("affiliate.products", "All enabled products must have commission between 1% and 75%");
-      showAlert("All enabled products must have commission between 1% and 75%", "error");
+      form.setError("affiliate.products", t("seller.affiliates.all_enabled_commission_error"));
+      showAlert(t("seller.affiliates.all_enabled_commission_error"), "error");
       return;
     }
 
@@ -110,8 +112,8 @@ export default function AffiliatesEdit() {
       data.affiliate.destination_url !== "" &&
       !isUrlValid(data.affiliate.destination_url)
     ) {
-      form.setError("affiliate.destination_url", "Please enter a valid URL");
-      showAlert("Please enter a valid URL", "error");
+      form.setError("affiliate.destination_url", t("seller.affiliates.valid_url_error"));
+      showAlert(t("seller.affiliates.valid_url_error"), "error");
       return;
     }
 
@@ -121,7 +123,7 @@ export default function AffiliatesEdit() {
           ? Array.isArray(errors.base)
             ? errors.base[0]
             : errors.base
-          : "Failed to update affiliate";
+          : t("seller.affiliates.failed_to_update_affiliate");
         if (message) showAlert(message, "error");
       },
     });
@@ -131,19 +133,19 @@ export default function AffiliatesEdit() {
     <div>
       <PageHeader
         className="sticky-top"
-        title="Edit Affiliate"
+        title={t("seller.affiliates.edit_affiliate")}
         actions={
           <>
             <NavigationButtonInertia href={Routes.affiliates_path()} disabled={processing}>
               <XSquare className="size-5" />
-              Cancel
+              {t("actions.cancel")}
             </NavigationButtonInertia>
             <Button
               color="accent"
               onClick={handleSubmit}
               disabled={processing || !loggedInUser?.policies.direct_affiliate.update}
             >
-              {processing ? "Saving..." : "Save changes"}
+              {processing ? t("seller.affiliates.saving") : t("actions.save_changes")}
             </Button>
           </>
         }
@@ -155,11 +157,11 @@ export default function AffiliatesEdit() {
           processing={processing}
           applyToAllProducts={data.affiliate.apply_to_all_products}
           uid={uid}
-          headerText="The process of editing is almost identical to adding them. You can change their affiliate fee, the products they are assigned. Their affiliate link will not change."
+          headerText={t("seller.affiliates.edit_affiliate_header")}
           emailField={
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}email`}>Email</Label>
+                <Label htmlFor={`${uid}email`}>{t("seller.affiliates.email")}</Label>
               </FieldsetTitle>
               <Input type="email" id={`${uid}email`} value={props.affiliate.email} disabled />
             </Fieldset>

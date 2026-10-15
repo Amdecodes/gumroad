@@ -1,6 +1,7 @@
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { formatDate } from "$app/utils/date";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
@@ -28,37 +29,46 @@ export type PingDelivery = {
   created_at: string;
 };
 
-const RESOURCE_LABELS: Record<string, string> = {
-  sale: "Sale",
-  refund: "Refund",
-  dispute: "Dispute",
-  dispute_won: "Dispute won",
-  cancellation: "Cancellation",
-  subscription_ended: "Subscription ended",
-  subscription_restarted: "Subscription restarted",
-  subscription_updated: "Subscription updated",
+const useResourceLabels = (): Record<string, string> => {
+  const { t } = useTranslate();
+  return React.useMemo(
+    () => ({
+      sale: t("seller.settings.advanced.res_sale"),
+      refund: t("seller.settings.advanced.res_refund"),
+      dispute: t("seller.settings.advanced.res_dispute"),
+      dispute_won: t("seller.settings.advanced.res_dispute_won"),
+      cancellation: t("seller.settings.advanced.res_cancellation"),
+      subscription_ended: t("seller.settings.advanced.res_subscription_ended"),
+      subscription_restarted: t("seller.settings.advanced.res_subscription_restarted"),
+      subscription_updated: t("seller.settings.advanced.res_subscription_updated"),
+    }),
+    [t],
+  );
 };
-
-const describeEvent = (delivery: PingDelivery) => {
-  const label = RESOURCE_LABELS[delivery.resource_name] ?? delivery.resource_name;
-  if (!delivery.sale_id) return label;
-  const reference = `Sale #${delivery.sale_id}`;
-  // Prefixing a sale row with its own label would read "Sale · Sale #123".
-  return label === "Sale" ? reference : `${label} · ${reference}`;
-};
-
-const describeDelivery = (delivery: PingDelivery) =>
-  `${delivery.succeeded ? "Delivered" : "Not delivered"} — ${delivery.outcome}${
-    delivery.attempt > 1 ? ` (attempt ${delivery.attempt})` : ""
-  }`;
 
 const RecentDeliveries = ({ deliveries }: { deliveries: PingDelivery[] }) => {
+  const { t } = useTranslate();
+  const resourceLabels = useResourceLabels();
+
+  const describeEvent = (delivery: PingDelivery) => {
+    const label = resourceLabels[delivery.resource_name] ?? delivery.resource_name;
+    if (!delivery.sale_id) return label;
+    const reference = t("seller.settings.advanced.sale_ref", { id: delivery.sale_id });
+    // Prefixing a sale row with its own label would read "Sale · Sale #123".
+    return delivery.resource_name === "sale" ? reference : `${label} · ${reference}`;
+  };
+
+  const describeDelivery = (delivery: PingDelivery) => {
+    const status = delivery.succeeded
+      ? t("seller.settings.advanced.delivered")
+      : t("seller.settings.advanced.not_delivered");
+    const attempt =
+      delivery.attempt > 1 ? ` ${t("seller.settings.advanced.attempt_n", { attempt: delivery.attempt })}` : "";
+    return `${status} — ${delivery.outcome}${attempt}`;
+  };
+
   if (deliveries.length === 0) {
-    return (
-      <FieldsetDescription>
-        No pings sent yet. Sales, refunds, disputes and subscription updates we POST to your endpoint will appear here.
-      </FieldsetDescription>
-    );
+    return <FieldsetDescription>{t("seller.settings.advanced.no_pings_sent_yet")}</FieldsetDescription>;
   }
 
   return (
@@ -90,12 +100,13 @@ const NotificationEndpointSection = ({
   userId: string;
   recentDeliveries: PingDelivery[];
 }) => {
+  const { t } = useTranslate();
   const [isSendingPing, setIsSendingPing] = React.useState(false);
   const uid = React.useId();
 
   const sendTestPing = asyncVoid(async () => {
     if (pingEndpoint.trim().length === 0) {
-      showAlert("Please provide a URL to send a test ping to.", "error");
+      showAlert(t("seller.settings.advanced.provide_url_error"), "error");
       return;
     }
 
@@ -123,32 +134,34 @@ const NotificationEndpointSection = ({
     <FormSection
       header={
         <>
-          <h2>Ping</h2>
+          <h2>{t("seller.settings.advanced.ping")}</h2>
           <a href={Routes.ping_path()} target="_blank" rel="noreferrer">
-            Learn more
+            {t("actions.learn_more")}
           </a>
         </>
       }
     >
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor={uid}>Ping endpoint</Label>
+          <Label htmlFor={uid}>{t("seller.settings.advanced.ping_endpoint")}</Label>
         </FieldsetTitle>
         <InputGroup>
           <Input type="url" id={uid} value={pingEndpoint} onChange={(e) => setPingEndpoint(e.target.value)} />
-          <WithTooltip tip={isSendingPing ? null : "Send your most recent sale's JSON, with 'test' set to 'true'"}>
+          <WithTooltip tip={isSendingPing ? null : t("seller.settings.advanced.send_test_ping_tip")}>
             <Pill asChild>
               <Button className="rounded-full! px-3! py-2!" onClick={sendTestPing} disabled={isSendingPing}>
-                {isSendingPing ? "Sending test ping..." : "Send test ping to URL"}
+                {isSendingPing
+                  ? t("seller.settings.advanced.sending_test_ping")
+                  : t("seller.settings.advanced.send_test_ping_to_url")}
               </Button>
             </Pill>
           </WithTooltip>
         </InputGroup>
-        <FieldsetDescription>For external services, your `seller_id` is {userId}</FieldsetDescription>
+        <FieldsetDescription>{t("seller.settings.advanced.seller_id_note", { userId })}</FieldsetDescription>
       </Fieldset>
       <Fieldset>
         <FieldsetTitle>
-          <Label>Recent ping deliveries</Label>
+          <Label>{t("seller.settings.advanced.recent_ping_deliveries")}</Label>
         </FieldsetTitle>
         <RecentDeliveries deliveries={recentDeliveries} />
       </Fieldset>

@@ -1,6 +1,8 @@
 import { ChevronDown, ChevronUp, Envelope, Plus, Trash } from "@boxicons/react";
 import * as React from "react";
 
+import { useTranslate } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { TagInput } from "$app/components/TagInput";
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -19,12 +21,15 @@ type Product = {
   name: string;
 };
 
-const AddProductLevelSupportEmailButton = React.memo(({ onClick }: { onClick: () => void }) => (
-  <Button color="primary" onClick={onClick}>
-    <Plus className="size-5" />
-    Add a product specific email
-  </Button>
-));
+const AddProductLevelSupportEmailButton = React.memo(({ onClick }: { onClick: () => void }) => {
+  const { t } = useTranslate();
+  return (
+    <Button color="primary" onClick={onClick}>
+      <Plus className="size-5" />
+      {t("seller.settings.main.add_product_specific_email")}
+    </Button>
+  );
+});
 
 AddProductLevelSupportEmailButton.displayName = "AddProductLevelSupportEmailButton";
 
@@ -44,6 +49,7 @@ const ProductLevelSupportEmailRow = React.memo(
     onUpdate: (index: number, email: ProductLevelSupportEmail) => void;
     onRemove: (index: number) => void;
   }) => {
+    const { t } = useTranslate();
     const uid = React.useId();
     const [expanded, setExpanded] = React.useState(!supportEmail.email);
 
@@ -63,24 +69,26 @@ const ProductLevelSupportEmailRow = React.memo(
         <RowContent>
           <Envelope pack="filled" className="type-icon size-5" />
           <div className="ml-1">
-            <h4>{supportEmail.email || "No email set"}</h4>
-            <span>
-              {supportEmail.product_ids.length} {supportEmail.product_ids.length === 1 ? "product" : "products"}
-            </span>
+            <h4>{supportEmail.email || t("seller.settings.main.no_email_set")}</h4>
+            <span>{t("seller.settings.main.products_count", { count: supportEmail.product_ids.length })}</span>
           </div>
         </RowContent>
         <RowActions>
-          <Button size="icon" onClick={handleToggleExpandedState} aria-label="Edit email">
+          <Button
+            size="icon"
+            onClick={handleToggleExpandedState}
+            aria-label={t("seller.settings.main.edit_email_aria")}
+          >
             {expanded ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
           </Button>
-          <Button size="icon" onClick={handleRemove} aria-label="Delete email">
+          <Button size="icon" onClick={handleRemove} aria-label={t("seller.settings.main.delete_email_aria")}>
             <Trash className="size-5" />
           </Button>
         </RowActions>
         {expanded ? (
           <RowDetails className="flex flex-col gap-4">
             <Fieldset>
-              <Label htmlFor={`${uid}email`}>Email</Label>
+              <Label htmlFor={`${uid}email`}>{t("seller.settings.main.email")}</Label>
               <Input
                 id={`${uid}email`}
                 type="email"
@@ -89,13 +97,11 @@ const ProductLevelSupportEmailRow = React.memo(
                 required={supportEmail.product_ids.length > 0}
                 onChange={handleEmailChange}
               />
-              <FieldsetDescription>
-                This reply-to email will appear on receipts for selected products.
-              </FieldsetDescription>
+              <FieldsetDescription>{t("seller.settings.main.reply_to_receipts_desc")}</FieldsetDescription>
             </Fieldset>
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-products`}>Products</Label>
+                <Label htmlFor={`${uid}-products`}>{t("seller.products.field_products")}</Label>
               </FieldsetTitle>
               <TagInput
                 inputId={`${uid}-products`}
@@ -126,6 +132,7 @@ export const ProductLevelSupportEmailsForm = React.memo(
     isDisabled?: boolean;
     onChange: (emails: ProductLevelSupportEmail[]) => void;
   }) => {
+    const { t } = useTranslate();
     const productIdToEmail = React.useMemo(
       () =>
         productLevelSupportEmails.reduce((acc, supportEmail, index) => {
@@ -157,7 +164,7 @@ export const ProductLevelSupportEmailsForm = React.memo(
       return (
         <Placeholder>
           <AddProductLevelSupportEmailButton onClick={handleAddEmail} />
-          <div>Use a different reply-to email for specific products.</div>
+          <div>{t("seller.settings.main.different_reply_to_desc")}</div>
         </Placeholder>
       );
     }

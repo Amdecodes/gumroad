@@ -2,6 +2,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { CreatorProfile } from "$app/parsers/profile";
 
 import { Button } from "$app/components/Button";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const AffiliateRequestsNew = () => {
+  const { t } = useTranslate();
   const { creator_profile, success, requester_has_existing_account, email_param } = typia.assert<Props>(
     usePage().props,
   );
@@ -50,12 +52,18 @@ const AffiliateRequestsNew = () => {
 
   const successEmail = email_param || data.affiliate_request.email;
 
+  const [signupBefore, signupAfter] = t("seller.affiliates.create_account_in_meantime", {
+    signup_link: "___SIGNUP___",
+    email: successEmail,
+    app_name: "Gumroad",
+  }).split("___SIGNUP___");
+
   return (
     <Layout creatorProfile={creator_profile}>
       {/* Gutter outside the cap, matching the form below, keeps the title on the form's left edge. */}
       <div className="px-4 lg:px-0">
         <PageHeader
-          title={`Become an affiliate for ${creator_profile.name}`}
+          title={t("seller.affiliates.apply_become_affiliate", { name: creator_profile.name })}
           className="mx-auto w-full max-w-6xl border-0"
         />
       </div>
@@ -64,29 +72,22 @@ const AffiliateRequestsNew = () => {
           className="mx-auto w-full max-w-6xl"
           header={
             <>
-              <p>
-                Applying to be an affiliate is easy. Fill out the form below and let {creator_profile.name} know how
-                you'll be promoting their products.
-              </p>
-              <p>
-                To help speed up your approval, include things like social urls, audience size, audience engagement,
-                etc...
-              </p>
+              <p>{t("seller.affiliates.apply_form_desc_1", { name: creator_profile.name })}</p>
+              <p>{t("seller.affiliates.apply_form_desc_2")}</p>
             </>
           }
         >
           {success ? (
             <Alert variant="success">
               <div className="flex flex-col gap-4">
-                <p>Your request has been submitted! We will send you an email notification when you are approved.</p>
+                <p>{t("seller.affiliates.request_submitted")}</p>
                 {requester_has_existing_account ? null : (
                   <p>
-                    In the meantime,{" "}
+                    {signupBefore}
                     <a href={Routes.signup_url({ host: appDomain, email: successEmail })}>
-                      create your Gumroad account
-                    </a>{" "}
-                    using email {successEmail} and confirm it. You'll receive your affiliate links once your Gumroad
-                    account is active.
+                      {t("seller.affiliates.create_account_link", { app_name: "Gumroad" })}
+                    </a>
+                    {signupAfter}
                   </p>
                 )}
               </div>
@@ -96,7 +97,7 @@ const AffiliateRequestsNew = () => {
               {loggedInUser?.name ? null : (
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={nameUID}>Name</Label>
+                    <Label htmlFor={nameUID}>{t("seller.affiliates.col_name")}</Label>
                   </FieldsetTitle>
                   <Input
                     id={nameUID}
@@ -110,7 +111,7 @@ const AffiliateRequestsNew = () => {
               {loggedInUser?.email ? null : (
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor={emailUID}>Email</Label>
+                    <Label htmlFor={emailUID}>{t("seller.affiliates.email")}</Label>
                   </FieldsetTitle>
                   <Input
                     id={emailUID}
@@ -123,18 +124,18 @@ const AffiliateRequestsNew = () => {
               )}
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={promotionUID}>Promotion</Label>
+                  <Label htmlFor={promotionUID}>{t("seller.affiliates.promotion")}</Label>
                 </FieldsetTitle>
                 <Textarea
                   id={promotionUID}
                   rows={5}
-                  placeholder="How do you intend to promote their products? How big is your audience?"
+                  placeholder={t("seller.affiliates.promotion_placeholder")}
                   value={data.affiliate_request.promotion_text}
                   onChange={(event) => setData("affiliate_request.promotion_text", event.target.value)}
                 />
               </Fieldset>
               <Button type="submit" color="accent" disabled={processing}>
-                {processing ? "Submitting..." : "Submit affiliate request"}
+                {processing ? t("seller.affiliates.submitting") : t("seller.affiliates.submit_affiliate_request")}
               </Button>
             </>
           )}

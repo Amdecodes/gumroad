@@ -1,6 +1,8 @@
 import { DirectUpload } from "@rails/activestorage";
 import * as React from "react";
 
+import { useTranslate } from "$app/utils/i18n";
+
 import { ImageUploader } from "$app/components/ImageUploader";
 import { showAlert } from "$app/components/server-components/Alert";
 import { Fieldset, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -18,17 +20,18 @@ export const LogoInput = ({
   disabled: boolean;
   onChange: (blob: { key: string; signedId: string } | null) => void;
 }) => {
+  const { t } = useTranslate();
   const [changing, setChanging] = React.useState(false);
   const id = React.useId();
 
   return (
     <Fieldset>
       <FieldsetTitle>
-        <Label htmlFor={id}>Avatar</Label>
+        <Label htmlFor={id}>{t("seller.settings.profile.avatar")}</Label>
       </FieldsetTitle>
       <ImageUploader
         id={id}
-        helpText="Your avatar will be visible next to your name in your Gumroad profile and product pages. Your image must be at least 200x200px (400x400px or larger is recommended so it stays sharp on high-resolution screens) and must be in JPG or PNG format."
+        helpText={t("seller.settings.profile.avatar_help_text")}
         allowedExtensions={ALLOWED_EXTENSIONS}
         imageUrl={changing || !logoUrl ? null : logoUrl}
         onRemove={() => {
@@ -51,7 +54,7 @@ export const LogoInput = ({
             });
           })
         }
-        imageAlt="Current avatar"
+        imageAlt={t("seller.settings.profile.current_avatar")}
         disabled={disabled}
         circular
       />

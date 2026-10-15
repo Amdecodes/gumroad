@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslate } from "$app/hooks/useTranslate";
+
 import { NumberInput } from "$app/components/NumberInput";
 import { Fieldset } from "$app/components/ui/Fieldset";
 import { FormSection } from "$app/components/ui/FormSection";
@@ -52,115 +54,119 @@ export const AffiliateForm = ({
   onUpdateFeePercent,
   onUpdateDestinationUrl,
   onUpdateProduct,
-}: Props) => (
-  <FormSection
-    header={
-      <span
-        dangerouslySetInnerHTML={{
-          __html: `${headerText} <a href='/help/article/333-affiliates-on-gumroad' target='_blank' rel='noreferrer'>Learn more</a>`,
-        }}
-      />
-    }
-  >
-    {emailField}
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Enable</TableHead>
-          <TableHead>Product</TableHead>
-          <TableHead>Commission</TableHead>
-          <TableHead>
-            <a href="/help/article/333-affiliates-on-gumroad" target="_blank" rel="noreferrer">
-              Destination URL (optional)
-            </a>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            <Switch
-              id={`${uid}enableAllProducts`}
-              checked={applyToAllProducts}
-              onChange={(e) => onToggleAllProducts(e.target.checked)}
-              aria-label="Enable all products"
-            />
-          </TableCell>
-          <TableCell>
-            <Label htmlFor={`${uid}enableAllProducts`}>All products</Label>
-          </TableCell>
-          <TableCell>
-            <Fieldset state={errors["affiliate.fee_percent"] ? "danger" : undefined}>
-              <NumberInput onChange={(value) => onUpdateFeePercent(value)} value={data.fee_percent}>
-                {(inputProps) => (
-                  <InputGroup disabled={processing || !applyToAllProducts}>
-                    <Input
-                      type="text"
-                      autoComplete="off"
-                      aria-label="Commission"
-                      disabled={processing || !applyToAllProducts}
-                      {...inputProps}
-                    />
-                    <div className="pill">%</div>
-                  </InputGroup>
-                )}
-              </NumberInput>
-            </Fieldset>
-          </TableCell>
-          <TableCell>
-            <Fieldset state={errors["affiliate.destination_url"] ? "danger" : undefined}>
-              <Input
-                type="url"
-                value={data.destination_url || ""}
-                placeholder="https://link.com"
-                onChange={(e) => onUpdateDestinationUrl(e.target.value)}
-                disabled={processing || !applyToAllProducts}
-              />
-            </Fieldset>
-          </TableCell>
-        </TableRow>
-        {data.products.map((product) => (
-          <TableRow key={product.id}>
+}: Props) => {
+  const { t } = useTranslate();
+  return (
+    <FormSection
+      header={
+        <span>
+          {headerText}{" "}
+          <a href="/help/article/333-affiliates-on-gumroad" target="_blank" rel="noreferrer">
+            {t("actions.learn_more")}
+          </a>
+        </span>
+      }
+    >
+      {emailField}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t("seller.affiliates.col_enable")}</TableHead>
+            <TableHead>{t("seller.affiliates.col_product")}</TableHead>
+            <TableHead>{t("seller.affiliates.col_commission")}</TableHead>
+            <TableHead>
+              <a href="/help/article/333-affiliates-on-gumroad" target="_blank" rel="noreferrer">
+                {t("seller.affiliates.col_destination_url")}
+              </a>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
             <TableCell>
               <Switch
-                checked={product.enabled}
-                onChange={(e) => onUpdateProduct(product.id, { enabled: e.target.checked })}
-                disabled={processing}
-                aria-label="Enable product"
+                id={`${uid}enableAllProducts`}
+                checked={applyToAllProducts}
+                onChange={(e) => onToggleAllProducts(e.target.checked)}
+                aria-label={t("seller.affiliates.enable_all_products_aria")}
               />
             </TableCell>
-            <TableCell>{product.name}</TableCell>
             <TableCell>
-              <NumberInput
-                onChange={(value) => onUpdateProduct(product.id, { fee_percent: value })}
-                value={product.fee_percent}
-              >
-                {(inputProps) => (
-                  <InputGroup disabled={processing || !product.enabled}>
-                    <Input
-                      type="text"
-                      autoComplete="off"
-                      aria-label="Commission"
-                      disabled={processing || !product.enabled}
-                      {...inputProps}
-                    />
-                    <div className="pill">%</div>
-                  </InputGroup>
-                )}
-              </NumberInput>
+              <Label htmlFor={`${uid}enableAllProducts`}>{t("seller.affiliates.all_products")}</Label>
             </TableCell>
             <TableCell>
-              <Input
-                type="text"
-                placeholder="https://link.com"
-                value={product.destination_url || ""}
-                onChange={(e) => onUpdateProduct(product.id, { destination_url: e.target.value })}
-                disabled={processing || !product.enabled}
-              />
+              <Fieldset state={errors["affiliate.fee_percent"] ? "danger" : undefined}>
+                <NumberInput onChange={(value) => onUpdateFeePercent(value)} value={data.fee_percent}>
+                  {(inputProps) => (
+                    <InputGroup disabled={processing || !applyToAllProducts}>
+                      <Input
+                        type="text"
+                        autoComplete="off"
+                        aria-label={t("seller.affiliates.col_commission")}
+                        disabled={processing || !applyToAllProducts}
+                        {...inputProps}
+                      />
+                      <div className="pill">%</div>
+                    </InputGroup>
+                  )}
+                </NumberInput>
+              </Fieldset>
+            </TableCell>
+            <TableCell>
+              <Fieldset state={errors["affiliate.destination_url"] ? "danger" : undefined}>
+                <Input
+                  type="url"
+                  value={data.destination_url || ""}
+                  placeholder="https://link.com"
+                  onChange={(e) => onUpdateDestinationUrl(e.target.value)}
+                  disabled={processing || !applyToAllProducts}
+                />
+              </Fieldset>
             </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </FormSection>
-);
+          {data.products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>
+                <Switch
+                  checked={product.enabled}
+                  onChange={(e) => onUpdateProduct(product.id, { enabled: e.target.checked })}
+                  disabled={processing}
+                  aria-label={t("seller.affiliates.enable_product_aria")}
+                />
+              </TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>
+                <NumberInput
+                  onChange={(value) => onUpdateProduct(product.id, { fee_percent: value })}
+                  value={product.fee_percent}
+                >
+                  {(inputProps) => (
+                    <InputGroup disabled={processing || !product.enabled}>
+                      <Input
+                        type="text"
+                        autoComplete="off"
+                        aria-label={t("seller.affiliates.col_commission")}
+                        disabled={processing || !product.enabled}
+                        {...inputProps}
+                      />
+                      <div className="pill">%</div>
+                    </InputGroup>
+                  )}
+                </NumberInput>
+              </TableCell>
+              <TableCell>
+                <Input
+                  type="text"
+                  placeholder="https://link.com"
+                  value={product.destination_url || ""}
+                  onChange={(e) => onUpdateProduct(product.id, { destination_url: e.target.value })}
+                  disabled={processing || !product.enabled}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </FormSection>
+  );
+};

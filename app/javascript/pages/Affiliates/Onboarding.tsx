@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { SelfServeAffiliateProduct } from "$app/data/affiliates";
+import { useTranslate } from "$app/hooks/useTranslate";
 import { isUrlValid } from "$app/utils/url";
 
 import { Button } from "$app/components/Button";
@@ -53,18 +54,24 @@ const validateProduct = (product: SelfServeAffiliateProduct): InvalidProductAttr
   return invalidAttributes;
 };
 
-const AffiliatesNavigation = () => (
-  <Tabs>
-    <Tab asChild isSelected={false}>
-      <Link href={typia.assert<string>(Routes.affiliates_path())}>Affiliates</Link>
-    </Tab>
-    <Tab asChild isSelected>
-      <Link href={typia.assert<string>(Routes.onboarding_affiliates_path())}>Affiliate Signup Form</Link>
-    </Tab>
-  </Tabs>
-);
+const AffiliatesNavigation = () => {
+  const { t } = useTranslate();
+  return (
+    <Tabs>
+      <Tab asChild isSelected={false}>
+        <Link href={typia.assert<string>(Routes.affiliates_path())}>{t("seller.affiliates.affiliates_tab")}</Link>
+      </Tab>
+      <Tab asChild isSelected>
+        <Link href={typia.assert<string>(Routes.onboarding_affiliates_path())}>
+          {t("seller.affiliates.affiliate_signup_form_tab")}
+        </Link>
+      </Tab>
+    </Tabs>
+  );
+};
 
 export default function AffiliatesOnboarding() {
+  const { t } = useTranslate();
   const props = typia.assert<Props>(usePage().props);
   const loggedInUser = useLoggedInUser();
 
@@ -85,7 +92,7 @@ export default function AffiliatesOnboarding() {
     const hasErrors = data.products.some((product) => validateProduct(product).size > 0);
 
     if (hasErrors) {
-      showAlert("There are some errors on the page. Please fix them and try again.", "error");
+      showAlert(t("seller.affiliates.page_has_errors_alert"), "error");
       return;
     }
 
@@ -106,7 +113,7 @@ export default function AffiliatesOnboarding() {
   return (
     <div>
       <PageHeader
-        title="Affiliates"
+        title={t("seller.affiliates.onboarding_title")}
         actions={
           <>
             <WithTooltip position="bottom" tip={props.affiliates_disabled_reason}>
@@ -114,7 +121,7 @@ export default function AffiliatesOnboarding() {
                 href={typia.assert<string>(Routes.new_affiliate_path())}
                 disabled={!loggedInUser?.policies.direct_affiliate.create || props.affiliates_disabled_reason !== null}
               >
-                Add affiliate
+                {t("seller.affiliates.add_affiliate")}
               </NavigationButtonInertia>
             </WithTooltip>
             <Button
@@ -122,7 +129,7 @@ export default function AffiliatesOnboarding() {
               disabled={processing || !loggedInUser?.policies.affiliate_requests_onboarding_form.update}
               color="accent"
             >
-              {processing ? "Saving..." : "Save changes"}
+              {processing ? t("seller.affiliates.saving") : t("seller.affiliates.onboarding_save_changes")}
             </Button>
           </>
         }
@@ -133,14 +140,14 @@ export default function AffiliatesOnboarding() {
         <section className="p-4! md:p-8!">
           <Placeholder>
             <PlaceholderImage src={placeholderImage} />
-            <h2>Almost there!</h2>
-            You need a published product to add affiliates.
+            <h2>{t("seller.affiliates.almost_there")}</h2>
+            {t("seller.affiliates.almost_there_desc")}
             <NavigationButtonInertia
               href={Routes.new_product_path()}
               color="accent"
               disabled={!loggedInUser?.policies.product.create}
             >
-              New product
+              {t("seller.affiliates.new_product")}
             </NavigationButtonInertia>
           </Placeholder>
         </section>
@@ -149,20 +156,17 @@ export default function AffiliatesOnboarding() {
           <FormSection
             header={
               <>
-                <h2>Affiliate link</h2>
-                <div>
-                  Anyone can request to become your affiliate by using your affiliate link. Affiliates will earn a
-                  commission on each sale they refer.
-                </div>
+                <h2>{t("seller.affiliates.affiliate_link_section")}</h2>
+                <div>{t("seller.affiliates.affiliate_link_desc")}</div>
                 <a href="/help/article/249-affiliate-faq" target="_blank" rel="noreferrer">
-                  Learn more
+                  {t("actions.learn_more")}
                 </a>
               </>
             }
           >
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor="affiliate-link">Your affiliate link</Label>
+                <Label htmlFor="affiliate-link">{t("seller.affiliates.your_affiliate_link")}</Label>
               </FieldsetTitle>
               <InputGroup disabled={!enableAffiliateLink}>
                 <Input
@@ -175,33 +179,31 @@ export default function AffiliatesOnboarding() {
                 />
                 {enableAffiliateLink ? (
                   <CopyToClipboard text={affiliateRequestUrl}>
-                    <LinkButton>Copy link</LinkButton>
+                    <LinkButton>{t("seller.affiliates.copy_link")}</LinkButton>
                   </CopyToClipboard>
                 ) : null}
               </InputGroup>
               {enableAffiliateLink ? null : (
-                <Alert variant="warning">
-                  You must enable and set up the commission for at least one product before sharing your affiliate link.
-                </Alert>
+                <Alert variant="warning">{t("seller.affiliates.affiliate_link_warning")}</Alert>
               )}
             </Fieldset>
           </FormSection>
           <FormSection
             header={
               <>
-                <h2>Affiliate products</h2>
-                <p>Enable specific products you want your affiliates to earn a commission with.</p>
+                <h2>{t("seller.affiliates.affiliate_products_section")}</h2>
+                <p>{t("seller.affiliates.affiliate_products_desc")}</p>
               </>
             }
           >
             <Table>
-              <TableCaption>Enable specific products</TableCaption>
+              <TableCaption>{t("seller.affiliates.enable_specific_products_caption")}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Enable</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Commission</TableHead>
-                  <TableHead>Destination URL (optional)</TableHead>
+                  <TableHead>{t("seller.affiliates.col_enable")}</TableHead>
+                  <TableHead>{t("seller.affiliates.col_product")}</TableHead>
+                  <TableHead>{t("seller.affiliates.col_commission")}</TableHead>
+                  <TableHead>{t("seller.affiliates.col_destination_url")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -219,20 +221,21 @@ export default function AffiliatesOnboarding() {
           <FormSection
             header={
               <>
-                <h2>Gumroad Affiliate Program</h2>
+                <h2>{t("seller.affiliates.global_affiliate_program")}</h2>
                 <div>
-                  Being part of Gumroad Affiliate Program enables other creators to share your products in exchange for
-                  a {props.global_affiliate_percentage}% commission.
+                  {t("seller.affiliates.global_affiliate_program_desc", {
+                    percent: props.global_affiliate_percentage,
+                  })}
                 </div>
                 <a href="/help/article/249-affiliate-faq" target="_blank" rel="noreferrer">
-                  Learn more
+                  {t("actions.learn_more")}
                 </a>
               </>
             }
           >
             <Fieldset>
               <ToggleSettingRow
-                label="Opt out of the Gumroad Affiliate Program"
+                label={t("seller.affiliates.opt_out_global_program")}
                 value={data.disable_global_affiliate}
                 onChange={onToggleDisableGlobalAffiliate}
               />
@@ -251,6 +254,7 @@ type ProductRowProps = {
 };
 
 const ProductRow = ({ product, disabled, onChange }: ProductRowProps) => {
+  const { t } = useTranslate();
   const invalidAttrs = validateProduct(product);
   const uid = React.useId();
 
@@ -261,7 +265,7 @@ const ProductRow = ({ product, disabled, onChange }: ProductRowProps) => {
           id={uid}
           checked={product.enabled}
           onChange={(evt) => onChange({ enabled: evt.target.checked })}
-          aria-label="Enable product"
+          aria-label={t("seller.affiliates.enable_product_aria")}
           disabled={disabled}
         />
       </TableCell>
@@ -276,7 +280,7 @@ const ProductRow = ({ product, disabled, onChange }: ProductRowProps) => {
                 <Input
                   type="text"
                   autoComplete="off"
-                  aria-label="Commission"
+                  aria-label={t("seller.affiliates.col_commission")}
                   disabled={disabled || !product.enabled}
                   {...inputProps}
                 />

@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { SettingPage } from "$app/parsers/settings";
+import { useTranslate } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
@@ -29,6 +30,7 @@ type PasswordPageProps = {
 };
 
 export default function PasswordPage() {
+  const { t } = useTranslate();
   const props = typia.assert<PasswordPageProps>(usePage().props);
   const uid = React.useId();
   const [requireOldPassword, setRequireOldPassword] = React.useState(props.require_old_password);
@@ -48,12 +50,12 @@ export default function PasswordPage() {
     e.preventDefault();
 
     if (form.data.user.new_password.length < MIN_PASSWORD_LENGTH) {
-      showAlert("Your new password is too short.", "error");
+      showAlert(t("seller.settings.password.password_too_short"), "error");
       return;
     }
 
     if (form.data.user.new_password.length >= MAX_PASSWORD_LENGTH) {
-      showAlert("Your new password is too long.", "error");
+      showAlert(t("seller.settings.password.password_too_long"), "error");
       return;
     }
 
@@ -80,7 +82,7 @@ export default function PasswordPage() {
         throw new ResponseError(result.error_message ?? "Sorry, something went wrong. Please try again.");
       }
 
-      showAlert("Authenticator app removed.", "success");
+      showAlert(t("seller.settings.password.authenticator_removed"), "success");
       setRegeneratedCodes(null);
       router.reload();
     } catch (e) {
@@ -122,11 +124,11 @@ export default function PasswordPage() {
   return (
     <SettingsLayout currentPage="password" pages={props.settings_pages}>
       <form onSubmit={handleSubmit}>
-        <FormSection header={<h2>Change password</h2>}>
+        <FormSection header={<h2>{t("seller.settings.password.change_password")}</h2>}>
           {requireOldPassword ? (
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-old-password`}>Old password</Label>
+                <Label htmlFor={`${uid}-old-password`}>{t("seller.settings.password.old_password")}</Label>
               </FieldsetTitle>
               <PasswordInput
                 id={`${uid}-old-password`}
@@ -139,7 +141,11 @@ export default function PasswordPage() {
           ) : null}
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-new-password`}>{requireOldPassword ? "New password" : "Add password"}</Label>
+              <Label htmlFor={`${uid}-new-password`}>
+                {requireOldPassword
+                  ? t("seller.settings.password.new_password")
+                  : t("seller.settings.password.add_password")}
+              </Label>
             </FieldsetTitle>
             <PasswordInput
               id={`${uid}-new-password`}
@@ -152,25 +158,29 @@ export default function PasswordPage() {
           <Fieldset>
             <div>
               <Button type="submit" color="accent" disabled={form.processing}>
-                {form.processing ? "Changing..." : "Change password"}
+                {form.processing
+                  ? t("seller.settings.password.changing_password")
+                  : t("seller.settings.password.change_password")}
               </Button>
             </div>
           </Fieldset>
         </FormSection>
       </form>
-      <FormSection header={<h2>Two-factor authentication</h2>}>
+      <FormSection header={<h2>{t("seller.settings.password.two_factor_auth")}</h2>}>
         {props.authenticator_app_enabled ? null : (
-          <Alert variant="info">Use an authenticator app to get verification codes without waiting for an email.</Alert>
+          <Alert variant="info">{t("seller.settings.password.two_factor_auth_desc")}</Alert>
         )}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="grid gap-2">
-            <div className="font-bold">Authenticator app</div>
-            <FieldsetDescription>Get verification codes from an app on your device.</FieldsetDescription>
+            <div className="font-bold">{t("seller.settings.password.authenticator_app")}</div>
+            <FieldsetDescription>{t("seller.settings.password.authenticator_app_desc")}</FieldsetDescription>
           </div>
           {props.authenticator_app_enabled ? (
             <div className="flex shrink-0 gap-2">
               <Button onClick={handleRegenerateRecoveryCodes} disabled={regenerating || removingAuthenticatorApp}>
-                {regenerating ? "Regenerating..." : "Regenerate recovery codes"}
+                {regenerating
+                  ? t("seller.settings.password.regenerating")
+                  : t("seller.settings.password.regenerate_recovery_codes")}
               </Button>
               <Button
                 color="danger"
@@ -178,12 +188,14 @@ export default function PasswordPage() {
                 onClick={handleRemoveAuthenticatorApp}
                 disabled={removingAuthenticatorApp || regenerating}
               >
-                {removingAuthenticatorApp ? "Removing..." : "Remove"}
+                {removingAuthenticatorApp
+                  ? t("seller.settings.password.removing")
+                  : t("seller.settings.password.remove")}
               </Button>
             </div>
           ) : settingUp ? null : (
             <Button color="accent" onClick={() => setSettingUp(true)}>
-              Set up
+              {t("seller.settings.password.set_up")}
             </Button>
           )}
         </div>
@@ -194,7 +206,7 @@ export default function PasswordPage() {
           <RecoveryCodes codes={regeneratedCodes} onDone={() => setRegeneratedCodes(null)} />
         ) : null}
       </FormSection>
-      <FormSection header={<h2>Passkeys</h2>}>
+      <FormSection header={<h2>{t("seller.settings.password.passkeys")}</h2>}>
         <PasskeysSection passkeys={props.passkeys} />
       </FormSection>
     </SettingsLayout>

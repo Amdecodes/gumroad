@@ -2,6 +2,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { SettingPage } from "$app/parsers/settings";
 
 import { Layout as SettingsLayout } from "$app/components/Settings/Layout";
@@ -35,6 +36,7 @@ type BillingPageProps = {
 };
 
 export default function BillingSettingsPage() {
+  const { t } = useTranslate();
   const props = typia.assert<BillingPageProps>(usePage().props);
   const uid = React.useId();
 
@@ -42,7 +44,9 @@ export default function BillingSettingsPage() {
 
   const isUsAddress = form.data.billing_detail.country_code === "US";
   const showBusinessId = props.business_id_country_codes.includes(form.data.billing_detail.country_code);
-  const businessIdLabel = props.business_id_labels[form.data.billing_detail.country_code] ?? "Business ID";
+  const businessIdLabel =
+    props.business_id_labels[form.data.billing_detail.country_code] ??
+    t("seller.settings.billing.business_id_fallback");
 
   const update = (patch: Partial<BillingDetail>) =>
     form.setData("billing_detail", { ...form.data.billing_detail, ...patch });
@@ -68,14 +72,14 @@ export default function BillingSettingsPage() {
         <FormSection
           header={
             <>
-              <h2>Billing details</h2>
-              <div>Stored once and used to pre-fill your invoices.</div>
+              <h2>{t("seller.settings.billing.billing_details_title")}</h2>
+              <div>{t("seller.settings.billing.billing_details_desc")}</div>
             </>
           }
         >
           <Fieldset state={fieldState("full_name")}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-full_name`}>Full name</Label>
+              <Label htmlFor={`${uid}-full_name`}>{t("seller.settings.billing.full_name")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-full_name`}
@@ -87,7 +91,7 @@ export default function BillingSettingsPage() {
 
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-business_name`}>Business name (optional)</Label>
+              <Label htmlFor={`${uid}-business_name`}>{t("seller.settings.billing.business_name_optional")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-business_name`}
@@ -99,7 +103,7 @@ export default function BillingSettingsPage() {
 
           <Fieldset state={fieldState("street_address")}>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-street_address`}>Street address</Label>
+              <Label htmlFor={`${uid}-street_address`}>{t("seller.settings.billing.street_address")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-street_address`}
@@ -117,7 +121,7 @@ export default function BillingSettingsPage() {
             }}
           >
             <Fieldset state={fieldState("city")}>
-              <Label htmlFor={`${uid}-city`}>City</Label>
+              <Label htmlFor={`${uid}-city`}>{t("seller.settings.billing.city")}</Label>
               <Input
                 id={`${uid}-city`}
                 type="text"
@@ -128,7 +132,7 @@ export default function BillingSettingsPage() {
 
             {isUsAddress ? (
               <Fieldset state={fieldState("state")}>
-                <Label htmlFor={`${uid}-state`}>State</Label>
+                <Label htmlFor={`${uid}-state`}>{t("seller.settings.billing.state")}</Label>
                 <Input
                   id={`${uid}-state`}
                   type="text"
@@ -139,7 +143,7 @@ export default function BillingSettingsPage() {
             ) : null}
 
             <Fieldset state={fieldState("zip_code")}>
-              <Label htmlFor={`${uid}-zip_code`}>ZIP code</Label>
+              <Label htmlFor={`${uid}-zip_code`}>{t("seller.settings.billing.zip_code")}</Label>
               <Input
                 id={`${uid}-zip_code`}
                 type="text"
@@ -150,13 +154,13 @@ export default function BillingSettingsPage() {
           </div>
 
           <Fieldset state={fieldState("country_code")}>
-            <Label htmlFor={`${uid}-country_code`}>Country</Label>
+            <Label htmlFor={`${uid}-country_code`}>{t("seller.settings.billing.country")}</Label>
             <Select
               id={`${uid}-country_code`}
               value={form.data.billing_detail.country_code}
               onChange={(e) => changeCountry(e.target.value)}
             >
-              <option value="">Select country</option>
+              <option value="">{t("seller.settings.billing.select_country")}</option>
               {Object.entries(props.countries).map(([code, name]) => (
                 <option key={code} value={code}>
                   {name}
@@ -168,7 +172,9 @@ export default function BillingSettingsPage() {
           {showBusinessId ? (
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-business_id`}>{businessIdLabel} (optional)</Label>
+                <Label htmlFor={`${uid}-business_id`}>
+                  {t("seller.settings.billing.business_id_optional", { label: businessIdLabel })}
+                </Label>
               </FieldsetTitle>
               <Input
                 id={`${uid}-business_id`}
@@ -181,7 +187,9 @@ export default function BillingSettingsPage() {
 
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-additional_notes`}>Additional notes (optional)</Label>
+              <Label htmlFor={`${uid}-additional_notes`}>
+                {t("seller.settings.billing.additional_notes_optional")}
+              </Label>
             </FieldsetTitle>
             <Textarea
               id={`${uid}-additional_notes`}
@@ -191,11 +199,11 @@ export default function BillingSettingsPage() {
           </Fieldset>
         </FormSection>
 
-        <FormSection header={<h2>Delivery</h2>}>
+        <FormSection header={<h2>{t("seller.settings.billing.delivery")}</h2>}>
           <Switch
             checked={form.data.billing_detail.auto_email_invoice_enabled}
             onChange={(e) => update({ auto_email_invoice_enabled: e.target.checked })}
-            label="Email me an invoice PDF with every purchase receipt"
+            label={t("seller.settings.billing.email_invoice_pdf")}
           />
         </FormSection>
       </form>

@@ -13,6 +13,7 @@ import {
 } from "$app/pages/Settings/Profile/profileSettingsForm";
 import { CreatorProfile } from "$app/parsers/profile";
 import { classNames } from "$app/utils/classNames";
+import { useTranslate } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
@@ -52,25 +53,6 @@ const LEAVE_ANSWER_REUSE_WINDOW_MS = 2000;
 // The model validates inclusion, so adding a font here without adding it there fails the save.
 const DEFAULT_PROFILE_FONT = "ABC Favorit";
 const FONT_CHOICES = [DEFAULT_PROFILE_FONT, "Inter", "Domine", "Merriweather", "Roboto Slab", "Roboto Mono"];
-const FONT_DESCRIPTIONS: Record<string, string> = {
-  "ABC Favorit": "Quirky and unique sans-serif",
-  Inter: "Simple and modern sans-serif",
-  Domine: "Modern and bold serif",
-  Merriweather: "Sturdy and pleasant serif",
-  "Roboto Slab": "Personable and fun serif",
-  "Roboto Mono": "Technical and monospace",
-};
-
-// Shortcuts for the two color pickers. A preset is selected while both pickers match it.
-// "Default" mirrors the SellerProfile after_initialize defaults.
-const COLOR_PRESETS = [
-  { name: "Default", background_color: "#ffffff", highlight_color: "#ff90e8" },
-  { name: "Black and white", background_color: "#ffffff", highlight_color: "#000000" },
-  { name: "Dark", background_color: "#000000", highlight_color: "#ffffff" },
-];
-
-// Keys are the values SellerProfile stores. "none" reads as "no corners" under a Corners title.
-const BORDER_RADIUS_LABELS: Record<string, string> = { none: "Square" };
 
 // Arrow keys move focus and selection through a group of role="radio" buttons, wrapping at the
 // ends. Pair with a roving tabIndex so the group is a single tab stop.
@@ -100,6 +82,32 @@ type ProfilePageProps = {
 } & ProfileProps;
 
 export default function SettingsPage() {
+  const { t } = useTranslate();
+
+  const fontDescriptions: Record<string, string> = {
+    "ABC Favorit": t("seller.settings.profile.font_quirky"),
+    Inter: t("seller.settings.profile.font_simple"),
+    Domine: t("seller.settings.profile.font_modern_serif"),
+    Merriweather: t("seller.settings.profile.font_sturdy_serif"),
+    "Roboto Slab": t("seller.settings.profile.font_personable"),
+    "Roboto Mono": t("seller.settings.profile.font_technical"),
+  };
+
+  const colorPresets = [
+    {
+      name: t("seller.settings.profile.color_preset_default"),
+      background_color: "#ffffff",
+      highlight_color: "#ff90e8",
+    },
+    {
+      name: t("seller.settings.profile.color_preset_black_and_white"),
+      background_color: "#ffffff",
+      highlight_color: "#000000",
+    },
+    { name: t("seller.settings.profile.color_preset_dark"), background_color: "#000000", highlight_color: "#ffffff" },
+  ];
+
+  const borderRadiusLabels: Record<string, string> = { none: t("seller.settings.profile.square") };
   const {
     creator_profile,
     profile_settings,
@@ -221,9 +229,7 @@ export default function SettingsPage() {
         return;
       }
       // eslint-disable-next-line no-alert
-      const allowed = window.confirm(
-        "You have unsaved changes that will be lost if you leave this page. Leave anyway?",
-      );
+      const allowed = window.confirm(t("seller.settings.profile.unsaved_changes_confirm"));
       lastLeaveAnswer.current = { time: Date.now(), allowed, href: visit.url.href };
       if (!allowed) event.preventDefault();
     });
@@ -255,7 +261,7 @@ export default function SettingsPage() {
       lastSavedProfile.current = { sections, tabs };
       isDirtyRef.current = false;
       await new Promise<void>((resolve) => router.reload({ onFinish: () => resolve() }));
-      showAlert("Changes saved!", "success");
+      showAlert(t("seller.settings.profile.changes_saved"), "success");
       return true;
     } catch (e) {
       assertResponseError(e);
@@ -284,7 +290,7 @@ export default function SettingsPage() {
   const previewRadius = theme_options.border_radii[profileSettings.border_radius];
   const previewHoverOffset = theme_options.button_hover_offsets[profileSettings.button_hover];
   // Stored six-digit colors keep the case they were saved with; only shorthand is lowercased.
-  const selectedColorPreset = COLOR_PRESETS.find(
+  const selectedColorPreset = colorPresets.find(
     (preset) =>
       preset.background_color === profileSettings.background_color.toLowerCase() &&
       preset.highlight_color === profileSettings.highlight_color.toLowerCase(),
@@ -314,10 +320,10 @@ export default function SettingsPage() {
 
   const tabBar = (
     <Tabs aria-label="Profile settings sections">
-      {renderTab("about", "About")}
-      {renderTab("design", "Design")}
-      {showPagesTab ? renderTab("pages", "Pages") : null}
-      {renderTab("share", "Share")}
+      {renderTab("about", t("seller.settings.profile.about_tab"))}
+      {renderTab("design", t("seller.settings.profile.design_tab"))}
+      {showPagesTab ? renderTab("pages", t("seller.settings.profile.pages_tab")) : null}
+      {renderTab("share", t("seller.settings.profile.share_tab"))}
     </Tabs>
   );
 
@@ -415,10 +421,10 @@ export default function SettingsPage() {
       ) : (
         <PageHeader
           className="sticky-top"
-          title="Profile settings"
+          title={t("seller.settings.profile.profile_settings_title")}
           actions={
             <Button color="accent" onClick={() => void save()} disabled={!canSave}>
-              Update profile
+              {t("seller.settings.profile.update_profile")}
             </Button>
           }
         >
@@ -430,25 +436,20 @@ export default function SettingsPage() {
           {email_confirmation ? (
             <div className="p-4 pb-0 md:p-8 md:pb-0">
               <EmailConfirmationBanner {...email_confirmation}>
-                {email_confirmation.email ? (
-                  <>
-                    Confirm your email address (<b>{email_confirmation.email}</b>) before you can save changes to your
-                    profile.
-                  </>
-                ) : (
-                  <>Add and confirm an email address before you can save changes to your profile.</>
-                )}
+                {email_confirmation.email
+                  ? t("seller.settings.profile.confirm_email_before_save", { email: email_confirmation.email })
+                  : t("seller.settings.profile.add_and_confirm_email_before_save")}
               </EmailConfirmationBanner>
             </div>
           ) : null}
           {tab === "about" ? (
             <section className="grid gap-8 p-4! md:p-8!">
               <header>
-                <h2>About you</h2>
+                <h2>{t("seller.settings.profile.about_you")}</h2>
               </header>
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}-name`}>Name</Label>
+                  <Label htmlFor={`${uid}-name`}>{t("seller.settings.profile.name")}</Label>
                 </FieldsetTitle>
                 <Input
                   id={`${uid}-name`}
@@ -463,7 +464,7 @@ export default function SettingsPage() {
               </Fieldset>
               <Fieldset>
                 <FieldsetTitle>
-                  <Label htmlFor={`${uid}-bio`}>Bio</Label>
+                  <Label htmlFor={`${uid}-bio`}>{t("seller.settings.profile.bio")}</Label>
                 </FieldsetTitle>
                 <Textarea
                   id={`${uid}-bio`}
@@ -487,37 +488,29 @@ export default function SettingsPage() {
                   value={profileSettings.product_page_storefront_enabled}
                   onChange={(value) => updateProfileSettings({ product_page_storefront_enabled: value })}
                   disabled={!canUpdate}
-                  label="Show your storefront on product pages"
+                  label={t("seller.settings.profile.show_storefront_on_product_pages")}
                 />
-                <FieldsetDescription>
-                  Product pages display your profile header above the product and the rest of your products below it, so
-                  buyers landing on a shared link can browse your whole store.
-                </FieldsetDescription>
+                <FieldsetDescription>{t("seller.settings.profile.show_storefront_desc")}</FieldsetDescription>
               </Fieldset>
               <Fieldset>
                 <ToggleSettingRow
                   value={profileSettings.hide_follow_form}
                   onChange={(value) => updateProfileSettings({ hide_follow_form: value })}
                   disabled={!canUpdate}
-                  label="Hide the subscribe form in your storefront header"
+                  label={t("seller.settings.profile.hide_follow_form")}
                 />
-                <FieldsetDescription>
-                  Removes the email subscribe box from the header shown across your storefront: your profile, product
-                  pages, posts, wishlists, and your affiliate signup page. To redesign the whole page, use custom HTML
-                  from Pages.
-                </FieldsetDescription>
+                <FieldsetDescription>{t("seller.settings.profile.hide_follow_form_desc")}</FieldsetDescription>
               </Fieldset>
             </section>
           ) : tab === "design" ? (
             <section className="grid gap-8 p-4! md:p-8!">
               {customLandingPageActive ? (
                 <Alert role="status" variant="info">
-                  Your custom profile page uses its own design. This preview shows the theme used on your product pages
-                  and other Gumroad surfaces.
+                  {t("seller.settings.profile.custom_design_notice", { app_name: "Gumroad" })}
                 </Alert>
               ) : null}
               <Fieldset>
-                <FieldsetTitle>Font</FieldsetTitle>
+                <FieldsetTitle>{t("seller.settings.profile.font")}</FieldsetTitle>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3" role="radiogroup">
                   {FONT_CHOICES.map((font) => {
                     const isSelected = font === profileSettings.font;
@@ -540,7 +533,7 @@ export default function SettingsPage() {
                         <FontFamily className="size-5 shrink-0" />
                         <div>
                           <h4 className="font-bold">{font}</h4>
-                          {FONT_DESCRIPTIONS[font]}
+                          {fontDescriptions[font]}
                         </div>
                       </Button>
                     );
@@ -548,14 +541,14 @@ export default function SettingsPage() {
                 </div>
               </Fieldset>
               <Fieldset>
-                <FieldsetTitle>Colors</FieldsetTitle>
+                <FieldsetTitle>{t("seller.settings.profile.colors")}</FieldsetTitle>
                 <div
                   className="grid grid-cols-1 gap-4 sm:grid-cols-3"
                   role="radiogroup"
-                  aria-label="Color presets"
+                  aria-label={t("seller.settings.profile.color_presets_aria")}
                   onKeyDown={selectAdjacentRadio}
                 >
-                  {COLOR_PRESETS.map((preset, index) => {
+                  {colorPresets.map((preset, index) => {
                     const isSelected = preset === selectedColorPreset;
                     // Custom colors match no preset; the first one then takes the group's tab stop.
                     const isTabStop = selectedColorPreset ? isSelected : index === 0;
@@ -588,7 +581,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="mt-4 grid w-fit grid-cols-[max-content_max-content] gap-y-4">
                   <Label className="col-span-2 grid! grid-cols-subgrid items-center" htmlFor={`${uid}-backgroundColor`}>
-                    Background color
+                    {t("seller.settings.profile.background_color")}
                     <ColorPicker
                       id={`${uid}-backgroundColor`}
                       value={profileSettings.background_color}
@@ -597,7 +590,7 @@ export default function SettingsPage() {
                     />
                   </Label>
                   <Label className="col-span-2 grid! grid-cols-subgrid items-center" htmlFor={`${uid}-highlightColor`}>
-                    Highlight color
+                    {t("seller.settings.profile.highlight_color")}
                     <ColorPicker
                       id={`${uid}-highlightColor`}
                       value={profileSettings.highlight_color}
@@ -608,11 +601,11 @@ export default function SettingsPage() {
                 </div>
               </Fieldset>
               <Fieldset>
-                <FieldsetTitle>Corners</FieldsetTitle>
+                <FieldsetTitle>{t("seller.settings.profile.corners")}</FieldsetTitle>
                 <div
                   className="grid grid-cols-1 gap-4 sm:grid-cols-4"
                   role="radiogroup"
-                  aria-label="Corners"
+                  aria-label={t("seller.settings.profile.corners")}
                   onKeyDown={selectAdjacentRadio}
                 >
                   {Object.entries(theme_options.border_radii).map(([value, radius], index) => {
@@ -633,7 +626,7 @@ export default function SettingsPage() {
                           className="size-5 shrink-0 border-t-2 border-l-2 border-current"
                           style={{ borderTopLeftRadius: radius }}
                         />
-                        {BORDER_RADIUS_LABELS[value] ?? capitalize(value)}
+                        {borderRadiusLabels[value] ?? capitalize(value)}
                       </Button>
                     );
                   })}
@@ -644,25 +637,22 @@ export default function SettingsPage() {
                   value={profileSettings.button_hover === "lift"}
                   onChange={(value) => updateProfileSettings({ button_hover: value ? "lift" : "none" })}
                   disabled={!canUpdate}
-                  label="Button hover effect"
+                  label={t("seller.settings.profile.button_hover_effect")}
                 />
-                <FieldsetDescription>
-                  Buttons lift and show a shadow when a visitor points at them. Turn this off for static buttons.
-                </FieldsetDescription>
+                <FieldsetDescription>{t("seller.settings.profile.button_hover_effect_desc")}</FieldsetDescription>
               </Fieldset>
             </section>
           ) : tab === "pages" && showPagesTab ? (
             <>
               <section className="grid gap-8 p-4! md:p-8!">
                 <Alert role="status" variant="info">
-                  Use this editor to lay out your profile with sections. You can also build a fully custom page with
-                  your own agent or Gumroad's Agent tab. Open your{" "}
+                  {t("seller.settings.profile.pages_alert_prefix", { app_name: "Gumroad" })}
                   <Link href={Routes.edit_page_path("profile")} className="underline">
-                    Home page under Pages
-                  </Link>{" "}
-                  to get the prompt for it.
+                    {t("seller.settings.profile.pages_alert_link")}
+                  </Link>
+                  {t("seller.settings.profile.pages_alert_suffix")}
                 </Alert>
-                <AgentSupportFallbackNote subject="Help with my profile page" />
+                <AgentSupportFallbackNote subject={t("seller.settings.profile.help_with_profile_page")} />
               </section>
               <section aria-label="Profile section editor">
                 <ProfileSectionsForm
@@ -677,11 +667,14 @@ export default function SettingsPage() {
           ) : (
             <section className="grid gap-8 p-4! md:p-8!">
               <header>
-                <h2>Share</h2>
+                <h2>{t("seller.settings.profile.share_title")}</h2>
               </header>
               <ShareButtons
                 url={profileUrl}
-                twitterText={`Check out ${profileSettings.name || username} on @Gumroad`}
+                twitterText={t("seller.settings.profile.share_twitter_text", {
+                  name: profileSettings.name || username,
+                  app_name: "Gumroad",
+                })}
                 facebookText={profileSettings.name || username}
               />
             </section>

@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { SettingPage } from "$app/parsers/settings";
+import { useTranslate } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { request, assertResponseError } from "$app/utils/request";
 
@@ -77,6 +78,7 @@ type MainPageProps = {
 };
 
 export default function MainPage() {
+  const { t } = useTranslate();
   const props = typia.assert<MainPageProps>(usePage().props);
   const uid = React.useId();
   const { rootDomain, scheme } = useDomains();
@@ -127,10 +129,10 @@ export default function MainPage() {
   return (
     <Layout currentPage="main" pages={props.settings_pages} onSave={onSave} canUpdate={!isFormDisabled}>
       <form ref={formRef}>
-        <FormSection header={<h2>User details</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.user_details")}</h2>}>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-email`}>Email</Label>
+              <Label htmlFor={`${uid}-email`}>{t("seller.settings.main.email")}</Label>
             </FieldsetTitle>
             <Input
               type="email"
@@ -142,7 +144,7 @@ export default function MainPage() {
             />
             {props.user.has_unconfirmed_email && !props.is_form_disabled ? (
               <FieldsetDescription>
-                This email address has not been confirmed yet.{" "}
+                {t("seller.settings.main.email_unconfirmed")}{" "}
                 {resentConfirmationEmail ? null : (
                   <LinkButton
                     onClick={(e) => {
@@ -150,7 +152,9 @@ export default function MainPage() {
                       resendConfirmationEmail();
                     }}
                   >
-                    {resendConfirmationEmailForm.processing ? "Resending..." : "Resend confirmation?"}
+                    {resendConfirmationEmailForm.processing
+                      ? t("seller.settings.main.resending")
+                      : t("seller.settings.main.resend_confirmation")}
                   </LinkButton>
                 )}
               </FieldsetDescription>
@@ -158,7 +162,7 @@ export default function MainPage() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-username`}>Username</Label>
+              <Label htmlFor={`${uid}-username`}>{t("seller.settings.main.username")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-username`}
@@ -174,25 +178,19 @@ export default function MainPage() {
               }
             />
             <FieldsetDescription>
-              View your profile at: <a href={`${scheme}://${subdomain}`}>{subdomain}</a>
+              {t("seller.settings.main.view_profile_at")} <a href={`${scheme}://${subdomain}`}>{subdomain}</a>
             </FieldsetDescription>
           </Fieldset>
         </FormSection>
         <FormSection
           header={
             <>
-              <h2>Notifications</h2>
+              <h2>{t("seller.settings.main.notifications")}</h2>
               <div>
-                Depending on your preferences, you can choose whether to receive mobile notifications or email
-                notifications. If you want to get notifications on a mobile device, install the Gumroad app over on the{" "}
-                <a href={props.ios_app_store_url} target="_blank" rel="noopener noreferrer">
-                  App Store
-                </a>{" "}
-                or{" "}
-                <a href={props.android_app_store_url} target="_blank" rel="noopener noreferrer">
-                  Play Store
-                </a>
-                .
+                {t("seller.settings.main.notifications_desc", {
+                  app_store: "App Store",
+                  play_store: "Play Store",
+                })}
               </div>
             </>
           }
@@ -201,14 +199,14 @@ export default function MainPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Notifications</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Mobile</TableHead>
+                  <TableHead>{t("seller.settings.main.notifications")}</TableHead>
+                  <TableHead>{t("seller.settings.main.email_header")}</TableHead>
+                  <TableHead>{t("seller.settings.main.mobile_header")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableHead scope="row">Purchases</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_purchases")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={form.data.user.enable_payment_email}
@@ -225,7 +223,7 @@ export default function MainPage() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead scope="row">Recurring payments</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_recurring")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={form.data.user.enable_recurring_subscription_charge_email}
@@ -248,7 +246,7 @@ export default function MainPage() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead scope="row">Free downloads</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_free_downloads")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={form.data.user.enable_free_downloads_email}
@@ -267,7 +265,7 @@ export default function MainPage() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead scope="row">Personalized product announcements</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_personalized_announcements")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={form.data.user.announcement_notification_enabled}
@@ -278,7 +276,7 @@ export default function MainPage() {
                   <TableCell></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead scope="row">Comments</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_comments")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={!form.data.user.disable_comments_email}
@@ -289,13 +287,13 @@ export default function MainPage() {
                   <TableCell></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead scope="row">Reviews</TableHead>
+                  <TableHead scope="row">{t("seller.settings.main.notif_reviews")}</TableHead>
                   <TableCell>
                     <Switch
                       checked={!form.data.user.disable_reviews_email}
                       onChange={(e) => updateUserSettings({ disable_reviews_email: !e.target.checked })}
                       disabled={isFormDisabled}
-                      aria-label="Reviews"
+                      aria-label={t("seller.settings.main.notif_reviews")}
                     />
                   </TableCell>
                   <TableCell></TableCell>
@@ -304,24 +302,21 @@ export default function MainPage() {
             </Table>
           </Fieldset>
         </FormSection>
-        <FormSection header={<h2>Review reminders</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.review_reminders")}</h2>}>
           <Fieldset>
             <ToggleSettingRow
               value={!form.data.user.disable_review_reminders}
               onChange={(value) => updateUserSettings({ disable_review_reminders: !value })}
               disabled={isFormDisabled}
-              label="Send review reminder emails to your customers"
+              label={t("seller.settings.main.send_review_reminders")}
             />
-            <FieldsetDescription>
-              Customers receive a one-time email reminder asking them to review their purchase. Turning this off stops
-              these reminders for all of your products.
-            </FieldsetDescription>
+            <FieldsetDescription>{t("seller.settings.main.review_reminders_desc")}</FieldsetDescription>
           </Fieldset>
         </FormSection>
-        <FormSection header={<h2>Support</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.support")}</h2>}>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-support-email`}>Email</Label>
+              <Label htmlFor={`${uid}-support-email`}>{t("seller.settings.main.email")}</Label>
             </FieldsetTitle>
             <Input
               type="email"
@@ -332,8 +327,10 @@ export default function MainPage() {
               onChange={(e) => updateUserSettings({ support_email: e.target.value })}
             />
             <FieldsetDescription>
-              This email is listed on the receipt of every sale.
-              {props.user.email ? ` Leave blank to use your account email (${props.user.email}).` : null}
+              {t("seller.settings.main.support_email_desc")}
+              {props.user.email
+                ? t("seller.settings.main.support_email_leave_blank", { email: props.user.email })
+                : null}
             </FieldsetDescription>
           </Fieldset>
           <ProductLevelSupportEmailsForm
@@ -346,26 +343,23 @@ export default function MainPage() {
         <FormSection
           header={
             <>
-              <h2>Refund policy</h2>
-              <div>Choose how refunds will be handled for your products.</div>
+              <h2>{t("seller.settings.main.refund_policy")}</h2>
+              <div>{t("seller.settings.main.refund_policy_desc")}</div>
             </>
           }
         >
           {props.user.seller_refund_policy.refund_policy_enforced ? (
             <Alert variant="info" role="status">
-              Due to a high rate of chargebacks, a refund policy is currently enforced on your entire account and can't
-              be edited here. To request a change, contact us with the specific steps you've taken to reduce disputes
-              and we'll apply the update for you.
+              {t("seller.settings.main.refund_policy_enforced")}
             </Alert>
           ) : !props.user.seller_refund_policy.editable ? (
             <Alert variant="info" role="status">
-              Account-level refund policies are currently managed by Gumroad and can't be edited here. Refunds are
-              handled per product instead — you can set a refund policy on each product in the product editor.
+              {t("seller.settings.main.refund_policy_managed_by_platform")}
             </Alert>
           ) : null}
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor="max-refund-period-in-days">Refund period</Label>
+              <Label htmlFor="max-refund-period-in-days">{t("seller.settings.main.refund_period")}</Label>
             </FieldsetTitle>
             <Select
               id="max-refund-period-in-days"
@@ -407,11 +401,11 @@ export default function MainPage() {
                 !props.user.seller_refund_policy.editable ||
                 form.data.user.seller_refund_policy.max_refund_period_in_days === 0
               }
-              label="Add a fine print to your refund policy"
+              label={t("seller.settings.main.add_fine_print")}
               dropdown={
                 <Fieldset>
                   <FieldsetTitle>
-                    <Label htmlFor="seller-refund-policy-fine-print">Fine print</Label>
+                    <Label htmlFor="seller-refund-policy-fine-print">{t("seller.settings.main.fine_print")}</Label>
                   </FieldsetTitle>
                   <Textarea
                     id="seller-refund-policy-fine-print"
@@ -433,10 +427,10 @@ export default function MainPage() {
             />
           </Fieldset>
         </FormSection>
-        <FormSection header={<h2>Local</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.local")}</h2>}>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-timezone`}>Time zone</Label>
+              <Label htmlFor={`${uid}-timezone`}>{t("seller.settings.main.timezone")}</Label>
             </FieldsetTitle>
             <Select
               id={`${uid}-timezone`}
@@ -453,35 +447,31 @@ export default function MainPage() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label>Currency</Label>
+              <Label>{t("seller.settings.main.currency")}</Label>
             </FieldsetTitle>
-            <Input value="ETB (Ethiopian Birr)" disabled />
-            <FieldsetDescription>
-              All products, purchases, and creator payouts are processed in ETB.
-            </FieldsetDescription>
+            <Input value={t("seller.settings.main.currency_fixed_etb")} disabled />
+            <FieldsetDescription>{t("seller.settings.main.currency_fixed_desc")}</FieldsetDescription>
           </Fieldset>
         </FormSection>
-        <FormSection header={<h2>Adult content</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.adult_content")}</h2>}>
           <Fieldset>
             <ToggleSettingRow
               value={form.data.user.show_nsfw_products}
               onChange={(value) => updateUserSettings({ show_nsfw_products: value })}
               disabled={isFormDisabled}
-              label="Show adult content in recommendations and search results"
+              label={t("seller.settings.main.show_adult_content")}
             />
           </Fieldset>
         </FormSection>
-        <FormSection header={<h2>Affiliates</h2>}>
+        <FormSection header={<h2>{t("seller.settings.main.affiliates_section")}</h2>}>
           <Fieldset>
             <ToggleSettingRow
               value={form.data.user.disable_affiliate_requests}
               onChange={(value) => updateUserSettings({ disable_affiliate_requests: value })}
               disabled={isFormDisabled}
-              label="Prevent others from adding me as an affiliate"
+              label={t("seller.settings.main.prevent_affiliates")}
             />
-            <FieldsetDescription>
-              When enabled, other users cannot add you as an affiliate or request to become your affiliate.
-            </FieldsetDescription>
+            <FieldsetDescription>{t("seller.settings.main.prevent_affiliates_desc")}</FieldsetDescription>
           </Fieldset>
         </FormSection>
         {props.invalidate_active_sessions ? <InvalidateActiveSessionsSection /> : null}
@@ -491,6 +481,7 @@ export default function MainPage() {
 }
 
 const InvalidateActiveSessionsSection = () => {
+  const { t } = useTranslate();
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = React.useState(false);
   const [isInvalidating, setIsInvalidating] = React.useState(false);
 
@@ -503,7 +494,7 @@ const InvalidateActiveSessionsSection = () => {
       location.reload();
     } catch (e) {
       assertResponseError(e);
-      showAlert("Sorry, something went wrong. Please try again.", "error");
+      showAlert(t("common.something_went_wrong"), "error");
     }
 
     setIsConfirmationDialogOpen(false);
@@ -513,29 +504,30 @@ const InvalidateActiveSessionsSection = () => {
   return (
     <FormSection>
       <Fieldset>
-        <LinkButton onClick={() => setIsConfirmationDialogOpen(true)}>Sign out from all active sessions</LinkButton>
-        <FieldsetDescription>
-          You will be signed out from all your active sessions including this session.
-        </FieldsetDescription>
+        <LinkButton onClick={() => setIsConfirmationDialogOpen(true)}>
+          {t("seller.settings.main.sign_out_all_sessions")}
+        </LinkButton>
+        <FieldsetDescription>{t("seller.settings.main.sign_out_all_sessions_desc")}</FieldsetDescription>
       </Fieldset>
       {isConfirmationDialogOpen ? (
         <Modal
           open
-          title="Sign out from all active sessions"
+          title={t("seller.settings.main.sign_out_all_sessions_modal_title")}
           onClose={() => !isInvalidating && setIsConfirmationDialogOpen(false)}
           footer={
             <>
               <Button onClick={() => setIsConfirmationDialogOpen(false)} disabled={isInvalidating}>
-                Cancel
+                {t("actions.cancel")}
               </Button>
               <Button color="accent" onClick={() => invalidateActiveSessions()} disabled={isInvalidating}>
-                {isInvalidating ? "Signing out from all active sessions..." : "Yes, sign out"}
+                {isInvalidating
+                  ? t("seller.settings.main.signing_out_all_sessions")
+                  : t("seller.settings.main.confirm_sign_out")}
               </Button>
             </>
           }
         >
-          Are you sure that you would like to sign out from all active sessions? You will be signed out from this
-          session as well.
+          {t("seller.settings.main.sign_out_all_sessions_modal_body")}
         </Modal>
       ) : null}
     </FormSection>

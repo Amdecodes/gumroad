@@ -3,6 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { isValidEmail } from "$app/utils/email";
 import { isUrlValid } from "$app/utils/url";
 
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export default function AffiliatesNew() {
+  const { t } = useTranslate();
   const props = typia.assert<Props>(usePage().props);
   const loggedInUser = useLoggedInUser();
 
@@ -73,8 +75,8 @@ export default function AffiliatesNew() {
     form.clearErrors();
 
     if (!data.affiliate.email || !isValidEmail(data.affiliate.email)) {
-      form.setError("affiliate.email", "Valid email is required");
-      showAlert("Please enter a valid email address", "error");
+      form.setError("affiliate.email", t("seller.affiliates.valid_email_required"));
+      showAlert(t("seller.affiliates.valid_email_alert"), "error");
       emailInputRef.current?.focus();
       return;
     }
@@ -83,14 +85,14 @@ export default function AffiliatesNew() {
       data.affiliate.apply_to_all_products &&
       (!data.affiliate.fee_percent || data.affiliate.fee_percent < 1 || data.affiliate.fee_percent > 75)
     ) {
-      form.setError("affiliate.fee_percent", "Commission must be between 1% and 75%");
-      showAlert("Commission must be between 1% and 75%", "error");
+      form.setError("affiliate.fee_percent", t("seller.affiliates.commission_range_error"));
+      showAlert(t("seller.affiliates.commission_range_error"), "error");
       return;
     }
 
     if (!data.affiliate.apply_to_all_products && data.affiliate.products.every((p) => !p.enabled)) {
-      form.setError("affiliate.products", "Please enable at least one product");
-      showAlert("Please enable at least one product", "error");
+      form.setError("affiliate.products", t("seller.affiliates.enable_at_least_one_product"));
+      showAlert(t("seller.affiliates.enable_at_least_one_product"), "error");
       return;
     }
 
@@ -98,8 +100,8 @@ export default function AffiliatesNew() {
       !data.affiliate.apply_to_all_products &&
       data.affiliate.products.some((p) => p.enabled && (!p.fee_percent || p.fee_percent < 1 || p.fee_percent > 75))
     ) {
-      form.setError("affiliate.products", "All enabled products must have commission between 1% and 75%");
-      showAlert("All enabled products must have commission between 1% and 75%", "error");
+      form.setError("affiliate.products", t("seller.affiliates.all_enabled_commission_error"));
+      showAlert(t("seller.affiliates.all_enabled_commission_error"), "error");
       return;
     }
 
@@ -108,8 +110,8 @@ export default function AffiliatesNew() {
       data.affiliate.destination_url !== "" &&
       !isUrlValid(data.affiliate.destination_url)
     ) {
-      form.setError("affiliate.destination_url", "Please enter a valid URL");
-      showAlert("Please enter a valid URL", "error");
+      form.setError("affiliate.destination_url", t("seller.affiliates.valid_url_error"));
+      showAlert(t("seller.affiliates.valid_url_error"), "error");
       return;
     }
 
@@ -119,7 +121,7 @@ export default function AffiliatesNew() {
           ? Array.isArray(errors.base)
             ? errors.base[0]
             : errors.base
-          : "Failed to add affiliate";
+          : t("seller.affiliates.failed_to_add_affiliate");
         if (message) showAlert(message, "error");
       },
     });
@@ -129,19 +131,19 @@ export default function AffiliatesNew() {
     <div>
       <PageHeader
         className="sticky-top"
-        title="New Affiliate"
+        title={t("seller.affiliates.new_affiliate")}
         actions={
           <>
             <NavigationButtonInertia href={Routes.affiliates_path()} disabled={processing}>
               <XSquare className="size-5" />
-              Cancel
+              {t("actions.cancel")}
             </NavigationButtonInertia>
             <Button
               color="accent"
               onClick={handleSubmit}
               disabled={processing || !loggedInUser?.policies.direct_affiliate.create}
             >
-              {processing ? "Adding..." : "Add affiliate"}
+              {processing ? t("seller.affiliates.adding") : t("seller.affiliates.add_affiliate")}
             </Button>
           </>
         }
@@ -153,17 +155,17 @@ export default function AffiliatesNew() {
           processing={processing}
           applyToAllProducts={data.affiliate.apply_to_all_products}
           uid={uid}
-          headerText="Add a new affiliate below and we'll send them a unique link to share with their audience. Your affiliate will then earn a commission on each sale they refer."
+          headerText={t("seller.affiliates.new_affiliate_header")}
           emailField={
             <Fieldset state={errors["affiliate.email"] ? "danger" : undefined}>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}email`}>Email</Label>
+                <Label htmlFor={`${uid}email`}>{t("seller.affiliates.email")}</Label>
               </FieldsetTitle>
               <Input
                 ref={emailInputRef}
                 type="email"
                 id={`${uid}email`}
-                placeholder="Email of a Gumroad creator"
+                placeholder={t("seller.affiliates.email_placeholder")}
                 value={data.affiliate.email}
                 disabled={processing}
                 aria-invalid={!!errors["affiliate.email"]}

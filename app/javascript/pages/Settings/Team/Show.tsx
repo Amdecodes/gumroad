@@ -17,6 +17,7 @@ import {
 } from "$app/data/settings/team";
 import { SettingPage } from "$app/parsers/settings";
 import { isValidEmail } from "$app/utils/email";
+import { useTranslate } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { assertResponseError } from "$app/utils/request";
 
@@ -37,12 +38,15 @@ import { LinkButton } from "$app/components/ui/LinkButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-const ROLE_TITLES: Record<Role, string> = {
-  owner: "Owner",
-  accountant: "Accountant",
-  admin: "Admin",
-  marketing: "Marketing",
-  support: "Support",
+const useRoleTitles = (): Record<Role, string> => {
+  const { t } = useTranslate();
+  return {
+    owner: t("seller.settings.team.role_owner"),
+    accountant: t("seller.settings.team.role_accountant"),
+    admin: t("seller.settings.team.role_admin"),
+    marketing: t("seller.settings.team.role_marketing"),
+    support: t("seller.settings.team.role_support"),
+  };
 };
 
 type TeamPageProps = {
@@ -53,10 +57,11 @@ type TeamPageProps = {
 
 export default function TeamPage() {
   const props = typia.assert<TeamPageProps>(usePage().props);
+  const roleTitles = useRoleTitles();
 
   const options: Option[] = ROLES.map((role) => ({
     id: role,
-    label: ROLE_TITLES[role],
+    label: roleTitles[role],
   }));
 
   const refreshMemberInfos = () => {
@@ -82,6 +87,7 @@ const AddTeamMembersSection = ({
   refreshMemberInfos: () => void;
   options: Option[];
 }) => {
+  const { t } = useTranslate();
   const emailUID = React.useId();
   const roleUID = React.useId();
 
@@ -108,12 +114,12 @@ const AddTeamMembersSection = ({
     const errors = new Map<string, string>();
 
     if (!isValidEmail(teamInvitation.email)) {
-      errors.set("email", "Please enter a valid email address");
-      showAlert("Please enter a valid email address", "error");
+      errors.set("email", t("seller.settings.team.valid_email_error"));
+      showAlert(t("seller.settings.team.valid_email_error"), "error");
       emailFieldRef.current?.focus();
     } else if (!teamInvitation.role) {
-      errors.set("role", "Please select a role");
-      showAlert("Please select a role", "error");
+      errors.set("role", t("seller.settings.team.select_role_error"));
+      showAlert(t("seller.settings.team.select_role_error"), "error");
       roleFieldRef.current?.focus();
     }
     setErrors(errors);
@@ -123,7 +129,7 @@ const AddTeamMembersSection = ({
     const result = await createTeamInvitation(teamInvitation);
     if (result.success) {
       refreshMemberInfos();
-      showAlert("Invitation sent!", "success");
+      showAlert(t("seller.settings.team.invitation_sent"), "success");
       updateTeamInvitation({ email: "", role: null });
     } else {
       showAlert(result.error_message, "error", { position: "bottom" });
@@ -137,10 +143,10 @@ const AddTeamMembersSection = ({
     <FormSection
       header={
         <>
-          <h2>Add team members</h2>
-          <div>Invite team members to help run this account.</div>
+          <h2>{t("seller.settings.team.add_team_members")}</h2>
+          <div>{t("seller.settings.team.invite_team_members_desc")}</div>
           <a href="/help/article/326-teams-and-roles" target="_blank" rel="noreferrer">
-            Learn more
+            {t("seller.settings.team.learn_more")}
           </a>
         </>
       }
@@ -154,7 +160,7 @@ const AddTeamMembersSection = ({
       >
         <Fieldset state={errors.has("email") ? "danger" : undefined}>
           <FieldsetTitle>
-            <Label htmlFor={emailUID}>Email</Label>
+            <Label htmlFor={emailUID}>{t("seller.settings.team.email")}</Label>
           </FieldsetTitle>
           <Input
             id={emailUID}
@@ -170,7 +176,7 @@ const AddTeamMembersSection = ({
         </Fieldset>
         <Fieldset state={errors.has("role") ? "danger" : undefined}>
           <FieldsetTitle>
-            <Label htmlFor={roleUID}>Role</Label>
+            <Label htmlFor={roleUID}>{t("seller.settings.team.role")}</Label>
           </FieldsetTitle>
           <Select
             ref={roleFieldRef}
@@ -192,10 +198,10 @@ const AddTeamMembersSection = ({
       <Button color="primary" className="w-fit" disabled={loading} onClick={onSubmit}>
         {loading ? (
           <>
-            <LoadingSpinner color="grey" /> Sending invitation
+            <LoadingSpinner color="grey" /> {t("seller.settings.team.sending_invitation")}
           </>
         ) : (
-          "Send invitation"
+          t("seller.settings.team.send_invitation")
         )}
       </Button>
     </FormSection>
@@ -209,6 +215,8 @@ const TeamMembersSection = ({
   memberInfos: MemberInfo[];
   refreshMemberInfos: () => void;
 }) => {
+  const { t } = useTranslate();
+  const roleTitles = useRoleTitles();
   const currentSeller = useCurrentSeller();
   const [loading, setLoading] = React.useState(false);
   const [confirming, setConfirming] = React.useState<MemberInfo | null>(null);
@@ -241,7 +249,7 @@ const TeamMembersSection = ({
         case "resend_invitation": {
           await resendInvitation(memberInfo);
           refreshMemberInfos();
-          showAlert("Invitation sent!", "success");
+          showAlert(t("seller.settings.team.invitation_sent"), "success");
           break;
         }
         default: {
@@ -250,7 +258,10 @@ const TeamMembersSection = ({
             await updateMember(memberInfo, newRole);
             refreshMemberInfos();
             showAlert(
-              `Role for ${memberInfo.name !== "" ? memberInfo.name : memberInfo.email} has changed to ${ROLE_TITLES[newRole]}`,
+              t("seller.settings.team.role_changed", {
+                name: memberInfo.name !== "" ? memberInfo.name : memberInfo.email,
+                role: roleTitles[newRole],
+              }),
               "success",
             );
             break;
@@ -265,18 +276,22 @@ const TeamMembersSection = ({
   };
 
   return (
-    <FormSection header={<h2 ref={ref}>Team members</h2>}>
+    <FormSection header={<h2 ref={ref}>{t("seller.settings.team.team_members")}</h2>}>
       {deletedMember ? (
         <Alert variant="success">
           <div className="flex flex-col justify-between sm:flex-row">
-            {deletedMember.name !== "" ? deletedMember.name : deletedMember.email} was removed from team members
+            {t("seller.settings.team.member_removed", {
+              name: deletedMember.name !== "" ? deletedMember.name : deletedMember.email,
+            })}
             <LinkButton
               onClick={asyncVoid(async () => {
                 try {
                   await restoreMember(deletedMember);
                   refreshMemberInfos();
                   showAlert(
-                    `${deletedMember.name !== "" ? deletedMember.name : deletedMember.email} was added back to the team`,
+                    t("seller.settings.team.member_restored", {
+                      name: deletedMember.name !== "" ? deletedMember.name : deletedMember.email,
+                    }),
                     "success",
                   );
                   setDeletedMember(null);
@@ -286,7 +301,7 @@ const TeamMembersSection = ({
                 }
               })}
             >
-              Undo
+              {t("seller.settings.team.undo")}
             </LinkButton>
           </div>
         </Alert>
@@ -294,8 +309,8 @@ const TeamMembersSection = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Member</TableHead>
-            <TableHead>Role</TableHead>
+            <TableHead>{t("seller.settings.team.member")}</TableHead>
+            <TableHead>{t("seller.settings.team.role")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -314,14 +329,11 @@ const TeamMembersSection = ({
                       <small className="block">{memberInfo.email}</small>
                     </div>
                     {memberInfo.is_expired ? (
-                      <WithTooltip
-                        tip="Invitation has expired. You can resend the invitation from the member's menu options."
-                        position="top"
-                      >
+                      <WithTooltip tip={t("seller.settings.team.invitation_expired_tip")} position="top">
                         <AlertShield
                           pack="filled"
                           style={{ color: "rgb(var(--warning))" }}
-                          aria-label="Invitation has expired. You can resend the invitation from the member's menu options."
+                          aria-label={t("seller.settings.team.invitation_expired_tip")}
                           className="size-5"
                         />
                       </WithTooltip>
@@ -360,11 +372,11 @@ const TeamMembersSection = ({
         <Modal
           open
           onClose={() => setConfirming(null)}
-          title="Leave team?"
+          title={t("seller.settings.team.leave_team_modal_title")}
           footer={
             <>
               <Button disabled={loading} onClick={() => setConfirming(null)}>
-                Cancel
+                {t("seller.settings.password.cancel")}
               </Button>
               <Button
                 color="danger"
@@ -377,17 +389,16 @@ const TeamMembersSection = ({
               >
                 {loading ? (
                   <>
-                    <LoadingSpinner color="grey" /> <h4>Leaving team</h4>
+                    <LoadingSpinner color="grey" /> <h4>{t("seller.settings.team.leaving_team")}</h4>
                   </>
                 ) : (
-                  <h4>Yes, leave team</h4>
+                  <h4>{t("seller.settings.team.confirm_leave_team")}</h4>
                 )}
               </Button>
             </>
           }
         >
-          Are you sure you want to leave {currentSeller?.name || ""} team? Once you leave the team you will no longer
-          have access.
+          {t("seller.settings.team.leave_team_modal_body", { name: currentSeller?.name || "" })}
         </Modal>
       ) : null}
     </FormSection>

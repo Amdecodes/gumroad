@@ -291,3 +291,5 @@ export const useTranslation = () => {
     switchLocale,
   };
 };
+
+export const useTranslate = useTranslation;

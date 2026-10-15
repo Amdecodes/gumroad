@@ -1,6 +1,7 @@
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const AccountDeletionSection = (props: Props) => {
+  const { t } = useTranslate();
   const [showConfirmationModal, setShowConfirmationModal] = React.useState(false);
 
   const performAccountDeletion = async () => {
@@ -32,56 +34,53 @@ const AccountDeletionSection = (props: Props) => {
     }
   };
 
+  const [moreInfoBefore, moreInfoAfter] = t("seller.settings.advanced.more_info_here", { link: "___LINK___" }).split(
+    "___LINK___",
+  );
+
   return (
-    <FormSection header={<h2>Danger Zone</h2>}>
+    <FormSection header={<h2>{t("seller.settings.advanced.danger_zone")}</h2>}>
       <p>
         <a href="/help/article/37-how-to-delete-your-gumroad-account" target="_blank" rel="noreferrer">
-          Deleting your account
+          {t("seller.settings.advanced.delete_account_link_text")}
         </a>{" "}
-        will permanently delete all of your products, as well as any credit card and payout information. Product files
-        are deleted too, except the files on products that customers have already bought or downloaded, which are kept
-        so those customers keep access. You will not be able to restore your account once it's deleted and you will be
-        unsubscribed from any memberships. You will also not be able to create a new account with this account's email.
+        {t("seller.settings.advanced.danger_zone_body_rest")}
       </p>
       <div>
         <Button color="danger" onClick={() => setShowConfirmationModal(true)}>
-          Delete your Gumroad account
+          {t("seller.settings.advanced.delete_gumroad_account")}
         </Button>
       </div>
 
       <Modal
         open={showConfirmationModal}
-        title="Delete account"
+        title={t("seller.settings.advanced.delete_account_modal_title")}
         onClose={() => setShowConfirmationModal(false)}
         footer={
           <>
-            <Button onClick={() => setShowConfirmationModal(false)}>Cancel</Button>
+            <Button onClick={() => setShowConfirmationModal(false)}>{t("actions.cancel")}</Button>
             <Button color="danger" onClick={() => void performAccountDeletion()}>
               {props.formatted_balance_to_forfeit_on_account_deletion
-                ? "Yes, forfeit balance and delete"
-                : "Yes, delete my account"}
+                ? t("seller.settings.advanced.yes_forfeit_and_delete")
+                : t("seller.settings.advanced.yes_delete_account")}
             </Button>
           </>
         }
       >
         <p>
           {props.formatted_balance_to_forfeit_on_account_deletion
-            ? `You have a balance of ${props.formatted_balance_to_forfeit_on_account_deletion}. To delete your account, you will need to forfeit your balance. `
+            ? t("seller.settings.advanced.balance_forfeit_note", {
+                balance: props.formatted_balance_to_forfeit_on_account_deletion,
+              })
             : null}
-          <span>
-            Deleting your account will permanently delete all of your products, as well as any credit card and payout
-            information. Product files are deleted too, except the files on products that customers have already bought
-            or downloaded, which are kept so those customers keep access. You will not be able to restore your account
-            once it's deleted and you will be unsubscribed from any memberships. You will also not be able to create a
-            new account with this account's email.
-          </span>
+          <span>{t("seller.settings.advanced.danger_zone_body")}</span>
         </p>
         <p>
-          For more information, see{" "}
+          {moreInfoBefore}
           <a href="/help/article/37-how-to-delete-your-gumroad-account" target="_blank" rel="noreferrer">
-            here
+            {t("seller.settings.advanced.here_link")}
           </a>
-          .
+          {moreInfoAfter}
         </p>
       </Modal>
     </FormSection>

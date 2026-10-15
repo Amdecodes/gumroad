@@ -4,6 +4,7 @@ import { DirectUpload } from "@rails/activestorage";
 import * as React from "react";
 import typia from "typia";
 
+import { useTranslate } from "$app/hooks/useTranslate";
 import FileUtils from "$app/utils/file";
 import { getImageDimensionsFromFile } from "$app/utils/image";
 import { asyncVoid } from "$app/utils/promise";
@@ -30,6 +31,7 @@ export type Application = {
 const ALLOWED_ICON_EXTENSIONS = ["jpeg", "jpg", "png"];
 
 const ApplicationForm = ({ application }: { application?: Application }) => {
+  const { t } = useTranslate();
   const [name, setName] = React.useState<{ value: string; error?: boolean }>({ value: application?.name ?? "" });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isGeneratingToken, setIsGeneratingToken] = React.useState(false);
@@ -78,7 +80,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
       router.put(Routes.oauth_application_path(application.id), data, {
         preserveScroll: true,
         onSuccess: () => {
-          showAlert("Application updated.", "success");
+          showAlert(t("seller.settings.advanced.application_updated"), "success");
           setIsSubmitting(false);
         },
         onError: (errors: Record<string, string | string[]>) => {
@@ -86,7 +88,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
             ? Array.isArray(errors.base)
               ? errors.base[0]
               : errors.base
-            : "Sorry, something went wrong. Please try again.";
+            : t("common.something_went_wrong");
           if (message) showAlert(message, "error");
           setIsSubmitting(false);
         },
@@ -94,7 +96,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
     } else {
       router.post(Routes.oauth_applications_path(), data, {
         onSuccess: () => {
-          showAlert("Application created.", "success");
+          showAlert(t("seller.settings.advanced.application_created"), "success");
           setIsSubmitting(false);
         },
         onError: (errors: Record<string, string | string[]>) => {
@@ -102,7 +104,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
             ? Array.isArray(errors.base)
               ? errors.base[0]
               : errors.base
-            : "Sorry, something went wrong. Please try again.";
+            : t("common.something_went_wrong");
           if (message) showAlert(message, "error");
           setIsSubmitting(false);
         },
@@ -115,7 +117,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
     if (!file) return;
     const dimensions = await getImageDimensionsFromFile(file).catch(() => null);
     if (!dimensions || !FileUtils.isFileNameExtensionAllowed(file.name, ALLOWED_ICON_EXTENSIONS)) {
-      showAlert("Invalid file type.", "error");
+      showAlert(t("seller.settings.advanced.invalid_file_type"), "error");
       return;
     }
     setIsUploadingIcon(true);
@@ -147,7 +149,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
       />
       <Fieldset>
         <FieldsetTitle>
-          <Label>Application icon</Label>
+          <Label>{t("seller.settings.advanced.application_icon")}</Label>
         </FieldsetTitle>
         <div style={{ display: "flex", gap: "var(--spacer-4)", alignItems: "flex-start" }}>
           <div className="relative">
@@ -157,7 +159,7 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
                 color="primary"
                 size="icon"
                 className="absolute top-2 right-2"
-                aria-label="Remove icon"
+                aria-label={t("seller.settings.advanced.remove_icon_aria")}
                 onClick={() => setIcon(null)}
                 disabled={isUploadingIcon || isSubmitting}
               >
@@ -166,13 +168,13 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
             ) : null}
           </div>
           <Button onClick={() => iconInputRef.current?.click()} disabled={isUploadingIcon || isSubmitting}>
-            {isUploadingIcon ? "Uploading..." : "Upload icon"}
+            {isUploadingIcon ? t("seller.settings.advanced.uploading") : t("seller.settings.advanced.upload_icon")}
           </Button>
         </div>
       </Fieldset>
       <Fieldset state={name.error ? "danger" : undefined}>
         <FieldsetTitle>
-          <Label htmlFor={`${uid}-name`}>Application name</Label>
+          <Label htmlFor={`${uid}-name`}>{t("seller.settings.advanced.application_name")}</Label>
         </FieldsetTitle>
         <Input
           id={`${uid}-name`}
@@ -184,13 +186,13 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
       </Fieldset>
       <Fieldset state={redirectUri.error ? "danger" : undefined}>
         <FieldsetTitle>
-          <Label htmlFor={`${uid}-redirectUri`}>Redirect URI</Label>
+          <Label htmlFor={`${uid}-redirectUri`}>{t("seller.settings.advanced.redirect_uri")}</Label>
         </FieldsetTitle>
         <Input
           id={`${uid}-redirectUri`}
           ref={redirectUriRef}
           placeholder="http://yourapp.com/callback"
-          title="Redirect URI must have host and scheme and no fragment."
+          title={t("seller.settings.advanced.redirect_uri_hint")}
           type="url"
           value={redirectUri.value}
           onChange={(e) => setRedirectUri({ value: e.target.value })}
@@ -201,13 +203,13 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
         <>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-uid`}>Application ID</Label>
+              <Label htmlFor={`${uid}-uid`}>{t("seller.settings.advanced.application_id")}</Label>
             </FieldsetTitle>
             <Input id={`${uid}-uid`} readOnly type="text" value={application.uid} />
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-secret`}>Application Secret</Label>
+              <Label htmlFor={`${uid}-secret`}>{t("seller.settings.advanced.application_secret")}</Label>
             </FieldsetTitle>
             <Input id={`${uid}-secret`} readOnly type="text" value={application.secret} />
           </Fieldset>
@@ -216,8 +218,8 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
             <Fieldset>
               <FieldsetTitle>
                 <Label htmlFor={`${uid}-accessToken`}>
-                  Access Token
-                  <WithTooltip tip="This is a ready-to-use access token for our API.">
+                  {t("seller.settings.advanced.access_token")}
+                  <WithTooltip tip={t("seller.settings.advanced.access_token_tip")}>
                     <span>(?)</span>
                   </WithTooltip>
                 </Label>
@@ -227,7 +229,11 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
           ) : null}
           <div className="flex gap-2">
             <Button color="accent" onClick={handleSubmit} disabled={isSubmitting || isUploadingIcon}>
-              <span>{isSubmitting ? "Updating..." : "Update application"}</span>
+              <span>
+                {isSubmitting
+                  ? t("seller.settings.advanced.updating_application")
+                  : t("seller.settings.advanced.update_application")}
+              </span>
             </Button>
 
             {!token ? (
@@ -253,7 +259,11 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
                 })}
                 disabled={isGeneratingToken}
               >
-                <span>{isGeneratingToken ? "Generating..." : "Generate access token"}</span>
+                <span>
+                  {isGeneratingToken
+                    ? t("seller.settings.advanced.generating_token")
+                    : t("seller.settings.advanced.generate_access_token")}
+                </span>
               </Button>
             ) : null}
           </div>
@@ -261,7 +271,11 @@ const ApplicationForm = ({ application }: { application?: Application }) => {
       ) : (
         <div>
           <Button color="primary" onClick={handleSubmit} disabled={isSubmitting || isUploadingIcon}>
-            <span>{isSubmitting ? "Creating..." : "Create application"}</span>
+            <span>
+              {isSubmitting
+                ? t("seller.settings.advanced.creating_application")
+                : t("seller.settings.advanced.create_application")}
+            </span>
           </Button>
         </div>
       )}

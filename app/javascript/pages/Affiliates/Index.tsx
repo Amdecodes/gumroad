@@ -5,6 +5,7 @@ import { parseISO } from "date-fns";
 import * as React from "react";
 
 import { type Affiliate, type AffiliateRequest, type AffiliateStatistics, getStatistics } from "$app/data/affiliates";
+import { useTranslate } from "$app/hooks/useTranslate";
 import { formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
 import { assertResponseError } from "$app/utils/request";
 
@@ -44,18 +45,22 @@ type Props = {
   affiliates_disabled_reason: string | null;
 };
 
-const AffiliatesNavigation = () => (
-  <Tabs>
-    <Tab asChild isSelected>
-      <Link href={Routes.affiliates_path()}>Affiliates</Link>
-    </Tab>
-    <Tab asChild isSelected={false}>
-      <Link href={Routes.onboarding_affiliates_path()}>Affiliate Signup Form</Link>
-    </Tab>
-  </Tabs>
-);
+const AffiliatesNavigation = () => {
+  const { t } = useTranslate();
+  return (
+    <Tabs>
+      <Tab asChild isSelected>
+        <Link href={Routes.affiliates_path()}>{t("seller.affiliates.affiliates_tab")}</Link>
+      </Tab>
+      <Tab asChild isSelected={false}>
+        <Link href={Routes.onboarding_affiliates_path()}>{t("seller.affiliates.affiliate_signup_form_tab")}</Link>
+      </Tab>
+    </Tabs>
+  );
+};
 
 const SearchBoxPopover = ({ initialQuery, onSearch }: { initialQuery: string; onSearch: (query: string) => void }) => {
+  const { t } = useTranslate();
   const [searchBoxOpen, setSearchBoxOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState(initialQuery);
 
@@ -75,7 +80,7 @@ const SearchBoxPopover = ({ initialQuery, onSearch }: { initialQuery: string; on
   return (
     <Popover open={searchBoxOpen} onOpenChange={setSearchBoxOpen}>
       <PopoverAnchor>
-        <PopoverTrigger aria-label="Toggle Search" asChild>
+        <PopoverTrigger aria-label={t("seller.affiliates.toggle_search_aria")} asChild>
           <Button size="icon">
             <Search className="size-5" />
           </Button>
@@ -84,7 +89,13 @@ const SearchBoxPopover = ({ initialQuery, onSearch }: { initialQuery: string; on
       <PopoverContent>
         <InputGroup>
           <Search className="size-5 text-muted" />
-          <Input value={inputValue} type="text" placeholder="Search" aria-label="Search" onChange={handleChange} />
+          <Input
+            value={inputValue}
+            type="text"
+            placeholder={t("seller.affiliates.search_placeholder")}
+            aria-label={t("seller.affiliates.search_placeholder")}
+            onChange={handleChange}
+          />
         </InputGroup>
       </PopoverContent>
     </Popover>
@@ -92,6 +103,7 @@ const SearchBoxPopover = ({ initialQuery, onSearch }: { initialQuery: string; on
 };
 
 const ApproveAllButton = () => {
+  const { t } = useTranslate();
   const { post, processing } = useForm({});
   return (
     <Button
@@ -99,7 +111,7 @@ const ApproveAllButton = () => {
       onClick={() => post(Routes.approve_all_affiliate_requests_path(), { preserveScroll: true })}
       disabled={processing}
     >
-      {processing ? "Approving..." : "Approve all"}
+      {processing ? t("seller.affiliates.approving") : t("seller.affiliates.approve_all")}
     </Button>
   );
 };
@@ -111,6 +123,7 @@ const AffiliateRequestsTable = ({
   affiliateRequests: AffiliateRequest[];
   allowApproveAll: boolean;
 }) => {
+  const { t } = useTranslate();
   const loggedInUser = useLoggedInUser();
   const userAgentInfo = useUserAgentInfo();
   const { items, thProps } = useClientSortingTableDriver(affiliateRequests, { key: "date", direction: "asc" });
@@ -135,15 +148,15 @@ const AffiliateRequestsTable = ({
         <Table>
           <TableCaption>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              Requests
+              {t("seller.affiliates.requests_caption")}
               {allowApproveAll ? <ApproveAllButton /> : null}
             </div>
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead {...thProps("name")}>Name</TableHead>
-              <TableHead {...thProps("promotion")}>Promotion</TableHead>
-              <TableHead {...thProps("date")}>Date</TableHead>
+              <TableHead {...thProps("name")}>{t("seller.affiliates.col_name")}</TableHead>
+              <TableHead {...thProps("promotion")}>{t("seller.affiliates.col_promotion")}</TableHead>
+              <TableHead {...thProps("date")}>{t("seller.affiliates.col_date")}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -166,15 +179,13 @@ const AffiliateRequestsTable = ({
                       disabled={!loggedInUser?.policies.direct_affiliate.update || processingId !== null}
                       onClick={() => updateAffiliateRequest(affiliateRequest.id, "ignore")}
                     >
-                      {processingId === affiliateRequest.id ? "Ignoring..." : "Ignore"}
+                      {processingId === affiliateRequest.id
+                        ? t("seller.affiliates.ignoring")
+                        : t("seller.affiliates.ignore")}
                     </Button>
 
                     <WithTooltip
-                      tip={
-                        affiliateRequest.state === "approved"
-                          ? "You have approved this request but the affiliate hasn't created a Gumroad account yet"
-                          : null
-                      }
+                      tip={affiliateRequest.state === "approved" ? t("seller.affiliates.approved_tooltip") : null}
                       position="bottom"
                     >
                       <Button
@@ -187,10 +198,10 @@ const AffiliateRequestsTable = ({
                         }
                       >
                         {affiliateRequest.state === "approved"
-                          ? "Approved"
+                          ? t("seller.affiliates.approved")
                           : processingId === affiliateRequest.id
-                            ? "Approving..."
-                            : "Approve"}
+                            ? t("seller.affiliates.approving")
+                            : t("seller.affiliates.approve")}
                       </Button>
                     </WithTooltip>
                   </div>
@@ -200,10 +211,10 @@ const AffiliateRequestsTable = ({
           </TableBody>
         </Table>
       ) : (
-        <Placeholder>No requests yet</Placeholder>
+        <Placeholder>{t("seller.affiliates.no_requests_yet")}</Placeholder>
       )}
 
-      {showMoreItems ? <Button onClick={showMoreItems}>Load more</Button> : null}
+      {showMoreItems ? <Button onClick={showMoreItems}>{t("seller.affiliates.load_more")}</Button> : null}
     </>
   );
 };
@@ -212,6 +223,7 @@ const formattedSalesVolumeAmount = (amountCents: number) =>
   formatPriceCentsWithCurrencySymbol("usd", amountCents, { symbolFormat: "short" });
 
 export default function AffiliatesIndex() {
+  const { t } = useTranslate();
   const props = usePage<Props>().props;
   const loggedInUser = useLoggedInUser();
   const isNavigating = useRouteLoading();
@@ -292,7 +304,7 @@ export default function AffiliatesIndex() {
   };
 
   const productName = (products: Affiliate["products"]) =>
-    products.length === 1 ? (products[0]?.name ?? "") : `${products.length} products`;
+    products.length === 1 ? (products[0]?.name ?? "") : t("seller.affiliates.n_products", { count: products.length });
   const productTooltipLabel = (products: Affiliate["products"]) =>
     products.map((product) => `${product.name} (${formatAffiliateBasisPoints(product.fee_percent ?? 0)})`).join(", ");
 
@@ -323,7 +335,7 @@ export default function AffiliatesIndex() {
   return (
     <div>
       <PageHeader
-        title="Affiliates"
+        title={t("seller.affiliates.title")}
         actions={
           <>
             <SearchBoxPopover onSearch={onSearch} initialQuery={searchQuery} />
@@ -333,7 +345,7 @@ export default function AffiliatesIndex() {
                 color="accent"
                 disabled={!loggedInUser?.policies.direct_affiliate.create || affiliates_disabled_reason !== null}
               >
-                Add affiliate
+                {t("seller.affiliates.add_affiliate")}
               </NavigationButtonInertia>
             </WithTooltip>
           </>
@@ -360,24 +372,24 @@ export default function AffiliatesIndex() {
                   <Table aria-live="polite" className={cx(isNavigating && "pointer-events-none opacity-50")}>
                     <TableCaption>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        Affiliates
+                        {t("seller.affiliates.affiliates_tab")}
                         <div className="text-base">
                           <a
                             href={Routes.export_affiliates_path()}
                             className={buttonVariants({ size: "default", color: "primary" })}
                           >
                             <ArrowInDownSquareHalf aria-hidden="true" className="size-5" />
-                            Export
+                            {t("seller.affiliates.export")}
                           </a>
                         </div>
                       </div>
                     </TableCaption>
                     <TableHeader>
                       <TableRow>
-                        <TableHead {...thProps("affiliate_user_name")}>Name</TableHead>
-                        <TableHead {...thProps("products")}>Products</TableHead>
-                        <TableHead {...thProps("fee_percent")}>Commission</TableHead>
-                        <TableHead {...thProps("volume_cents")}>Sales</TableHead>
+                        <TableHead {...thProps("affiliate_user_name")}>{t("seller.affiliates.col_name")}</TableHead>
+                        <TableHead {...thProps("products")}>{t("seller.affiliates.col_products")}</TableHead>
+                        <TableHead {...thProps("fee_percent")}>{t("seller.affiliates.col_commission")}</TableHead>
+                        <TableHead {...thProps("volume_cents")}>{t("seller.affiliates.col_sales")}</TableHead>
                         <TableHead />
                       </TableRow>
                     </TableHeader>
@@ -415,16 +427,16 @@ export default function AffiliatesIndex() {
                               <div className="flex flex-wrap gap-3 lg:justify-end">
                                 <CopyToClipboard
                                   tooltipPosition="bottom"
-                                  copyTooltip="Copy link"
+                                  copyTooltip={t("seller.affiliates.copy_link")}
                                   text={affiliate.product_referral_url}
                                 >
-                                  <Button>Copy link</Button>
+                                  <Button>{t("seller.affiliates.copy_link")}</Button>
                                 </CopyToClipboard>
 
                                 <NavigationButtonInertia
                                   href={Routes.edit_affiliate_path(affiliate.id)}
                                   size="icon"
-                                  aria-label="Edit"
+                                  aria-label={t("actions.edit")}
                                   disabled={!loggedInUser?.policies.direct_affiliate.update || isNavigating}
                                 >
                                   <Pencil className="size-5" />
@@ -435,7 +447,7 @@ export default function AffiliatesIndex() {
                                   size="icon"
                                   color="danger"
                                   onClick={() => remove(affiliate.id)}
-                                  aria-label="Delete"
+                                  aria-label={t("actions.remove")}
                                   disabled={!loggedInUser?.policies.direct_affiliate.update || isNavigating}
                                 >
                                   <Trash className="size-5" />
@@ -462,7 +474,7 @@ export default function AffiliatesIndex() {
             ) : (
               <Placeholder>
                 <PlaceholderImage src={placeholder} />
-                <h2>No affiliates found</h2>
+                <h2>{t("seller.affiliates.no_affiliates_found")}</h2>
               </Placeholder>
             )}
           </>
@@ -485,6 +497,7 @@ const AffiliateDetails = ({
   onRemove: (id: string) => void;
   isNavigating: boolean;
 }) => {
+  const { t } = useTranslate();
   const loggedInUser = useLoggedInUser();
 
   return (
@@ -502,22 +515,26 @@ const AffiliateDetails = ({
               {statistics ? (
                 <>
                   <CardContent>
-                    <h5 className="grow font-bold">Revenue</h5>
+                    <h5 className="grow font-bold">{t("seller.affiliates.col_revenue")}</h5>
                     {formattedSalesVolumeAmount(productStatistics?.volume_cents ?? 0)}
                   </CardContent>
                   <CardContent>
-                    <h5 className="grow font-bold">Sales</h5>
+                    <h5 className="grow font-bold">{t("seller.affiliates.col_sales")}</h5>
                     {productStatistics?.sales_count ?? 0}
                   </CardContent>
                 </>
               ) : null}
               <CardContent>
-                <h5 className="grow font-bold">Commission</h5>
+                <h5 className="grow font-bold">{t("seller.affiliates.col_commission")}</h5>
                 {((product.fee_percent ?? 0) / 100).toLocaleString([], { style: "percent" })}
               </CardContent>
               <CardContent>
-                <CopyToClipboard tooltipPosition="bottom" copyTooltip="Copy link" text={product.referral_url}>
-                  <Button>Copy link</Button>
+                <CopyToClipboard
+                  tooltipPosition="bottom"
+                  copyTooltip={t("seller.affiliates.copy_link")}
+                  text={product.referral_url}
+                >
+                  <Button>{t("seller.affiliates.copy_link")}</Button>
                 </CopyToClipboard>
               </CardContent>
             </section>
@@ -527,18 +544,18 @@ const AffiliateDetails = ({
       <section style={{ display: "grid", gap: "var(--spacer-4)", gridAutoFlow: "column", gridAutoColumns: "1fr" }}>
         <NavigationButtonInertia
           href={Routes.edit_affiliate_path(selectedAffiliate.id)}
-          aria-label="Edit"
+          aria-label={t("actions.edit")}
           disabled={!loggedInUser?.policies.direct_affiliate.update || isNavigating}
         >
-          Edit
+          {t("actions.edit")}
         </NavigationButtonInertia>
         <Button
           color="danger"
-          aria-label="Delete"
+          aria-label={t("actions.remove")}
           onClick={() => onRemove(selectedAffiliate.id)}
           disabled={!loggedInUser?.policies.direct_affiliate.update || isNavigating}
         >
-          Delete
+          {t("actions.remove")}
         </Button>
       </section>
     </Sheet>
