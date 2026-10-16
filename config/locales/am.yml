@@ -449,6 +449,25 @@ am:
     trending: በገበያው ላይ ያሉ
     wishlists_for_taxonomy: ለ%{taxonomy} የተዘጋጁ የምኞት ዝርዝሮች
     wishlists_you_might_like: ሊወዷቸው የሚችሉ የምኞት ዝርዝሮች
+    active_deals: ንቁ ቅናሾች
+    all: ሁሉም
+    average_discount: አማካይ ቅናሽ
+    big_savings: ትልቅ ቅናሾች
+    black_friday: ብላክ ፍራይዴይ
+    black_friday_hero_text: የፈጣሪዎች ቅናሾች ከማለቃቸው በፊት ይጠቀሙባቸው።
+    black_friday_live: ብላክ ፍራይዴይ ተጀምሯል
+    categories: ምድቦች
+    creator_made_products: በፈጣሪዎች የተሰሩ ምርቶች
+    get_black_friday_deals: የብላክ ፍራይዴይ ቅናሾችን ያግኙ
+    in_sales_so_far: እስካሁን የተሸጠ
+    keep_shopping_for: ግዢዎን ይቀጥሉ
+    more_categories: ተጨማሪ ምድቦች
+    product: ምርት
+    product_by_seller: ምርት በ%{seller_name}
+    products: ምርቶች
+    recently_viewed: በቅርብ የታዩ
+    sale: ቅናሽ
+    search_products: ምርቶችን ይፈልጉ
   disputes:
     add_to_response: በምላሽዎ ላይ ያክሉ
     additional_evidence_prompt: ማቅረብ የሚፈልጉት ተጨማሪ ማስረጃ አለ?
@@ -1301,6 +1320,80 @@ am:
       in_grace_period: የማራዘሚያ ጊዜ
       past_due: ጊዜው ያለፈበት
       renewal_due: የዕድሳት ጊዜ ደርሷል
+    gift_paid_until: "የእርስዎ %{entity} እስከ %{date} ድረስ ተከፍሏል። የእርስዎ %{entity} መታደሱን ለማረጋገጥ የራስዎን የክፍያ ዘዴ ከታች ያክሉ።"
+    renewals_paused_notice: "ራስ-ሰር እድሳት ቆሟል። እስከዚያው መዳረሻ ይኖርዎታል፤ ለመቀጠል የክፍያ ዘዴዎን ከታች ያዘምኑ።"
+  navigation:
+    affiliates: አጋሮች
+    analytics: ትንታኔ
+    breadcrumbs: ፍርፋሪዎች
+    checkout: ክፍያ
+    collaborators: ተባባሪዎች
+    community: ማህበረሰብ
+    dashboard: ዳሽቦርድ
+    discover: አስስ
+    emails: ኢሜይሎች
+    everything_else: ሌሎች በሙሉ
+    help: እገዛ
+    home: መነሻ
+    library: ቤተ-መጽሐፍት
+    logout: ውጣ
+    main: ዋና
+    new_account: አዲስ መለያ
+    pages: ገጾች
+    payouts: የሻጭ ክፍያዎች
+    products: ምርቶች
+    profile: መገለጫ
+    sales: ሽያጮች
+    settings: ቅንብሮች
+    start_selling: መሸጥ ይጀምሩ
+    teams: ቡድኖች
+    toggle_navigation: አሰሳን ቀይር
+    workflows: የስራ ፍሰቶች
+  auth:
+    and: እና
+    auth_token_sent_notice: "መለያዎን ለመጠበቅ የማረጋገጫ ቶከን ወደ %{email} ልከናል፤ ለመቀጠል እባክዎ እዚህ ያስገቡት።"
+    authentication_token: የማረጋገጫ ቶከን
+    authenticator_code: የማረጋገጫ ኮድ
+    confirm_new_password: ለማረጋገጥ ተመሳሳይ የይለፍ ቃል ያስገቡ
+    connect_app_to_gumroad: "%{app}ን ከጋምሮድ ጋር ያገናኙ"
+    create_account: መለያ ፍጠር
+    creating_account: በመፍጠር ላይ...
+    creator_stats_headline: "ዲጂታል ምርቶችን እና አባልነቶችን በጋምሮድ በመሸጥ ከ%{amount} በላይ ያገኙ ከ%{creators} በላይ ፈጣሪዎችን ይቀላቀሉ።"
+    email: ኢሜይል
+    email_reset_instructions: የዳግም ማስጀመሪያ መመሪያ የሚላክበት ኢሜይል
+    enter_authenticator_code: ከማረጋገጫ መተግበሪያዎ ኮዱን ያስገቡ።
+    enter_new_password: አዲስ የይለፍ ቃል ያስገቡ
+    enter_recovery_code: ከመልሶ ማግኛ ኮዶችዎ አንዱን ያስገቡ።
+    forgot_password_link: የይለፍ ቃልዎን ረሱ?
+    forgot_password_title: የይለፍ ቃል ረሱ
+    go_to_sign_in: ወደ መግቢያ ሂድ
+    join_referrer_on_gumroad: "%{name}ን በጋምሮድ ይቀላቀሉ"
+    log_in: ግባ
+    logging_in: በመግባት ላይ...
+    login: ግባ
+    login_with_passkey: በይለፍ ቁልፍ ይግቡ
+    passkey_error: በዚያ የይለፍ ቁልፍ ማስገባት አልቻልንም። እባክዎ እንደገና ይሞክሩ ወይም የይለፍ ቃልዎን ይጠቀሙ።
+    password: የይለፍ ቃል
+    privacy_policy: የግላዊነት ፖሊሲ
+    recovery_code: የመልሶ ማግኛ ኮድ
+    reload_page: ገጹን ዳግም ጫን
+    resend_token: የማረጋገጫ ቶከን እንደገና ላክ
+    resend_token_countdown: የማረጋገጫ ቶከን በ%{seconds} ሰከንድ ውስጥ እንደገና ላክ
+    reset_password_button: የይለፍ ቃልን ዳግም አስጀምር
+    reset_your_password: የይለፍ ቃልዎን ዳግም ያስጀምሩ
+    resetting_password: ዳግም በማስጀመር ላይ...
+    sign_up: ተመዝገብ
+    signup_and_connect_app: "ለጋምሮድ ይመዝገቡ እና %{app}ን ያገናኙ"
+    slow_connection_message: "ይህ ከተለመደው የበለጠ ጊዜ እየወሰደ ነው — የሚቀጥለውን ገጽ ለመጫን ግንኙነትዎ በጣም አዝጋሚ ሊሆን ይችላል።"
+    terms_agreement_prefix: የእኛን
+    terms_of_use: የአጠቃቀም ውሎች
+    two_factor_auth: ባለሁለት ደረጃ ማረጋገጫ
+    use_authenticator_app: የማረጋገጫ መተግበሪያ ተጠቀም
+    use_email_instead: በምትኩ ኢሜይል ተጠቀም
+    use_recovery_code: የመልሶ ማግኛ ኮድ ተጠቀም
+    waiting_for_passkey: የይለፍ ቁልፍን በመጠበቅ ላይ...
+    send: ላክ
+    sending: በመላክ ላይ...
   time:
     am: ጥዋት
     formats:

@@ -140,17 +140,18 @@ const BlackFridayBanner = ({
 }) => (
   <div className="flex h-full shrink-0 items-center gap-x-4 [&>*]:flex-shrink-0">
     <span className="mx-2 inline-block text-lg text-black">✦</span>
-    <span className="flex items-center text-xl font-medium text-black">BLACK FRIDAY IS LIVE</span>
+    <span className="flex items-center text-xl font-medium text-black">{t("discover.black_friday_live")}</span>
     {stats.active_deals_count > 0 && (
       <>
         <span className="mx-2 inline-block text-lg text-black">✦</span>
         <span className="flex items-center text-xl font-medium text-black">
-          <span className="mr-1.5 font-bold">{stats.active_deals_count.toLocaleString()}</span>ACTIVE DEALS
+          <span className="mr-1.5 font-bold">{stats.active_deals_count.toLocaleString()}</span>
+          {t("discover.active_deals")}
         </span>
       </>
     )}
     <span className="mx-2 inline-block text-lg text-black">✦</span>
-    <span className="flex items-center text-xl font-medium text-black">CREATOR-MADE PRODUCTS</span>
+    <span className="flex items-center text-xl font-medium text-black">{t("discover.creator_made_products")}</span>
     {stats.revenue_cents > 0 && (
       <>
         <span className="mx-2 inline-block text-lg text-black">✦</span>
@@ -158,17 +159,18 @@ const BlackFridayBanner = ({
           <span className="mr-1.5 font-bold">
             {formatPriceCentsWithCurrencySymbol(currencyCode, stats.revenue_cents, { symbolFormat: "short" })}
           </span>
-          IN SALES SO FAR
+          {t("discover.in_sales_so_far")}
         </span>
       </>
     )}
     <span className="mx-2 inline-block text-lg text-black">✦</span>
-    <span className="flex items-center text-xl font-medium text-black">BIG SAVINGS</span>
+    <span className="flex items-center text-xl font-medium text-black">{t("discover.big_savings")}</span>
     {stats.average_discount_percentage > 0 && (
       <>
         <span className="mx-2 inline-block text-lg text-black">✦</span>
         <span className="flex items-center text-xl font-medium text-black">
-          <span className="mr-1.5 font-bold">{stats.average_discount_percentage}%</span>AVERAGE DISCOUNT
+          <span className="mr-1.5 font-bold">{stats.average_discount_percentage}%</span>
+          {t("discover.average_discount")}
         </span>
       </>
     )}
@@ -220,7 +222,7 @@ const BlackFridayButton = ({
       <div className="absolute inset-0 z-2 rounded-sm border border-black bg-yellow transition-transform duration-150"></div>
       <div className="absolute inset-0 z-1 rounded-sm border border-black bg-red transition-transform duration-150 group-hover:translate-x-2 group-hover:translate-y-2"></div>
       <Link href={url} className={buttonClasses}>
-        Get Black Friday deals
+        {t("discover.get_black_friday_deals")}
       </Link>
     </div>
   );
@@ -401,27 +403,32 @@ function DiscoverIndex() {
             <div className="relative flex min-h-[72vh] w-full flex-col items-center justify-center bg-black">
               <img
                 src={saleImage}
-                alt="Sale"
+                alt={t("discover.sale")}
                 className="absolute top-1/2 left-40 hidden w-32 -translate-y-1/2 rotate-[-24deg] object-contain md:left-12 md:block md:w-40 lg:left-36 lg:w-48 xl:left-60 xl:w-60"
                 draggable={false}
               />
               <div className="relative">
-                <img src={blackFridayImage} alt="Black Friday" className="max-w-96 object-contain" draggable={false} />
+                <img
+                  src={blackFridayImage}
+                  alt={t("discover.black_friday")}
+                  className="max-w-96 object-contain"
+                  draggable={false}
+                />
                 <img
                   src={saleImage}
-                  alt="Sale"
+                  alt={t("discover.sale")}
                   className="absolute right-0 bottom-0 w-27.5 rotate-[16deg] object-contain md:hidden"
                   draggable={false}
                 />
               </div>
               <img
                 src={saleImage}
-                alt="Sale"
+                alt={t("discover.sale")}
                 className="absolute top-1/2 right-40 hidden w-32 -translate-y-1/2 rotate-[24deg] object-contain md:right-12 md:block md:w-40 lg:right-36 lg:w-48 xl:right-60 xl:w-60"
                 draggable={false}
               />
               <div className="font-regular mx-12 text-center text-xl text-white">
-                Snag creator-made deals <br className="block sm:hidden" /> before they're gone.
+                {t("discover.black_friday_hero_text")}
               </div>
               {!isBlackFridayPage && (
                 <div className="mt-8 text-base">

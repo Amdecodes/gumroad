@@ -573,8 +573,10 @@ export default function SubscriptionsManage() {
       {!hasSavedCard && subscription.is_gift ? (
         <CardContent>
           <Alert variant="warning" className="grow">
-            Your {subscriptionEntity} is paid up until {formattedSubscriptionEndDate}. Add your own payment method below
-            to ensure that your {subscriptionEntity} renews.
+            {t("subscriptions.gift_paid_until", {
+              entity: subscriptionEntity,
+              date: formattedSubscriptionEndDate,
+            })}
           </Alert>
         </CardContent>
       ) : null}
@@ -582,7 +584,7 @@ export default function SubscriptionsManage() {
       {subscription.payment_method_update_required ? (
         <CardContent>
           <Alert variant="warning" className="grow">
-            Automatic renewals are paused. You keep access in the meantime; update your payment method below to resume.
+            {t("subscriptions.renewals_paused_notice")}
           </Alert>
         </CardContent>
       ) : null}

@@ -671,10 +671,12 @@ export default function PayoutsIndex() {
           show_instant_payouts_notice ? (
             <Alert variant="info" role="status">
               <p>
-                To enable <strong>instant</strong> payouts,{" "}
-                <a href={Routes.settings_payments_path()}>update your payout method</a> to one of the{" "}
+                {t("seller.payouts.enable_instant_payouts_prefix")} <strong>{t("seller.payouts.instant")}</strong>{" "}
+                {t("seller.payouts.enable_instant_payouts_middle")}{" "}
+                <a href={Routes.settings_payments_path()}>{t("seller.payouts.update_payout_method")}</a>{" "}
+                {t("seller.payouts.to_one_of_the")}{" "}
                 <a href="https://docs.stripe.com/payouts/instant-payouts-banks">
-                  supported bank accounts or debit cards
+                  {t("seller.payouts.supported_bank_accounts_or_debit_cards")}
                 </a>
                 .
               </p>

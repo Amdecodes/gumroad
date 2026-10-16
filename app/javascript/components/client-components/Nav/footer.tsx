@@ -2,6 +2,8 @@ import { ArrowOutRightSquareHalf, Book, Cog, Group, Plus, Store } from "@boxicon
 import { Link } from "@inertiajs/react";
 import React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { ClientNavLink } from "$app/components/client-components/Nav";
 import { CreateBrandAccountModal } from "$app/components/CreateBrandAccountModal";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
@@ -22,13 +24,13 @@ function NavbarFooter() {
     <>
       {currentSeller?.isBuyer ? (
         <NavLink
-          text="Start selling"
+          text={t("navigation.start_selling")}
           icon={<Store pack="filled" className="size-5" />}
           href={Routes.dashboard_url(routeParams)}
         />
       ) : null}
       <ClientNavLink
-        text="Help"
+        text={t("navigation.help")}
         icon={<Book pack="filled" className="size-5" />}
         href={Routes.help_center_root_url(routeParams)}
       />
@@ -45,7 +47,7 @@ function NavbarFooter() {
           {loggedInUser?.canCreateBrandAccount ? (
             <>
               <NavLinkDropdownItem
-                text="New account"
+                text={t("navigation.new_account")}
                 icon={<Plus pack="filled" className="mx-1 size-5 shrink-0" />}
                 href="#"
                 onClick={(ev) => {
@@ -57,13 +59,13 @@ function NavbarFooter() {
             </>
           ) : null}
           <NavLinkDropdownItem
-            text="Settings"
+            text={t("navigation.settings")}
             icon={<Cog pack="filled" className="mx-1 size-5" />}
             href={Routes.settings_main_url(routeParams)}
             component={Link}
           />
           <NavLinkDropdownItem
-            text="Teams"
+            text={t("navigation.teams")}
             icon={<Group pack="filled" className="mx-1 size-5" />}
             href={Routes.settings_team_url(routeParams)}
             component={Link}
@@ -71,7 +73,7 @@ function NavbarFooter() {
           <MenuItem asChild>
             <Link href={Routes.logout_url(routeParams)} method="delete" className="all-unset">
               <ArrowOutRightSquareHalf pack="filled" className="mx-1 size-5" />
-              Logout
+              {t("navigation.logout")}
             </Link>
           </MenuItem>
         </Menu>

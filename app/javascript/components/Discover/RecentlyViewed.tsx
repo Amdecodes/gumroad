@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { CardProduct } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { Card } from "$app/components/Product/Card";
@@ -62,8 +63,8 @@ export const RecentlyViewed = ({ data }: { data?: RecentlyViewedProps | null | u
   return (
     <section className="flex flex-col gap-4">
       <header className="flex items-center justify-between">
-        <h2>Recently viewed</h2>
-        <LinkButton onClick={clear}>Clear</LinkButton>
+        <h2>{t("discover.recently_viewed")}</h2>
+        <LinkButton onClick={clear}>{t("discover.clear")}</LinkButton>
       </header>
       <ProductCardGrid>
         {products.map((product) => (

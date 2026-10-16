@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { Alert } from "$app/components/ui/Alert";
 
 // A normal auth visit resolves in about a second, so a submit still in flight after this long means
@@ -34,9 +36,9 @@ export const SlowConnectionNotice: React.FC<Props> = ({ processing, actionHref, 
 
   return (
     <Alert variant="warning">
-      This is taking longer than usual — your connection may be too slow to load the next page.{" "}
+      {t("auth.slow_connection_message")}{" "}
       <a href={actionHref ?? window.location.href} className="underline">
-        {actionLabel ?? "Reload the page"}
+        {actionLabel ?? t("auth.reload_page")}
       </a>
     </Alert>
   );

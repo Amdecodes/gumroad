@@ -618,6 +618,11 @@ export const seller = {
     scheduled_refund_executed: "ያልተከፈሉ ሽያጮችዎ ለገዢዎች ተመላሽ ተደርገዋል።",
     scheduled_refund_scheduled: "የእርስዎ ቀሪ ሂሳብ አይከፈልም። ያልተከፈሉ ሽያጮች በ {date} ለገዢዎች ተመላሽ እንዲደረጉ የጊዜ ሰሌዳ ተይዞላቸዋል።",
     scheduled_on_hold: "የእርስዎ ቀሪ ሂሳብ ታግዷል። እባክዎ ለዝርዝሩ ድጋፍ ሰጪን ያነጋግሩ።",
+    enable_instant_payouts_prefix: "ለማንቃት",
+    enable_instant_payouts_middle: "ክፍያዎችን፣",
+    update_payout_method: "የክፍያ ዘዴዎን ያዘምኑ",
+    to_one_of_the: "ወደሚደገፉት",
+    supported_bank_accounts_or_debit_cards: "የባንክ ሂሳቦች ወይም ዴቢት ካርዶች",
   },
   payments: {
     title: "ክፍያዎች",
@@ -699,8 +704,7 @@ export const seller = {
       notif_reviews: "ግምገማዎች",
       review_reminders: "የግምገማ ማሳሰቢያዎች",
       send_review_reminders: "ለደንበኞችዎ የግምገማ ማሳሰቢያ ኢሜይሎችን ይላኩ",
-      review_reminders_desc:
-        "ደንበኞች የገዙትን ምርት እንዲገመግሙ የአንድ ጊዜ የኢሜይል ማሳሰቢያ ይደርሳቸዋል። ይሄን ማጥፋት ለሁሉም ምርቶችዎ ማሳሰቢያዎችን ያስቆማል።",
+      review_reminders_desc: "ደንበኞች የገዙትን ምርት እንዲገመግሙ የአንድ ጊዜ የኢሜይል ማሳሰቢያ ይደርሳቸዋል። ይሄን ማጥፋት ለሁሉም ምርቶችዎ ማሳሰቢያዎችን ያስቆማል።",
       support: "የደንበኞች ድጋፍ",
       support_email_desc: "ይህ ኢሜይል በእያንዳንዱ ሽያጭ ደረሰኝ ላይ ይዘረዘራል።",
       support_email_leave_blank: " የመለያዎን ኢሜይል ({email}) ለመጠቀም ባዶ ይተዉት።",
@@ -732,13 +736,11 @@ export const seller = {
       show_adult_content: "የአዋቂ ይዘቶችን በጥቆማዎች እና በፍለጋ ውጤቶች ውስጥ አሳይ",
       affiliates_section: "ተባባሪዎች (Affiliates)",
       prevent_affiliates: "ሌሎች እኔን እንደ ተባባሪ እንዳይጨምሩኝ ከልክል",
-      prevent_affiliates_desc:
-        "ሲበራ፣ ሌሎች ተጠቃሚዎች እርስዎን እንደ ተባባሪ ሊጨምሩዎት ወይም የእርስዎ ተባባሪ ለመሆን ጥያቄ ማቅረብ አይችሉም።",
+      prevent_affiliates_desc: "ሲበራ፣ ሌሎች ተጠቃሚዎች እርስዎን እንደ ተባባሪ ሊጨምሩዎት ወይም የእርስዎ ተባባሪ ለመሆን ጥያቄ ማቅረብ አይችሉም።",
       sign_out_all_sessions: "ከሁሉም ንቁ ክፍለ-ጊዜዎች ይውጡ",
       sign_out_all_sessions_desc: "ይህን ክፍለ-ጊዜ ጨምሮ ከሁሉም ንቁ ክፍለ-ጊዜዎችዎ ይወጣሉ።",
       sign_out_all_sessions_modal_title: "ከሁሉም ንቁ ክፍለ-ጊዜዎች ይውጡ",
-      sign_out_all_sessions_modal_body:
-        "እርግጠኛ ነዎት ከሁሉም ንቁ ክፍለ-ጊዜዎች መውጣት ይፈልጋሉ? ከዚህም ክፍለ-ጊዜ ጭምር ይወጣሉ።",
+      sign_out_all_sessions_modal_body: "እርግጠኛ ነዎት ከሁሉም ንቁ ክፍለ-ጊዜዎች መውጣት ይፈልጋሉ? ከዚህም ክፍለ-ጊዜ ጭምር ይወጣሉ።",
       signing_out_all_sessions: "ከሁሉም ንቁ ክፍለ-ጊዜዎች በመውጣት ላይ...",
       confirm_sign_out: "አዎ፣ ውጣ",
     },
@@ -782,8 +784,7 @@ export const seller = {
       corners: "ማዕዘኖች",
       square: "ካሬ",
       button_hover_effect: "የአዝራር ማንዣበብ ውጤት",
-      button_hover_effect_desc:
-        "ጎብኚዎች ጠቋሚውን ሲያሳርፉባቸው አዝራሮች ከፍ ብለው ጥላ ያሳያሉ። የማይንቀሳቀሱ አዝራሮች እንዲሆኑ ይሄን ያጥፉ።",
+      button_hover_effect_desc: "ጎብኚዎች ጠቋሚውን ሲያሳርፉባቸው አዝራሮች ከፍ ብለው ጥላ ያሳያሉ። የማይንቀሳቀሱ አዝራሮች እንዲሆኑ ይሄን ያጥፉ።",
       pages_alert_prefix:
         "መገለጫዎን በክፍሎች ለማዋቀር ይህንን አርታዒ ይጠቀሙ። እንዲሁም በእራስዎ ወኪል ወይም በ {app_name} ወኪል ትር ሙሉ በሙሉ ብጁ ገጽ መገንባት ይችላሉ። ተዛማጅ ትዕዛዙን ለማግኘት በገጾች ስር ያለውን ",
       pages_alert_link: "መነሻ ገጽ",
@@ -791,12 +792,9 @@ export const seller = {
       help_with_profile_page: "በመገለጫ ገጼ ላይ እገዛ",
       share_title: "አጋራ",
       share_twitter_text: "{name}ን በ @{app_name} ይመልከቱ",
-      unsaved_changes_confirm:
-        "ከዚህ ገጽ ከወጡ የሚጠፉ ያልተቀመጡ ለውጦች አሉ። ቢሆንም መውጣት ይፈልጋሉ?",
-      confirm_email_before_save:
-        "በመገለጫዎ ላይ ለውጦችን ከማስቀመጥዎ በፊት የኢሜይል አድራሻዎን ({email}) ያረጋግጡ።" ,
-      add_and_confirm_email_before_save:
-        "በመገለጫዎ ላይ ለውጦችን ከማስቀመጥዎ በፊት የኢሜይል አድራሻ ያክሉ እና ያረጋግጡ።",
+      unsaved_changes_confirm: "ከዚህ ገጽ ከወጡ የሚጠፉ ያልተቀመጡ ለውጦች አሉ። ቢሆንም መውጣት ይፈልጋሉ?",
+      confirm_email_before_save: "በመገለጫዎ ላይ ለውጦችን ከማስቀመጥዎ በፊት የኢሜይል አድራሻዎን ({email}) ያረጋግጡ።",
+      add_and_confirm_email_before_save: "በመገለጫዎ ላይ ለውጦችን ከማስቀመጥዎ በፊት የኢሜይል አድራሻ ያክሉ እና ያረጋግጡ።",
       section_products: "ምርቶች",
       section_posts: "ጽሁፎች",
       section_featured_product: "ተለይቶ የቀረበ ምርት",
@@ -815,11 +813,9 @@ export const seller = {
       pages_header_desc: "እያንዳንዱ ገጽ በመገለጫዎ ላይ ትር ነው።",
       new_page: "አዲስ ገጽ",
       remove_page_confirm_title: "{name} ይወገድ?",
-      remove_page_confirm_body:
-        "ይህን ገጽ ካስወገዱ፣ ሁሉም ክፍሎቹም ይሰረዛሉ። ይህ እርምጃ ሊቀለበስ አይችልም።",
+      remove_page_confirm_body: "ይህን ገጽ ካስወገዱ፣ ሁሉም ክፍሎቹም ይሰረዛሉ። ይህ እርምጃ ሊቀለበስ አይችልም።",
       remove_section_confirm_title: "{name} ይወገድ?",
-      remove_section_confirm_body:
-        "ይህ ክፍሉን እና ቅንብሮቹን በቋሚነት ይሰርዛል። ምርቶችዎ፣ ጽሁፎችዎ እና የምኞት ዝርዝሮችዎ ላይ ተጽዕኖ አይኖረውም።",
+      remove_section_confirm_body: "ይህ ክፍሉን እና ቅንብሮቹን በቋሚነት ይሰርዛል። ምርቶችዎ፣ ጽሁፎችዎ እና የምኞት ዝርዝሮችዎ ላይ ተጽዕኖ አይኖረውም።",
       no_cancel: "አይ፣ ሰርዝ",
       yes_remove: "አዎ፣ አስወግድ",
       untitled: "ያልተሰየመ",
@@ -877,8 +873,7 @@ export const seller = {
       download: "ያውርዱ",
       done: "ተጠናቋል",
       passkeys: "የይለፍ ቁልፎች (Passkeys)",
-      passkeys_desc:
-        "የይለፍ ቁልፎች ከይለፍ ቃላት ይልቅ ቀላል እና ይበልጥ አስተማማኝ አማራጭ ናቸው። በጣት አሻራዎ፣ በፊትዎ ወይም በማያ ገጽ መቆለፊያዎ ይግቡ።",
+      passkeys_desc: "የይለፍ ቁልፎች ከይለፍ ቃላት ይልቅ ቀላል እና ይበልጥ አስተማማኝ አማራጭ ናቸው። በጣት አሻራዎ፣ በፊትዎ ወይም በማያ ገጽ መቆለፊያዎ ይግቡ።",
       passkey_name_aria: "የይለፍ ቁልፍ ስም",
       added_date: "የተጨመረው በ {date}",
       last_used_date: "ለመጨረሻ ጊዜ የተጠቀሙበት በ {date}",
@@ -919,8 +914,7 @@ export const seller = {
       member_restored: "{name} ወደ ቡድኑ ተመልሷል",
       invitation_expired_tip: "ግብዣው ጊዜው አልፎበታል። ከአባሉ የምርጫ ዝርዝር ውስጥ ግብዣውን እንደገና መላክ ይችላሉ።",
       leave_team_modal_title: "ከቡድኑ ይውጡ?",
-      leave_team_modal_body:
-        "እርግጠኛ ነዎት ከ {name} ቡድን መውጣት ይፈልጋሉ? አንዴ ከቡድኑ ከወጡ በኋላ መዳረሻ አይኖርዎትም።",
+      leave_team_modal_body: "እርግጠኛ ነዎት ከ {name} ቡድን መውጣት ይፈልጋሉ? አንዴ ከቡድኑ ከወጡ በኋላ መዳረሻ አይኖርዎትም።",
       leaving_team: "ከቡድኑ በመውጣት ላይ...",
       confirm_leave_team: "አዎ፣ ከቡድኑ ውጣ",
       valid_email_error: "እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ",
@@ -983,17 +977,15 @@ export const seller = {
       revoke_access_confirm: "የ {name} መዳረሻን መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?",
       revoking_access: "መዳረሻ በመሰረዝ ላይ...",
       yes_revoke_access: "አዎ፣ መዳረሻ ሰርዝ",
-      empty_title: "መለያዎ ምንም የተፈቀደላቸው መተግበሪያዎች የሉትም።" ,
-      empty_description:
-        "በእርስዎ ስም የ {app_name} መለያዎን እንዲደርሱ የተፈቀደላቸው መተግበሪያዎች እዚህ ይታያሉ።",
+      empty_title: "መለያዎ ምንም የተፈቀደላቸው መተግበሪያዎች የሉትም።",
+      empty_description: "በእርስዎ ስም የ {app_name} መለያዎን እንዲደርሱ የተፈቀደላቸው መተግበሪያዎች እዚህ ይታያሉ።",
       scope_account: "የመለያዎ ሙሉ መዳረሻ።",
       scope_edit_emails: "የተመልካች ኢሜይሎችን መፍጠር እና ማስተዳደር።",
       scope_edit_products: "አዳዲስ ምርቶችን መፍጠር እና ያሉትን ምርቶች ማረም።",
       scope_ifttt: "የሽያጭ መረጃዎን ይመልከቱ።",
       scope_mark_sales_as_shipped: "ሽያጮች እንደተላኩ ምልክት ማድረግ።",
       scope_refund_sales: "ለሽያጮች ተመላሽ ገንዘብ መስጠት።",
-      scope_edit_sales:
-        "ለሽያጮች ተመላሽ ገንዘብ መስጠት፣ የገዢ መዳረሻን መሰረዝ ወይም መመለስ እና ለደንበኞች የግዢ ደረሰኞችን እንደገና መላክ።",
+      scope_edit_sales: "ለሽያጮች ተመላሽ ገንዘብ መስጠት፣ የገዢ መዳረሻን መሰረዝ ወይም መመለስ እና ለደንበኞች የግዢ ደረሰኞችን እንደገና መላክ።",
       scope_unfurl: "በ Notion ውስጥ ቅድመ-ዕይታ ለማሳየት የማንኛውንም ምርት ይፋዊ መረጃ ማምጣት።",
       scope_view_profile: "የመገለጫ ውሂብዎን ይመልከቱ።",
       scope_edit_profile: "የመገለጫ ስምዎን እና ባዮዎን ያርሙ።",
@@ -1037,8 +1029,7 @@ export const seller = {
       sending_test_ping: "የሙከራ ፒንግ በመላክ ላይ...",
       seller_id_note: "ለውጭ አገልግሎቶች የእርስዎ `seller_id` {userId} ነው",
       recent_ping_deliveries: "የቅርብ ጊዜ የፒንግ ማድረሻዎች",
-      no_pings_sent_yet:
-        "እስካሁን ምንም ፒንጎች አልተላኩም። ወደ መዳረሻ ነጥብዎ የምንልካቸው የሽያጭ፣ የተመላሽ፣ የክርክር እና የደንበኝነት ዝመናዎች እዚህ ይታያሉ።",
+      no_pings_sent_yet: "እስካሁን ምንም ፒንጎች አልተላኩም። ወደ መዳረሻ ነጥብዎ የምንልካቸው የሽያጭ፣ የተመላሽ፣ የክርክር እና የደንበኝነት ዝመናዎች እዚህ ይታያሉ።",
       delivered: "ደርሷል",
       not_delivered: "አልደረሰም",
       attempt_n: "(ሙከራ {attempt})",
@@ -1075,8 +1066,7 @@ export const seller = {
         "መለያዎን መሰረዝ ሁሉንም ምርቶችዎን እንዲሁም ማንኛውንም የክሬዲት ካርድ እና የክፍያ መረጃ በቋሚነት ይሰርዛል። የምርት ፋይሎችም ይሰረዛሉ፣ ደንበኞች አስቀድመው የገዟቸው ወይም ያወረዷቸው ምርቶች ፋይሎች ሲቀሩ፣ እነዚያ ደንበኞች መዳረሻ እንዲኖራቸው ይቆያሉ። አንዴ ከተሰረዘ መለያዎን ወደነበረበት መመለስ አይችሉም እና ከማንኛውም አባልነቶች ይሰረዛሉ። እንዲሁም በዚህ መለያ ኢሜይል አዲስ መለያ መፍጠር አይችሉም።",
       delete_gumroad_account: "የ {app_name} መለያዎን ይሰርዙ",
       delete_account_modal_title: "መለያ ሰርዝ",
-      balance_forfeit_note:
-        "የ {balance} ቀሪ ሂሳብ አለዎት። መለያዎን ለመሰረዝ ቀሪ ሂሳብዎን መተው ይኖርብዎታል። ",
+      balance_forfeit_note: "የ {balance} ቀሪ ሂሳብ አለዎት። መለያዎን ለመሰረዝ ቀሪ ሂሳብዎን መተው ይኖርብዎታል። ",
       yes_forfeit_and_delete: "አዎ፣ ቀሪ ሂሳቡን ተወውና ሰርዝ",
       yes_delete_account: "አዎ፣ መለያዬን ሰርዝ",
       more_info_here: "ለተጨማሪ መረጃ {link} ይመልከቱ።",
@@ -1525,8 +1515,7 @@ export const seller = {
     ignoring: "በመተው ላይ...",
     approve: "አጽድቅ",
     approved: "ጸድቋል",
-    approved_tooltip:
-      "ይህን ጥያቄ አጽድቀዋል ነገር ግን ተባባሪው እስካሁን የ {app_name} መለያ አልፈጠረም",
+    approved_tooltip: "ይህን ጥያቄ አጽድቀዋል ነገር ግን ተባባሪው እስካሁን የ {app_name} መለያ አልፈጠረም",
     no_requests_yet: "እስካሁን ምንም ጥያቄዎች የሉም",
     load_more: "ተጨማሪ አሳይ",
     add_affiliate: "ተባባሪ አክል",
@@ -1537,8 +1526,7 @@ export const seller = {
     edit_affiliate: "ተባባሪን አርም",
     new_affiliate_header:
       "ከዚህ በታች አዲስ ተባባሪ ያክሉ እና ከተመልካቾቻቸው ጋር የሚጋሩትን ልዩ አገናኝ እንልክላቸዋለን። ተባባሪዎ ለሚያመጡት እያንዳንዱ ሽያጭ ኮሚሽን ያገኛሉ።",
-    edit_affiliate_header:
-      "የማረም ሂደቱ ከመጨመር ጋር ተመሳሳይ ነው። የተባባሪ ክፍያቸውን እና የተመደቡላቸውን ምርቶች መቀየር ይችላሉ። የተባባሪ አገናኛቸው አይቀየርም።",
+    edit_affiliate_header: "የማረም ሂደቱ ከመጨመር ጋር ተመሳሳይ ነው። የተባባሪ ክፍያቸውን እና የተመደቡላቸውን ምርቶች መቀየር ይችላሉ። የተባባሪ አገናኛቸው አይቀየርም።",
     email: "ኢሜይል",
     email_placeholder: "የ {app_name} ሻጭ ኢሜይል",
     all_products: "ሁሉም ምርቶች",
@@ -1556,26 +1544,20 @@ export const seller = {
     almost_there_desc: "ተባባሪዎችን ለመጨመር የታተመ ምርት ያስፈልግዎታል።",
     new_product: "አዲስ ምርት",
     affiliate_link_section: "የተባባሪ አገናኝ",
-    affiliate_link_desc:
-      "ማንም ሰው የተባባሪ አገናኝዎን በመጠቀም የእርስዎ ተባባሪ ለመሆን ጥያቄ ማቅረብ ይችላል። ተባባሪዎች ለሚያመጡት እያንዳንዱ ሽያጭ ኮሚሽን ያገኛሉ።",
+    affiliate_link_desc: "ማንም ሰው የተባባሪ አገናኝዎን በመጠቀም የእርስዎ ተባባሪ ለመሆን ጥያቄ ማቅረብ ይችላል። ተባባሪዎች ለሚያመጡት እያንዳንዱ ሽያጭ ኮሚሽን ያገኛሉ።",
     your_affiliate_link: "የእርስዎ የተባባሪ አገናኝ",
-    affiliate_link_warning:
-      "የተባባሪ አገናኝዎን ከማጋራትዎ በፊት ቢያንስ ለአንድ ምርት ኮሚሽኑን ማንቃት እና ማዋቀር አለብዎት።",
+    affiliate_link_warning: "የተባባሪ አገናኝዎን ከማጋራትዎ በፊት ቢያንስ ለአንድ ምርት ኮሚሽኑን ማንቃት እና ማዋቀር አለብዎት።",
     affiliate_products_section: "የተባባሪ ምርቶች",
-    affiliate_products_desc:
-      "ተባባሪዎችዎ ኮሚሽን እንዲያገኙባቸው የሚፈልጓቸውን የተወሰኑ ምርቶች ያንቁ።",
+    affiliate_products_desc: "ተባባሪዎችዎ ኮሚሽን እንዲያገኙባቸው የሚፈልጓቸውን የተወሰኑ ምርቶች ያንቁ።",
     enable_specific_products_caption: "የተወሰኑ ምርቶችን ያንቁ",
     global_affiliate_program: "የ {app_name} የተባባሪዎች ፕሮግራም",
     global_affiliate_program_desc:
       "የ {app_name} የተባባሪዎች ፕሮግራም አካል መሆን ሌሎች ሻጮች ምርቶችዎን በ {percent}% ኮሚሽን እንዲያጋሩ ያስችላቸዋል።",
     opt_out_global_program: "ከ {app_name} የተባባሪዎች ፕሮግራም ውጣ",
     apply_become_affiliate: "ለ {name} ተባባሪ ይሁኑ",
-    apply_form_desc_1:
-      "ተባባሪ ለመሆን ማመልከት ቀላል ነው። ከታች ያለውን ቅጽ ይሙሉ እና ምርቶቻቸውን እንዴት እንደሚያስተዋውቁ ለ {name} ያሳውቁ።",
-    apply_form_desc_2:
-      "ማጽደቁን ለማፋጠን እንደ ማህበራዊ ሚዲያ አድራሻዎች፣ የተመልካች ብዛት፣ የተመልካች ተሳትፎ እና የመሳሰሉትን ያካትቱ...",
-    request_submitted:
-      "ጥያቄዎ ገብቷል! ሲጸድቁ የኢሜይል ማሳወቂያ እንልክልዎታለን።",
+    apply_form_desc_1: "ተባባሪ ለመሆን ማመልከት ቀላል ነው። ከታች ያለውን ቅጽ ይሙሉ እና ምርቶቻቸውን እንዴት እንደሚያስተዋውቁ ለ {name} ያሳውቁ።",
+    apply_form_desc_2: "ማጽደቁን ለማፋጠን እንደ ማህበራዊ ሚዲያ አድራሻዎች፣ የተመልካች ብዛት፣ የተመልካች ተሳትፎ እና የመሳሰሉትን ያካትቱ...",
+    request_submitted: "ጥያቄዎ ገብቷል! ሲጸድቁ የኢሜይል ማሳወቂያ እንልክልዎታለን።",
     create_account_in_meantime:
       "እስከዚያው ድረስ፣ በኢሜይል {email} {signup_link} እና ያረጋግጡት። የ {app_name} መለያዎ ንቁ ከሆነ በኋላ የተባባሪ አገናኞችዎን ያገኛሉ።",
     create_account_link: "የ {app_name} መለያዎን ይፍጠሩ",
@@ -1608,13 +1590,12 @@ export const seller = {
     copy_utm_link: "የ UTM አገናኝ ቅዳ",
     open_action_menu_aria: "የእርምጃ ዝርዝር ክፈት",
     delete_link_title: "አገናኙ ይሰረዝ?",
-    delete_link_confirm: "አገናኙን \"{title}\" መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት? ይህ እርምጃ ሊቀለበስ አይችልም።",
+    delete_link_confirm: 'አገናኙን "{title}" መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት? ይህ እርምጃ ሊቀለበስ አይችልም።',
     deleting: "በመሰረዝ ላይ...",
     delete: "ሰርዝ",
-    no_links_found: "ለ \"{query}\" ምንም አገናኞች አልተገኙም",
+    no_links_found: 'ለ "{query}" ምንም አገናኞች አልተገኙም',
     no_links_yet: "እስካሁን ምንም አገናኞች የሉም",
-    no_links_yet_desc:
-      "የትኞቹ ምንጮች ከፍተኛ ልወጣ እና ገቢ እንደሚያመጡ ለመከታተል የ UTM አገናኞችን ይጠቀሙ",
+    no_links_yet_desc: "የትኞቹ ምንጮች ከፍተኛ ልወጣ እና ገቢ እንደሚያመጡ ለመከታተል የ UTM አገናኞችን ይጠቀሙ",
     learn_more_utm: "ስለ UTM ክትትል የበለጠ ይወቁ",
     details: "ዝርዝሮች",
     date: "ቀን",
@@ -1632,8 +1613,7 @@ export const seller = {
     short_link: "አጭር አገናኝ",
     utm_link: "የ UTM አገናኝ",
     form_desc_1: "ትራፊክዎ ከየት እንደመጣ ለመከታተል የ UTM አገናኞችን ይፍጠሩ።",
-    form_desc_2:
-      "አንዴ ከተዋቀረ፣ የትኞቹ ምንጮች ተጨማሪ ልወጣዎችን እና ገቢን እንደሚያመጡ ለማየት በቀላሉ አገናኞቹን ያጋሩ።",
+    form_desc_2: "አንዴ ከተዋቀረ፣ የትኞቹ ምንጮች ተጨማሪ ልወጣዎችን እና ገቢን እንደሚያመጡ ለማየት በቀላሉ አገናኞቹን ያጋሩ።",
     title: "ርዕስ",
     link: "አገናኝ",
     short_link_help: "ይህ ለማጋራት የእርስዎ አጭር የ UTM አገናኝ ነው",

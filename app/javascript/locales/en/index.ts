@@ -1,4 +1,5 @@
 import { admin } from "./admin";
+import { auth } from "./auth";
 import { checkout } from "./checkout";
 import { actions, common, currency } from "./common";
 import { content } from "./content";
@@ -6,6 +7,7 @@ import { discover } from "./discover";
 import { disputes } from "./disputes";
 import { errors } from "./errors";
 import { library } from "./library";
+import { navigation } from "./navigation";
 import { profile } from "./profile";
 import { receipt } from "./receipt";
 import { seller } from "./seller";
@@ -28,6 +30,8 @@ export const en = {
   content,
   profile,
   seller,
+  navigation,
+  auth,
 } as const;
 
 export type TranslationDict = typeof en;

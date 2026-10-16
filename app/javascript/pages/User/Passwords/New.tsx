@@ -1,6 +1,8 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { AuthAlert } from "$app/components/AuthAlert";
 import { Layout } from "$app/components/Authentication/Layout";
 import { SlowConnectionNotice } from "$app/components/Authentication/SlowConnectionNotice";
@@ -37,19 +39,25 @@ function ForgotPasswordPage() {
 
   return (
     <Layout
-      header={<h1>{application_name ? `Connect ${application_name} to Gumroad` : "Forgot password"}</h1>}
-      headerActions={<Link href={Routes.login_path({ next })}>Log in</Link>}
+      header={
+        <h1>
+          {application_name
+            ? t("auth.connect_app_to_gumroad", { app: application_name })
+            : t("auth.forgot_password_title")}
+        </h1>
+      }
+      headerActions={<Link href={Routes.login_path({ next })}>{t("auth.log_in")}</Link>}
     >
       <form onSubmit={handleSubmit}>
         <SocialAuth />
         <Separator>
-          <span>or</span>
+          <span>{t("common.or")}</span>
         </Separator>
         <section className="grid gap-8 py-12">
           <AuthAlert />
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={uid}>Email to send reset instructions to</Label>
+              <Label htmlFor={uid}>{t("auth.email_reset_instructions")}</Label>
             </FieldsetTitle>
             <Input
               id={uid}
@@ -62,12 +70,12 @@ function ForgotPasswordPage() {
             />
           </Fieldset>
           <Button color="primary" type="submit" disabled={form.processing}>
-            {form.processing ? "Sending..." : "Send"}
+            {form.processing ? t("auth.sending") : t("auth.send")}
           </Button>
           <SlowConnectionNotice
             processing={form.processing}
             actionHref={Routes.login_path({ next })}
-            actionLabel="Go to sign in"
+            actionLabel={t("auth.go_to_sign_in")}
           />
         </section>
       </form>

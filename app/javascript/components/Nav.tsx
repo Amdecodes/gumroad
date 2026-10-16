@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { escapeRegExp } from "$app/utils";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
 import { TeamMembership } from "$app/components/LoggedInUser";
@@ -160,7 +161,7 @@ export const Nav = ({ title, children, footer }: Props) => {
   return (
     <NavContext.Provider value={contextValue}>
       <nav
-        aria-label="Main"
+        aria-label={t("navigation.main")}
         className={classNames(
           "flex max-h-full flex-col overflow-x-hidden bg-black text-white lg:static lg:w-52 dark:text-foreground",
           { "fixed z-10 size-full": open },
@@ -168,15 +169,15 @@ export const Nav = ({ title, children, footer }: Props) => {
       >
         <div className="override grid grid-cols-[auto_1fr_auto] items-center gap-3 p-4 text-lg leading-6 lg:hidden">
           <a href={Routes.root_url()} className="no-underline">
-            <img src={logo} className="size-6" alt="Home" />
+            <img src={logo} className="size-6" alt={t("navigation.home")} />
           </a>
           <h1 className="w-full truncate text-center text-base">{title}</h1>
-          <button className="all-unset" aria-label="Toggle navigation" onClick={toggle}>
+          <button className="all-unset" aria-label={t("navigation.toggle_navigation")} onClick={toggle}>
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
         <header className="hidden p-6 lg:grid">
-          <a href={Routes.root_url()} aria-label="Dashboard" className="no-underline">
+          <a href={Routes.root_url()} aria-label={t("navigation.dashboard")} className="no-underline">
             <Logo className="w-full text-[2.5rem] leading-[1.2]" />
           </a>
         </header>
@@ -223,7 +224,7 @@ export const NavLinkDropdownMembershipItem = ({ teamMembership }: { teamMembersh
       })
       .catch((e: unknown) => {
         assertResponseError(e);
-        showAlert("Something went wrong.", "error");
+        showAlert(t("common.something_went_wrong"), "error");
       });
   };
 

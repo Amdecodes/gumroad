@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { getRootTaxonomy, getRootTaxonomyCss, getRootTaxonomyImage, Taxonomy } from "$app/utils/discover";
+import { t } from "$app/utils/i18n";
 
 import { useDomains } from "$app/components/DomainSettings";
 import { MenuItem, NestedMenu } from "$app/components/NestedMenu";
@@ -49,8 +50,8 @@ export const Nav = ({
     <div role="nav">
       <NestedMenu
         type={isDesktop ? "menubar" : "menu"}
-        moreLabel="More Categories"
-        buttonLabel="Categories"
+        moreLabel={t("discover.more_categories")}
+        buttonLabel={t("discover.categories")}
         items={menuItems}
         selectedItemKey={selectedCategory}
         onSelectItem={(item) => {
@@ -82,7 +83,7 @@ const generateTaxonomyItemsForMenu = (wholeTaxonomy: Taxonomy[], forceDomain: bo
   return [
     {
       key: "all#key",
-      label: "All",
+      label: t("discover.all"),
       href: forceDomain ? Routes.discover_url({ host: discoverDomain }) : Routes.discover_path(),
     },
     ...wholeTaxonomy.map((taxonomy): MenuItem => {

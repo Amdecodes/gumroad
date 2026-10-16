@@ -5,6 +5,7 @@ import * as React from "react";
 
 import { AutocompleteSearchResults, deleteAutocompleteSearch } from "$app/data/discover";
 import { escapeRegExp } from "$app/utils";
+import { t } from "$app/utils/i18n";
 
 import { ComboBox } from "$app/components/ComboBox";
 import { Input } from "$app/components/ui/Input";
@@ -80,8 +81,8 @@ export const Search = ({ query, setQuery }: { query?: string | undefined; setQue
             {...props}
             type="search"
             className="cursor-text!"
-            placeholder="Search products"
-            aria-label="Search products"
+            placeholder={t("discover.search_products")}
+            aria-label={t("discover.search_products")}
             value={enteredQuery}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
@@ -102,7 +103,11 @@ export const Search = ({ query, setQuery }: { query?: string | undefined; setQue
         <>
           {index === filteredResults?.recent_searches.length ? (
             <h3 className="px-4 py-2">
-              {enteredQuery ? "Products" : filteredResults.viewed ? "Keep shopping for" : "Trending"}
+              {enteredQuery
+                ? t("discover.products")
+                : filteredResults.viewed
+                  ? t("discover.keep_shopping_for")
+                  : t("discover.trending")}
             </h3>
           ) : null}
           {typeof item === "string" ? (
@@ -111,7 +116,11 @@ export const Search = ({ query, setQuery }: { query?: string | undefined; setQue
                 <Clock className="mr-2 size-5 text-muted" />
                 {highlightQuery(item)}
               </a>
-              <button onClick={() => deleteRecentSearch(item)} aria-label="Remove" className="cursor-pointer all-unset">
+              <button
+                onClick={() => deleteRecentSearch(item)}
+                aria-label={t("actions.remove")}
+                className="cursor-pointer all-unset"
+              >
                 <X className="size-5 text-muted" />
               </button>
             </div>
@@ -125,7 +134,9 @@ export const Search = ({ query, setQuery }: { query?: string | undefined; setQue
               <div>
                 {highlightQuery(item.name)}
                 <small className="block text-muted">
-                  {item.seller_name ? `Product by ${item.seller_name}` : "Product"}
+                  {item.seller_name
+                    ? t("discover.product_by_seller", { seller_name: item.seller_name })
+                    : t("discover.product")}
                 </small>
               </div>
             </a>

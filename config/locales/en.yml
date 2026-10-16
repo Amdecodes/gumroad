@@ -449,6 +449,25 @@ en:
     trending: On the market
     wishlists_for_taxonomy: Wishlists for %{taxonomy}
     wishlists_you_might_like: Wishlists you might like
+    active_deals: ACTIVE DEALS
+    all: All
+    average_discount: AVERAGE DISCOUNT
+    big_savings: BIG SAVINGS
+    black_friday: Black Friday
+    black_friday_hero_text: "Snag creator-made deals before they're gone."
+    black_friday_live: BLACK FRIDAY IS LIVE
+    categories: Categories
+    creator_made_products: CREATOR-MADE PRODUCTS
+    get_black_friday_deals: Get Black Friday deals
+    in_sales_so_far: IN SALES SO FAR
+    keep_shopping_for: Keep shopping for
+    more_categories: More Categories
+    product: Product
+    product_by_seller: "Product by %{seller_name}"
+    products: Products
+    recently_viewed: Recently viewed
+    sale: Sale
+    search_products: Search products
   disputes:
     add_to_response: Add to your response
     additional_evidence_prompt: Do you have additional evidence you'd like to provide?
@@ -1301,6 +1320,80 @@ en:
       in_grace_period: Grace Period
       past_due: Past Due
       renewal_due: Renewal Due
+    gift_paid_until: "Your %{entity} is paid up until %{date}. Add your own payment method below to ensure that your %{entity} renews."
+    renewals_paused_notice: "Automatic renewals are paused. You keep access in the meantime; update your payment method below to resume."
+  navigation:
+    affiliates: Affiliates
+    analytics: Analytics
+    breadcrumbs: Breadcrumbs
+    checkout: Checkout
+    collaborators: Collaborators
+    community: Community
+    dashboard: Dashboard
+    discover: Discover
+    emails: Emails
+    everything_else: Everything else
+    help: Help
+    home: Home
+    library: Library
+    logout: Logout
+    main: Main
+    new_account: New account
+    pages: Pages
+    payouts: Payouts
+    products: Products
+    profile: Profile
+    sales: Sales
+    settings: Settings
+    start_selling: Start selling
+    teams: Teams
+    toggle_navigation: Toggle navigation
+    workflows: Workflows
+  auth:
+    and: and
+    auth_token_sent_notice: "To protect your account, we have sent an Authentication Token to %{email}. Please enter it here to continue."
+    authentication_token: Authentication Token
+    authenticator_code: Authenticator Code
+    confirm_new_password: Enter same password to confirm
+    connect_app_to_gumroad: Connect %{app} to Gumroad
+    create_account: Create account
+    creating_account: Creating...
+    creator_stats_headline: "Join over %{creators} creators who have earned over %{amount} on Gumroad selling digital products and memberships."
+    email: Email
+    email_reset_instructions: Email to send reset instructions to
+    enter_authenticator_code: Enter the code from your authenticator app.
+    enter_new_password: Enter a new password
+    enter_recovery_code: Enter one of your recovery codes.
+    forgot_password_link: Forgot your password?
+    forgot_password_title: Forgot password
+    go_to_sign_in: Go to sign in
+    join_referrer_on_gumroad: Join %{name} on Gumroad
+    log_in: Log in
+    logging_in: Logging in...
+    login: Login
+    login_with_passkey: Log in with a passkey
+    passkey_error: We couldn't sign you in with that passkey. Please try again or use your password.
+    password: Password
+    privacy_policy: Privacy Policy
+    recovery_code: Recovery Code
+    reload_page: Reload the page
+    resend_token: Resend Authentication Token
+    resend_token_countdown: Resend Authentication Token in %{seconds}s
+    reset_password_button: Reset password
+    reset_your_password: Reset your password
+    resetting_password: Resetting...
+    sign_up: Sign up
+    signup_and_connect_app: Sign up for Gumroad and connect %{app}
+    slow_connection_message: "This is taking longer than usual — your connection may be too slow to load the next page."
+    terms_agreement_prefix: You agree to our
+    terms_of_use: Terms of Use
+    two_factor_auth: Two-Factor Authentication
+    use_authenticator_app: Use authenticator app
+    use_email_instead: Use email instead
+    use_recovery_code: Use a recovery code
+    waiting_for_passkey: Waiting for passkey...
+    send: Send
+    sending: Sending...
   time:
     am: am
     formats:

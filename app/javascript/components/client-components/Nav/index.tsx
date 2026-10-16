@@ -30,6 +30,7 @@ import * as React from "react";
 
 import { escapeRegExp } from "$app/utils";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { initTeamMemberReadOnlyAccess } from "$app/utils/team_member_read_only";
 
 import NavbarFooter from "$app/components/client-components/Nav/footer";
@@ -165,7 +166,7 @@ export const Nav = (props: Props) => {
     {
       key: "home",
       visible: true,
-      text: "Home",
+      text: t("navigation.home"),
       icon: <HomeAlt2 pack="filled" className="size-5" />,
       href: Routes.dashboard_url(routeParams),
       exactHrefMatch: true,
@@ -173,7 +174,7 @@ export const Nav = (props: Props) => {
     {
       key: "profile",
       visible: !!currentSeller,
-      text: "Profile",
+      text: t("navigation.profile"),
       icon: <Store pack="filled" className="size-5" />,
       href: Routes.profile_url(routeParams),
       exactHrefMatch: true,
@@ -183,7 +184,7 @@ export const Nav = (props: Props) => {
       // manages the full page tree (with the profile pinned as its home page).
       key: "pages",
       visible: !!currentSeller && !!loggedInUser?.policies.page.index,
-      text: "Pages",
+      text: t("navigation.pages"),
       icon: <FileDetail pack="filled" className="size-5" />,
       href: Routes.pages_url(routeParams),
       additionalPatterns: ["/pages/"],
@@ -191,7 +192,7 @@ export const Nav = (props: Props) => {
     {
       key: "products",
       visible: true,
-      text: "Products",
+      text: t("navigation.products"),
       icon: <ArchiveAlt pack="filled" className="size-5" />,
       href: Routes.products_url(routeParams),
       additionalPatterns: ["/bundles/"],
@@ -199,14 +200,14 @@ export const Nav = (props: Props) => {
     {
       key: "collaborators",
       visible: !!loggedInUser?.policies.collaborator.create,
-      text: "Collaborators",
+      text: t("navigation.collaborators"),
       icon: <Handshake pack="filled" className="size-5" />,
       href: Routes.collaborators_url(routeParams),
     },
     {
       key: "checkout",
       visible: true,
-      text: "Checkout",
+      text: t("navigation.checkout"),
       icon: <Cart pack="filled" className="size-5" />,
       href: Routes.checkout_discounts_url(routeParams),
       additionalPatterns: [Routes.checkout_form_url(routeParams), Routes.checkout_upsells_url(routeParams)],
@@ -214,7 +215,7 @@ export const Nav = (props: Props) => {
     {
       key: "emails",
       visible: true,
-      text: "Emails",
+      text: t("navigation.emails"),
       icon: <Envelope pack="filled" className="size-5" />,
       href: Routes.emails_url(routeParams),
       additionalPatterns: [Routes.followers_url(routeParams)],
@@ -222,21 +223,21 @@ export const Nav = (props: Props) => {
     {
       key: "workflows",
       visible: true,
-      text: "Workflows",
+      text: t("navigation.workflows"),
       icon: <Workflow pack="filled" className="size-5" />,
       href: Routes.workflows_url(routeParams),
     },
     {
       key: "sales",
       visible: true,
-      text: "Sales",
+      text: t("navigation.sales"),
       icon: <DollarCircle pack="filled" className="size-5" />,
       href: Routes.customers_url(routeParams),
     },
     {
       key: "analytics",
       visible: true,
-      text: "Analytics",
+      text: t("navigation.analytics"),
       icon: <BarChartBig pack="filled" className="size-5" />,
       href: Routes.sales_dashboard_url(routeParams),
       additionalPatterns: [
@@ -248,21 +249,21 @@ export const Nav = (props: Props) => {
     {
       key: "affiliates",
       visible: true,
-      text: "Affiliates",
+      text: t("navigation.affiliates"),
       icon: <Gift pack="filled" className="size-5" />,
       href: Routes.affiliates_url(routeParams),
     },
     {
       key: "payouts",
       visible: !!loggedInUser?.policies.balance.index,
-      text: "Payouts",
+      text: t("navigation.payouts"),
       icon: <Bank pack="filled" className="size-5" />,
       href: Routes.balance_url(routeParams),
     },
     {
       key: "community",
       visible: !!loggedInUser?.policies.community.index,
-      text: "Community",
+      text: t("navigation.community"),
       icon: <MessageBubble pack="filled" className="size-5" />,
       href: Routes.communities_path(),
       onClick: () => {
@@ -272,7 +273,7 @@ export const Nav = (props: Props) => {
     {
       key: "library",
       visible: currentSeller?.id === loggedInUser?.id,
-      text: "Library",
+      text: t("navigation.library"),
       icon: <BookmarkHeart pack="filled" className="size-5" />,
       href: Routes.library_url(routeParams),
       additionalPatterns: [Routes.wishlists_url(routeParams), Routes.reviews_url(routeParams)],
@@ -280,7 +281,7 @@ export const Nav = (props: Props) => {
     {
       key: "discover",
       visible: true,
-      text: "Discover",
+      text: t("navigation.discover"),
       icon: <Search className="size-5" />,
       href: discoverUrl,
       exactHrefMatch: true,
@@ -359,7 +360,7 @@ const EverythingElse = ({ children }: { children: React.ReactNode }) => {
             open && "rotate-90",
           )}
         />
-        <span className="ml-4">Everything else</span>
+        <span className="ml-4">{t("navigation.everything_else")}</span>
       </button>
       <div
         id={listId}

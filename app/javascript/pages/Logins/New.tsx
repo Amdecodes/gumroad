@@ -2,6 +2,7 @@ import { Link, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 import typia from "typia";
 
+import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { AbortError, request, ResponseError } from "$app/utils/request";
 import {
@@ -24,7 +25,7 @@ import { Input } from "$app/components/ui/Input";
 import { Label } from "$app/components/ui/Label";
 import { useOriginalLocation } from "$app/components/useOriginalLocation";
 
-const PASSKEY_ERROR = "We couldn't sign you in with that passkey. Please try again or use your password.";
+const getPasskeyError = () => t("auth.passkey_error");
 
 type PageProps = {
   email: string | null;
@@ -104,7 +105,7 @@ function LoginPage() {
             error_message?: string;
           }>(await optionsResponse.json());
           if (!optionsResponse.ok || !optionsResult.success || !optionsResult.options) {
-            throw new ResponseError(optionsResult.error_message ?? PASSKEY_ERROR);
+            throw new ResponseError(optionsResult.error_message ?? getPasskeyError());
           }
           options = optionsResult.options;
         }
@@ -124,7 +125,7 @@ function LoginPage() {
           await loginResponse.json(),
         );
         if (!loginResponse.ok || !loginResult.success || !loginResult.redirect_location) {
-          throw new ResponseError(loginResult.error_message ?? PASSKEY_ERROR);
+          throw new ResponseError(loginResult.error_message ?? getPasskeyError());
         }
 
         window.location.href = loginResult.redirect_location;
@@ -132,7 +133,7 @@ function LoginPage() {
         if (!signal?.aborted) setPasskeyLoading(false);
         if (e instanceof AbortError) return;
         if (e instanceof DOMException && (e.name === "NotAllowedError" || e.name === "AbortError")) return;
-        if (surfaceErrors) setPasskeyError(e instanceof ResponseError ? e.message : PASSKEY_ERROR);
+        if (surfaceErrors) setPasskeyError(e instanceof ResponseError ? e.message : getPasskeyError());
       }
     },
     [next],
@@ -163,19 +164,21 @@ function LoginPage() {
 
   return (
     <Layout
-      header={<h1>{application_name ? `Connect ${application_name} to Gumroad` : "Log in"}</h1>}
-      headerActions={<Link href={Routes.signup_path({ next })}>Sign up</Link>}
+      header={
+        <h1>{application_name ? t("auth.connect_app_to_gumroad", { app: application_name }) : t("auth.log_in")}</h1>
+      }
+      headerActions={<Link href={Routes.signup_path({ next })}>{t("auth.sign_up")}</Link>}
     >
       <form onSubmit={handleSubmit}>
         <SocialAuth />
         <Separator>
-          <span>or</span>
+          <span>{t("common.or")}</span>
         </Separator>
         <section className="grid gap-8 py-12">
           <AuthAlert />
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-email`}>Email</Label>
+              <Label htmlFor={`${uid}-email`}>{t("auth.email")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-email`}
@@ -189,9 +192,9 @@ function LoginPage() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-password`}>Password</Label>
+              <Label htmlFor={`${uid}-password`}>{t("auth.password")}</Label>
               <Link href={Routes.new_user_password_path({ next })} className="font-normal underline">
-                Forgot your password?
+                {t("auth.forgot_password_link")}
               </Link>
             </FieldsetTitle>
             <PasswordInput
@@ -205,14 +208,14 @@ function LoginPage() {
           </Fieldset>
           <div className="grid gap-4">
             <Button color="primary" type="submit" disabled={form.processing}>
-              {form.processing ? "Logging in..." : "Login"}
+              {form.processing ? t("auth.logging_in") : t("auth.login")}
             </Button>
             <SlowConnectionNotice processing={form.processing} />
             {passkeyLoginEnabled ? (
               <>
                 {passkeyError ? <Alert variant="danger">{passkeyError}</Alert> : null}
                 <Button type="button" onClick={handlePasskeyLogin} disabled={passkeyLoading}>
-                  {passkeyLoading ? "Waiting for passkey..." : "Log in with a passkey"}
+                  {passkeyLoading ? t("auth.waiting_for_passkey") : t("auth.login_with_passkey")}
                 </Button>
               </>
             ) : null}

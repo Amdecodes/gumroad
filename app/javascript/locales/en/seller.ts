@@ -639,6 +639,11 @@ export const seller = {
     scheduled_refund_scheduled:
       "Your balance will not be paid out. Unpaid sales are scheduled to be refunded to buyers on {date}.",
     scheduled_on_hold: "Your balance is on hold. Please contact support for details.",
+    enable_instant_payouts_prefix: "To enable",
+    enable_instant_payouts_middle: "payouts,",
+    update_payout_method: "update your payout method",
+    to_one_of_the: "to one of the",
+    supported_bank_accounts_or_debit_cards: "supported bank accounts or debit cards",
   },
   payments: {
     title: "Payments",
@@ -816,10 +821,8 @@ export const seller = {
       help_with_profile_page: "Help with my profile page",
       share_title: "Share",
       share_twitter_text: "Check out {name} on @{app_name}",
-      unsaved_changes_confirm:
-        "You have unsaved changes that will be lost if you leave this page. Leave anyway?",
-      confirm_email_before_save:
-        "Confirm your email address ({email}) before you can save changes to your profile.",
+      unsaved_changes_confirm: "You have unsaved changes that will be lost if you leave this page. Leave anyway?",
+      confirm_email_before_save: "Confirm your email address ({email}) before you can save changes to your profile.",
       add_and_confirm_email_before_save:
         "Add and confirm an email address before you can save changes to your profile.",
       section_products: "Products",
@@ -1009,16 +1012,14 @@ export const seller = {
       revoking_access: "Revoking access...",
       yes_revoke_access: "Yes, revoke access",
       empty_title: "Your account doesn't have any authorized applications.",
-      empty_description:
-        "Applications authorized to access your {app_name} account on your behalf will appear here.",
+      empty_description: "Applications authorized to access your {app_name} account on your behalf will appear here.",
       scope_account: "Full access to your account.",
       scope_edit_emails: "Create and manage your audience emails.",
       scope_edit_products: "Create new products and edit your existing products.",
       scope_ifttt: "See your sales data.",
       scope_mark_sales_as_shipped: "Mark your sales as shipped.",
       scope_refund_sales: "Refund your sales.",
-      scope_edit_sales:
-        "Refund your sales, revoke or restore buyer access, and resend purchase receipts to customers.",
+      scope_edit_sales: "Refund your sales, revoke or restore buyer access, and resend purchase receipts to customers.",
       scope_unfurl: "Fetch public information of any product to preview it in Notion.",
       scope_view_profile: "See your profile data.",
       scope_edit_profile: "Edit your profile name and bio.",
@@ -1557,8 +1558,7 @@ export const seller = {
     ignoring: "Ignoring...",
     approve: "Approve",
     approved: "Approved",
-    approved_tooltip:
-      "You have approved this request but the affiliate hasn't created a {app_name} account yet",
+    approved_tooltip: "You have approved this request but the affiliate hasn't created a {app_name} account yet",
     no_requests_yet: "No requests yet",
     load_more: "Load more",
     add_affiliate: "Add affiliate",
@@ -1594,8 +1594,7 @@ export const seller = {
     affiliate_link_warning:
       "You must enable and set up the commission for at least one product before sharing your affiliate link.",
     affiliate_products_section: "Affiliate products",
-    affiliate_products_desc:
-      "Enable specific products you want your affiliates to earn a commission with.",
+    affiliate_products_desc: "Enable specific products you want your affiliates to earn a commission with.",
     enable_specific_products_caption: "Enable specific products",
     global_affiliate_program: "{app_name} Affiliate Program",
     global_affiliate_program_desc:
@@ -1606,8 +1605,7 @@ export const seller = {
       "Applying to be an affiliate is easy. Fill out the form below and let {name} know how you'll be promoting their products.",
     apply_form_desc_2:
       "To help speed up your approval, include things like social urls, audience size, audience engagement, etc...",
-    request_submitted:
-      "Your request has been submitted! We will send you an email notification when you are approved.",
+    request_submitted: "Your request has been submitted! We will send you an email notification when you are approved.",
     create_account_in_meantime:
       "In the meantime, {signup_link} using email {email} and confirm it. You'll receive your affiliate links once your {app_name} account is active.",
     create_account_link: "create your {app_name} account",
@@ -1640,13 +1638,12 @@ export const seller = {
     copy_utm_link: "Copy UTM link",
     open_action_menu_aria: "Open action menu",
     delete_link_title: "Delete link?",
-    delete_link_confirm: "Are you sure you want to delete the link \"{title}\"? This action cannot be undone.",
+    delete_link_confirm: 'Are you sure you want to delete the link "{title}"? This action cannot be undone.',
     deleting: "Deleting...",
     delete: "Delete",
-    no_links_found: "No links found for \"{query}\"",
+    no_links_found: 'No links found for "{query}"',
     no_links_yet: "No links yet",
-    no_links_yet_desc:
-      "Use UTM links to track which sources are driving the most conversions and revenue",
+    no_links_yet_desc: "Use UTM links to track which sources are driving the most conversions and revenue",
     learn_more_utm: "Learn more about UTM tracking",
     details: "Details",
     date: "Date",
@@ -1664,8 +1661,7 @@ export const seller = {
     short_link: "Short link",
     utm_link: "UTM link",
     form_desc_1: "Create UTM links to track where your traffic is coming from.",
-    form_desc_2:
-      "Once set up, simply share the links to see which sources are driving more conversions and revenue.",
+    form_desc_2: "Once set up, simply share the links to see which sources are driving more conversions and revenue.",
     title: "Title",
     link: "Link",
     short_link_help: "This is your short UTM link to share",

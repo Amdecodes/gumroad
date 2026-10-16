@@ -1,6 +1,8 @@
 import { router, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { AuthAlert } from "$app/components/AuthAlert";
 import { Layout } from "$app/components/Authentication/Layout";
 import { SlowConnectionNotice } from "$app/components/Authentication/SlowConnectionNotice";
@@ -85,13 +87,13 @@ function TwoFactorAuthentication() {
     <Layout
       header={
         <>
-          <h1>Two-Factor Authentication</h1>
+          <h1>{t("auth.two_factor_auth")}</h1>
           <h3>
             {two_factor_method === "totp"
-              ? "Enter the code from your authenticator app."
+              ? t("auth.enter_authenticator_code")
               : two_factor_method === "recovery"
-                ? "Enter one of your recovery codes."
-                : `To protect your account, we have sent an Authentication Token to ${email}. Please enter it here to continue.`}
+                ? t("auth.enter_recovery_code")
+                : t("auth.auth_token_sent_notice", { email })}
           </h3>
         </>
       }
@@ -103,10 +105,10 @@ function TwoFactorAuthentication() {
             <FieldsetTitle>
               <Label htmlFor={uid}>
                 {two_factor_method === "totp"
-                  ? "Authenticator Code"
+                  ? t("auth.authenticator_code")
                   : two_factor_method === "recovery"
-                    ? "Recovery Code"
-                    : "Authentication Token"}
+                    ? t("auth.recovery_code")
+                    : t("auth.authentication_token")}
               </Label>
             </FieldsetTitle>
             <Input
@@ -124,7 +126,7 @@ function TwoFactorAuthentication() {
             />
           </Fieldset>
           <Button color="primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Logging in..." : "Login"}
+            {isSubmitting ? t("auth.logging_in") : t("auth.login")}
           </Button>
           <SlowConnectionNotice processing={isSubmitting || switchForm.processing} />
           {(() => {
@@ -133,8 +135,8 @@ function TwoFactorAuthentication() {
                 return (
                   <Button disabled={switchForm.processing || resendCooldown > 0} onClick={resendToken}>
                     {resendCooldown > 0
-                      ? `Resend Authentication Token in ${resendCooldown}s`
-                      : "Resend Authentication Token"}
+                      ? t("auth.resend_token_countdown", { seconds: resendCooldown })
+                      : t("auth.resend_token")}
                   </Button>
                 );
               case "totp":
@@ -144,13 +146,13 @@ function TwoFactorAuthentication() {
                       disabled={switchForm.processing}
                       onClick={() => switchForm.post(Routes.switch_to_email_two_factor_path({ user_id }))}
                     >
-                      Use email instead
+                      {t("auth.use_email_instead")}
                     </LinkButton>
                     <LinkButton
                       disabled={switchForm.processing}
                       onClick={() => switchForm.post(Routes.switch_to_recovery_two_factor_path({ user_id }))}
                     >
-                      Use a recovery code
+                      {t("auth.use_recovery_code")}
                     </LinkButton>
                   </div>
                 );
@@ -161,13 +163,13 @@ function TwoFactorAuthentication() {
                       disabled={switchForm.processing}
                       onClick={() => switchForm.post(Routes.switch_to_authenticator_two_factor_path({ user_id }))}
                     >
-                      Use authenticator app
+                      {t("auth.use_authenticator_app")}
                     </LinkButton>
                     <LinkButton
                       disabled={switchForm.processing}
                       onClick={() => switchForm.post(Routes.switch_to_email_two_factor_path({ user_id }))}
                     >
-                      Use email instead
+                      {t("auth.use_email_instead")}
                     </LinkButton>
                   </div>
                 );

@@ -1,6 +1,8 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { AuthAlert } from "$app/components/AuthAlert";
 import { Layout } from "$app/components/Authentication/Layout";
 import { SlowConnectionNotice } from "$app/components/Authentication/SlowConnectionNotice";
@@ -31,13 +33,16 @@ function PasswordReset() {
   };
 
   return (
-    <Layout header={<h1>Reset your password</h1>} headerActions={<Link href={Routes.login_path()}>Log in</Link>}>
+    <Layout
+      header={<h1>{t("auth.reset_your_password")}</h1>}
+      headerActions={<Link href={Routes.login_path()}>{t("auth.log_in")}</Link>}
+    >
       <form onSubmit={handleSubmit}>
         <section className="grid gap-8 pb-12">
           <AuthAlert />
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-password`}>Enter a new password</Label>
+              <Label htmlFor={`${uid}-password`}>{t("auth.enter_new_password")}</Label>
             </FieldsetTitle>
             <PasswordInput
               id={`${uid}-password`}
@@ -50,7 +55,7 @@ function PasswordReset() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-password-confirmation`}>Enter same password to confirm</Label>
+              <Label htmlFor={`${uid}-password-confirmation`}>{t("auth.confirm_new_password")}</Label>
             </FieldsetTitle>
             <PasswordInput
               id={`${uid}-password-confirmation`}
@@ -61,12 +66,12 @@ function PasswordReset() {
             />
           </Fieldset>
           <Button color="primary" type="submit" disabled={form.processing}>
-            {form.processing ? "Resetting..." : "Reset password"}
+            {form.processing ? t("auth.resetting_password") : t("auth.reset_password_button")}
           </Button>
           <SlowConnectionNotice
             processing={form.processing}
             actionHref={Routes.login_path()}
-            actionLabel="Go to sign in"
+            actionLabel={t("auth.go_to_sign_in")}
           />
         </section>
       </form>

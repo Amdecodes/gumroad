@@ -1,6 +1,7 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
 import { formatPrice } from "$app/utils/price";
 
 import { AuthAlert } from "$app/components/AuthAlert";
@@ -60,23 +61,29 @@ function SignupPage() {
   };
 
   const headerText = referrer
-    ? `Join ${referrer.name} on Gumroad`
+    ? t("auth.join_referrer_on_gumroad", { name: referrer.name })
     : application_name
-      ? `Sign up for Gumroad and connect ${application_name}`
-      : `Join over ${number_of_creators.toLocaleString()} creators who have earned over ${formatPrice("$", total_made, 0, { noCentsIfWhole: true })} on Gumroad selling digital products and memberships.`;
+      ? t("auth.signup_and_connect_app", { app: application_name })
+      : t("auth.creator_stats_headline", {
+          creators: number_of_creators.toLocaleString(),
+          amount: formatPrice("$", total_made, 0, { noCentsIfWhole: true }),
+        });
 
   return (
-    <Layout header={<h1>{headerText}</h1>} headerActions={<Link href={Routes.login_path({ next })}>Log in</Link>}>
+    <Layout
+      header={<h1>{headerText}</h1>}
+      headerActions={<Link href={Routes.login_path({ next })}>{t("auth.log_in")}</Link>}
+    >
       <form onSubmit={handleSubmit}>
         <SocialAuth />
         <Separator>
-          <span>or</span>
+          <span>{t("common.or")}</span>
         </Separator>
         <section className="grid gap-8 py-12">
           <AuthAlert />
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-email`}>Email</Label>
+              <Label htmlFor={`${uid}-email`}>{t("auth.email")}</Label>
             </FieldsetTitle>
             <Input
               id={`${uid}-email`}
@@ -88,7 +95,7 @@ function SignupPage() {
           </Fieldset>
           <Fieldset>
             <FieldsetTitle>
-              <Label htmlFor={`${uid}-password`}>Password</Label>
+              <Label htmlFor={`${uid}-password`}>{t("auth.password")}</Label>
             </FieldsetTitle>
             <PasswordInput
               id={`${uid}-password`}
@@ -98,16 +105,16 @@ function SignupPage() {
             />
           </Fieldset>
           <Button color="primary" type="submit" disabled={form.processing}>
-            {form.processing ? "Creating..." : "Create account"}
+            {form.processing ? t("auth.creating_account") : t("auth.create_account")}
           </Button>
           <SlowConnectionNotice
             processing={form.processing}
             actionHref={Routes.login_path({ next })}
-            actionLabel="Go to sign in"
+            actionLabel={t("auth.go_to_sign_in")}
           />
           <p>
-            You agree to our <a href="https://gumroad.com/terms">Terms of Use</a> and{" "}
-            <a href="https://gumroad.com/privacy">Privacy Policy</a>.
+            {t("auth.terms_agreement_prefix")} <a href="https://gumroad.com/terms">{t("auth.terms_of_use")}</a>{" "}
+            {t("auth.and")} <a href="https://gumroad.com/privacy">{t("auth.privacy_policy")}</a>.
           </p>
         </section>
       </form>

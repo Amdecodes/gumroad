@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { ProductNativeType } from "$app/parsers/product";
+import { t } from "$app/utils/i18n";
 
 import type { Creator, Result } from "$app/components/Checkout/cartState";
 import { useState } from "$app/components/Checkout/payment";
@@ -25,13 +26,13 @@ export const TemporaryLibrary = ({ results, canBuyerSignUp }: { results: Result[
   const [state] = useState();
 
   useRunOnce(() => {
-    showAlert(`Your purchase was successful! We sent a receipt to ${state.email}.`, "success");
+    showAlert(t("library.purchase_successful_receipt_sent", { email: state.email }), "success");
   });
 
   if (state.status.type !== "finished") return null;
   return (
     <div>
-      <PageHeader title="Library" />
+      <PageHeader title={t("navigation.library")} />
       <section className="p-4 md:p-8">
         <div className="grid grid-cols-1 items-start gap-x-16 gap-y-8 lg:grid-cols-[var(--grid-cols-sidebar)]">
           {!user && canBuyerSignUp ? (

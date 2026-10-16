@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
 import { getRootTaxonomy, getRootTaxonomyCss, Taxonomy } from "$app/utils/discover";
+import { t } from "$app/utils/i18n";
 
 import { NavigationButton } from "$app/components/Button";
 import { CartNavigationButton } from "$app/components/Checkout/CartNavigationButton";
@@ -22,11 +23,11 @@ const UserActionButtons: React.FC = () => {
     return (
       <>
         <NavigationButton href={Routes.library_url()} className="flex-1 lg:flex-none">
-          <BookmarkHeart pack="filled" className="size-5" /> Library
+          <BookmarkHeart pack="filled" className="size-5" /> {t("navigation.library")}
         </NavigationButton>
         {currentSeller.has_published_products ? null : (
           <NavigationButton href={Routes.products_url()} color="primary" className="flex-1 lg:flex-none">
-            Start selling
+            {t("navigation.start_selling")}
           </NavigationButton>
         )}
       </>
@@ -36,10 +37,10 @@ const UserActionButtons: React.FC = () => {
   return (
     <>
       <NavigationButton href={Routes.login_url()} className="flex-1 lg:flex-none">
-        Log in
+        {t("auth.log_in")}
       </NavigationButton>
       <NavigationButton href={Routes.signup_url()} color="primary" className="flex-1 lg:flex-none">
-        Start selling
+        {t("navigation.start_selling")}
       </NavigationButton>
     </>
   );
@@ -152,7 +153,7 @@ export const Layout: React.FC<{
   );
   const cartButton = <CartNavigationButton className="link-button shrink-0" />;
   const avatarElement = currentSeller ? (
-    <a href={Routes.dashboard_url({ host: appDomain })} aria-label="Dashboard" className="shrink-0">
+    <a href={Routes.dashboard_url({ host: appDomain })} aria-label={t("navigation.dashboard")} className="shrink-0">
       <Avatar src={currentSeller.avatarUrl} />
     </a>
   ) : null;
@@ -223,7 +224,7 @@ const TaxonomyCategoryBreadcrumbs = ({
   taxonomies: Taxonomy[];
   onClickTaxonomy: (taxonomySlugPath?: string) => void;
 }) => (
-  <div role="navigation" className="mt-4" aria-label="Breadcrumbs">
+  <div role="navigation" className="mt-4" aria-label={t("navigation.breadcrumbs")}>
     <ol
       itemScope
       itemType="https://schema.org/BreadcrumbList"
