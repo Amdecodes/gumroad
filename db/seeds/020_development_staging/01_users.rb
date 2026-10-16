@@ -49,3 +49,16 @@ TeamMembership::ROLES.excluding(TeamMembership::ROLE_OWNER).each do |role|
   user.create_owner_membership_if_needed!
   user.user_memberships.create!(user:, seller:, role:)
 end
+
+admin = User.find_by(email: "admin@gumroad.com")
+if admin.blank?
+  admin = User.new
+  admin.email = "admin@gumroad.com"
+  admin.name = "Gumroad Admin"
+  admin.username = "gumadmin"
+  admin.confirmed_at = Time.current
+  admin.is_team_member = true
+  admin.user_risk_state = "compliant"
+  admin.password = "password"
+  admin.save!(validate: false)
+end

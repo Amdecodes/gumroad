@@ -57,13 +57,15 @@ export type MarketingWorkflow = {
   created_at: string;
 };
 
+export type MarketingTab = "overview" | "offers" | "affiliates" | "audience" | "workflows";
+
 export type MarketingIndexProps = {
   metrics: MarketingMetrics;
   offers: MarketingOffer[];
   affiliates: MarketingAffiliate[];
   audience_samples: MarketingAudience[];
   workflows: MarketingWorkflow[];
-  active_tab?: string;
+  active_tab?: MarketingTab;
 };
 
 const formatDate = (isoString?: string | null) => {
@@ -88,9 +90,7 @@ export default function MarketingIndex({
   workflows,
   active_tab = "overview",
 }: MarketingIndexProps) {
-  const [tab, setTab] = React.useState<"overview" | "offers" | "affiliates" | "audience" | "workflows">(
-    (active_tab as any) || "overview",
-  );
+  const [tab, setTab] = React.useState<MarketingTab>(active_tab);
 
   return (
     <AdminLayout currentPath="/admin/marketing">
@@ -146,17 +146,19 @@ export default function MarketingIndex({
         {/* Navigation Tabs */}
         <div className="border-b border-border">
           <nav className="flex space-x-4" aria-label="Marketing Tabs">
-            {[
-              { id: "overview", label: "Overview" },
-              { id: "offers", label: `Discounts (${offers.length})` },
-              { id: "affiliates", label: `Affiliates (${affiliates.length})` },
-              { id: "audience", label: `Audience (${audience_samples.length})` },
-              { id: "workflows", label: `Campaigns (${workflows.length})` },
-            ].map((t) => (
+            {(
+              [
+                { id: "overview", label: "Overview" },
+                { id: "offers", label: `Discounts (${offers.length})` },
+                { id: "affiliates", label: `Affiliates (${affiliates.length})` },
+                { id: "audience", label: `Audience (${audience_samples.length})` },
+                { id: "workflows", label: `Campaigns (${workflows.length})` },
+              ] as const
+            ).map((t) => (
               <button
                 key={t.id}
                 type="button"
-                onClick={() => setTab(t.id as any)}
+                onClick={() => setTab(t.id)}
                 className={`border-b-2 px-2 py-3 text-sm font-medium transition-colors ${
                   tab === t.id
                     ? "border-accent font-semibold text-accent"

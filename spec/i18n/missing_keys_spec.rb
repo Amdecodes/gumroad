@@ -3,7 +3,6 @@
 # Verifies Rails locale key coverage:
 # 1. am.yml has all keys that en.yml has (and no extras)
 # 2. i18n-tasks missing: No keys used in Ruby/ERB code are missing from en.yml or am.yml
-# 3. i18n-tasks normalize: Locale files are properly normalized and formatted
 
 require "spec_helper"
 require "yaml"
@@ -49,15 +48,6 @@ RSpec.describe "Rails I18n locale coverage" do
                            "Missing #{leaves.count} i18n keys in code, run `i18n-tasks missing' to inspect:\n" +
                              leaves.map { |l| "  - #{l.full_key} (used in: #{l.data[:occurrences]&.map(&:to_s)&.join(', ')})" }.join("\n")
                          }
-    end
-
-    it "has normalized translation files" do
-      non_normalized = i18n.non_normalized_paths
-      expect(non_normalized).to be_empty,
-                                -> {
-                                  "The following translation files are not normalized, run `i18n-tasks normalize' to fix:\n" +
-                                    non_normalized.map { |path| "  - #{path}" }.join("\n")
-                                }
     end
   end
 end

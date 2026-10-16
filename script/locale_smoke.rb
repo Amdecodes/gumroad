@@ -8,6 +8,8 @@
 #   bundle exec ruby script/locale_smoke.rb
 
 require "bundler/setup"
+require "digest"
+require "set"
 
 ENV["RAILS_ENV"] ||= "development"
 ENV["VITE_RUBY_DEV_SERVER_ENABLED"] = "false"
@@ -43,6 +45,7 @@ rescue => e
       /library?locale=am
       /dashboard?locale=am
       /products?locale=am
+      /settings/payments?locale=am
       /admin?locale=am
   ROUTES
   exit 1
@@ -53,8 +56,40 @@ VALID_REQUEST_HOSTS << "127.0.0.1" unless VALID_REQUEST_HOSTS.include?("127.0.0.
 VALID_REQUEST_HOSTS << "localhost" unless VALID_REQUEST_HOSTS.include?("localhost")
 
 # Disable external asset host so Capybara serves assets locally from Puma
-Rails.application.config.asset_host = nil
+module NoAssetHostHelper
+  def compute_asset_host(source = "", options = {})
+    nil
+  end
+end
+ActionView::Base.prepend(NoAssetHostHelper)
+ActionView::Helpers::AssetUrlHelper.prepend(NoAssetHostHelper)
+
+Rails.application.reloader.to_prepare do
+  Rails.application.config.asset_host = nil
+  Rails.application.config.action_controller.asset_host = nil
+  ActionController::Base.config.asset_host = nil
+  ApplicationController.config.asset_host = nil
+  ActionView::Base.prepend(NoAssetHostHelper)
+  ActionView::Helpers::AssetUrlHelper.prepend(NoAssetHostHelper)
+end
+
+ApplicationController.config.asset_host = nil
+ActionController::Base.config.asset_host = nil
 ActionController::Base.asset_host = nil
+Rails.application.config.action_controller.asset_host = nil
+Rails.application.config.asset_host = nil
+cfg = ViteRuby.instance.config.instance_variable_get(:@config).dup
+cfg["asset_host"] = nil
+ViteRuby.instance.config.instance_variable_set(:@config, cfg.freeze)
+ViteRuby.instance.config.define_singleton_method(:asset_host) { nil }
+
+# Sanitize baked-in asset host in Vite chunks for headless Capybara
+Dir.glob(Rails.root.join("public/vite-dev/assets/*.js")).each do |file|
+  content = File.read(file)
+  if content.include?("http://app.localhost:3000/vite-dev/")
+    File.write(file, content.gsub("http://app.localhost:3000/vite-dev/", "/vite-dev/"))
+  end
+end
 
 require "capybara"
 require "capybara/dsl"
@@ -82,6 +117,11 @@ class LocaleSmokeRunner
   include Capybara::DSL
 
   SCREENSHOT_DIR = Rails.root.join("tmp/locale_screenshots").freeze
+
+  KNOWN_CANONICAL_REDIRECTS = {
+    "/settings/profile" => "/profile",
+    "/analytics" => "/dashboard/sales"
+  }.freeze
 
   FIND_UNTRANSLATED_JS = <<~JS
     (function() {
@@ -134,26 +174,61 @@ class LocaleSmokeRunner
       var viewportWidth = window.innerWidth;
       if (docWidth > viewportWidth + 4) {
         issues.push({
+          key: "horizontal_viewport_overflow",
           type: "horizontal_overflow",
           detail: "Document scrollWidth (" + docWidth + "px) exceeds viewport (" + viewportWidth + "px) by " + (docWidth - viewportWidth) + "px"
         });
       }
 
-      // 2. Clipped text elements (overflow: hidden with scrollWidth > clientWidth)
-      var elements = document.querySelectorAll('button, a, h1, h2, h3, h4, h5, h6, span, p, label, th, td');
+      // Structural DOM signature for cross-locale comparison
+      function getSignature(el) {
+        var path = [];
+        var curr = el;
+        while (curr && curr !== document.body && curr !== document.documentElement) {
+          var tag = curr.tagName.toLowerCase();
+          var idx = 0;
+          if (curr.parentElement) {
+            for (var i = 0; i < curr.parentElement.children.length; i++) {
+              if (curr.parentElement.children[i] === curr) { idx = i; break; }
+            }
+          }
+          var id = curr.id ? ('#' + curr.id) : '';
+          path.unshift(tag + id + ':nth-child(' + (idx + 1) + ')');
+          curr = curr.parentElement;
+        }
+        return path.join(' > ');
+      }
+
+      // 2. Clipped elements
+      var elements = document.querySelectorAll('button, a, h1, h2, h3, h4, h5, h6, span, p, label, th, td, div');
       for (var i = 0; i < elements.length; i++) {
         var el = elements[i];
         if (el.children.length > 2) continue;
         var style = window.getComputedStyle(el);
         if (style.display === 'none' || style.visibility === 'hidden') continue;
-        if (style.overflow === 'hidden' || style.overflowX === 'hidden' || style.textOverflow === 'ellipsis') {
+
+        var isButtonOrLabel = el.matches('button, label, [role="button"], input[type="button"], input[type="submit"]') ||
+                              el.closest('button, label, [role="button"]') !== null;
+
+        var hasEllipsis = style.textOverflow === 'ellipsis';
+        var hasOverflowHidden = style.overflow === 'hidden' || style.overflowX === 'hidden';
+
+        // Ignore intended text-overflow: ellipsis unless it hides a button or form label
+        if (hasEllipsis && !isButtonOrLabel) {
+          continue;
+        }
+
+        if (hasEllipsis || hasOverflowHidden) {
           if (el.scrollWidth > el.clientWidth + 2 && el.clientWidth > 0) {
+            var sig = getSignature(el);
             issues.push({
+              key: sig,
               type: "text_clipped",
               tag: el.tagName.toLowerCase(),
               text: el.textContent.trim().substring(0, 50),
               clientWidth: el.clientWidth,
-              scrollWidth: el.scrollWidth
+              scrollWidth: el.scrollWidth,
+              isButtonOrLabel: isButtonOrLabel
             });
           }
         }
@@ -164,6 +239,7 @@ class LocaleSmokeRunner
 
   BUYER_EMAIL   = "gumbuyer0@gumroad.com"
   SELLER_EMAIL  = "seller@gumroad.com"
+  ADMIN_EMAIL   = "admin@gumroad.com"
   PASSWORD      = "password"
 
   def run
@@ -171,22 +247,35 @@ class LocaleSmokeRunner
 
     buyer  = User.find_by(email: BUYER_EMAIL)
     seller = User.find_by(email: SELLER_EMAIL)
+    admin  = User.find_by(email: ADMIN_EMAIL)
+
+    if admin.nil?
+      admin = User.new(
+        email: ADMIN_EMAIL,
+        name: "Gumroad Admin",
+        username: "gumadmin",
+        confirmed_at: Time.current,
+        is_team_member: true,
+        user_risk_state: "compliant",
+        password: PASSWORD
+      )
+      admin.save!(validate: false)
+    end
 
     if buyer.nil? || seller.nil?
-      warn "Seeded users not found in database. Run: bundle exec rails db:seed"
+      warn "Seeded buyer/seller not found in database. Run: bundle exec rails db:seed"
       exit 1
     end
 
     # Pre-authorize localhost IP for 2FA to prevent OTP challenges during automated smoke
-    buyer.add_two_factor_authenticated_ip!("127.0.0.1")
-    seller.add_two_factor_authenticated_ip!("127.0.0.1")
+    [buyer, seller, admin].each { |u| u.add_two_factor_authenticated_ip!("127.0.0.1") }
 
     puts "============================================================"
     puts "Localization Verification: Browser Smoke Script"
     puts "============================================================"
     puts "Found seeded buyer:  #{buyer.email}"
     puts "Found seeded seller: #{seller.email}"
-    puts "Found seeded admin:  #{seller.email} (is_team_member: #{seller.is_team_member?})"
+    puts "Found seeded admin:  #{admin.email} (is_team_member: #{admin.is_team_member?})"
     puts
 
     persona_routes = [
@@ -222,7 +311,7 @@ class LocaleSmokeRunner
       {
         role: "Admin",
         login: true,
-        email: SELLER_EMAIL,
+        email: ADMIN_EMAIL,
         routes: [
           "/admin?locale=pseudo",
           "/admin/creators?locale=pseudo",
@@ -233,6 +322,8 @@ class LocaleSmokeRunner
     ]
 
     untranslated_report = {}
+    failed_routes       = {}
+    route_final_urls    = {}
     all_layout_issues   = {}
 
     puts "------------------------------------------------------------"
@@ -242,20 +333,44 @@ class LocaleSmokeRunner
     persona_routes.each do |persona|
       puts "\n[Persona: #{persona[:role]}]"
       if persona[:login]
-        login_user(persona[:email], PASSWORD)
+        first_path = URI.parse(persona[:routes].first).path
+        login_user(persona[:email], PASSWORD, next_path: first_path)
       else
         logout_user
       end
 
       persona[:routes].each do |route|
-        print "  Scanning #{route} ... "
+        puts "\n  Requesting #{route} ..."
         visit_route(route)
+
+        final_url   = page.current_url
+        final_path  = page.current_path
+        page_title  = page.title
+        route_final_urls[route] = { final_url:, final_path:, page_title: }
+
+        puts "    Final URL: #{final_url}"
+        puts "    Title:     \"#{page_title}\""
+
+        expected_path = URI.parse(route).path
+        canonical_expected = KNOWN_CANONICAL_REDIRECTS[expected_path] || expected_path
+
+        # Assert final URL path equals requested route; fail if redirected to /login
+        if final_path == "/login" && expected_path != "/login"
+          puts "    ✗ FAILED (redirected to /login — unauthenticated or unauthorized)"
+          failed_routes[route] = "Redirected to /login (expected #{expected_path})"
+          next
+        elsif final_path != expected_path && final_path != canonical_expected
+          puts "    ✗ FAILED (path mismatch: expected #{expected_path}, got #{final_path})"
+          failed_routes[route] = "Path mismatch: expected #{expected_path}, got #{final_path}"
+          next
+        end
+
         raw = page.evaluate_script(FIND_UNTRANSLATED_JS)
         texts = raw.is_a?(Array) ? raw : []
         untranslated_report[route] = texts
-        puts "#{texts.empty? ? '✓ 0 untranslated' : "✗ #{texts.size} untranslated"}"
-        texts.first(10).each { |t| puts "      • #{t}" }
-        puts "      ... and #{texts.size - 10} more" if texts.size > 10
+        puts "    Status:    #{texts.empty? ? '✓ 0 untranslated' : "✗ #{texts.size} untranslated"}"
+        texts.first(8).each { |t| puts "      • #{t}" }
+        puts "      ... and #{texts.size - 8} more" if texts.size > 8
       end
     end
 
@@ -264,20 +379,24 @@ class LocaleSmokeRunner
     puts "------------------------------------------------------------"
 
     screenshot_routes = [
-      { role: "Public", login: false, route: "/discover?locale=am", label: "discover_am" },
-      { role: "Public", login: false, route: "/login?locale=am",    label: "login_am" },
-      { role: "Buyer",  login: true,  email: BUYER_EMAIL,  route: "/library?locale=am",   label: "buyer_library_am" },
-      { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/dashboard?locale=am", label: "seller_dashboard_am" },
-      { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/products?locale=am",  label: "seller_products_am" },
-      { role: "Admin",  login: true,  email: SELLER_EMAIL, route: "/admin?locale=am",     label: "admin_overview_am" }
+      { role: "Public", login: false, route: "/discover?locale=am",          label: "discover_am" },
+      { role: "Public", login: false, route: "/login?locale=am",             label: "login_am" },
+      { role: "Buyer",  login: true,  email: BUYER_EMAIL,  route: "/library?locale=am",            label: "buyer_library_am" },
+      { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/dashboard?locale=am",          label: "seller_dashboard_am" },
+      { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/products?locale=am",           label: "seller_products_am" },
+      { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/settings/payments?locale=am",   label: "seller_payments_am" },
+      { role: "Admin",  login: true,  email: ADMIN_EMAIL,  route: "/admin?locale=am",              label: "admin_overview_am" }
     ]
 
     saved_screenshots = []
+    screenshot_hashes = Hash.new { |h, k| h[k] = {} } # width => { sha256 => { route:, label:, file: } }
+    duplicate_errors  = []
 
     screenshot_routes.each do |item|
       puts "\n[#{item[:role]}] #{item[:route]}"
       if item[:login]
-        login_user(item[:email], PASSWORD)
+        target_path = URI.parse(item[:route]).path
+        login_user(item[:email], PASSWORD, next_path: target_path)
       else
         logout_user
       end
@@ -287,10 +406,22 @@ class LocaleSmokeRunner
         if file
           saved_screenshots << file
           puts "  📷 #{width}px -> #{file.basename}"
+
+          # SHA-256 byte-identical collision detection across different routes
+          sha = Digest::SHA256.file(file.to_s).hexdigest
+          existing = screenshot_hashes[width][sha]
+          if existing && existing[:route] != item[:route]
+            error_msg = "Duplicate screenshot at #{width}px: #{file.basename} is byte-identical to #{existing[:file].basename} (SHA-256: #{sha[0, 12]}...)"
+            duplicate_errors << error_msg
+            puts "     ❌ #{error_msg}"
+          else
+            screenshot_hashes[width][sha] = { route: item[:route], label: item[:label], file: }
+          end
         end
+
         if issues.any?
           all_layout_issues["#{item[:route]} @ #{width}px"] = issues
-          puts "     ⚠️  #{issues.size} layout issue(s) detected:"
+          puts "     ⚠️  #{issues.size} Amharic-specific layout issue(s) detected:"
           issues.first(5).each do |issue|
             if issue["type"] == "horizontal_overflow"
               puts "        - Horizontal overflow: #{issue['detail']}"
@@ -298,6 +429,8 @@ class LocaleSmokeRunner
               puts "        - Text clipped in <#{issue['tag']}>: \"#{issue['text']}\" (client: #{issue['clientWidth']}px, scroll: #{issue['scrollWidth']}px)"
             end
           end
+        else
+          puts "     ✓ Layout clean (no Amharic-specific clipping or overflow)"
         end
       end
     end
@@ -306,19 +439,33 @@ class LocaleSmokeRunner
     puts "Final Localization Verification Summary"
     puts "============================================================"
     total_untranslated = untranslated_report.values.sum(&:size)
-    puts "Total routes checked: #{untranslated_report.size}"
-    puts "Total untranslated text nodes: #{total_untranslated}"
-    puts "Total screenshots captured:   #{saved_screenshots.size}"
-    puts "Total layout issues detected: #{all_layout_issues.values.sum(&:size)}"
+    puts "Total routes checked:        #{untranslated_report.size + failed_routes.size}"
+    puts "Routes passed path check:    #{untranslated_report.size}"
+    puts "Routes failed path/redirect: #{failed_routes.size}"
+    puts "Total untranslated nodes:    #{total_untranslated}"
+    puts "Total screenshots captured:  #{saved_screenshots.size}"
+    puts "Total Amharic layout issues: #{all_layout_issues.values.sum(&:size)}"
+    puts "Duplicate screenshot errors: #{duplicate_errors.size}"
     puts
-    puts "Untranslated text by route:"
-    untranslated_report.each do |route, texts|
-      status = texts.empty? ? "✓ OK" : "✗ #{texts.size} untranslated"
-      puts "  #{status.ljust(22)} #{route}"
+
+    puts "Per-Route Results (Untranslated count & Final URL):"
+    route_final_urls.each do |route, info|
+      if failed_routes.key?(route)
+        puts "  ✗ FAILED     #{route}"
+        puts "               Final URL: #{info[:final_url]}"
+        puts "               Title:     \"#{info[:page_title]}\""
+        puts "               Reason:    #{failed_routes[route]}"
+      else
+        count = untranslated_report[route]&.size || 0
+        status = count.zero? ? "✓ OK (0)" : "✗ #{count} untranslated"
+        puts "  #{status.ljust(22)} #{route}"
+        puts "               Final URL: #{info[:final_url]}"
+        puts "               Title:     \"#{info[:page_title]}\""
+      end
     end
 
     if all_layout_issues.any?
-      puts "\nLayout / Clipping Issues:"
+      puts "\nAmharic Layout Clipping / Overflow Issues (locale=am diff vs locale=en):"
       all_layout_issues.each do |context, issues|
         puts "  #{context}:"
         issues.each do |issue|
@@ -326,10 +473,19 @@ class LocaleSmokeRunner
         end
       end
     else
-      puts "\n✓ No layout overflow or clipping detected."
+      puts "\n✓ No Amharic-specific layout overflow or clipping detected."
+    end
+
+    if duplicate_errors.any?
+      puts "\n❌ DUPLICATE SCREENSHOT FAILURES:"
+      duplicate_errors.each { |err| puts "  • #{err}" }
     end
 
     puts "\nScreenshots directory: #{SCREENSHOT_DIR}/"
+
+    if failed_routes.any? || duplicate_errors.any?
+      exit 1
+    end
   end
 
   private
@@ -359,42 +515,105 @@ class LocaleSmokeRunner
       wait_for_page_ready
     end
 
-    def login_user(email, password)
+    def login_user(email, password, next_path: nil)
+      return if @current_logged_in_user == email
+
       logout_user
-      visit "/login"
+      login_url = next_path ? "/login?next=#{CGI.escape(next_path)}" : "/login"
+      visit login_url
       wait_for_page_ready
 
-      if page.has_css?('input[type="email"]', wait: 5)
-        find('input[type="email"]').set(email)
-        find('input[type="password"]').set(password)
-        find('button[type="submit"]').click
-        Timeout.timeout(10) { sleep 0.1 until page.current_path != "/login" } rescue nil
-        wait_for_page_ready
-        puts "  ✓ Logged in as #{email} (current path: #{page.current_path})"
+      Timeout.timeout(Capybara.default_max_wait_time) do
+        sleep 0.1 until page.evaluate_script(<<~JS)
+          (function() {
+            var emailEl = document.querySelector('input[type="email"]');
+            var passEl = document.querySelector('input[type="password"]');
+            var btn = document.querySelector('button[type="submit"]');
+            return emailEl && passEl && btn && !btn.disabled;
+          })()
+        JS
+      end
+
+      page.evaluate_script(<<~JS, email, password)
+        (function(email, pass) {
+          var emailEl = document.querySelector('input[type="email"]');
+          var passEl = document.querySelector('input[type="password"]');
+          var btn = document.querySelector('button[type="submit"]');
+          if (!emailEl || !passEl || !btn) return false;
+
+          var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+          setter.call(emailEl, email);
+          emailEl.dispatchEvent(new Event("input", { bubbles: true }));
+          emailEl.dispatchEvent(new Event("change", { bubbles: true }));
+
+          setter.call(passEl, pass);
+          passEl.dispatchEvent(new Event("input", { bubbles: true }));
+          passEl.dispatchEvent(new Event("change", { bubbles: true }));
+
+          btn.click();
+          return true;
+        })(arguments[0], arguments[1]);
+      JS
+
+      Timeout.timeout(Capybara.default_max_wait_time) do
+        sleep 0.2 until page.current_path != "/login"
+      end rescue nil
+      wait_for_page_ready
+
+      if page.current_path == "/login"
+        warn "  ✗ Login failed for #{email} (still on /login: url=#{page.current_url})"
+        page.driver.browser.logs.get(:browser).each { |l| warn "    [browser] #{l.message}" }
       else
-        warn "  ✗ Could not find login form inputs for #{email}"
+        @current_logged_in_user = email
+        puts "  ✓ Logged in as #{email} (current path: #{page.current_path})"
       end
     rescue => e
       warn "  ✗ Login error for #{email}: #{e.message}"
+      warn e.backtrace.first(5).map { |l| "      #{l}" }.join("\n")
     end
 
     def logout_user
-      visit "/logout"
-      wait_for_page_ready
+      @current_logged_in_user = nil
+      page.driver.browser.manage.delete_all_cookies rescue nil
+      visit "/logout" rescue nil
+      wait_for_page_ready rescue nil
+      page.driver.browser.manage.delete_all_cookies rescue nil
     rescue => e
       warn "  ✗ Logout error: #{e.message}"
     end
 
     def screenshot_at(route, label, width)
       page.driver.browser.manage.window.resize_to(width, 900)
+
+      # 1. Check English baseline layout at identical viewport
+      en_route = route.sub("locale=am", "locale=en")
+      visit_route(en_route)
+      raw_en = page.evaluate_script(CHECK_LAYOUT_JS)
+      en_issues = raw_en.is_a?(Array) ? raw_en : []
+      en_keys = Set.new(en_issues.map { |iss| iss["key"] })
+
+      # 2. Check Amharic layout & capture screenshot
       visit_route(route)
-      slug = label.gsub(/[^a-z0-9_-]/i, "_")
-      file = SCREENSHOT_DIR.join("#{slug}_#{width}w.png")
+      expected_path = URI.parse(route).path
+      canonical_expected = KNOWN_CANONICAL_REDIRECTS[expected_path] || expected_path
+      if page.current_path != expected_path && page.current_path != canonical_expected
+        warn "  ✗ Path mismatch on screenshot route: expected #{expected_path}, got #{page.current_path}"
+      end
+
+      route_slug = expected_path.delete_prefix("/").tr("/", "_")
+      route_slug = "root" if route_slug.empty?
+      file = SCREENSHOT_DIR.join("#{label}_#{route_slug}_#{width}w.png")
       page.save_screenshot(file.to_s)
-      layout_issues = page.evaluate_script(CHECK_LAYOUT_JS) || []
-      [file, layout_issues]
+
+      raw_am = page.evaluate_script(CHECK_LAYOUT_JS)
+      am_issues = raw_am.is_a?(Array) ? raw_am : []
+      # Filter to issues that occur in locale=am but NOT in locale=en
+      amharic_only_issues = am_issues.reject { |iss| en_keys.include?(iss["key"]) }
+
+      [file, amharic_only_issues]
     rescue => e
       warn "  ✗ Screenshot failed for #{route} @ #{width}px: #{e.message}"
+      warn e.backtrace.first(5).map { |l| "      #{l}" }.join("\n")
       [nil, []]
     end
 end

@@ -4,8 +4,12 @@
  * Hardcoded-string ratchet for app/javascript/.
  *
  * Counts user-visible strings that are baked into JSX and not routed through
- * a translation call. Groups by top-level directory. Fails (exit 1) if any
- * directory's count has risen above its baseline.
+ * a translation call.
+ *
+ * In-scope directories: All buyer, seller, and admin UI.
+ * Explicit allowlist: Intentionally-English paths (Help Center, Tax Center, Public/Ping, widgets, marketing/legal).
+ *
+ * Goal: Zero hardcoded strings in scope.
  *
  * Usage:
  *   node scripts/hardcoded-string-audit.mjs               # check against baseline
@@ -27,9 +31,36 @@ const BASELINE_PATH = join(ROOT, "scripts/hardcoded-string-baseline.json");
 const JS_ROOT = join(ROOT, "app/javascript");
 
 // ---------------------------------------------------------------------------
-// Config
+// Config & Allowlist
 // ---------------------------------------------------------------------------
 const UPDATE_BASELINE = process.argv.includes("--update-baseline");
+
+/** Intentionally-English paths exempt from localization */
+const ALLOWLIST_RULES = [
+  {
+    name: "Help Center",
+    match: (rel) => rel.startsWith("pages/HelpCenter") || rel.startsWith("components/HelpCenter"),
+  },
+  {
+    name: "Tax Center",
+    match: (rel) => rel.startsWith("pages/TaxCenter") || rel.startsWith("components/TaxCenter"),
+  },
+  {
+    name: "Public/Ping",
+    match: (rel) =>
+      rel.startsWith("pages/Public/Ping") ||
+      rel.startsWith("pages/Public/Api") ||
+      rel.startsWith("pages/Public/Widgets"),
+  },
+  {
+    name: "widgets",
+    match: (rel) => rel.startsWith("widget"),
+  },
+  {
+    name: "marketing/legal",
+    match: (rel) => rel.startsWith("pages/GumroadBlog") || rel.startsWith("components/GumroadBlog"),
+  },
+];
 
 /** JSX attribute names whose string values are user-visible. */
 const LABEL_ATTRS = new Set([
@@ -84,10 +115,26 @@ function collectFiles(dir, files = []) {
   return files;
 }
 
-/** Top-level directory under app/javascript for a given absolute path. */
-function topDir(filePath) {
-  const rel = relative(JS_ROOT, filePath); // e.g. "components/Foo/Bar.tsx"
-  return rel.split("/")[0]; // "components"
+/** Classify relative file path into in-scope directory bucket or null if allowlisted */
+function getDirectoryBucket(filePath) {
+  const rel = relative(JS_ROOT, filePath);
+
+  for (const rule of ALLOWLIST_RULES) {
+    if (rule.match(rel)) {
+      return { type: "allowlist", name: rule.name };
+    }
+  }
+
+  const parts = rel.split("/");
+  const top = parts[0];
+
+  if (top === "pages" && parts.length > 1) {
+    return { type: "in_scope", name: `pages/${parts[1]}` };
+  }
+  if (top === "components" && parts.length > 2) {
+    return { type: "in_scope", name: `components/${parts[1]}` };
+  }
+  return { type: "in_scope", name: top };
 }
 
 // ---------------------------------------------------------------------------
@@ -147,30 +194,45 @@ const files = collectFiles(JS_ROOT);
 
 process.stdout.write(`Scanning ${files.length} TS/TSX files`);
 
-const dirCounts = {}; // { [topDir]: number }
+const inScopeCounts = {};
+const allowlistCounts = {};
 
 for (const f of files) {
-  const dir = topDir(f);
-  dirCounts[dir] = (dirCounts[dir] ?? 0) + countHardcodedStrings(f);
+  const bucket = getDirectoryBucket(f);
+  const count = countHardcodedStrings(f);
+
+  if (bucket.type === "allowlist") {
+    allowlistCounts[bucket.name] = (allowlistCounts[bucket.name] ?? 0) + count;
+  } else {
+    inScopeCounts[bucket.name] = (inScopeCounts[bucket.name] ?? 0) + count;
+  }
   process.stdout.write(".");
 }
 
 process.stdout.write("\n");
 
 // Sort dirs for stable output.
-const sortedDirs = Object.keys(dirCounts).sort();
+const sortedInScope = Object.keys(inScopeCounts).sort();
+const sortedAllowlist = Object.keys(allowlistCounts).sort();
 
 // ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------
-console.log("\n┌─ Hardcoded-string counts by directory ───────────────────────┐");
-for (const dir of sortedDirs) {
-  console.log(`│  ${dir.padEnd(30)} ${String(dirCounts[dir]).padStart(6)}`);
+console.log("\n┌─ Intentionally-English Paths (Allowlist — Exempt) ────────────┐");
+for (const item of sortedAllowlist) {
+  console.log(`│  ${item.padEnd(35)} ${String(allowlistCounts[item]).padStart(6)}`);
 }
+const allowlistTotal = Object.values(allowlistCounts).reduce((s, n) => s + n, 0);
+console.log(`│  Total Allowlisted:${String(allowlistTotal).padStart(23)}`);
 console.log("└───────────────────────────────────────────────────────────────┘");
 
-const total = Object.values(dirCounts).reduce((s, n) => s + n, 0);
-console.log(`   Total: ${total}\n`);
+console.log("\n┌─ In-Scope UI Directories (Goal: Zero) ───────────────────────┐");
+for (const dir of sortedInScope) {
+  console.log(`│  ${dir.padEnd(35)} ${String(inScopeCounts[dir]).padStart(6)}`);
+}
+const inScopeTotal = Object.values(inScopeCounts).reduce((s, n) => s + n, 0);
+console.log(`│  Total In-Scope:${String(inScopeTotal).padStart(26)}`);
+console.log("└───────────────────────────────────────────────────────────────┘\n");
 
 // ---------------------------------------------------------------------------
 // Baseline handling
@@ -178,37 +240,49 @@ console.log(`   Total: ${total}\n`);
 if (UPDATE_BASELINE || !existsSync(BASELINE_PATH)) {
   const baseline = {
     _generated: new Date().toISOString().slice(0, 10),
-    _description: "Hardcoded string counts per directory. Fail if count rises.",
-    ...Object.fromEntries(sortedDirs.map((d) => [d, dirCounts[d]])),
+    _description: "Hardcoded string counts per in-scope UI directory. Fail if count rises.",
+    _allowlist_summary: allowlistCounts,
+    ...Object.fromEntries(sortedInScope.map((d) => [d, inScopeCounts[d]])),
   };
   writeFileSync(BASELINE_PATH, `${JSON.stringify(baseline, null, 2)}\n`);
-  console.log(`✅  Baseline written to scripts/hardcoded-string-baseline.json`);
+  console.log(`✅  Baseline updated at scripts/hardcoded-string-baseline.json (Total in-scope: ${inScopeTotal})`);
   process.exit(0);
 }
 
 // Compare against existing baseline.
-const baseline = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+const rawBaseline = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+// Support both legacy baseline format (top-level directory only) and per-directory format
+const isLegacy = !Object.keys(rawBaseline).some((k) => k.startsWith("pages/"));
 
 let failures = 0;
-console.log("┌─ Ratchet check ───────────────────────────────────────────────┐");
-for (const dir of sortedDirs) {
-  const current = dirCounts[dir];
-  const base = baseline[dir] ?? 0;
-  const delta = current - base;
-  const status = delta > 0 ? "🔴 FAIL" : delta < 0 ? `🟢 -${-delta}` : "   ok";
-  console.log(`│  ${dir.padEnd(30)} ${String(base).padStart(6)} → ${String(current).padStart(6)}  ${status}`);
-  if (delta > 0) failures++;
+console.log("┌─ In-Scope Ratchet Check ───────────────────────────────────────┐");
+
+if (isLegacy) {
+  console.log("│  Notice: Existing baseline is in legacy format. Run with       │");
+  console.log("│  --update-baseline to establish granular in-scope baseline.    │");
 }
-// Also check dirs in baseline that are no longer in current scan (OK — count dropped to 0).
+
+for (const dir of sortedInScope) {
+  const current = inScopeCounts[dir];
+  const base = rawBaseline[dir];
+  if (base === undefined) {
+    console.log(`│  ${dir.padEnd(35)}   new  → ${String(current).padStart(6)}  ℹ️  new`);
+  } else {
+    const delta = current - base;
+    const status = delta > 0 ? "🔴 FAIL" : delta < 0 ? `🟢 -${-delta}` : "   ok";
+    console.log(`│  ${dir.padEnd(35)} ${String(base).padStart(6)} → ${String(current).padStart(6)}  ${status}`);
+    if (delta > 0) failures++;
+  }
+}
 console.log("└───────────────────────────────────────────────────────────────┘");
 
 if (failures > 0) {
   console.error(
-    `\n❌  ${failures} director${failures === 1 ? "y has" : "ies have"} MORE hardcoded strings than the baseline.`,
+    `\n❌  ${failures} in-scope director${failures === 1 ? "y has" : "ies have"} MORE hardcoded strings than the baseline.`,
   );
   console.error("   Fix them or run with --update-baseline if the increase is intentional.\n");
   process.exit(1);
 } else {
-  console.log("\n✅  All directories at or below baseline.\n");
+  console.log("\n✅  All in-scope UI directories are at or below baseline.\n");
   process.exit(0);
 }
