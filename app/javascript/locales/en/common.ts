@@ -29,6 +29,7 @@ export const actions = {
   continue_without_adding: "Continue without adding",
   no_cancel: "No, cancel",
   yes_reset: "Yes, reset",
+  yes_delete: "Yes, delete",
   confirm_and_save: "Confirm and save",
   learn_more: "Learn more",
 } as const;

@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
+
 export const ProfileLandingPagePreview = ({
   username,
   name,
@@ -23,7 +25,7 @@ export const ProfileLandingPagePreview = ({
   return (
     <iframe
       ref={frameRef}
-      title="Custom profile page preview"
+      title={t("profile.preview_title", "Custom profile page preview")}
       src={`/${encodeURIComponent(username)}/landing/embed?preview=true`}
       sandbox="allow-scripts allow-forms allow-popups"
       referrerPolicy="no-referrer"

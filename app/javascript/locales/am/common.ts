@@ -29,6 +29,7 @@ export const actions = {
   continue_without_adding: "ሳያክሉ ይቀጥሉ",
   no_cancel: "አይ፣ ሰርዝ",
   yes_reset: "አዎ፣ ዳግም አስጀምር",
+  yes_delete: "አዎ፣ ሰርዝ",
   confirm_and_save: "አረጋግጥና አስቀምጥ",
   learn_more: "የበለጠ ለመረዳት",
 } as const;

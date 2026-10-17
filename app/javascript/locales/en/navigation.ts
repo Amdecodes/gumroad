@@ -36,4 +36,5 @@ export const navigation = {
   board_meetings: "Board meetings",
   visit_github: "Visit ArifDrop on GitHub",
   toggle_navigation_menu: "Toggle navigation menu",
+  youtube: "YouTube",
 } as const;

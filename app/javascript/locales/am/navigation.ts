@@ -36,4 +36,5 @@ export const navigation = {
   board_meetings: "የቦርድ ስብሰባዎች",
   visit_github: "ArifDropን በ GitHub ይጎብኙ",
   toggle_navigation_menu: "የአሰሳ ሜኑን ቀይር",
+  youtube: "YouTube",
 } as const;

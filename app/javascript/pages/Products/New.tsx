@@ -350,7 +350,7 @@ const NewProductPage = () => {
               {ai_generation_enabled && aiPromoVisible ? (
                 <Alert className="gap-4 p-6" role="status" variant="accent">
                   <div className="flex items-center gap-4">
-                    <img src={hands} alt="Hands" className="size-12" />
+                    <img src={hands} alt="" className="size-12" />
                     <div className="flex-1">
                       <strong>{t("seller.products.ai_banner_title")}</strong>{" "}
                       {t("seller.products.ai_banner_description")}

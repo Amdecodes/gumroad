@@ -34,6 +34,7 @@ en:
     upgrade: Upgrade
     uploading: Uploading...
     view: View
+    yes_delete: Yes, delete
     yes_reset: Yes, reset
   activerecord:
     errors:
@@ -1157,17 +1158,41 @@ en:
       invite:
         subject: "%{app_name} team invitation"
   profile:
+    add_new_products_default: Add new products by default
+    add_section: Add section
+    button_label: Button Label
     cannot_follow_self: As the creator of this profile, you can't follow yourself!
     creator_rating: Creator rating
     creator_rating_summary: "%{average} from %{count_reviews} across %{products_count} products"
+    default_sort_order: Default sort order
+    delete_page_confirm: Are you sure you want to delete the page “%{name}”? This action cannot be undone.
+    delete_page_title: Delete page?
+    edit_section: Edit section
     enter_email: Please enter your email address.
     enter_valid_email: Please enter a valid email address.
+    featured_product: Featured Product
+    go_back: Go back
+    leave_blank_to_hide: Leave blank to hide
+    move_down: Move section down
+    move_up: Move section up
+    new_page: New page
     no_wishlists_selected: No wishlists selected
+    page_settings: Page settings
+    pages: Pages
+    posts: Posts
+    preview_title: Custom profile page preview
+    remove_page: Remove page
+    rich_text: Rich text
+    section_name: Name
+    sections: Sections
+    show_product_filters: Show product filters
     subscribe: Subscribe
     subscribe_updates_from: Subscribe to receive email updates from %{name}.
     subscribed: Subscribed
     subscribing: Subscribing...
+    tabs: Profile Tabs
     top_creator: Top creator
+    wishlists: Wishlists
     your_email_address: Your email address
   receipt:
     account_created_notice: Done! Your account has been created. You'll get a confirmation email shortly.
@@ -1218,6 +1243,26 @@ en:
     add_to_wishlist: Add to wishlist
     added_to_wishlist: Added to wishlist!
     adding_to_wishlist: Adding to wishlist...
+    available_on: "Available on %{date}"
+    bundle_contains: "This bundle contains..."
+    commission_deposit_notice: "Secure your order with a %{percent} deposit today; the remaining balance will be charged upon completion."
+    discount_first_payment_only: "This discount will only apply to the first payment of your subscription."
+    discount_min_spend: "This discount will apply when you spend %{amount} or more."
+    discount_min_spend_seller: "This discount will apply when you spend %{amount} or more in %{seller} products."
+    free_trial_notice: "All memberships include a %{amount} %{unit} free trial"
+    membership_ends_months:
+      one: "This membership will automatically end after %{count} month"
+      other: "This membership will automatically end after %{count} months"
+    membership_ends_one_month: "This membership will automatically end after one month"
+    ppp_discount_notice: "This product supports purchasing power parity. Because you're located in %{country}, the price has been discounted by %{percent} to %{price}."
+    ppp_greater_discount: "This discount will be applied because it is greater than the offer code discount."
+    preview: "Product preview"
+    price: "Price"
+    product_info_bar: "Product info bar"
+    qty: "Qty: %{count}"
+    select_cover: "Select a cover"
+    show_cover: "Show cover %{index}"
+    watch_link_provided: "Watch link provided after purchase"
     already_bought_this: Already bought this?
     already_own_bundle: You already own this bundle
     already_own_product: You already own this product
@@ -1354,6 +1399,7 @@ en:
     teams: Teams
     toggle_navigation: Toggle navigation
     workflows: Workflows
+    youtube: YouTube
   auth:
     and: and
     auth_token_sent_notice: "To protect your account, we have sent an Authentication Token to %{email}. Please enter it here to continue."

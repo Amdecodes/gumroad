@@ -466,7 +466,7 @@ export const Product = ({
         ) : null}
         {isBundle ? (
           <section className="grid gap-4 border-t border-border p-6">
-            <h2>This bundle contains...</h2>
+            <h2>{t("storefront.bundle_contains", "This bundle contains...")}</h2>
             <CartItemList>
               {product.bundle_products.map((bundleProduct) => {
                 const price =
@@ -493,12 +493,14 @@ export const Product = ({
                         </a>
                       </CartItemTitle>
                       {bundleProduct.ratings ? (
-                        <div className="line-clamp-1 flex shrink-0 items-center gap-1" aria-label="Rating">
+                        <div className="line-clamp-1 flex shrink-0 items-center gap-1" aria-label={t("storefront.rating", "Rating")}>
                           <Star pack="filled" className="size-5" />
                           {`${bundleProduct.ratings.average.toFixed(1)} (${bundleProduct.ratings.count})`}
                         </div>
                       ) : null}
-                      <span className="sr-only">Qty: {bundleProduct.quantity}</span>
+                      <span className="sr-only">
+                        {t("storefront.qty", { count: bundleProduct.quantity }, `Qty: ${bundleProduct.quantity}`)}
+                      </span>
                       {bundleProduct.variant ? (
                         <CartItemFooter>
                           <span className="line-clamp-1">
@@ -508,7 +510,7 @@ export const Product = ({
                       ) : null}
                     </CartItemMain>
                     <CartItemEnd className="max-w-1/2 shrink-0 flex-row items-start gap-4 p-4 text-right">
-                      <span className="current-price whitespace-nowrap" aria-label="Price">
+                      <span className="current-price whitespace-nowrap" aria-label={t("storefront.price", "Price")}>
                         {comparisonPriceCents !== null && discountedPriceCents < comparisonPriceCents ? (
                           <s>{price}</s>
                         ) : (
@@ -549,8 +551,11 @@ export const Product = ({
             </Alert>
           ) : product.native_type === "commission" ? (
             <Alert role="status" variant="info">
-              Secure your order with a {`${COMMISSION_DEPOSIT_PROPORTION * 100}%`} deposit today; the remaining balance
-              will be charged upon completion.
+              {t(
+                "storefront.commission_deposit_notice",
+                { percent: `${COMMISSION_DEPOSIT_PROPORTION * 100}%` },
+                `Secure your order with a ${COMMISSION_DEPOSIT_PROPORTION * 100}% deposit today; the remaining balance will be charged upon completion.`,
+              )}
             </Alert>
           ) : null}
           {discountCode ? (
@@ -565,25 +570,54 @@ export const Product = ({
                       ? `Get ${formatDiscountAmount(discountCode.discount, buyerLocalContextFor(product))} off when you buy ${discountCode.discount.minimum_quantity} or more (Code ${discountCode.code.toUpperCase()})`
                       : `${formatDiscountAmount(discountCode.discount, buyerLocalContextFor(product))} off will be applied at checkout (Code ${discountCode.code.toUpperCase()})`}
                     {discountCode.discount.duration_in_billing_cycles && product.is_recurring_billing ? (
-                      <div>This discount will only apply to the first payment of your subscription.</div>
+                      <div>
+                        {t(
+                          "storefront.discount_first_payment_only",
+                          "This discount will only apply to the first payment of your subscription.",
+                        )}
+                      </div>
                     ) : null}
                     {discountCode.discount.minimum_amount_cents ? (
                       <div>
                         {(discountCode.discount.product_ids?.length ?? 0) === 1
-                          ? `This discount will apply when you spend ${formatBuyerLocalOrSetPrice(
-                              discountCode.discount.minimum_amount_cents,
-                              buyerLocalContextFor(product),
-                              { symbolFormat: "short" },
-                            )} or more.`
-                          : `This discount will apply when you spend ${formatBuyerLocalOrSetPrice(
-                              discountCode.discount.minimum_amount_cents,
-                              buyerLocalContextFor(product),
-                              { symbolFormat: "short" },
-                            )} or more in ${
-                              !discountCode.discount.product_ids && product.seller
-                                ? `${product.seller.name}'s`
-                                : "selected"
-                            } products.`}
+                          ? t(
+                              "storefront.discount_min_spend",
+                              {
+                                amount: formatBuyerLocalOrSetPrice(
+                                  discountCode.discount.minimum_amount_cents,
+                                  buyerLocalContextFor(product),
+                                  { symbolFormat: "short" },
+                                ),
+                              },
+                              `This discount will apply when you spend ${formatBuyerLocalOrSetPrice(
+                                discountCode.discount.minimum_amount_cents,
+                                buyerLocalContextFor(product),
+                                { symbolFormat: "short" },
+                              )} or more.`,
+                            )
+                          : t(
+                              "storefront.discount_min_spend_seller",
+                              {
+                                amount: formatBuyerLocalOrSetPrice(
+                                  discountCode.discount.minimum_amount_cents,
+                                  buyerLocalContextFor(product),
+                                  { symbolFormat: "short" },
+                                ),
+                                seller:
+                                  !discountCode.discount.product_ids && product.seller
+                                    ? `${product.seller.name}'s`
+                                    : "selected",
+                              },
+                              `This discount will apply when you spend ${formatBuyerLocalOrSetPrice(
+                                discountCode.discount.minimum_amount_cents,
+                                buyerLocalContextFor(product),
+                                { symbolFormat: "short" },
+                              )} or more in ${
+                                !discountCode.discount.product_ids && product.seller
+                                  ? `${product.seller.name}'s`
+                                  : "selected"
+                              } products.`,
+                            )}
                       </div>
                     ) : null}
                     {discountCode.discount.expires_at ? (
@@ -616,35 +650,42 @@ export const Product = ({
           />
           {product.ppp_details && pppDiscounted ? (
             <Alert role="status" variant="info">
-              This product supports purchasing power parity. Because you're located in{" "}
-              <b>{product.ppp_details.country}</b>, the price has been discounted by{" "}
-              <b>
-                {(Math.round((1 - discountedPriceCents / priceCents) * 100) / 100).toLocaleString(undefined, {
-                  style: "percent",
-                })}
-              </b>{" "}
-              to{" "}
-              <b>
-                {formatBuyerLocalOrSetPrice(discountedPriceCents, buyerLocalContextFor(product), {
-                  symbolFormat: "long",
-                })}
-              </b>
-              .
+              {t(
+                "storefront.ppp_discount_notice",
+                {
+                  country: product.ppp_details.country,
+                  percent: (Math.round((1 - discountedPriceCents / priceCents) * 100) / 100).toLocaleString(undefined, {
+                    style: "percent",
+                  }),
+                  price: formatBuyerLocalOrSetPrice(discountedPriceCents, buyerLocalContextFor(product), {
+                    symbolFormat: "long",
+                  }),
+                },
+                `This product supports purchasing power parity. Because you're located in ${product.ppp_details.country}, the price has been discounted by ${(Math.round((1 - discountedPriceCents / priceCents) * 100) / 100).toLocaleString(undefined, { style: "percent" })} to ${formatBuyerLocalOrSetPrice(discountedPriceCents, buyerLocalContextFor(product), { symbolFormat: "long" })}.`,
+              )}
               {discountCode?.valid
-                ? " This discount will be applied because it is greater than the offer code discount."
+                ? ` ${t("storefront.ppp_greater_discount", "This discount will be applied because it is greater than the offer code discount.")}`
                 : null}
             </Alert>
           ) : null}
           {product.free_trial ? (
             <Alert role="status" variant="info">
-              All memberships include a {product.free_trial.duration.amount} {product.free_trial.duration.unit} free
-              trial
+              {t(
+                "storefront.free_trial_notice",
+                { amount: product.free_trial.duration.amount, unit: product.free_trial.duration.unit },
+                `All memberships include a ${product.free_trial.duration.amount} ${product.free_trial.duration.unit} free trial`,
+              )}
             </Alert>
           ) : null}
           {product.duration_in_months ? (
             <Alert role="status" variant="info">
-              This membership will automatically end after{" "}
-              {product.duration_in_months === 1 ? "one month" : `${product.duration_in_months} months`}
+              {product.duration_in_months === 1
+                ? t("storefront.membership_ends_one_month", "This membership will automatically end after one month")
+                : t(
+                    "storefront.membership_ends_months",
+                    { count: product.duration_in_months },
+                    `This membership will automatically end after ${product.duration_in_months} months`,
+                  )}
             </Alert>
           ) : null}
           <PurchaseButton
@@ -683,12 +724,16 @@ export const Product = ({
           ) : null}
           {product.preorder ? (
             <Alert role="status" variant="info">
-              Available on {formatDate(parseISO(product.preorder.release_date))}
+              {t(
+                "storefront.available_on",
+                { date: formatDate(parseISO(product.preorder.release_date)) },
+                `Available on ${formatDate(parseISO(product.preorder.release_date))}`,
+              )}
             </Alert>
           ) : null}
           {product.streamable ? (
             <Alert role="status" variant="info">
-              Watch link provided after purchase
+              {t("storefront.watch_link_provided", "Watch link provided after purchase")}
             </Alert>
           ) : null}
           {product.summary || product.attributes.length > 0 ? (

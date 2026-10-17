@@ -50,7 +50,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
           outline
           href={`https://www.youtube.com/channel/${encodeURIComponent(youtubeChannelId)}`}
           target="_blank"
-          aria-label="YouTube"
+          aria-label={t("navigation.youtube", "YouTube")}
         >
           <Youtube pack="brands" className="size-5" />
         </NavigationButton>
