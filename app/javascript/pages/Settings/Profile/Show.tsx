@@ -38,6 +38,7 @@ import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui
 import { Input } from "$app/components/ui/Input";
 import { Label } from "$app/components/ui/Label";
 import { PageHeader } from "$app/components/ui/PageHeader";
+import { Select } from "$app/components/ui/Select";
 import { Tab, Tabs } from "$app/components/ui/Tabs";
 import { Textarea } from "$app/components/ui/Textarea";
 import { useReactNativeMessage } from "$app/components/useReactNativeMessage";
@@ -500,6 +501,21 @@ export default function SettingsPage() {
                   label={t("seller.settings.profile.hide_follow_form")}
                 />
                 <FieldsetDescription>{t("seller.settings.profile.hide_follow_form_desc")}</FieldsetDescription>
+              </Fieldset>
+              <Fieldset>
+                <FieldsetTitle>
+                  <Label htmlFor={`${uid}-locale`}>{t("seller.settings.profile.language")}</Label>
+                </FieldsetTitle>
+                <Select
+                  id={`${uid}-locale`}
+                  value={profileSettings.locale ?? "en"}
+                  disabled={!canUpdate}
+                  onChange={(e) => updateProfileSettings({ locale: e.target.value })}
+                >
+                  <option value="en">{t("seller.settings.profile.language_english")}</option>
+                  <option value="am">{t("seller.settings.profile.language_amharic")}</option>
+                </Select>
+                <FieldsetDescription>{t("seller.settings.profile.language_desc")}</FieldsetDescription>
               </Fieldset>
             </section>
           ) : tab === "design" ? (

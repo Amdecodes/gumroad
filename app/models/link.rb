@@ -746,7 +746,7 @@ class Link < ApplicationRecord
   # host: lets a caller serving the page on one of the seller's other hosts (their live custom
   # domain) keep the link on that host — /l/:id is routed under UserCustomDomainConstraint too,
   # so the same path resolves there.
-  def long_url(recommended_by: nil, recommender_model_name: nil, include_protocol: true, layout: nil, affiliate_id: nil, query: nil, code: nil, autocomplete: false, host: nil)
+  def long_url(recommended_by: nil, recommender_model_name: nil, include_protocol: true, layout: nil, affiliate_id: nil, query: nil, code: nil, autocomplete: false, host: nil, locale: nil)
     host ||= user.subdomain_with_protocol || UrlService.domain_with_protocol
     options = { host: }
     options[:recommended_by] = recommended_by if recommended_by.present?
@@ -756,6 +756,7 @@ class Link < ApplicationRecord
     options[:affiliate_id] = affiliate_id if affiliate_id.present?
     options[:code] = code if code.present?
     options[:autocomplete] = "true" if autocomplete
+    options[:locale] = locale.presence || (I18n.locale.to_s if I18n.locale.present?)
 
     product_long_url = Rails.application.routes.url_helpers.short_link_url(general_permalink, options)
     product_long_url.sub!(/\A#{PROTOCOL}:\/\//o, "") unless include_protocol

@@ -33,4 +33,5 @@ export type ProfileSettings = {
   profile_picture_blob_id: string | null;
   product_page_storefront_enabled: boolean;
   hide_follow_form: boolean;
+  locale?: string;
 };

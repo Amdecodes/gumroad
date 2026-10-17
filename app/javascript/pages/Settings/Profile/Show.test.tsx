@@ -264,4 +264,25 @@ describe("Profile settings design tab", () => {
     expect(checkedRadio("Corners")).toEqual(["Small"]);
     expect(checkedRadio("Color presets")).toEqual(["Default"]);
   });
+
+  it("renders language select in about tab and submits chosen locale", async () => {
+    page.set(pageProps(settings({ locale: "en" })));
+    render(
+      <UserAgentProvider value={{ isMobile: false, locale: "en" }}>
+        <SettingsPage />
+      </UserAgentProvider>,
+    );
+
+    const languageSelect = screen.getByLabelText("Language");
+    expect(languageSelect).toHaveProperty("value", "en");
+
+    fireEvent.change(languageSelect, { target: { value: "am" } });
+    expect(languageSelect).toHaveProperty("value", "am");
+
+    fireEvent.click(screen.getByRole("button", { name: "Update profile" }));
+
+    await waitFor(() => expect(request).toHaveBeenCalledOnce());
+    const data = request.mock.calls[0]?.[0].data;
+    expect(data?.user?.locale).toBe("am");
+  });
 });

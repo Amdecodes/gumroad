@@ -17,7 +17,8 @@ module InertiaRendering
         flash: inertia_flash_props,
         title: page_title,
         locale: I18n.locale.to_s,
-        supported_locales: I18n.available_locales.map(&:to_s),
+        supported_locales: (I18n.available_locales.map(&:to_s) - %w[pseudo]),
+        cookie_domain: cookie_domain_for_js,
         platform: PlatformConfig.to_h(I18n.locale)
       )
     end

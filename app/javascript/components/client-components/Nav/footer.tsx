@@ -5,6 +5,7 @@ import React from "react";
 import { t } from "$app/utils/i18n";
 
 import { ClientNavLink } from "$app/components/client-components/Nav";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { CreateBrandAccountModal } from "$app/components/CreateBrandAccountModal";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
 import { useAppDomain } from "$app/components/DomainSettings";
@@ -22,6 +23,9 @@ function NavbarFooter() {
 
   return (
     <>
+      <div className="border-t border-white/50 px-6 py-3 dark:border-foreground/50">
+        <LanguageToggle variant="dark" />
+      </div>
       {currentSeller?.isBuyer ? (
         <NavLink
           text={t("navigation.start_selling")}

@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { useTranslation } from "$app/utils/i18n";
 
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Avatar } from "$app/components/ui/Avatar";
 
 export type AdminUser = {
@@ -38,6 +39,7 @@ export const AdminHeader = ({ admin, onToggleSidebar }: AdminHeaderProps) => {
       </div>
 
       <div className="flex items-center gap-4">
+        <LanguageToggle variant="compact" />
         {admin ? (
           <div className="flex items-center gap-3">
             <Avatar src={admin.avatar_url} alt={admin.name} />

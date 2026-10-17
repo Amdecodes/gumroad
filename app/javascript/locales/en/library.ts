@@ -1,4 +1,10 @@
 export const library = {
+  title: "Library",
+  purchases: "Purchases",
+  saved: "Saved",
+  following: "Following",
+  reviews: "Reviews",
+
   // Card actions
   archive: "Archive",
   unarchive: "Unarchive",

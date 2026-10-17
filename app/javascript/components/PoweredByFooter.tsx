@@ -21,10 +21,7 @@ export const PoweredByFooter = ({
   return (
     <footer
       className={classNames(
-        "px-4 py-8 lg:py-16",
-        currencySelector
-          ? "flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left"
-          : "text-center",
+        "flex flex-col items-center gap-4 px-4 py-8 text-center sm:flex-row sm:justify-between sm:text-left lg:py-16",
         className,
       )}
     >
@@ -34,11 +31,9 @@ export const PoweredByFooter = ({
           <Logo />
         </a>
       </div>
-      {currencySelector ? (
-        <div className="flex items-center gap-3">
-          <LanguageToggle variant="compact" />
-        </div>
-      ) : null}
+      <div className="flex items-center gap-3">
+        <LanguageToggle variant="compact" />
+      </div>
       {/* The product page's buy bar is fixed over the end of the page on mobile; this reserves its
           height (0 anywhere else, and on desktop, where the bar is at the top). */}
       <div aria-hidden className="h-[var(--product-cta-bar-height,0px)]" />

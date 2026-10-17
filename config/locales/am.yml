@@ -918,13 +918,13 @@ am:
       subject: Your receipt for %{product}
       thank_you: Thank you for your purchase!
     subscription_renewal_reminder:
-      contact_seller: Contact %{seller} by replying to this email
-      installment_body: This is a reminder that your next installment payment of %{price} for %{product} will be charged on %{date}.
-      installment_subject: Upcoming installment payment reminder
-      membership_body: This is a reminder that your membership to "%{product}" will automatically renew on %{date}.
-      membership_subject: Upcoming automatic membership renewal
-      paying: You're paying %{price}.
-      questions: Questions about your product?
+      contact_seller: ለዚህ ኢሜይል ምላሽ በመስጠት %{seller}ን ያግኙ
+      installment_body: የሚቀጥለው የ%{price} ክፍያዎ ለ%{product} በ%{date} እንደሚከፈል ማስታወሻ ነው።
+      installment_subject: የሚቀጥለው የክፍያ ዕድሳት ማስታወሻ
+      membership_body: የ"%{product}" የአባልነት ምዝገባዎ በ%{date} በራስ-ሰር እንደሚታደስ እና ዕድሳት እንደሚፈልግ ማስታወሻ ነው።
+      membership_subject: የአባልነት ምዝገባ ዕድሳት ማስታወሻ
+      paying: "%{price} እየከፈሉ ነው።"
+      questions: ስለ ምርትዎ ጥያቄ አለዎት?
     two_factor_authentication:
       authentication_token:
         action: ግባ

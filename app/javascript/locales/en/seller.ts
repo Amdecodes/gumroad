@@ -793,6 +793,10 @@ export const seller = {
       hide_follow_form: "Hide the subscribe form in your storefront header",
       hide_follow_form_desc:
         "Removes the email subscribe box from the header shown across your storefront: your profile, product pages, posts, wishlists, and your affiliate signup page. To redesign the whole page, use custom HTML from Pages.",
+      language: "Language",
+      language_desc: "Choose the language used for your dashboard and communications.",
+      language_english: "English",
+      language_amharic: "አማርኛ (Amharic)",
       custom_design_notice:
         "Your custom profile page uses its own design. This preview shows the theme used on your product pages and other {app_name} surfaces.",
       font: "Font",

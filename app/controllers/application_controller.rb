@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   include PageMeta::Base, PageMeta::Analytics
 
   MINTED_GUMROAD_GUID_ENV_KEY = "gumroad.minted_gumroad_guid"
+  SUPPORTED_LOCALES = %w[en am].freeze
 
   before_action :set_default_page_title
   before_action :set_locale
@@ -467,11 +468,7 @@ class ApplicationController < ActionController::Base
       I18n.locale = resolved_locale
 
       if cookies[:locale] != resolved_locale.to_s
-        cookies[:locale] = {
-          value: resolved_locale.to_s,
-          expires: 1.year.from_now,
-          httponly: false
-        }
+        cookies[:locale] = locale_cookie_options(resolved_locale)
       end
 
       if logged_in_user.present? && logged_in_user.locale != resolved_locale.to_s && params[:locale].present?
@@ -480,14 +477,86 @@ class ApplicationController < ActionController::Base
     end
 
     def resolve_locale
-      candidate = params[:locale].presence ||
-                  cookies[:locale].presence ||
-                  logged_in_user&.locale.presence ||
-                  I18n.default_locale
+      if params[:locale].present?
+        param_sym = params[:locale].to_s.downcase.to_sym
+        return param_sym if I18n.available_locales.include?(param_sym)
+      end
 
-      candidate_sym = candidate.to_s.downcase.to_sym
-      I18n.available_locales.include?(candidate_sym) ? candidate_sym : I18n.default_locale
+      if logged_in_user&.locale.present?
+        user_sym = logged_in_user.locale.to_s.downcase.to_sym
+        return user_sym if I18n.available_locales.include?(user_sym)
+      end
+
+      if cookies[:locale].present?
+        cookie_sym = cookies[:locale].to_s.downcase.to_sym
+        return cookie_sym if I18n.available_locales.include?(cookie_sym)
+      end
+
+      header_locale = locale_from_accept_language
+      return header_locale if header_locale.present?
+
+      I18n.default_locale
     end
+
+    def locale_from_accept_language
+      header = request.headers["Accept-Language"].presence || request.env["HTTP_ACCEPT_LANGUAGE"].presence
+      return nil if header.blank?
+
+      locales = header.split(",").filter_map do |part|
+        lang, q_part = part.strip.split(";")
+        next if lang.blank?
+        q = 1.0
+        if q_part && q_part.strip.start_with?("q=")
+          parsed_q = q_part.strip.sub("q=", "").to_f rescue 1.0
+          q = parsed_q if parsed_q > 0
+        end
+        prefix = lang.to_s.strip.split("-").first.to_s.downcase
+        [prefix, q]
+      end
+
+      locales.sort_by! { |_, q| -q }
+      locales.each do |prefix, _|
+        return :am if prefix == "am"
+        return :en if prefix == "en"
+      end
+
+      nil
+    end
+
+    def self.locale_cookie_options(value)
+      options = {
+        value: value.to_s,
+        expires: 1.year.from_now,
+        httponly: false,
+        same_site: :lax,
+        path: "/"
+      }
+
+      if Rails.env.production? || Rails.env.staging?
+        if Rails.env.staging? && ENV["BRANCH_DEPLOYMENT"].present?
+          options[:domain] = ".#{DOMAIN}"
+        else
+          options[:domain] = :all
+          options[:tld_length] = Rails.env.staging? ? 3 : 2
+        end
+      end
+
+      options
+    end
+
+    def locale_cookie_options(value)
+      self.class.locale_cookie_options(value)
+    end
+    helper_method :locale_cookie_options
+
+    def cookie_domain_for_js
+      if Rails.env.production?
+        ".#{ROOT_DOMAIN.sub(/:\d+\z/, '')}"
+      elsif Rails.env.staging?
+        ENV["BRANCH_DEPLOYMENT"].present? ? ".#{DOMAIN.sub(/:\d+\z/, '')}" : ".#{ROOT_DOMAIN.sub(/:\d+\z/, '')}"
+      end
+    end
+    helper_method :cookie_domain_for_js
 
     def current_locale
       I18n.locale.to_s

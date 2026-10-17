@@ -1,4 +1,10 @@
 export const library = {
+  title: "ቤተ-መጽሐፍት",
+  purchases: "ግዢዎች",
+  saved: "የተቀመጡ",
+  following: "የምከተላቸው",
+  reviews: "ግምገማዎች",
+
   // Card actions
   archive: "ወደ ማህደር አስቀምጥ",
   unarchive: "ከማህደር አውጣ",
