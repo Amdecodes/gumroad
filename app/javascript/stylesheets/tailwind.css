@@ -21,23 +21,28 @@
 @custom-variant hover (&:hover);
 
 @theme {
-  --color-black: #000000;
+  --color-black: #122540;
   --color-white: #ffffff;
-  --color-pink: #ff90e8;
+  --color-navy: #122540;
+  --color-navy-dark: #0b1728;
+  --color-blue: #2199F9;
+  --color-royal-blue: #146dfd;
+  --color-lime: #c3f351;
+  --color-pink: #c3f351;
   --color-purple: #90a8ed;
-  --color-green: #23a094;
-  --color-orange: #ffc900;
-  --color-red: #dc341e;
+  --color-green: #047857;
+  --color-orange: #d97706;
+  --color-red: #dc2626;
   --color-yellow: #f1f333;
   --color-violet: #b23386;
-  --color-gray: #f4f4f0;
-  --color-dark-gray: #242423;
+  --color-gray: #f8fafc;
+  --color-dark-gray: #1e293b;
 
   --color-body: var(--body-bg);
   --color-background: rgb(var(--filled));
   --color-foreground: rgb(var(--color));
   --color-border: rgb(var(--color) / var(--border-alpha));
-  --color-backdrop: rgb(0 0 0 / 0.8);
+  --color-backdrop: rgb(18 37 64 / 0.7);
   --color-accent: rgb(var(--accent));
   --color-indicator: rgb(var(--indicator, var(--accent)));
   --color-accent-foreground: rgb(var(--contrast-accent));
@@ -58,17 +63,19 @@
   --color-warning-foreground: rgb(var(--contrast-warning));
   --color-info: rgb(var(--info));
 
-  --shadow: 0.25rem 0.25rem 0 currentColor;
-  --shadow-lg: 0.5rem 0.5rem 0 currentColor;
+  --font-sans: "Inter", "Noto Sans Ethiopic", sans-serif;
+  --font-heading: "Montserrat", "Noto Sans Ethiopic", sans-serif;
+
+  --shadow: 0 1px 3px 0 rgb(18 37 64 / 0.1), 0 1px 2px -1px rgb(18 37 64 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(18 37 64 / 0.1), 0 4px 6px -4px rgb(18 37 64 / 0.1);
 
   /*
-   * Seller custom styles override --radius and --button-hover-offset per store. Declaring --radius
-   * here makes `rounded` compile to var(--radius) instead of a fixed value. --radius-sm resolves on
-   * :root, so a subtree that overrides --radius must override --radius-sm too.
+   * 8-12px radius standard across ArifDrop components
    */
-  --radius: 0.25rem;
-  --radius-sm: var(--radius);
-  --button-hover-offset: 0.25rem;
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 0.75rem;
+  --button-hover-offset: 0.125rem;
 
   --spacing-product-page: 75.25rem;
   --grid-cols-sidebar: 1fr 3fr;
