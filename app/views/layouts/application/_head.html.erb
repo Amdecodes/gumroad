@@ -12,6 +12,8 @@
   <%= vite_client_tag %>
   <%= vite_react_refresh_tag(nonce: SecureHeaders.content_security_policy_script_nonce(request)) %>
   <%= vite_entrypoint_stylesheet_tag "design", crossorigin: "anonymous" unless @hide_styles %>
+  <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Montserrat-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <% if I18n.locale.to_s == "am" %>
     <link rel="preload" href="/fonts/NotoSansEthiopic-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/NotoSansEthiopic-Bold.woff2" as="font" type="font/woff2" crossorigin>
