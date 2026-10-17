@@ -1,25 +1,58 @@
 @font-face {
-  font-family: "ABC Favorit";
-  src: url("/fonts/ABCFavorit-Regular.woff2");
+  font-family: "Inter";
+  src: url("/fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "ABC Favorit";
-  src: url("/fonts/ABCFavorit-RegularItalic.woff2");
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "ABC Favorit";
-  src: url("/fonts/ABCFavorit-Bold.woff2");
+  font-family: "Inter";
+  src: url("/fonts/Inter-Bold.woff2") format("woff2");
   font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "ABC Favorit";
-  src: url("/fonts/ABCFavorit-BoldItalic.woff2");
+  font-family: "Inter";
+  src: url("/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-Bold.woff2") format("woff2");
   font-weight: 700;
-  font-style: italic;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback alias so stored seller themes referencing ABC Favorit render via Inter */
+@font-face {
+  font-family: "ABC Favorit";
+  src: url("/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -44,7 +77,7 @@
 [lang="am"],
 .lang-am,
 .font-ethiopic {
-  font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", sans-serif;
+  font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "Inter", sans-serif;
   line-height: 1.5; /* Prevents Fidel ascender/descender clipping */
 }
 
@@ -53,7 +86,7 @@
   input,
   select,
   textarea {
-    font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "ABC Favorit", sans-serif;
+    font-family: "Noto Sans Ethiopic", Nyala, "Abyssinica SIL", "Inter", sans-serif;
   }
 
   /* Prevent tight buttons/inputs from clipping tall Fidel characters without distorting avatars/icons/images */
