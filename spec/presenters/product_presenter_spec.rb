@@ -131,7 +131,7 @@ describe ProductPresenter do
               percentages: [0, 0, 0, 0, 0],
             },
             seller: {
-              avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+              avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
               id: product.user.external_id,
               name: product.user.username,
               profile_url: product.user.profile_url(recommended_by: "discover"),
@@ -1421,7 +1421,7 @@ describe ProductPresenter do
           seller: {
             name: seller.name,
             profile_url: seller.profile_url,
-            avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+            avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
           },
         }
       )

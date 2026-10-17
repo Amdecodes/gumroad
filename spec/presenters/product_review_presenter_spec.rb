@@ -12,7 +12,7 @@ describe ProductReviewPresenter do
           id: product_review.external_id,
           message: product_review.message,
           rater: {
-            avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+            avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
             name: "Anonymous"
           },
           rating: product_review.rating,
@@ -90,7 +90,7 @@ describe ProductReviewPresenter do
       it "uses 'Anonymous' rather than the checkout name" do
         expect(described_class.new(product_review).product_review_props[:rater]).to eq(
           {
-            avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+            avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
             name: "Anonymous",
           }
         )
@@ -143,7 +143,7 @@ describe ProductReviewPresenter do
         it "hides the account's name and avatar" do
           expect(described_class.new(product_review).product_review_props[:rater]).to eq(
             {
-              avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+              avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
               name: "Anonymous",
             }
           )
@@ -174,7 +174,7 @@ describe ProductReviewPresenter do
       it "uses 'Anonymous' and the default avatar rather than the shipping name" do
         expect(described_class.new(product_review).product_review_props[:rater]).to eq(
           {
-            avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+            avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
             name: "Anonymous",
           }
         )

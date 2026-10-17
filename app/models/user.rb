@@ -582,15 +582,15 @@ class User < ApplicationRecord
   end
 
   def resized_avatar_url(size:)
-    return ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png") unless avatar.attached?
+    return ActionController::Base.helpers.image_url("default-avatar-5.png") unless avatar.attached?
     cdn_url_for(stored_avatar_variant(resize_to_limit: [size, size]).url)
   rescue ActiveStorage::FileNotFoundError, Errno::ENOENT, ActiveRecord::InvalidForeignKey => e
     Rails.logger.warn("User#resized_avatar_url error (#{id}): #{e.class} => #{e.message}")
-    ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png")
+    ActionController::Base.helpers.image_url("default-avatar-5.png")
   end
 
   def avatar_url
-    return ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png") unless avatar.attached?
+    return ActionController::Base.helpers.image_url("default-avatar-5.png") unless avatar.attached?
 
     variant_url = cached_avatar_variant_url
 

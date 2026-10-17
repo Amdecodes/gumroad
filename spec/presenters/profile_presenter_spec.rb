@@ -37,7 +37,7 @@ describe ProfilePresenter do
     it "returns profile data object" do
       expect(presenter.creator_profile).to eq(
         {
-          avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+          avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
           external_id: seller.external_id,
           name: seller.name,
           twitter_handle: nil,

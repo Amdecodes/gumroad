@@ -96,11 +96,11 @@ describe "User profile settings page", type: :system, js: true do
         click_on "Update profile"
         expect(page).to have_alert(text: "Changes saved!")
         wait_for_ajax
-        expect(@user.reload.avatar_url).to eq(ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"))
+        expect(@user.reload.avatar_url).to eq(ActionController::Base.helpers.image_url("default-avatar-5.png"))
         refresh
-        expect(page).to have_selector("img[alt='Current avatar'][src*='gumroad-default-avatar-5']")
+        expect(page).to have_selector("img[alt='Current avatar'][src*='default-avatar-5']")
         within find("aside[aria-label='Preview']") do
-          expect(page).to have_selector("img[alt='Profile Picture'][src*='gumroad-default-avatar-5']")
+          expect(page).to have_selector("img[alt='Profile Picture'][src*='default-avatar-5']")
         end
       end
 

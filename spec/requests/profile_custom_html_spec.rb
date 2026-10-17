@@ -139,7 +139,7 @@ describe "Profile custom HTML rendering", type: :request do
       expect(response.body).to include(%(<meta property="og:image:alt" content="Gumroad">))
       # The favicon links (gp#1966) legitimately point at the default avatar
       # asset when none is uploaded — only the og:image tag itself must avoid it.
-      expect(response.body).not_to include(%(<meta property="og:image" content="#{ERB::Util.h(ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"))}">))
+      expect(response.body).not_to include(%(<meta property="og:image" content="#{ERB::Util.h(ActionController::Base.helpers.image_url("default-avatar-5.png"))}">))
       expect(response.body).not_to include(%(property="twitter:image"))
     end
   end

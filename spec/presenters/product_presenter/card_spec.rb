@@ -23,7 +23,7 @@ describe ProductPresenter::Card do
               id: creator.external_id,
               name: "Testy",
               profile_url: creator.profile_url(recommended_by: "discover"),
-              avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+              avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
               is_verified: false,
             },
             description: product.plaintext_description.truncate(100),
@@ -412,7 +412,7 @@ describe ProductPresenter::Card do
           seller: {
             name: creator.name,
             profile_url: creator.profile_url,
-            avatar_url: ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+            avatar_url: ActionController::Base.helpers.image_url("default-avatar-5.png"),
           },
         }
       )

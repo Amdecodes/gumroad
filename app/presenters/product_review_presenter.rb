@@ -22,7 +22,7 @@ class ProductReviewPresenter
       rating: product_review.rating,
       message: product_review.message,
       rater: {
-        avatar_url: product_review.shows_account_identity? ? purchaser.avatar_url : ActionController::Base.helpers.image_url("gumroad-default-avatar-5.png"),
+        avatar_url: product_review.shows_account_identity? ? purchaser.avatar_url : ActionController::Base.helpers.image_url("default-avatar-5.png"),
         name: product_review.rater_name,
       },
       purchase_id: include_purchase_id ? purchase.external_id : nil,
