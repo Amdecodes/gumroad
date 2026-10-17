@@ -32,6 +32,7 @@ export const actions = {
   yes_delete: "አዎ፣ ሰርዝ",
   confirm_and_save: "አረጋግጥና አስቀምጥ",
   learn_more: "የበለጠ ለመረዳት",
+  reload: "እንደገና ጫን",
 } as const;
 
 export const currency = {

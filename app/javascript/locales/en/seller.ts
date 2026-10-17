@@ -1219,6 +1219,7 @@ export const seller = {
     aggregate_monthly: "Monthly",
     csv_on_its_way: "A CSV of {range} is on its way to your email.",
     analytics_failed: "We couldn't load your analytics for this range.",
+    chart_load_failed: "We couldn't load the sales chart. Your sales data is unaffected.",
     analytics_failed_export_all:
       "We couldn't load your analytics for this range. Export all sales to get your sales history by email.",
     retrying_narrower: "This range couldn't load, so we're retrying with the most recent half.",

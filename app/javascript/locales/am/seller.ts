@@ -1181,6 +1181,7 @@ export const seller = {
     aggregate_monthly: "በየወሩ",
     csv_on_its_way: "የ {range} CSV ፋይል ወደ ኢሜይልዎ በመላክ ላይ ነው።",
     analytics_failed: "ለዚህ የቀን ክልል ትንታኔዎን መጫን አልቻልንም።",
+    chart_load_failed: "የሽያጭ ቻርቱን መጫን አልተቻለም። የሽያጭ መረጃዎ አልተነካም።",
     analytics_failed_export_all: "ለዚህ የቀን ክልል ትንታኔዎን መጫን አልቻልንም። የሽያጭ ታሪክዎን በኢሜይል ለማግኘት ሁሉንም ሽያጮች ወደ ውጭ ይላኩ።",
     retrying_narrower: "ይህ ክልል ሊጫን አልቻለም፣ ስለዚህ በቅርቡ ባለው አጋማሽ እንደገና እየሞከርን ነው።",
     export_all_sales: "ሁሉንም ሽያጮች ወደ ውጭ ላክ",

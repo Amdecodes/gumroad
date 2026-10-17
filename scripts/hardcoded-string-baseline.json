@@ -13,7 +13,7 @@
   "components": 208,
   "components/Admin": 4,
   "components/Agent": 21,
-  "components/Analytics": 2,
+  "components/Analytics": 0,
   "components/ApiDocumentation": 637,
   "components/Audience": 1,
   "components/Authentication": 3,

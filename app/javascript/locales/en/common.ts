@@ -32,6 +32,7 @@ export const actions = {
   yes_delete: "Yes, delete",
   confirm_and_save: "Confirm and save",
   learn_more: "Learn more",
+  reload: "Reload",
 } as const;
 
 export const currency = {
