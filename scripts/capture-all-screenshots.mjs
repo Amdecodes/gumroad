@@ -57,12 +57,21 @@ const PAGES = [
   { name: "login", url: `http://app.localhost:${PORT}/login`, auth: "none" },
 ];
 
+const EXTRA_PAGES = [
+  { name: "seller_custom_theme", url: `http://gumbofilm.localhost:${PORT}/l/r`, auth: "none" },
+  { name: "checkout", url: `http://localhost:${PORT}/checkout`, auth: "none" },
+  { name: "email_preview", url: `http://localhost:${PORT}/rails/mailers/customer_mailer/auto_invoice`, auth: "none" },
+  { name: "invoice_pdf", url: `http://localhost:${PORT}/invoice_preview.html`, auth: "none" },
+  { name: "error_404", url: `http://localhost:${PORT}/404.html`, auth: "none" },
+];
+
 const LOCALES = ["en", "am"];
 const THEMES = ["light", "dark"];
 const VIEWPORTS = [
   { name: "1280px", width: 1280, height: 800, mobile: false },
   { name: "375px", width: 375, height: 812, mobile: true },
 ];
+const FORCE = process.argv.includes("--force");
 
 async function main() {
   console.log(`Starting screenshot capture for phase: [${PHASE}]...`);
@@ -123,7 +132,7 @@ async function main() {
             const filename = `${page.name}_${locale}_${theme}_${vp.name}.png`;
             const filepath = path.join(outDir, filename);
 
-            if (fs.existsSync(filepath) && fs.statSync(filepath).size > 1000) {
+            if (!FORCE && fs.existsSync(filepath) && fs.statSync(filepath).size > 1000) {
               process.stdout.write("s");
               continue;
             }
@@ -184,6 +193,38 @@ async function main() {
             process.stdout.write(".");
           }
         }
+      }
+      console.log(` done!`);
+    }
+
+    for (const page of EXTRA_PAGES) {
+      console.log(`Capturing extra page: ${page.name}`);
+      for (const vp of VIEWPORTS) {
+        const filename = `${page.name}_${vp.name}.png`;
+        const filepath = path.join(outDir, filename);
+
+        if (!FORCE && fs.existsSync(filepath) && fs.statSync(filepath).size > 1000) {
+          process.stdout.write("s");
+          continue;
+        }
+
+        await send(targetWs, "Emulation.setDeviceMetricsOverride", {
+          width: vp.width,
+          height: vp.height,
+          deviceScaleFactor: 1,
+          mobile: vp.mobile,
+        });
+
+        await send(targetWs, "Emulation.setEmulatedMedia", {
+          features: [{ name: "prefers-color-scheme", value: "light" }],
+        });
+
+        await send(targetWs, "Page.navigate", { url: page.url });
+        await new Promise((r) => setTimeout(r, 3000));
+
+        const { data } = await send(targetWs, "Page.captureScreenshot", { format: "png" });
+        fs.writeFileSync(filepath, Buffer.from(data, "base64"));
+        process.stdout.write(".");
       }
       console.log(` done!`);
     }

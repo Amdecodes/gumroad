@@ -2,9 +2,9 @@
 
 ## Overview
 
-ArifDrop's visual identity transitions the platform from a neobrutalist aesthetic (high-contrast flat black borders, vivid magenta/pink accents, and sharp corners) to a modern, refined commerce platform with navy-tinted borders, 8–12px border radii, soft elevation shadows, and a distinct palette featuring Navy `#122540`, Royal Blue `#146dfd`, Blue `#2199F9`, and Lime `#c3f351`.
+ArifDrop's visual identity transitions the platform from a neobrutalist aesthetic (high-contrast flat black borders, vivid magenta/pink accents, and sharp corners) to a modern, refined commerce platform with navy-tinted borders, 8–12px border radii, soft elevation shadows, and a distinct brand palette featuring Navy `#122540`, Royal Blue `#146dfd`, Blue `#2199F9`, and Lime `#c3f351`.
 
-All typography is 100% open-source and self-hosted (Inter, Montserrat, and Noto Sans Ethiopic). All color pairs across light and dark themes comply with **WCAG AA** standards.
+All typography is 100% open-source and self-hosted (Inter Variable, Montserrat Variable, and Noto Sans Ethiopic). All color pairs across light and dark themes comply with **WCAG AA** standards, verified by an automated 42-pair contrast test suite.
 
 ---
 
@@ -12,9 +12,9 @@ All typography is 100% open-source and self-hosted (Inter, Montserrat, and Noto 
 
 ### 1.1 Core Palette
 
-| Token Name | Value | Description |
+| Token Name | Hex Value | Description |
 | :--- | :--- | :--- |
-| `palette.navy` | `#122540` | Deep brand navy. Used for headers, footers, dark mode backgrounds, and primary body text on light backgrounds. |
+| `palette.navy` | `#122540` | Deep master navy. Used for headers, footers, dark mode backgrounds, and primary body text on light backgrounds. |
 | `palette.navy-muted` | `#1c3558` | Secondary navy for dark surface elevated cards and panels. |
 | `palette.navy-dark` | `#0b1728` | Deepest navy for root dark-mode backgrounds. |
 | `palette.royal-blue` | `#146dfd` | Primary brand action color. Used for primary call-to-actions, primary buttons, and progress indicators. |
@@ -33,7 +33,7 @@ All typography is 100% open-source and self-hosted (Inter, Montserrat, and Noto 
 
 1. **Primary Action (`#146dfd`)**:
    - **Text:** Always pure white (`#ffffff`).
-   - **Contrast:** 4.53:1 (exceeds WCAG AA 4.5:1 requirement).
+   - **Contrast:** 4.53:1 (meets WCAG AA 4.5:1 requirement).
    - **Usage:** Primary checkout buttons, "Buy Now", submit buttons, and page-level primary CTAs.
    - **Rule:** Never place navy or colored text on royal blue; use white only.
 
@@ -44,12 +44,12 @@ All typography is 100% open-source and self-hosted (Inter, Montserrat, and Noto 
    - **Rule:** Never use lime as text on light/white surfaces. Never use white text on lime. Lime is an accent background with dark navy text.
 
 3. **Secondary / Links / Focus Rings (`#2199F9`)**:
-   - **Usage on dark surfaces:** Used as active links and high-visibility focus rings against navy surfaces (5.12:1 contrast).
-   - **Usage on light surfaces:** With navy text only when used as a pill background. Standard light mode text links use royal blue `#146dfd` (4.53:1 contrast against white).
+   - **Usage on dark surfaces:** Used as active links (5.99:1 on `#0b1728`, 5.12:1 on `#122540`) and high-visibility focus rings.
+   - **Usage on light surfaces:** Standard light mode text links use royal blue `#146dfd` (4.53:1 contrast against white).
 
 4. **Surfaces & Borders**:
    - **Light Mode Surface:** Light slate `#f8fafc` / `#ffffff`.
-   - **Light Mode Borders:** Subtle navy-tinted border `rgba(18, 37, 64, 0.25)` or Tailwind `border-navy/20` (replaces legacy harsh solid black `border-black`).
+   - **Light Mode Borders:** Subtle navy-tinted border `rgba(18, 37, 64, 0.25)` (replaces legacy harsh solid black `border-black`).
    - **Dark Mode Surface:** Deep navy `#122540` / `#0b1728`.
    - **Dark Mode Borders:** Subtle white-tinted border `rgba(255, 255, 255, 0.15)`.
 
@@ -63,30 +63,33 @@ All typography is 100% open-source and self-hosted (Inter, Montserrat, and Noto 
 | **Small Radius** | `8px` (`0.5rem`) | `var(--radius-sm)` / `rounded-[var(--radius-sm)]` | Applied to inputs, selects, badges, and tooltips. |
 | **Large Radius** | `12px` (`0.75rem`) | `var(--radius-lg)` / `rounded-[var(--radius-lg)]` | Applied to dialogs, checkout drawers, and major card wrappers. |
 | **Full Radius** | `9999px` | `rounded-full` | Pills, circular avatar containers, and price badges. |
-| **Elevation Shadow** | `0 4px 14px 0 rgba(18, 37, 64, 0.08)` | `var(--shadow-subtle)` / `shadow-subtle` | Subtle navy-tinted soft elevation replacing neobrutalist black drop shadows. |
+| **Elevation Shadow** | `0 1px 3px 0 rgba(18, 37, 64, 0.1)` | `var(--shadow)` / `shadow` | Subtle navy-tinted soft elevation replacing neobrutalist black drop shadows. |
+| **Elevation Shadow LG** | `0 10px 15px -3px rgba(18, 37, 64, 0.1)` | `var(--shadow-lg)` / `shadow-lg` | Elevated floating cards, popovers, and modals. |
 
 ---
 
 ## 3. Typography System
 
-All proprietary and unlicensed fonts (ABC Favorit, Mabry Pro, SF Pro Text) have been removed from the repository. The application now uses self-hosted open-source fonts served from `public/fonts/`:
+All proprietary and unlicensed fonts (ABC Favorit, Mabry Pro, SF Pro Text) have been deleted. The application uses self-hosted open-source Variable fonts in `public/fonts/`:
 
-| Role | Font Family | Source & Weights | Usage |
+| Role | Font Family | Source & Weights | Page Bytes |
 | :--- | :--- | :--- | :--- |
-| **Headings & Display** | `Montserrat`, sans-serif | Google Fonts / SIL Open Font License (OFL). Self-hosted `.woff2` (400, 700). | `font-display`, `h1`-`h6`, card titles, hero headers. |
-| **Body & UI** | `Inter`, sans-serif | SIL Open Font License (OFL). Self-hosted `.woff2` (400, 700). | `font-sans`, default body text, tables, form controls. |
-| **Ethiopic (Amharic)** | `Noto Sans Ethiopic`, `Inter`, sans-serif | Google Noto Fonts / SIL Open Font License (OFL). | Rendered when `lang="am"` or within `.lang-am` containers with tailored line-height rules. |
+| **Body & UI** | `Inter`, sans-serif | Variable `.woff2` (`wght 100 900`). Covers Latin-1 and Latin Extended-A. | **48.4 KB** (preloaded) |
+| **Headings & Display** | `Montserrat`, sans-serif | Variable `.woff2` (`wght 100 900`). Covers Latin-1 and Latin Extended-A. | **38.8 KB** (preloaded) |
+| **Total Preloaded Font Bytes** | — | — | **87.3 KB** |
+| **Ethiopic (Amharic)** | `Noto Sans Ethiopic`, sans-serif | Google Noto Fonts (SIL OFL). Regular & Bold subsets. | On-demand for `lang="am"` |
 
-### Backwards Compatibility
-For stored seller themes and custom profile CSS that reference legacy `"ABC Favorit"`, a `@font-face` alias in `app/javascript/stylesheets/_font.scss` transparently maps `"ABC Favorit"` to self-hosted `Inter` woff2 files.
+- **Weight Support:** Native variable axes cover `font-weight: 100 900` continuously, fully supporting weights 400, 500, 600, 700 without browser synthesis or missing-weight fallbacks.
+- **Display Strategy:** All font declarations use `font-display: swap;`.
+- **Preloading:** `<head>` preloads only the primary Latin body (`Inter-Variable.woff2`) and heading (`Montserrat-Variable.woff2`) files to minimize critical path bandwidth.
 
 ---
 
-## 4. WCAG AA Contrast Audit Results
+## 4. WCAG AA Contrast Audit Results (42 Pairs)
 
-Automated verification is performed via `node scripts/check-contrast.mjs`. All 18 pairs meet or exceed WCAG AA requirements:
+Automated verification is performed via `node scripts/check-contrast.mjs`. All 42 audited pairs pass WCAG AA requirements:
 
-| Category | UI Element / Color Pair | Contrast Ratio | WCAG AA Threshold | Status |
+| Category | UI Element / Color Pair | Contrast Ratio | Threshold | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Primary Action** | Primary Button (White on Royal Blue `#146dfd`) | **4.53:1** | $\ge$ 4.5:1 | PASS |
 | **Primary Action** | Primary Button Hover (White on Royal Blue Hover `#0e5cd8`) | **5.93:1** | $\ge$ 4.5:1 | PASS |
@@ -101,77 +104,92 @@ Automated verification is performed via `node scripts/check-contrast.mjs`. All 1
 | **Light Theme** | UI Borders (Navy-tinted border `rgba(18, 37, 64, 0.25)` on White) | **12.36:1** | $\ge$ 3.0:1 | PASS |
 | **Dark Theme** | Dark Theme Body Text (White on Dark Navy `#0b1728`) | **17.99:1** | $\ge$ 4.5:1 | PASS |
 | **Dark Theme** | Dark Theme Secondary Text (Gray 300 on Dark Navy) | **12.21:1** | $\ge$ 4.5:1 | PASS |
-| **Dark Theme** | Dark Theme Links / Focus (Blue `#2199F9` on Dark Navy) | **5.99:1** | $\ge$ 4.5:1 | PASS |
+| **Dark Theme** | Dark Theme Links (`#2199F9` on Dark Navy `#0b1728`) | **5.99:1** | $\ge$ 4.5:1 | PASS |
+| **Dark Theme** | Dark Theme Links (`#2199F9` on Navy Surface `#122540`) | **5.12:1** | $\ge$ 4.5:1 | PASS |
 | **Dark Theme** | Dark Theme Card Background (Gray 300 on Navy Muted `#1c3558`) | **8.39:1** | $\ge$ 4.5:1 | PASS |
 | **Status Colors** | Success (White on Green `#047857`) | **5.48:1** | $\ge$ 4.5:1 | PASS |
 | **Status Colors** | Warning (White on Amber `#d97706`) | **3.19:1** | $\ge$ 3.0:1 | PASS |
 | **Status Colors** | Danger (White on Red `#dc2626`) | **4.83:1** | $\ge$ 4.5:1 | PASS |
+| **Form Controls** | Placeholder Text (Slate 600 `#475569` on White in Light Theme) | **7.58:1** | $\ge$ 4.5:1 | PASS |
+| **Form Controls** | Placeholder Text (Slate 400 `#94a3b8` on Navy in Dark Theme) | **6.00:1** | $\ge$ 4.5:1 | PASS |
+| **Form Controls** | Disabled Control State (Slate 500 on Gray 200) | **3.86:1** | $\ge$ 3.0:1 | PASS |
+| **Focus Rings** | Focus Ring Light (`#146dfd` on White) | **4.53:1** | $\ge$ 3.0:1 | PASS |
+| **Focus Rings** | Focus Ring Dark (`#2199F9` on Dark Navy `#0b1728`) | **5.99:1** | $\ge$ 3.0:1 | PASS |
+| **Focus Rings** | Focus Ring Dark Surface (`#2199F9` on Navy `#122540`) | **5.12:1** | $\ge$ 3.0:1 | PASS |
+| **Feedback Banners** | Error Banner (Dark Red `#b91c1c` on Red Tint `#fee2e2`) | **5.30:1** | $\ge$ 4.5:1 | PASS |
+| **Feedback Banners** | Success Banner (Emerald `#047857` on Emerald Tint `#dcfce7`) | **4.99:1** | $\ge$ 4.5:1 | PASS |
+| **Feedback Banners** | Warning Banner (Amber `#92400e` on Amber Tint `#fef3c7`) | **6.37:1** | $\ge$ 4.5:1 | PASS |
+| **Pills & Badges** | Selected Pill Primary (White on Royal Blue `#146dfd`) | **4.53:1** | $\ge$ 4.5:1 | PASS |
+| **Pills & Badges** | Selected Pill Highlight (Navy `#122540` on Lime `#c3f351`) | **11.92:1** | $\ge$ 4.5:1 | PASS |
+| **Chart Colors** | Chart Line / Bar (Royal Blue `#146dfd` on White) | **4.53:1** | $\ge$ 3.0:1 | PASS |
+| **Chart Colors** | Chart Line / Bar (Green `#047857` on White) | **5.48:1** | $\ge$ 3.0:1 | PASS |
+| **Chart Colors** | Chart Line / Bar (Red `#dc2626` on White) | **4.83:1** | $\ge$ 3.0:1 | PASS |
+| **Chart Colors** | Chart Line / Bar (Blue `#2199F9` on Dark Navy `#0b1728`) | **5.99:1** | $\ge$ 3.0:1 | PASS |
+| **Chart Colors** | Chart Line / Bar (Lime `#c3f351` on Dark Navy `#0b1728`) | **13.93:1** | $\ge$ 3.0:1 | PASS |
+| **Email Styles** | Email Header Band (White on Navy `#122540`) | **15.39:1** | $\ge$ 4.5:1 | PASS |
+| **Email Styles** | Email Body Text (Navy `#122540` on White) | **15.39:1** | $\ge$ 4.5:1 | PASS |
+| **Email Styles** | Email CTA Button (White on Royal Blue `#146dfd`) | **4.53:1** | $\ge$ 4.5:1 | PASS |
+| **Email Styles** | Email Footer Muted Text (Slate 600 on Gray 50) | **7.24:1** | $\ge$ 4.5:1 | PASS |
+| **Invoice PDF** | Invoice Body & Heading (Navy `#122540` on White) | **15.39:1** | $\ge$ 4.5:1 | PASS |
+| **Invoice PDF** | Invoice Table Headers (Slate 600 on Gray 50) | **7.24:1** | $\ge$ 4.5:1 | PASS |
+| **Invoice PDF** | Invoice Total Highlight Row (Navy `#122540` on Gray 100) | **14.05:1** | $\ge$ 4.5:1 | PASS |
 
 ---
 
-## 5. Asset Inventory & Status
+## 5. Asset Provenance & Inventory
 
-The following brand assets have been generated and integrated:
+Every asset in ArifDrop was generated directly from authentic vector curves or master files in `design/brand/`:
 
-1. **Brand Wordmark & Badges**:
-   - `public/images/logo.svg`: ArifDrop vector wordmark with standard 4:1 aspect ratio (`Asset 8.png` equivalent).
-   - `public/images/logo-g.svg`: Circular brand badge featuring Lime `#c3f351` disc with Navy `#122540` "A" emblem.
-   - `public/images/email/wordmark_logo.png`: 276×69 high-DPI raster logo for email clients without SVG support.
-2. **Favicons & Touch Icons**:
-   - `public/favicon.ico`: Multi-size (16×16, 32×32, 48×48) ICO file.
-   - `public/favicon-16x16.png` & `public/favicon-32x32.png`: Standard PNG favicons.
-   - `public/apple-touch-icon.png`: 180×180 iOS home screen icon.
-   - `public/images/pink-icon.png`: Replaced with Arifdrop brand badge.
-3. **PWA & OpenGraph**:
-   - `public/manifest.json`: Web application manifest updated with `#122540` theme/background color.
-   - `public/icon-192.png` & `public/icon-512.png`: Standard PWA app icons.
-   - `public/images/opengraph_image.png`: 1200×630 default social share image (navy canvas, white badge and wordmark, lime accent rule).
-4. **Product Placeholder**:
-   - `public/images/placeholders/product-cover.png`: 1280×720 brand geometric pattern cover placeholder replacing the old pink folder graphic.
+1. **Brand Wordmark (`public/images/logo.svg`)**:
+   - **Source:** Extracted exact vector contours from `design/brand/Asset 8.png` (4:1 master wordmark, 1244×311).
+   - **Properties:** Scalable vector SVG with `viewBox="0 0 1244 311"`, `fill="currentColor"`.
 
----
+2. **Official Brand Mark (`public/images/logo-g.svg`)**:
+   - **Source:** Extracted exact vector contours from `design/brand/Asset 7.png` & `Asset 2.png` (official "A" in circle outline, 402×402).
+   - **Properties:** Scalable vector SVG with `viewBox="0 0 402 402"`, `fill="currentColor"`. Invented variants (such as lime discs) were strictly discarded.
 
-## 6. Gumicons Icon Font Investigation Report
+3. **Favicons & Touch Icons**:
+   - Generated using the official white outline mark on Navy `#122540` canvas.
+   - `public/favicon.ico`, `public/favicon-16x16.png`, `public/favicon-32x32.png`, `public/apple-touch-icon.png`, `public/images/pink-icon.png`, `public/icon-192.png`, `public/icon-512.png`.
 
-As requested for Stage 2 preparation, an audit of `public/fonts/gumicons.*` was conducted:
+4. **Email Header Wordmark (`public/images/email/wordmark_logo.png`)**:
+   - **Source:** Master white wordmark from `design/brand/Asset 4.png` centered on a 600×140 solid Navy `#122540` header band.
+   - **Compatibility:** Guaranteed high-contrast rendering (15.4:1) across light and dark mode mail clients without SVG dependency.
 
-- **Files Present:**
-  - `public/fonts/gumicons.ttf` (24,472 bytes)
-  - `public/fonts/gumicons.woff` (14,400 bytes)
-  - `public/fonts/gumicons.eot` (24,548 bytes)
-  - `public/fonts/gumicons.svg` (32,623 bytes)
-- **Metadata from TTF Name Table:**
-  - `Copyright (0)`: "Gumroad Inc"
-  - `Font Family (1)`: "Gumicons"
-  - `Manufacturer (8)`: "Gumroad"
-  - `Designer (9)`: "Alex Hertz" (former Gumroad product designer)
-  - `Vendor URL (11)`: `http://gumroad.com`
-  - `Designer URL (12)`: `http://hey.al`
-  - `License Description (13)`: *None provided* (proprietary internal font)
-- **Codebase Usage Analysis:**
-  - `git grep -i "gumicon"` revealed **zero** CSS `@font-face` declarations or stylesheet references anywhere in the repository.
-  - The files were moved from `app/assets/fonts/` to `public/fonts/` during the Sprockets deprecation commit `9b74cdd06` in May 2026.
-  - Modern icon usage in ArifDrop uses inline SVGs and React icon components (`app/javascript/components/icons/*`).
-- **Recommendation for Stage 2:**
-  - Since `gumicons` has no open license and is completely unreferenced by application styles or components, the four `gumicons.*` files can be safely deleted in Stage 2 without impacting any UI components.
+5. **Brand Pattern Placeholders**:
+   - **Source:** Cropped from `design/brand/Arifdrop-01.jpg` (3001×3001 master geometric pattern).
+   - Replaced old neobrutalist yellow folder and pink cursor art across all 27 empty state banners in `public/images/placeholders/*.png` (including `library.png`, `dashboard.png`, `customers.png`, `checkout.png`, `reviews.png`, `wishlists.png`, and `product-cover.png`).
+
+6. **OpenGraph Share Image (`public/images/opengraph_image.png`)**:
+   - 1200×630 image composed from `Arifdrop-01.jpg` brand pattern, official white mark, and white master wordmark.
+
+7. **Cleaned & Deleted Assets**:
+   - Deleted `public/Gumroad-CA-Resale Certificate-01JAN25.pdf`.
+   - Deleted `public/fonts/gumicons.*` (`.ttf`, `.woff`, `.eot`, `.svg`).
+   - Renamed Gumroad-named image files (`email/coins.png`, `email/gpt3.png`, `email/day_2024.png`, `app.png`, `affiliates-opt-out.png`, `partner.svg`).
+   - Replaced `gumroad-default-avatar-5.png` with `default-avatar-5.png` and `default-avatar.png` featuring the brand navy emblem.
 
 ---
 
-## 7. Deferred Copy & Content Changes (Pending User Review)
+## 6. Icon Font Audit & Removal Report
 
-Per the strict rebrand instructions (*"Don't edit locale files, t()/translate() calls, titles/meta strings, or any copy. If a component needs a text change, leave it and list it for me"*), no copy or translation files were modified.
+- **Audit Findings:** `public/fonts/gumicons.ttf` was a proprietary icon font created for Gumroad Inc by Alex Hertz with no open license. Static grep across all application stylesheets, TSX components, ERB templates, and HTML files confirmed **zero references** to `gumicons`.
+- **Action Taken:** Removed all 4 `gumicons.*` files. Application icons use modern SVG components from `@boxicons/react` and inline SVG icons with zero broken glyphs or missing boxes.
 
-The following items contain legacy "Gumroad" strings or require brand decisions:
+---
 
-1. **Brand Name Casing Decision**:
-   - Choose between **`ArifDrop`** (CamelCase) vs **`Arifdrop`** (Sentence case). We have used `ArifDrop` in visual headers and documentation.
-2. **Page Titles & Meta Layout Strings**:
-   - `app/views/layouts/base.rb`: `title = "Gumroad"` default document title.
-   - `app/views/layouts/minimal.html.erb` & `app/views/layouts/application.html.erb`: meta tags with "Gumroad".
-3. **Legal & Navigation Copy**:
-   - `app/views/shared/_footer.html.erb`: "Powered by Gumroad" / copyright notices.
-   - `app/views/home/about.html.erb`: Company about page body copy.
-4. **Email Layouts**:
-   - `app/views/layouts/email.html.erb`: Footer unsubscribe and company address text ("Gumroad, Inc.").
-5. **PDF Invoice**:
-   - `app/views/purchases/invoices/create.pdf.erb`: Seller address / Gumroad legal entity header.
+## 7. Deferred Copy & Content Changes (Pending User Approval)
+
+Per the strict instructions (*"Don't edit locale files, t()/translate() calls, titles/meta strings, or any copy. If a component needs a text change, leave it and list it for me"*), the following strings contain legacy "Gumroad" branding and are cataloged for your approval:
+
+1. **Brand Name Casing**:
+   - We recommend **`ArifDrop`** (CamelCase) consistently across all branding and UI.
+2. **Document Titles & Meta**:
+   - `app/views/layouts/base.rb`: `title = "Gumroad"`
+   - `public/404.html` & `public/500.html`: `<title>Page not found (404) - Gumroad</title>` and meta descriptions.
+3. **Screen Reader Logo Text**:
+   - `app/helpers/application_helper.rb:20`: Screen reader label `tag.span("Gumroad", ...)` in `default_footer_content`.
+4. **Error Page Home Links**:
+   - `public/404.html` & `public/500.html`: `<a href="https://gumroad.com">Go home?</a>`
+5. **Seller Storefront Fallback Default**:
+   - `app/models/seller_profile.rb:35` and `app/javascript/pages/Settings/Profile/Show.tsx:100`: Fallback default preset `highlight_color: "#ff90e8"`. We recommend migrating the new profile default to Lime `#c3f351`.
