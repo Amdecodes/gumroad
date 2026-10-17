@@ -15,8 +15,7 @@ export const SUPPORTED_LOCALES: readonly SupportedLocale[] = ["en", "am"];
 
 export const isSupportedLocale = (val: string): val is SupportedLocale => val === "en" || val === "am";
 
-// Only true outside of production builds.
-export const isPseudoLocale = (val: string): boolean => val === PSEUDO_LOCALE && import.meta.env.PROD !== true;
+export const isPseudoLocale = (val: string): boolean => val === PSEUDO_LOCALE;
 
 const dictionaries: Record<SupportedLocale, Record<string, unknown>> = {
   en,
@@ -169,7 +168,7 @@ const VOWEL_ACCENTS: Record<string, string> = {
 };
 
 // Replaces vowels with accented equivalents, then pads to ~130% of original length.
-const pseudoExpand = (text: string): string => {
+export const pseudoExpand = (text: string): string => {
   const accented = text.replace(/[aeiouAEIOU]/gu, (c) => VOWEL_ACCENTS[c] ?? c);
   const targetLen = Math.ceil(text.length * 1.3);
   const pad = "ẋ".repeat(Math.max(0, targetLen - accented.length));

@@ -59,4 +59,7 @@ export const discover = {
   sale: "ቅናሽ",
   black_friday: "ብላክ ፍራይዴይ",
   recently_viewed: "በቅርብ የታዩ",
+  seo_title: "ከተናጠል ፈጣሪዎች የዲጂታል ምርቶችን ያግኙ",
+  seo_suffix: "ከተናጠል ፈጣሪዎች የተዘጋጁ የዲጂታል ምርቶች",
+  search_results_for: "የፍለጋ ውጤቶች ለ “{query}”",
 } as const;

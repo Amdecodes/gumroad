@@ -3,6 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 
 export const Modal = ({
   className,
@@ -39,7 +40,7 @@ export const Modal = ({
           <div className="flex items-start justify-between gap-4">
             <Dialog.Title>{title}</Dialog.Title>
             {allowClose ? (
-              <Dialog.Close className="cursor-pointer text-base all-unset" aria-label="Close">
+              <Dialog.Close className="cursor-pointer text-base all-unset" aria-label={t("actions.close", "Close")}>
                 <X className="size-5" />
               </Dialog.Close>
             ) : null}

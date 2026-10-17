@@ -228,11 +228,13 @@ am:
     valid_email_prompt: እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።
     zip_code: የፖስታ ቁጥር
   common:
+    close_menu: ሜኑ ዝጋ
     date: ቀን
     "false": አይ
     free: ነፃ
     here: እዚህ
     loading: በመጫን ላይ...
+    more: ተጨማሪ
     optional: አማራጭ
     or: ወይም
     other: ሌላ
@@ -468,6 +470,9 @@ am:
     recently_viewed: በቅርብ የታዩ
     sale: ቅናሽ
     search_products: ምርቶችን ይፈልጉ
+    seo_title: ከተናጠል ፈጣሪዎች የዲጂታል ምርቶችን ያግኙ
+    seo_suffix: ከተናጠል ፈጣሪዎች የተዘጋጁ የዲጂታል ምርቶች
+    search_results_for: "የፍለጋ ውጤቶች ለ “%{query}”"
   disputes:
     add_to_response: በምላሽዎ ላይ ያክሉ
     additional_evidence_prompt: ማቅረብ የሚፈልጉት ተጨማሪ ማስረጃ አለ?

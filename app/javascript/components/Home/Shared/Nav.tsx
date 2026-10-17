@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { LoggedInUser } from "$app/types/user";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { request } from "$app/utils/request";
 
 import logoSvg from "$assets/images/logo.svg";
@@ -59,15 +60,17 @@ const NavButton = ({
   context,
   onClick,
   external = false,
+  isDashboard = false,
 }: {
   href: string;
-  children: string;
+  children: React.ReactNode;
   context?: "primary" | undefined;
   onClick?: ((event: React.MouseEvent) => void) | undefined;
   external?: boolean | undefined;
+  isDashboard?: boolean | undefined;
 }) => {
   let modifier1 = "";
-  if (children === "Dashboard") {
+  if (isDashboard) {
     modifier1 = "lg:bg-black lg:text-white lg:hover:bg-pink dark:lg:bg-pink dark:lg:text-black dark:lg:hover:bg-white";
   } else if (context !== "primary") {
     modifier1 =
@@ -77,7 +80,7 @@ const NavButton = ({
   }
 
   let modifier2 = "";
-  if (context === "primary" && children !== "Dashboard") {
+  if (context === "primary" && !isDashboard) {
     // Bare `dark:` so the mobile-menu button isn't black-on-black in dark mode, plus the
     // `dark:lg:` set: modifier1 applies `lg:bg-black`, and whether a single-variant `dark:`
     // utility beats a single-variant `lg:` one is a stylesheet-order coin flip. The
@@ -118,8 +121,8 @@ const AuthButtons = ({
 }) => {
   if (user) {
     return (
-      <NavButton href={Routes.dashboard_url()} context="primary" {...(onClick && { onClick })} external>
-        Dashboard
+      <NavButton href={Routes.dashboard_url()} context="primary" isDashboard {...(onClick && { onClick })} external>
+        {t("navigation.dashboard")}
       </NavButton>
     );
   }
@@ -127,10 +130,10 @@ const AuthButtons = ({
   return (
     <>
       <NavButton href={Routes.login_path()} {...(onClick && { onClick })}>
-        Log in
+        {t("auth.log_in")}
       </NavButton>
       <NavButton href={Routes.signup_path()} context="primary" {...(onClick && { onClick })}>
-        Start selling
+        {t("navigation.start_selling")}
       </NavButton>
     </>
   );
@@ -176,12 +179,12 @@ export const HomeNav = () => {
   };
 
   const LINKS = [
-    { href: Routes.discover_path(), label: "Discover", isInertia: true },
-    { href: Routes.gumroad_blog_root_path(), label: "Blog", isInertia: true },
-    { href: Routes.pricing_path(), label: "Pricing" },
-    { href: Routes.features_path(), label: "Features" },
-    { href: Routes.about_path(), label: "About" },
-    { href: Routes.gumclaw_path(), label: "Gumclaw" },
+    { href: Routes.discover_path(), label: t("navigation.discover"), isInertia: true },
+    { href: Routes.gumroad_blog_root_path(), label: t("navigation.blog"), isInertia: true },
+    { href: Routes.pricing_path(), label: t("navigation.pricing") },
+    { href: Routes.features_path(), label: t("navigation.features") },
+    { href: Routes.about_path(), label: t("navigation.about") },
+    { href: Routes.gumclaw_path(), label: t("navigation.gumclaw") },
   ];
 
   return (
@@ -197,7 +200,7 @@ export const HomeNav = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="flex gap-1.5 rounded-full border border-black p-1.5 text-black no-underline transition-all duration-100 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-gray-100 hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] dark:border-white/35 dark:text-white dark:hover:bg-gray-700 dark:hover:shadow-[2px_2px_0_0_rgba(255,255,255,0.35)]"
-            aria-label="Visit Gumroad on GitHub"
+            aria-label={t("navigation.visit_github", "Visit ArifDrop on GitHub")}
             data-github-stars
           >
             <svg width="20" height="20" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" className="fill-current">
@@ -241,7 +244,7 @@ export const HomeNav = () => {
           <button
             className="relative flex h-8 w-8 flex-col items-center justify-center all-unset focus:outline-hidden"
             onClick={toggleMobileMenu}
-            aria-label="Toggle navigation menu"
+            aria-label={t("navigation.toggle_navigation_menu", "Toggle navigation menu")}
           >
             <div
               className={classNames(

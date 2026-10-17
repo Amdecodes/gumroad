@@ -2,7 +2,7 @@
 import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SUPPORTED_LOCALES, getCookieLocale, translate, switchLocale, useTranslation } from "$app/utils/i18n";
+import { SUPPORTED_LOCALES, getCookieLocale, translate, switchLocale, useTranslation, resetCurrentLocaleForTesting } from "$app/utils/i18n";
 
 describe("i18n utility", () => {
   const clearCookie = () => {
@@ -11,6 +11,7 @@ describe("i18n utility", () => {
   };
 
   beforeEach(() => {
+    resetCurrentLocaleForTesting();
     clearCookie();
     document.documentElement.lang = "en";
     document.documentElement.classList.remove("lang-am");
@@ -18,6 +19,7 @@ describe("i18n utility", () => {
   });
 
   afterEach(() => {
+    resetCurrentLocaleForTesting();
     clearCookie();
     document.documentElement.lang = "en";
     document.documentElement.classList.remove("lang-am");

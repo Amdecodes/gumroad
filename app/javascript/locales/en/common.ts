@@ -52,5 +52,7 @@ export const common = {
   here: "here",
   yes: "Yes",
   no: "No",
+  more: "More",
+  close_menu: "Close Menu",
   something_went_wrong: "Something went wrong.",
 } as const;

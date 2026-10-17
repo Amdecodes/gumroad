@@ -228,11 +228,13 @@ en:
     valid_email_prompt: Please provide a valid email address.
     zip_code: ZIP code
   common:
+    close_menu: Close Menu
     date: Date
     "false": "No"
     free: Free
     here: here
     loading: Loading...
+    more: More
     optional: optional
     or: or
     other: Other
@@ -468,6 +470,9 @@ en:
     recently_viewed: Recently viewed
     sale: Sale
     search_products: Search products
+    seo_title: Discover digital products from independent creators
+    seo_suffix: digital products by independent creators
+    search_results_for: "Search results for \"%{query}\""
   disputes:
     add_to_response: Add to your response
     additional_evidence_prompt: Do you have additional evidence you'd like to provide?

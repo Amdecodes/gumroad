@@ -143,7 +143,7 @@ export const Layout: React.FC<{
   const userActionButtons = <UserActionButtons />;
 
   const logoLink = (
-    <a href={Routes.discover_url({ host: discoverDomain })} className="shrink-0" aria-label="Gumroad">
+    <a href={Routes.discover_url({ host: discoverDomain })} className="shrink-0" aria-label={t("navigation.discover")}>
       <Logo className="h-auto w-[245px]" />
     </a>
   );

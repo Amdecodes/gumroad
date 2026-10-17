@@ -198,17 +198,19 @@ const FilterCheckboxes = ({
   setSelection,
   filters,
   disabled,
+  isUserData,
 }: {
   filters: ProductFilter[];
   selection: string[];
   setSelection: (value: string[]) => void;
   disabled: boolean;
+  isUserData?: boolean;
 }) => {
   const [showingAll, setShowingAll] = React.useState(false);
   return (
     <>
       {(showingAll ? filters : filters.slice(0, 5)).map((option) => (
-        <Label key={option.key} className="w-full">
+        <Label key={option.key} className="w-full" {...(isUserData ? { "data-user-data": "tag-facet" } : {})}>
           {option.label ?? option.key} ({option.doc_count})
           <Checkbox
             wrapperClassName="ml-auto"
@@ -397,6 +399,7 @@ export const CardGrid = ({
                   </Label>
                   {results ? (
                     <FilterCheckboxes
+                      isUserData
                       filters={concatFoundAndNotFound(results.tags_data, searchParams.tags)}
                       selection={searchParams.tags ?? []}
                       setSelection={(tags) => updateParams({ tags })}

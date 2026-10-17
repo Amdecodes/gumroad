@@ -52,5 +52,7 @@ export const common = {
   here: "እዚህ",
   yes: "አዎ",
   no: "አይ",
+  more: "ተጨማሪ",
+  close_menu: "ሜኑ ዝጋ",
   something_went_wrong: "ችግር ተፈጥሯል።",
 } as const;
