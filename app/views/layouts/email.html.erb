@@ -10,6 +10,11 @@
   </head>
   <body>
     <div class="email <%= @installment.present? ? 'post' : (@announcement ? 'announcement' : '') %>">
+      <div class="email-header" style="background-color: #122540; border-radius: 8px; margin-bottom: 24px; padding: 18px 24px; text-align: center;">
+        <a href="<%= root_url %>" style="text-decoration: none; display: inline-block;">
+          <img src="<%= image_url("email/wordmark_logo.png") %>" alt="<%= PlatformConfig::APP_NAME %>" style="max-height: 36px; width: auto; display: block; margin: 0 auto; border: 0;" height="36">
+        </a>
+      </div>
       <div class="main">
         <%= yield %>
       </div>

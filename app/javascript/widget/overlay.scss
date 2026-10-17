@@ -31,7 +31,7 @@
 }
 
 a.gumroad-button {
-  --parent-color: 0 0 0 !important;
+  --parent-color: 18 37 64 !important;
   font-family: $font-family;
 
   .logo-full {
@@ -64,6 +64,7 @@ a.gumroad-button {
 button.gumroad-button-filled {
   @extend %gumroad-button-base;
   background-color: white;
-  color: black;
-  border-color: white;
+  color: rgb(18 37 64);
+  border-color: rgba(18, 37, 64, 0.25);
 }
+

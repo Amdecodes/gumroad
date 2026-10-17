@@ -17,7 +17,7 @@ module ApplicationHelper
     safe_join(
       [
         "Powered by",
-        tag.span("Gumroad", class: "inline-block aspect-115/22 h-[1lh] shrink-0 bg-current mask-(--logo) mask-contain mask-center mask-no-repeat")
+        tag.span("Gumroad", class: "inline-block aspect-[4/1] h-[1lh] shrink-0 bg-current mask-(--logo) mask-contain mask-center mask-no-repeat")
       ],
       " "
     )

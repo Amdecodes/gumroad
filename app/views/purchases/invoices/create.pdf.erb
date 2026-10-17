@@ -56,6 +56,11 @@
   <body>
     <div id="admin">
       <div class="container invoice">
+        <div style="display: block; width: 100%; margin-bottom: 36px; padding-bottom: 20px; border-bottom: 2px solid #122540;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1244 311" fill="#122540" style="height: 36px; width: 144px; display: block;">
+            <%= File.read(Rails.root.join("public/images/logo.svg")).gsub(/<\/?svg[^>]*>/, '').html_safe %>
+          </svg>
+        </div>
         <div class="sidebar">
           <% supplier_info = invoice_presenter.supplier_info %>
           <h2><%= t("receipt.invoices.supplier", default: "Supplier") %></h2>
