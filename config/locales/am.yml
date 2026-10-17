@@ -14,8 +14,10 @@ am:
     download: ያውርዱ
     edit: አስተካክል
     get_access: መዳረሻ ያግኙ
+    insert: አስገባ
     installment_plan: የክፍያ ዕቅድ
     learn_more: የበለጠ ለመረዳት
+    load_more: ተጨማሪ ጫን
     manage_installment_plan: የክፍያ ዕቅድን ያስተዳድሩ
     manage_membership: ምዝገባን ያስተዳድሩ
     membership: አባልነት
@@ -29,6 +31,7 @@ am:
     save: አስቀምጥ
     save_changes: ለውጦችን አስቀምጥ
     saving: በማስቀመጥ ላይ...
+    select_all: ሁሉንም ምረጥ
     sign_up: ይመዝገቡ
     signing_up: በመመዝገብ ላይ...
     switch_language: ቋንቋ ይቀይሩ
@@ -230,23 +233,41 @@ am:
     valid_email_prompt: እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።
     zip_code: የፖስታ ቁጥር
   common:
+    all_time: ሁልጊዜ
     close_menu: ሜኑ ዝጋ
+    custom_range: ብጁ የቀን ክልል...
     date: ቀን
+    date_range_selector: የቀን ክልል መምረጫ
+    discount: ቅናሽ
     edit_or_preview: አርትዕ ወይም ቅድመ-ዕይታ
     "false": አይ
     free: ነፃ
     from: ከ
+    from_including: ከ (ጨምሮ)
     here: እዚህ
+    last_30_days: ያለፉት 30 ቀናት
+    last_3_months: ያለፉት 3 ወራት
+    last_7_days: ያለፉት 7 ቀናት
+    last_month: ያለፈው ወር
+    last_quarter: ያለፈው ሩብ ዓመት
+    last_year: ያለፈው ዓመት
     loading: በመጫን ላይ...
     more: ተጨማሪ
+    must_be_after_from_date: ከመነሻው ቀን በኋላ መሆን አለበት
     open_in_new_tab: በአዲስ ትር ክፈት
     optional: አማራጭ
     or: ወይም
     other: ሌላ
     preview: ቅድመ-ዕይታ
+    product: ምርት
     something_went_wrong: ችግር ተፈጥሯል።
     subject: ርዕሰ-ጉዳይ
+    this_month: የዚህ ወር
+    this_quarter: የዚህ ሩብ ዓመት
+    this_year: የዚህ ዓመት
     time: ሰዓት
+    to_including: እስከ (ጨምሮ)
+    today: ዛሬ
     "true": አዎ
   content:
     access_expired_desc: የዚህ ምርት መዳረሻዎ ጊዜው ያለፈበት ይመስላል። እባክዎ ለተጨማሪ እርዳታ ሻጩን ያነጋግሩ።

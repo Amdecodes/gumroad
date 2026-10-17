@@ -14,8 +14,10 @@ en:
     download: Download
     edit: Edit
     get_access: Get access
+    insert: Insert
     installment_plan: installment plan
     learn_more: Learn more
+    load_more: Load more
     manage_installment_plan: Manage installment plan
     manage_membership: Manage membership
     membership: membership
@@ -29,6 +31,7 @@ en:
     save: Save
     save_changes: Save changes
     saving: Saving...
+    select_all: Select all
     sign_up: Sign up
     signing_up: Signing up...
     switch_language: Switch language
@@ -230,23 +233,41 @@ en:
     valid_email_prompt: Please provide a valid email address.
     zip_code: ZIP code
   common:
+    all_time: All time
     close_menu: Close Menu
+    custom_range: Custom range...
     date: Date
+    date_range_selector: Date range selector
+    discount: Discount
     edit_or_preview: Edit or preview
     "false": "No"
     free: Free
     from: From
+    from_including: From (including)
     here: here
+    last_30_days: Last 30 days
+    last_3_months: Last 3 months
+    last_7_days: Last 7 days
+    last_month: Last month
+    last_quarter: Last quarter
+    last_year: Last year
     loading: Loading...
     more: More
+    must_be_after_from_date: Must be after from date
     open_in_new_tab: Open in new tab
     optional: optional
     or: or
     other: Other
     preview: Preview
+    product: Product
     something_went_wrong: Something went wrong.
     subject: Subject
+    this_month: This month
+    this_quarter: This quarter
+    this_year: This year
     time: Time
+    to_including: To (including)
+    today: Today
     "true": "Yes"
   content:
     access_expired_desc: It looks like your access to this product has expired. Please contact the creator for further assistance.

@@ -33,6 +33,9 @@ export const actions = {
   confirm_and_save: "Confirm and save",
   learn_more: "Learn more",
   reload: "Reload",
+  insert: "Insert",
+  select_all: "Select all",
+  load_more: "Load more",
 } as const;
 
 export const currency = {
@@ -62,4 +65,22 @@ export const common = {
   subject: "Subject",
   open_in_new_tab: "Open in new tab",
   edit_or_preview: "Edit or preview",
+  today: "Today",
+  last_7_days: "Last 7 days",
+  last_30_days: "Last 30 days",
+  this_month: "This month",
+  last_month: "Last month",
+  last_3_months: "Last 3 months",
+  this_quarter: "This quarter",
+  last_quarter: "Last quarter",
+  this_year: "This year",
+  last_year: "Last year",
+  all_time: "All time",
+  date_range_selector: "Date range selector",
+  from_including: "From (including)",
+  to_including: "To (including)",
+  must_be_after_from_date: "Must be after from date",
+  custom_range: "Custom range...",
+  product: "Product",
+  discount: "Discount",
 } as const;

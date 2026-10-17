@@ -33,6 +33,9 @@ export const actions = {
   confirm_and_save: "አረጋግጥና አስቀምጥ",
   learn_more: "የበለጠ ለመረዳት",
   reload: "እንደገና ጫን",
+  insert: "አስገባ",
+  select_all: "ሁሉንም ምረጥ",
+  load_more: "ተጨማሪ ጫን",
 } as const;
 
 export const currency = {
@@ -62,4 +65,22 @@ export const common = {
   subject: "ርዕሰ-ጉዳይ",
   open_in_new_tab: "በአዲስ ትር ክፈት",
   edit_or_preview: "አርትዕ ወይም ቅድመ-ዕይታ",
+  today: "ዛሬ",
+  last_7_days: "ያለፉት 7 ቀናት",
+  last_30_days: "ያለፉት 30 ቀናት",
+  this_month: "የዚህ ወር",
+  last_month: "ያለፈው ወር",
+  last_3_months: "ያለፉት 3 ወራት",
+  this_quarter: "የዚህ ሩብ ዓመት",
+  last_quarter: "ያለፈው ሩብ ዓመት",
+  this_year: "የዚህ ዓመት",
+  last_year: "ያለፈው ዓመት",
+  all_time: "ሁልጊዜ",
+  date_range_selector: "የቀን ክልል መምረጫ",
+  from_including: "ከ (ጨምሮ)",
+  to_including: "እስከ (ጨምሮ)",
+  must_be_after_from_date: "ከመነሻው ቀን በኋላ መሆን አለበት",
+  custom_range: "ብጁ የቀን ክልል...",
+  product: "ምርት",
+  discount: "ቅናሽ",
 } as const;

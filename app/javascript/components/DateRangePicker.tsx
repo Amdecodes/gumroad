@@ -12,8 +12,9 @@ import {
   subMonths,
   subQuarters,
   subYears,
-} from "date-fns";
 import * as React from "react";
+
+import { t } from "$app/utils/i18n";
 
 import { DateInput } from "$app/components/DateInput";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "$app/components/Popover";
@@ -65,33 +66,33 @@ export const DateRangePicker = ({
     ? startOfDay(parseISO(new Intl.DateTimeFormat("en-CA", { timeZone }).format(today)))
     : today;
   const presets = [
-    { label: "Today", from: today, to: today },
-    { label: "Last 7 days", from: subDays(today, 7), to: today },
-    { label: "Last 30 days", from: subDays(today, 30), to: today },
-    { label: "This month", from: startOfMonth(today), to: today },
+    { label: t("common.today", "Today"), from: today, to: today },
+    { label: t("common.last_7_days", "Last 7 days"), from: subDays(today, 7), to: today },
+    { label: t("common.last_30_days", "Last 30 days"), from: subDays(today, 30), to: today },
+    { label: t("common.this_month", "This month"), from: startOfMonth(today), to: today },
     {
-      label: "Last month",
+      label: t("common.last_month", "Last month"),
       from: startOfMonth(subMonths(today, 1)),
       to: endOfMonth(subMonths(today, 1)),
     },
     {
-      label: "Last 3 months",
+      label: t("common.last_3_months", "Last 3 months"),
       from: startOfMonth(subMonths(today, 3)),
       to: endOfMonth(subMonths(today, 1)),
     },
-    { label: "This quarter", from: startOfQuarter(today), to: today },
+    { label: t("common.this_quarter", "This quarter"), from: startOfQuarter(today), to: today },
     {
-      label: "Last quarter",
+      label: t("common.last_quarter", "Last quarter"),
       from: startOfQuarter(subQuarters(today, 1)),
       to: endOfQuarter(subQuarters(today, 1)),
     },
-    { label: "This year", from: startOfYear(today), to: today },
+    { label: t("common.this_year", "This year"), from: startOfYear(today), to: today },
     {
-      label: "Last year",
+      label: t("common.last_year", "Last year"),
       from: startOfYear(subYears(today, 1)),
       to: endOfYear(subYears(today, 1)),
     },
-    { label: "All time", from: allTimeStart, to: allTimeEnd },
+    { label: t("common.all_time", "All time"), from: allTimeStart, to: allTimeEnd },
   ];
   return (
     <Popover
@@ -106,7 +107,7 @@ export const DateRangePicker = ({
     >
       <PopoverAnchor>
         <PopoverTrigger>
-          <InputGroup aria-label="Date range selector" className="whitespace-nowrap">
+          <InputGroup aria-label={t("common.date_range_selector", "Date range selector")} className="whitespace-nowrap">
             <span suppressHydrationWarning>{Intl.DateTimeFormat(locale).formatRange(from, to)}</span>
             <ChevronDown className="ml-auto size-5" />
           </InputGroup>
@@ -117,7 +118,7 @@ export const DateRangePicker = ({
           <div className="flex flex-col gap-4">
             <Fieldset>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-from`}>From (including)</Label>
+                <Label htmlFor={`${uid}-from`}>{t("common.from_including", "From (including)")}</Label>
               </FieldsetTitle>
               <DateInput
                 id={`${uid}-from`}
@@ -129,7 +130,7 @@ export const DateRangePicker = ({
             </Fieldset>
             <Fieldset state={to < from ? "danger" : undefined}>
               <FieldsetTitle>
-                <Label htmlFor={`${uid}-to`}>To (including)</Label>
+                <Label htmlFor={`${uid}-to`}>{t("common.to_including", "To (including)")}</Label>
               </FieldsetTitle>
               <DateInput
                 id={`${uid}-to`}
@@ -139,7 +140,9 @@ export const DateRangePicker = ({
                 }}
                 aria-invalid={to < from}
               />
-              {to < from ? <FieldsetDescription>Must be after from date</FieldsetDescription> : null}
+              {to < from ? (
+                <FieldsetDescription>{t("common.must_be_after_from_date", "Must be after from date")}</FieldsetDescription>
+              ) : null}
             </Fieldset>
           </div>
         ) : (
@@ -149,7 +152,7 @@ export const DateRangePicker = ({
                 {preset.label}
               </MenuItem>
             ))}
-            <MenuItem onClick={() => setIsCustom(true)}>Custom range...</MenuItem>
+            <MenuItem onClick={() => setIsCustom(true)}>{t("common.custom_range", "Custom range...")}</MenuItem>
           </Menu>
         )}
       </PopoverContent>

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Review as ReviewType, getReviews } from "$app/data/product_reviews";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -97,17 +98,17 @@ export const TestimonialSelectModal = ({
       className="max-h-11/12"
       open={isOpen}
       onClose={onClose}
-      title="Insert reviews"
+      title={t("seller.products.insert_reviews", "Insert reviews")}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{t("actions.cancel", "Cancel")}</Button>
           {state.reviews.length > 0 ? (
             <Button
               color="primary"
               onClick={() => onInsert(selectedReviewIds)}
               disabled={selectedReviewIds.length === 0}
             >
-              Insert
+              {t("actions.insert", "Insert")}
             </Button>
           ) : null}
         </>
@@ -119,16 +120,16 @@ export const TestimonialSelectModal = ({
             <LoadingSpinner className="size-8" />
           </div>
         ) : !isLoading && state.reviews.length === 0 ? (
-          <p>No reviews with text or video yet.</p>
+          <p>{t("seller.products.no_reviews_with_text", "No reviews with text or video yet.")}</p>
         ) : (
           <>
             <Label>
               <Checkbox
                 checked={selectedReviewIds.length === state.reviews.length && state.reviews.length > 0}
                 onChange={toggleSelectAll}
-                aria-label="Select all reviews"
+                aria-label={t("seller.products.select_all_reviews", "Select all reviews")}
               />
-              Select all
+              {t("actions.select_all", "Select all")}
             </Label>
             <section className="flex flex-col gap-4 overflow-y-auto p-1">
               {state.reviews.map((review) => (
@@ -142,7 +143,7 @@ export const TestimonialSelectModal = ({
               {hasMorePages ? (
                 <div className="mt-4">
                   <Button onClick={handleLoadMore} disabled={isLoading}>
-                    {isLoading ? "Loading..." : "Load more"}
+                    {isLoading ? t("common.loading", "Loading...") : t("actions.load_more", "Load more")}
                   </Button>
                 </div>
               ) : null}
@@ -164,7 +165,11 @@ const SelectableReviewCard = ({
   onSelect: () => void;
 }) => (
   <div className="flex gap-4 rounded-xs p-4 outline-[1px] outline-solid">
-    <Checkbox checked={isSelected} onChange={onSelect} aria-label="Select review" />
+    <Checkbox
+      checked={isSelected}
+      onChange={onSelect}
+      aria-label={t("seller.products.select_review", "Select review")}
+    />
     <div className="w-full">
       <Review review={review} seller={null} canRespond={false} hideResponse />
     </div>
