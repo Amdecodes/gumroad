@@ -586,6 +586,7 @@ am:
     empty_desc: አንዴ ከገዙ፣ ሁሉንም ግዢዎችዎን ማውረድ፣ መመልከት፣ ማንበብ ወይም ማዳመጥ እንዲችሉ እዚህ ይታያሉ።
     empty_header: እስካሁን ምንም አልገዙም!
     no_products_found: ምንም ምርት አልተገኘም
+    open_product_action_menu: የምርት እርምጃ ሜኑ ክፈት
     preparing_zip: ዚፕ (ZIP) በማዘጋጀት ላይ
     product_archived: ምርቱ ወደ ማህደር ተቀምጧል!
     product_unarchived: ምርቱ ከማህደር ወጥቷል!

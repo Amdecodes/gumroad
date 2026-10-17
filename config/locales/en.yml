@@ -586,6 +586,7 @@ en:
     empty_desc: Once you do, it'll show up here so you can download, watch, read, or listen to all your purchases.
     empty_header: You haven't bought anything... yet!
     no_products_found: No products found
+    open_product_action_menu: Open product action menu
     preparing_zip: Preparing ZIP
     product_archived: Product archived!
     product_unarchived: Product unarchived!

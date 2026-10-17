@@ -49,4 +49,5 @@ export const library = {
   purchase_successful_receipt_sent: "ግዢዎ በተሳካ ሁኔታ ተጠናቋል! ደረሰኝ ወደ {email} ልከናል!",
   removing: "በማስወገድ ላይ...",
   remove_modal_body: "በዚህ ገጽ አገናኝ በኩል መዳረሻዎ እንዳለ ይቆያል፣ እና ሀሳብዎን ከቀየሩ የድጋፍ ቡድናችን ካርዱን መልሶ ማስቀመጥ ይችላል።",
+  open_product_action_menu: "የምርት እርምጃ ሜኑ ክፈት",
 } as const;
