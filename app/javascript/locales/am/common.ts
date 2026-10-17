@@ -56,4 +56,9 @@ export const common = {
   more: "ተጨማሪ",
   close_menu: "ሜኑ ዝጋ",
   something_went_wrong: "ችግር ተፈጥሯል።",
+  preview: "ቅድመ-ዕይታ",
+  from: "ከ",
+  subject: "ርዕሰ-ጉዳይ",
+  open_in_new_tab: "በአዲስ ትር ክፈት",
+  edit_or_preview: "አርትዕ ወይም ቅድመ-ዕይታ",
 } as const;

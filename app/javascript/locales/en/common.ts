@@ -56,4 +56,9 @@ export const common = {
   more: "More",
   close_menu: "Close Menu",
   something_went_wrong: "Something went wrong.",
+  preview: "Preview",
+  from: "From",
+  subject: "Subject",
+  open_in_new_tab: "Open in new tab",
+  edit_or_preview: "Edit or preview",
 } as const;

@@ -231,15 +231,20 @@ en:
   common:
     close_menu: Close Menu
     date: Date
+    edit_or_preview: Edit or preview
     "false": "No"
     free: Free
+    from: From
     here: here
     loading: Loading...
     more: More
+    open_in_new_tab: Open in new tab
     optional: optional
     or: or
     other: Other
+    preview: Preview
     something_went_wrong: Something went wrong.
+    subject: Subject
     time: Time
     "true": "Yes"
   content:

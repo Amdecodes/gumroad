@@ -231,15 +231,20 @@ am:
   common:
     close_menu: ሜኑ ዝጋ
     date: ቀን
+    edit_or_preview: አርትዕ ወይም ቅድመ-ዕይታ
     "false": አይ
     free: ነፃ
+    from: ከ
     here: እዚህ
     loading: በመጫን ላይ...
     more: ተጨማሪ
+    open_in_new_tab: በአዲስ ትር ክፈት
     optional: አማራጭ
     or: ወይም
     other: ሌላ
+    preview: ቅድመ-ዕይታ
     something_went_wrong: ችግር ተፈጥሯል።
+    subject: ርዕሰ-ጉዳይ
     time: ሰዓት
     "true": አዎ
   content:
