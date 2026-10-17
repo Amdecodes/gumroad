@@ -126,7 +126,7 @@ export default function ThirdPartyAnalyticsPage() {
                 <Input
                   id={`${uid}googleAnalyticsId`}
                   type="text"
-                  placeholder="G-ABCD232DSE"
+                  placeholder={t("seller.settings.analytics.google_analytics_placeholder", "G-ABCD232DSE")}
                   value={thirdPartyAnalytics.google_analytics_id}
                   onChange={(evt) => updateThirdPartyAnalytics({ google_analytics_id: evt.target.value })}
                 />
@@ -156,7 +156,7 @@ export default function ThirdPartyAnalyticsPage() {
                 <Input
                   id={`${uid}tiktokPixel`}
                   type="text"
-                  placeholder="CFH83AJC77UUUGLE2TJG"
+                  placeholder={t("seller.settings.analytics.tiktok_pixel_placeholder", "CFH83AJC77UUUGLE2TJG")}
                   value={thirdPartyAnalytics.tiktok_pixel_id}
                   onChange={(evt) => updateThirdPartyAnalytics({ tiktok_pixel_id: evt.target.value })}
                 />
@@ -192,7 +192,10 @@ export default function ThirdPartyAnalyticsPage() {
                 </FieldsetTitle>
                 <Textarea
                   id={`${uid}facebookMetaTag`}
-                  placeholder='<meta name="facebook-domain-verification" content="me2vv6lgwoh" />'
+                  placeholder={t(
+                    "seller.settings.analytics.facebook_meta_tag_placeholder",
+                    '<meta name="facebook-domain-verification" content="me2vv6lgwoh" />',
+                  )}
                   value={thirdPartyAnalytics.facebook_meta_tag}
                   onChange={(evt) => updateThirdPartyAnalytics({ facebook_meta_tag: evt.target.value })}
                 />

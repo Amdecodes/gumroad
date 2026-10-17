@@ -320,7 +320,7 @@ export default function SettingsPage() {
   );
 
   const tabBar = (
-    <Tabs aria-label="Profile settings sections">
+    <Tabs aria-label={t("seller.settings.profile.settings_sections")}>
       {renderTab("about", t("seller.settings.profile.about_tab"))}
       {renderTab("design", t("seller.settings.profile.design_tab"))}
       {showPagesTab ? renderTab("pages", t("seller.settings.profile.pages_tab")) : null}
@@ -670,7 +670,7 @@ export default function SettingsPage() {
                 </Alert>
                 <AgentSupportFallbackNote subject={t("seller.settings.profile.help_with_profile_page")} />
               </section>
-              <section aria-label="Profile section editor">
+              <section aria-label={t("seller.settings.profile.section_editor")}>
                 <ProfileSectionsForm
                   {...editableProfile}
                   creator_profile={creatorProfile}
