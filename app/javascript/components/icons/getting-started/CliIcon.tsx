@@ -3,8 +3,8 @@ import * as React from "react";
 import { GettingStartedIconProps } from "./GettingStartedIconProps";
 
 export const CliIcon = ({ isChecked, ...props }: GettingStartedIconProps) => {
-  const mainFillColor = isChecked ? "#FF90E8" : "rgb(var(--filled))";
-  const strokeColor = isChecked ? "black" : "rgb(var(--primary))";
+  const mainFillColor = isChecked ? "var(--color-lime)" : "rgb(var(--filled))";
+  const strokeColor = isChecked ? "var(--color-navy)" : "rgb(var(--primary))";
   const strokeWidthValue = "6";
 
   const { width = "80", height = "80", ...restProps } = props;

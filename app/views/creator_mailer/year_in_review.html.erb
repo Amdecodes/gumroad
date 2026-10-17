@@ -1,6 +1,6 @@
 <% formatted_total_amount = Money.new(@analytics_data[:total_amount_cents] * get_rate(@seller.currency_type).to_f, @seller.currency_type.to_sym).format(no_cents_if_whole: true, symbol: true) %>
 
-<div style="background-color: #FF90E8">
+<div style="background-color: #c3f351; color: #122540;">
   <h2 style="text-align: center;">Your year on Gumroad in review</h2>
 </div>
 

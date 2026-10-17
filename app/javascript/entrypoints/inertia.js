@@ -175,7 +175,7 @@ createInertiaApp({
   // flash. Prefetch requests never show the bar at all — Inertia sets `showProgress: false` on
   // them internally. `showSpinner: false` keeps it to the thin top bar with no corner spinner.
   progress: {
-    color: "#ff90e8", // Gumroad pink, legible against both the light and dark page backgrounds.
+    color: "#146dfd", // Brand royal blue, legible against both light and dark page backgrounds.
     delay: 250,
     showSpinner: false,
   },

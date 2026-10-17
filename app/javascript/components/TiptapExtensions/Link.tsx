@@ -24,7 +24,7 @@ export const tiptapButtonClassName = classNames(
 );
 
 export const emailPrimaryButtonStyle =
-  "background-color: #ff90e8; color: #000000; border-color: #000000; box-shadow: 0.25rem 0.25rem 0 #000000;";
+  "background-color: #146dfd; color: #ffffff; border-color: #146dfd; border-radius: 8px; box-shadow: 0 4px 12px rgba(20, 109, 253, 0.25);";
 
 export const LinkDialog = ({
   editor,
