@@ -9,7 +9,7 @@ import { Logo } from "$app/components/Logo";
 // `currencySelector` controls the accessory bar (language toggle) on storefront footers.
 export const PoweredByFooter = ({
   className,
-  currencySelector = false,
+  currencySelector: _currencySelector = false,
   shownCurrency: _shownCurrency,
 }: {
   className?: string | undefined;

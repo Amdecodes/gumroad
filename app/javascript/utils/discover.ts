@@ -1,6 +1,7 @@
 import typia from "typia";
 
 import { SearchRequest } from "$app/data/search";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 const rawCategoryImages = import.meta.glob<string>("$assets/images/discover/*", {
   eager: true,
@@ -64,7 +65,7 @@ export const discoverTitleGenerator = (
     : params.tags?.map((t) => t.trim().replace(/[-\s]+/gu, " ")).join(", ");
   let taxonomyTitle = params.taxonomy
     ?.split("/")
-    .map((slug) => taxonomies.find((t) => t.slug === slug)?.label ?? slug)
+    .map((slug) => getTaxonomyLabel(slug, taxonomies.find((t) => t.slug === slug)?.label ?? slug))
     .join(" » ");
   // Mirror DiscoverController#category_seo_page? exactly, off the URL itself — not `params`,
   // which also carries client-only defaults (e.g. sort defaults to "curated", curated_product_ids

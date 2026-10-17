@@ -8,6 +8,7 @@ import { CurrencyCode, getShortCurrencySymbol } from "$app/utils/currency";
 import { t } from "$app/utils/i18n";
 import { asyncVoid } from "$app/utils/promise";
 import { AbortError, RateLimitError } from "$app/utils/request";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 import { Button } from "$app/components/Button";
 import { LoadingSpinner } from "$app/components/LoadingSpinner";
@@ -430,15 +431,26 @@ export const CardGrid = ({
             const selectedAttributeFilters = searchParams.taxonomy_attribute_filters?.filter(
               (token) => token.startsWith(`${attribute.name}:`) && validKeys.has(token),
             );
+            const localizedFilters = attribute.filters.map((f) => {
+              const filterValue = f.key.split(":").slice(1).join(":");
+              const rawLabel = f.label ?? filterValue;
+              const label =
+                attribute.name === "subject_category" || getTaxonomyLabel(filterValue, "") !== filterValue
+                  ? getTaxonomyLabel(filterValue, rawLabel)
+                  : rawLabel;
+              return { key: f.key, doc_count: f.doc_count, label };
+            });
+            const attributeLabel =
+              attribute.name === "subject_category" ? t("seller.productEdit.category", "Category") : attribute.label;
             return (
               <CardContent key={attribute.name} asChild details>
                 <Details>
                   <DetailsToggle chevronPosition="right" className="grow">
-                    {attribute.label}
+                    {attributeLabel}
                   </DetailsToggle>
                   <Fieldset role="group">
                     <FilterCheckboxes
-                      filters={concatFoundAndNotFound(attribute.filters, selectedAttributeFilters)}
+                      filters={concatFoundAndNotFound(localizedFilters, selectedAttributeFilters)}
                       selection={searchParams.taxonomy_attribute_filters ?? []}
                       setSelection={(taxonomy_attribute_filters) => updateParams({ taxonomy_attribute_filters })}
                       disabled={disableFilters ?? false}

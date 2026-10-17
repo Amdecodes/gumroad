@@ -282,7 +282,6 @@ describe("Profile settings design tab", () => {
     fireEvent.click(screen.getByRole("button", { name: "Update profile" }));
 
     await waitFor(() => expect(request).toHaveBeenCalledOnce());
-    const data = request.mock.calls[0]?.[0].data;
-    expect(data?.user?.locale).toBe("am");
+    expect(request.mock.calls[0]?.[0]?.data).toMatchObject({ user: { locale: "am" } });
   });
 });

@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { getRootTaxonomy, getRootTaxonomyCss, getRootTaxonomyImage, Taxonomy } from "$app/utils/discover";
 import { t } from "$app/utils/i18n";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 import { useDomains } from "$app/components/DomainSettings";
 import { MenuItem, NestedMenu } from "$app/components/NestedMenu";
@@ -90,7 +91,7 @@ const generateTaxonomyItemsForMenu = (wholeTaxonomy: Taxonomy[], forceDomain: bo
       const root = getRootTaxonomy(taxonomy.slug);
       return {
         key: taxonomy.key,
-        label: taxonomy.label,
+        label: getTaxonomyLabel(taxonomy.slug, taxonomy.label),
         href: generateHref(taxonomy),
         ...(taxonomy.parent_key
           ? { parentKey: taxonomy.parent_key }

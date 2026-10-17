@@ -55,6 +55,30 @@ describe Discover::TaxonomyPresenter do
     end
   end
 
+  describe "TAXONOMY_AMHARIC_LABELS" do
+    it "has an Amharic label for every seeded taxonomy" do
+      unlabelled = Taxonomy.pluck(:slug) - Discover::TaxonomyPresenter::TAXONOMY_AMHARIC_LABELS.keys
+
+      expect(unlabelled).to be_empty
+    end
+
+    it "falls back to the DB slug for unknown slugs" do
+      expect(Discover::TaxonomyPresenter.taxonomy_label("unknown-category", locale: :am)).to eq("unknown-category")
+    end
+
+    it "returns Amharic label for known slugs in Amharic locale" do
+      expect(Discover::TaxonomyPresenter.taxonomy_label("3d", locale: :am)).to eq("3ዲ")
+    end
+
+    it "localizes nav labels when I18n.locale is am" do
+      I18n.with_locale(:am) do
+        nav = presenter.taxonomies_for_nav
+        three_d = nav.find { |t| t[:slug] == "3d" }
+        expect(three_d[:label]).to eq("3ዲ")
+      end
+    end
+  end
+
   describe "cybersecurity category" do
     it "sits under Software Development with its subcategories" do
       cybersecurity = Taxonomy.find_by_path(["software-development", "cybersecurity"])

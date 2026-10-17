@@ -217,7 +217,7 @@ class DiscoverController < ApplicationController
         title_parts << tags.map { |tag| tag.strip.gsub(/[-\s]+/, " ") }.join(", ")
       end
       if params[:taxonomy].present?
-        labels = params[:taxonomy].split("/").map { |slug| Discover::TaxonomyPresenter::TAXONOMY_LABELS[slug] || slug }
+        labels = params[:taxonomy].split("/").map { |slug| Discover::TaxonomyPresenter.taxonomy_label(slug) || slug }
         title_parts << labels.join(" » ")
       end
       title = if title_parts.empty?

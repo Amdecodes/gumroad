@@ -12,6 +12,7 @@ import { classNames } from "$app/utils/classNames";
 import { CurrencyCode, formatPriceCentsWithCurrencySymbol } from "$app/utils/currency";
 import { discoverTitleGenerator, Taxonomy } from "$app/utils/discover";
 import { t } from "$app/utils/i18n";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 import { Layout } from "$app/components/Discover/Layout";
 import { RecentlyViewed, RecentlyViewedProps } from "$app/components/Discover/RecentlyViewed";
@@ -372,7 +373,10 @@ function DiscoverIndex() {
   const showRecommendationSections = !state.params.query && !hasOfferCode;
   const recommendedWishlistsTitle = taxonomyPath
     ? t("discover.wishlists_for_taxonomy", {
-        taxonomy: props.taxonomies_for_nav.find((t) => t.slug === last(taxonomyPath.split("/")))?.label ?? "",
+        taxonomy: getTaxonomyLabel(
+          last(taxonomyPath.split("/")),
+          props.taxonomies_for_nav.find((t) => t.slug === last(taxonomyPath.split("/")))?.label,
+        ),
       })
     : t("discover.wishlists_you_might_like");
 

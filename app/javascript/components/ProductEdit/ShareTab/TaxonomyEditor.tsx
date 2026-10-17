@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Taxonomy } from "$app/utils/discover";
 import { useTranslation } from "$app/utils/i18n";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 import { Select } from "$app/components/Select";
 import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui/Fieldset";
@@ -21,9 +22,12 @@ export const TaxonomyEditor = ({
   const options = React.useMemo(() => {
     const taxonomyMap = new Map(taxonomies.map((item) => [item.key, item]));
     return taxonomies.map((taxonomy) => {
-      let label = taxonomy.label;
+      let label = getTaxonomyLabel(taxonomy.slug, taxonomy.label);
       let current: Taxonomy | undefined = taxonomy;
-      while ((current = taxonomyMap.get(current.parent_key ?? ""))) label = `${current.label} > ${label}`;
+      while ((current = taxonomyMap.get(current.parent_key ?? ""))) {
+        const parentLabel = getTaxonomyLabel(current.slug, current.label);
+        label = `${parentLabel} > ${label}`;
+      }
       return { id: taxonomy.key, label };
     });
   }, [taxonomies]);
