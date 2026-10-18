@@ -17,8 +17,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <Component
         ref={ref}
         className={classNames(
-          "grid divide-y divide-solid divide-border rounded border border-border bg-background",
-          borderless && "gap-4 border-none [&>*]:border-none [&>*]:p-0",
+          "grid divide-y divide-solid divide-border rounded-xl border border-border bg-background shadow-xs",
+          borderless && "gap-4 border-none shadow-none [&>*]:border-none [&>*]:p-0",
           className,
         )}
         {...rest}

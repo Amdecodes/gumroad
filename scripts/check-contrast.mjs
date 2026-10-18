@@ -43,6 +43,15 @@ function contrastRatio(hex1, hex2) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function blendColors(fgHex, bgHex, alpha) {
+  const fg = parseHex(fgHex);
+  const bg = parseHex(bgHex);
+  const r = Math.round(alpha * fg[0] + (1 - alpha) * bg[0]);
+  const g = Math.round(alpha * fg[1] + (1 - alpha) * bg[1]);
+  const b = Math.round(alpha * fg[2] + (1 - alpha) * bg[2]);
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+}
+
 // Color Palette Definitions
 const PALETTE = {
   navy: "#122540",
@@ -421,6 +430,95 @@ const COLOR_PAIRS = [
     bg: "#f1f5f9",
     minRatio: 4.5,
     role: "Invoice summary row",
+  },
+  // Tinted & Active States (replaces failing royal-blue-on-tint with navy-text + indicator bar)
+  {
+    category: "Active States",
+    name: "Active Nav/Sidebar Item Light (Navy text on 10% Blue Tint)",
+    fg: PALETTE.navy,
+    bg: blendColors(PALETTE.royalBlue, PALETTE.white, 0.1),
+    minRatio: 4.5,
+    role: "Normal text (Sidebar/Nav active)",
+  },
+  {
+    category: "Active States",
+    name: "Active Nav/Sidebar Indicator Bar (Royal Blue bar on 10% Blue Tint)",
+    fg: PALETTE.royalBlue,
+    bg: blendColors(PALETTE.royalBlue, PALETTE.white, 0.1),
+    minRatio: 3.0,
+    role: "UI indicator bar",
+  },
+  {
+    category: "Active States",
+    name: "Active Nav/Sidebar Item Dark (Light text on 15% Blue Tint)",
+    fg: "#f0f4f8",
+    bg: blendColors(PALETTE.blue, PALETTE.navy, 0.15),
+    minRatio: 4.5,
+    role: "Normal text (Sidebar/Nav active)",
+  },
+  {
+    category: "Active States",
+    name: "Active Nav/Sidebar Indicator Bar Dark (Blue bar on 15% Blue Tint)",
+    fg: PALETTE.blue,
+    bg: blendColors(PALETTE.blue, PALETTE.navy, 0.15),
+    minRatio: 3.0,
+    role: "UI indicator bar",
+  },
+  {
+    category: "Active States",
+    name: "Active Category Chip Soft (Navy text on 12% Blue Tint)",
+    fg: PALETTE.navy,
+    bg: blendColors(PALETTE.royalBlue, PALETTE.white, 0.12),
+    minRatio: 4.5,
+    role: "Normal text (Category chip active)",
+  },
+  {
+    category: "Active States",
+    name: "Inactive Category Chip Soft Light (Slate 700 on Slate 100)",
+    fg: "#334155",
+    bg: "#f1f5f9",
+    minRatio: 4.5,
+    role: "Normal text (Category chip inactive)",
+  },
+  {
+    category: "Active States",
+    name: "Inactive Category Chip Soft Dark (Slate 300 on Dark Navy)",
+    fg: "#cbd5e1",
+    bg: PALETTE.navyDark,
+    minRatio: 4.5,
+    role: "Normal text (Category chip inactive)",
+  },
+  {
+    category: "Hover States",
+    name: "Secondary Button Hover (Navy text on Gray 100)",
+    fg: PALETTE.navy,
+    bg: PALETTE.gray100,
+    minRatio: 4.5,
+    role: "Hover button text",
+  },
+  {
+    category: "Hover States",
+    name: "Table Row Hover Light (Navy text on Gray 50)",
+    fg: PALETTE.navy,
+    bg: "#f8fafc",
+    minRatio: 4.5,
+    role: "Hover row text",
+  },
+  {
+    category: "Hover States",
+    name: "Table Row Hover Dark (Light text on Navy Muted)",
+    fg: "#f0f4f8",
+    bg: PALETTE.navyMuted,
+    minRatio: 4.5,
+    role: "Hover row text",
+  },
+  {
+    category: "Hover States",
+    name: "Card Hover Border (Royal Blue outline on White)",
+    fg: PALETTE.royalBlue,
+    bg: PALETTE.white,
+    minRatio: 3.0,
+    role: "UI component border",
   },
 ];
 

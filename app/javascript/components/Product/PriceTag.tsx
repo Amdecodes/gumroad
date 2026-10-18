@@ -64,20 +64,21 @@ export const PriceTag = ({
       {recurrenceLabel ? ` ${recurrenceLabel}` : null}
     </>
   );
-  const borderClasses = "border-r-transparent border-[calc(0.5lh+--spacing(1))] border-l-1";
-
   return (
     <div itemScope itemProp="offers" itemType="https://schema.org/Offer" className="flex shrink-0 items-center">
-      <div className="relative grid grid-flow-col border border-r-0 border-border">
-        <div
-          className="bg-accent-with-text px-2 py-1 whitespace-nowrap text-accent-foreground"
+      <div className={classNames(
+        "inline-flex items-center rounded-full border px-2.5 py-1 text-sm font-bold leading-none shadow-xs",
+        price === 0
+          ? "border-border bg-active-bg text-foreground"
+          : "border-lime/40 bg-lime text-black",
+      )}>
+        <span
+          className="whitespace-nowrap"
           itemProp="price"
           content={formatPriceCentsWithoutCurrencySymbolAndComma(currencyCode, price)}
         >
           {priceTag}
-        </div>
-        <div className={classNames("border-border", borderClasses)} />
-        <div className={classNames("absolute top-0 right-px bottom-0 border-accent-with-text", borderClasses)} />
+        </span>
       </div>
       <link itemProp="url" href={url} />
       <div itemProp="availability" className="hidden">

@@ -18,7 +18,7 @@ export const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTM
         <table
           ref={ref}
           className={classNames(
-            "grid w-full border-spacing-0 gap-4 lg:table lg:rounded-sm lg:border lg:border-border",
+            "grid w-full border-spacing-0 gap-4 lg:table lg:rounded-xl lg:border lg:border-border/80 lg:shadow-xs",
             className,
           )}
           {...props}
@@ -49,7 +49,7 @@ export const TableHeader = ({ className, children, ...props }: React.HTMLAttribu
 
 export const TableBody = ({ className, children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (
   <RowGroupContext.Provider value="body">
-    <tbody className={classNames("contents lg:table-row-group lg:rounded-sm", className)} {...props}>
+    <tbody className={classNames("contents lg:table-row-group", className)} {...props}>
       {children}
     </tbody>
   </RowGroupContext.Provider>
@@ -96,9 +96,9 @@ export const TableRow = ({
     <tr
       aria-selected={selected}
       className={classNames(
-        "block rounded-sm border border-border lg:table-row",
+        "block rounded-lg border border-border lg:table-row",
         rowGroup === "body" && "bg-background",
-        selected != null && "cursor-pointer hover:bg-active-bg",
+        selected != null && "cursor-pointer hover:bg-active-bg transition-colors",
         selected && "bg-active-bg",
         className,
       )}
@@ -112,7 +112,7 @@ export const TableRow = ({
 };
 
 const cellRoundingClasses =
-  "lg:[table_>_:last-child_>_tr:last-child_>_&:first-child]:rounded-bl-sm lg:[table_>_:last-child_>_tr:last-child_>_&:last-child]:rounded-br-sm";
+  "lg:[table_>_:last-child_>_tr:last-child_>_&:first-child]:rounded-bl-xl lg:[table_>_:last-child_>_tr:last-child_>_&:last-child]:rounded-br-xl";
 
 export const TableHead = ({
   className,

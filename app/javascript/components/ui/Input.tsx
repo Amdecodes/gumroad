@@ -6,8 +6,8 @@ import { useFieldset, stateBorderStyles } from "$app/components/ui/Fieldset";
 import { useInputGroup } from "$app/components/ui/InputGroup";
 
 export const baseInputStyles = classNames(
-  "font-[inherit] py-3 px-4 text-base leading-snug text-foreground",
-  "border border-border rounded block w-full bg-background placeholder:text-muted",
+  "font-[inherit] py-3 px-4 text-base leading-snug text-foreground min-h-[44px]",
+  "border border-border rounded-lg block w-full bg-background placeholder:text-muted transition-colors duration-150",
   "focus:outline-2 focus:outline-indicator focus:outline-offset-0",
   "opacity-100 disabled:cursor-not-allowed disabled:bg-active-bg forced-colors:disabled:border-dashed",
 );

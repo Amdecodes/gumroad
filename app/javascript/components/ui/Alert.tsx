@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
 
-const alertVariants = cva("flex items-start gap-2 rounded border border-border p-3", {
+const alertVariants = cva("flex items-start gap-2.5 rounded-lg border border-border p-3.5 shadow-xs", {
   variants: {
     variant: {
       success: "border-success bg-success/20",

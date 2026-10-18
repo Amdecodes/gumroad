@@ -19,9 +19,9 @@ const tabsVariants = cva("", {
 const tabVariants = cva("", {
   variants: {
     variant: {
-      pills: "shrink-0 rounded-full border-transparent px-3 py-2 hover:border-border",
+      pills: "shrink-0 rounded-full border border-border/40 px-3.5 py-1.5 text-sm font-medium transition-all duration-150 hover:bg-active-bg",
       buttons:
-        "flex items-start gap-3 rounded-sm border-border px-4 py-3 text-left transition-all not-active:hover:-translate-1 not-active:hover:shadow",
+        "flex items-start gap-3 rounded-lg border border-border px-4 py-3 text-left transition-all duration-150 not-active:hover:bg-active-bg",
     },
     active: {
       true: "bg-background",
@@ -32,14 +32,14 @@ const tabVariants = cva("", {
     {
       variant: "pills",
       active: true,
-      className: "border-border text-foreground",
+      className: "border-royal-blue/40 bg-royal-blue/10 text-foreground font-semibold shadow-xs",
     },
     {
       variant: "buttons",
       active: true,
       // The important modifier is required: Tab wraps Button via asChild, so both class strings are
       // joined and Button's `border-border` can otherwise win the CSS-order fight.
-      className: "border-indicator! ring-1 ring-indicator",
+      className: "border-indicator! ring-1 ring-indicator shadow-xs",
     },
   ],
   defaultVariants: {

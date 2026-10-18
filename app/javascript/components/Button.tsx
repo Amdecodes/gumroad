@@ -25,11 +25,7 @@ export const brandNames = [
 export type BrandName = (typeof brandNames)[number];
 
 export const buttonVariants = cva(
-  // Hover drop-shadow is pinned to black (var(--color-black)) in BOTH light and dark mode.
-  // The default `shadow` token resolves to `currentColor`, which flips to near-white in dark
-  // mode (text color becomes rgb(221 221 221)) and renders a strange white button shadow.
-  // Matching light mode's black keeps the neobrutalist look consistent across color schemes.
-  "inline-flex items-center justify-center gap-2 cursor-pointer border border-border rounded text-current font-[inherit] no-underline transition-transform hover:-translate-(--button-hover-offset) hover:shadow-[var(--button-hover-offset)_var(--button-hover-offset)_0_var(--color-black)] active:translate-0 active:shadow-none data-[state=open]:translate-0! data-[state=open]:shadow-none!",
+  "inline-flex items-center justify-center gap-2 cursor-pointer border border-border rounded-lg text-current font-[inherit] no-underline transition-all duration-150 hover:shadow-sm active:scale-[0.99] data-[state=open]:shadow-none!",
   {
     variants: {
       variant: {
@@ -39,20 +35,20 @@ export const buttonVariants = cva(
         destructive: "",
       },
       size: {
-        default: "px-4 py-3 text-base leading-snug",
-        sm: "p-2 text-sm leading-[1.3]",
-        icon: "size-12 box-border",
+        default: "px-4 py-3 text-base leading-snug min-h-[44px]",
+        sm: "p-2 text-sm leading-[1.3] min-h-[36px]",
+        icon: "size-11 box-border",
       },
       color: {
         default: "bg-transparent",
-        primary: "bg-primary text-primary-foreground hover:bg-accent-with-text hover:text-accent-foreground",
+        primary: "bg-primary text-primary-foreground hover:bg-royal-blue-hover hover:text-white border-transparent",
         black: "bg-black text-white",
         accent: "bg-accent-with-text text-accent-foreground",
-        filled: "bg-background text-foreground",
+        filled: "bg-background text-foreground hover:bg-active-bg",
         success: "bg-success text-white",
         danger: "bg-danger text-danger-foreground",
         warning: "bg-warning text-black",
-        info: "bg-primary text-primary-foreground",
+        info: "bg-primary text-primary-foreground hover:bg-royal-blue-hover",
         paypal: "bg-[#00457c] text-white border-[#00457c]",
         discord: "bg-[#7289da] text-white border-[#7289da]",
         stripe: "bg-[#625bf6] text-white border-[#625bf6]",
