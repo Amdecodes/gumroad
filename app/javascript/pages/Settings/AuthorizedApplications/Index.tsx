@@ -15,7 +15,7 @@ import { Placeholder } from "$app/components/ui/Placeholder";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
-import placeholderAppIcon from "$assets/images/gumroad_app.png";
+import placeholderAppIcon from "$assets/images/app.png";
 
 type AuthorizedApplication = {
   name: string;

@@ -250,10 +250,11 @@ const MenubarItem = ({
       <a
         href={menuItem.href ?? "#"}
         className={classNames(
-          "rounded-full! px-3! py-2! align-middle aria-[current]:bg-background aria-[current]:text-foreground",
+          "rounded-full! px-3.5! py-1.5! text-sm! font-medium! align-middle transition-colors",
           showExpandableIcon ? "relative cursor-pointer" : "",
-          hasChildren ? "aria-[current=true]:hover:shadow!" : "hover:shadow!",
-          { "border-transparent! bg-transparent! text-inherit!": !isHighlighted },
+          isHighlighted
+            ? "border-royal-blue/30! bg-royal-blue/10! text-navy! shadow-xs! dark:text-blue"
+            : "border-transparent! bg-transparent! text-muted! hover:bg-black/5! hover:text-foreground! dark:hover:bg-white/5!",
           { expandable: showExpandableIcon },
         )}
         role="menuitem"
@@ -460,7 +461,7 @@ const MenuItemLink = ({
     {...props}
     href={props.href ?? "#"}
     className={classNames(
-      "flex shrink-0 justify-between gap-2 overflow-visible! p-4! whitespace-normal! hover:bg-primary! hover:text-background!",
+      "flex shrink-0 justify-between gap-2 overflow-visible! p-4! whitespace-normal! transition-colors hover:bg-active-bg! hover:text-foreground!",
       className,
     )}
     role="menuitem"

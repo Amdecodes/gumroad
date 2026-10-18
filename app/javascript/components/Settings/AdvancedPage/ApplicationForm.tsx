@@ -17,7 +17,7 @@ import { Input } from "$app/components/ui/Input";
 import { Label } from "$app/components/ui/Label";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholderAppIcon from "$assets/images/gumroad_app.png";
+import placeholderAppIcon from "$assets/images/app.png";
 
 export type Application = {
   id: string;

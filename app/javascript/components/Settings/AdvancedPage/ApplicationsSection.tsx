@@ -9,7 +9,7 @@ import ApplicationForm from "$app/components/Settings/AdvancedPage/ApplicationFo
 import { FormSection } from "$app/components/ui/FormSection";
 import { Row, RowActions, RowContent, Rows } from "$app/components/ui/Rows";
 
-import placeholderAppIcon from "$assets/images/gumroad_app.png";
+import placeholderAppIcon from "$assets/images/app.png";
 
 export type Application = {
   id: string;

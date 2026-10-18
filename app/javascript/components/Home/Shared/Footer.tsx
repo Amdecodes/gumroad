@@ -13,7 +13,7 @@ const FooterLink = ({
   children: React.ReactNode;
   isInertia?: boolean;
 }) => {
-  const className = "no-underline hover:text-pink";
+  const className = "no-underline transition-colors hover:text-blue";
 
   // Implemented conditional rendering for links to use standard <a> tags for non-Inertia routes.
   // This avoids the suboptimal double request (XHR failure + full reload) that occurs when an Inertia Link is used for a non-Inertia destination.
@@ -35,7 +35,7 @@ const FooterLink = ({
 // shrink-0: these anchors wrap bare SVGs, so a flex parent that runs short squeezes them to zero
 // width and the icons vanish silently instead of overflowing.
 const SocialLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a href={href} className="shrink-0 hover:text-pink">
+  <a href={href} className="shrink-0 transition-colors hover:text-blue">
     {children}
   </a>
 );
@@ -71,7 +71,7 @@ export const HomeFooter = ({
   const social = platform.social_links;
 
   return (
-    <div className="flex flex-col justify-between gap-16 bg-black px-8 py-16 leading-relaxed text-white lg:flex-row lg:px-[4vw] lg:py-24">
+    <div className="flex flex-col justify-between gap-16 border-t border-navy-border/40 bg-navy px-8 py-16 leading-relaxed text-white lg:flex-row lg:px-[4vw] lg:py-24">
       <div className="flex w-full max-w-3xl flex-col gap-16">
         <div className="flex items-center gap-2">
           <img src={logoG} alt={`${appName} icon`} className="h-6 w-6" />
@@ -99,7 +99,7 @@ export const HomeFooter = ({
             </FooterLink>
             <a
               href="https://www.youtube.com/playlist?list=PL_DfN-mKCGNuswqERc6sIA8urYAKARc6s"
-              className="no-underline hover:text-pink"
+              className="no-underline transition-colors hover:text-blue"
             >
               {t("navigation.board_meetings")}
             </a>

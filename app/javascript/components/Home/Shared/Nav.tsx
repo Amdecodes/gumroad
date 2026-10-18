@@ -31,10 +31,10 @@ const NavLink = ({
   isInertia?: boolean;
 }) => {
   const className = classNames(
-    "flex w-full items-center justify-center border bg-black p-4 text-lg text-white no-underline transition-all duration-200 hover:border-black lg:w-auto lg:rounded-full lg:py-2 lg:px-4 dark:text-white lg:dark:hover:border-white/35 whitespace-nowrap",
+    "flex w-full items-center justify-center p-3 text-sm text-white no-underline transition-colors lg:w-auto lg:rounded-full lg:py-1.5 lg:px-3.5 whitespace-nowrap",
     isActive
-      ? "border-black lg:bg-black lg:text-white dark:lg:bg-white dark:lg:text-black"
-      : "border-transparent lg:bg-transparent lg:text-black dark:lg:text-white",
+      ? "bg-white/15 text-white font-medium"
+      : "text-white/80 hover:text-white hover:bg-white/10",
   );
 
   // Implemented conditional rendering for links to use standard <a> tags for non-Inertia routes.
@@ -69,32 +69,12 @@ const NavButton = ({
   external?: boolean | undefined;
   isDashboard?: boolean | undefined;
 }) => {
-  let modifier1 = "";
-  if (isDashboard) {
-    modifier1 = "lg:bg-black lg:text-white lg:hover:bg-pink dark:lg:bg-pink dark:lg:text-black dark:lg:hover:bg-white";
-  } else if (context !== "primary") {
-    modifier1 =
-      "lg:border-l-black lg:bg-white lg:text-black lg:hover:bg-pink dark:lg:border-l-white/35 dark:lg:bg-black dark:lg:text-white";
-  } else {
-    modifier1 = "lg:bg-black lg:text-white lg:hover:bg-pink";
-  }
-
-  let modifier2 = "";
-  if (context === "primary" && !isDashboard) {
-    // Bare `dark:` so the mobile-menu button isn't black-on-black in dark mode, plus the
-    // `dark:lg:` set: modifier1 applies `lg:bg-black`, and whether a single-variant `dark:`
-    // utility beats a single-variant `lg:` one is a stylesheet-order coin flip. The
-    // double-variant form always wins at desktop.
-    modifier2 =
-      "dark:bg-pink dark:text-black dark:hover:bg-white dark:lg:bg-pink dark:lg:text-black dark:lg:hover:bg-white";
-  } else {
-    modifier2 = "dark:lg:hover:bg-white dark:lg:hover:text-black";
-  }
-
+  const isPrimary = context === "primary" || isDashboard;
   const className = classNames(
-    "flex w-full items-center justify-center h-full border-black bg-black p-4 text-lg text-white no-underline transition-colors duration-200 hover:bg-pink hover:text-black lg:w-auto lg:border-l lg:py-2 lg:px-6 whitespace-nowrap",
-    modifier1,
-    modifier2,
+    "flex w-full items-center justify-center p-3 text-sm font-medium no-underline transition-colors lg:w-auto lg:rounded-lg lg:py-2 lg:px-4 whitespace-nowrap",
+    isPrimary
+      ? "bg-royal-blue text-white hover:bg-royal-blue-hover"
+      : "text-white hover:bg-white/10 border border-white/20",
   );
 
   if (external) {
@@ -189,21 +169,21 @@ export const HomeNav = () => {
 
   return (
     <>
-      <div className="sticky top-0 right-0 left-0 z-50 flex h-20 justify-between border-b border-black bg-white pr-4 pl-4 lg:pr-0 lg:pl-8 dark:border-b-white/35 dark:bg-black">
-        <div className="flex items-center gap-2">
+      <div className="sticky top-0 right-0 left-0 z-50 flex h-16 items-center justify-between border-b border-navy-border/40 bg-navy px-4 text-white shadow-xs lg:px-8">
+        <div className="flex items-center gap-3">
           <Link href={Routes.root_path()} className="flex items-center">
-            <img src={logoSvg} loading="lazy" alt="" className="h-7 lg:h-8 dark:invert" />
+            <img src={logoSvg} loading="lazy" alt="" className="h-8 w-auto brightness-0 invert" />
           </Link>
 
           <a
             href="https://github.com/antiwork/gumroad"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex gap-1.5 rounded-full border border-black p-1.5 text-black no-underline transition-all duration-100 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-gray-100 hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] dark:border-white/35 dark:text-white dark:hover:bg-gray-700 dark:hover:shadow-[2px_2px_0_0_rgba(255,255,255,0.35)]"
+            className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs text-white no-underline transition-colors hover:bg-white/20"
             aria-label={t("navigation.visit_github", "Visit ArifDrop on GitHub")}
             data-github-stars
           >
-            <svg width="20" height="20" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" className="fill-current">
+            <svg width="18" height="18" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" className="fill-current">
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -248,13 +228,13 @@ export const HomeNav = () => {
           >
             <div
               className={classNames(
-                "mb-1 h-0.5 w-8 origin-center bg-black transition-transform duration-200 dark:bg-white",
+                "mb-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200",
                 { "translate-y-1.5 rotate-45": mobileMenuOpen },
               )}
             />
             <div
               className={classNames(
-                "mt-1 h-0.5 w-8 origin-center bg-black transition-transform duration-200 dark:bg-white",
+                "mt-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200",
                 { "-translate-y-1.5 -rotate-45": mobileMenuOpen },
               )}
             />
@@ -264,10 +244,10 @@ export const HomeNav = () => {
 
       {mobileMenuOpen ? (
         <div
-          className="override fixed top-20 right-0 left-0 z-50 flex flex-col justify-between border-b border-black bg-black dark:border-white/35"
+          className="override fixed top-16 right-0 left-0 z-50 flex flex-col justify-between border-b border-navy-border/40 bg-navy p-4 text-white shadow-xl"
           id="mobile-menu"
         >
-          <div className="flex flex-col items-center justify-center lg:flex-row lg:gap-1 lg:px-6">
+          <div className="flex flex-col items-center justify-center gap-1 py-2">
             {LINKS.map(({ href, label, isInertia }) => (
               <NavLink
                 key={href}
@@ -280,7 +260,7 @@ export const HomeNav = () => {
               </NavLink>
             ))}
           </div>
-          <div className="flex flex-col lg:h-full lg:flex-row">
+          <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
             <AuthButtons user={user} onClick={closeMobileMenu} />
           </div>
         </div>
