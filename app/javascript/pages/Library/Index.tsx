@@ -456,7 +456,7 @@ export default function LibraryPage() {
         >
           {shouldShowFilter ? (
             <UICard
-              className="overflow-y-auto lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]"
+              className="overflow-y-auto rounded-2xl border border-border bg-background shadow-xs lg:sticky lg:inset-y-4 lg:max-h-[calc(100vh-2rem)]"
               aria-label={t("discover.filters")}
             >
               <CardContent asChild>
@@ -480,7 +480,7 @@ export default function LibraryPage() {
               {isDesktop || mobileFiltersExpanded ? (
                 <>
                   <CardContent>
-                    <InputGroup className="grow">
+                    <InputGroup className="grow rounded-lg border border-border bg-background shadow-2xs">
                       <Search className="size-5 text-muted" />
                       <Input
                         className="search-products"
