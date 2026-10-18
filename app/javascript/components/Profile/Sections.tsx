@@ -64,21 +64,23 @@ export type Section =
 export const PostsView = ({ posts }: { posts: Post[] }) => {
   const userAgentInfo = useUserAgentInfo();
   return (
-    <>
+    <div className="flex flex-col gap-3">
       {posts.map((post) => (
         <a
           key={post.slug}
           href={Routes.custom_domain_view_post_path(post.slug)}
-          className="flex justify-between gap-4 border-b border-border py-8 no-underline first:pt-0 last:border-b-0 last:pb-0"
+          className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-5 no-underline transition-all hover:border-royal-blue/40 hover:shadow-xs"
         >
           <div>
-            <h2>{post.name}</h2>
-            <time>{formatPostDate(post.published_at, userAgentInfo.locale)}</time>
+            <h3 className="font-heading font-semibold text-foreground group-hover:text-royal-blue transition-colors">
+              {post.name}
+            </h3>
+            <time className="text-sm text-muted-foreground">{formatPostDate(post.published_at, userAgentInfo.locale)}</time>
           </div>
-          <ArrowUpRight className="size-5 text-lg" />
+          <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-royal-blue transition-colors shrink-0" />
         </a>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -216,7 +218,7 @@ export const SectionLayout = ({
   className,
   ...props
 }: { children: React.ReactNode } & React.ComponentProps<"section">) => (
-  <section className={classNames("relative border-b border-border px-4 py-8 lg:py-16", className)} {...props}>
+  <section className={classNames("relative border-b border-border/60 px-4 py-8 lg:py-12", className)} {...props}>
     <div className="mx-auto grid w-full max-w-6xl gap-6">{children}</div>
   </section>
 );

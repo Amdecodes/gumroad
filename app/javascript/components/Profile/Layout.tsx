@@ -61,14 +61,20 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="z-20 border-border bg-background text-lg lg:border-b lg:px-4 lg:py-6">
-        <div className="mx-auto flex max-w-6xl flex-wrap lg:flex-nowrap lg:items-center lg:gap-6">
-          <div className="relative flex min-w-0 grow flex-wrap items-center gap-3 border-b border-border p-4 lg:flex-1 lg:flex-nowrap lg:border-0 lg:p-0">
+      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/95 backdrop-blur-md px-4 py-3 shadow-xs">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 lg:flex-nowrap">
+          <div className="relative flex min-w-0 grow flex-wrap items-center gap-3 lg:flex-1 lg:flex-nowrap">
             {creatorProfile.avatar_url ? (
-              <Avatar src={creatorProfile.avatar_url} alt={t("profile.profile_picture")} />
+              <Avatar
+                src={creatorProfile.avatar_url}
+                alt={t("profile.profile_picture")}
+                className="size-10 rounded-full ring-2 ring-primary/20"
+              />
             ) : null}
             <a href={Routes.root_path()} className="flex max-w-full min-w-0 items-center gap-2 no-underline">
-              <span className="truncate">{creatorProfile.name}</span>
+              <span className="truncate font-heading text-lg font-bold tracking-tight text-foreground hover:text-royal-blue transition-colors">
+                {creatorProfile.name}
+              </span>
               {creatorProfile.is_verified ? (
                 <WithTooltip tip={t("profile.top_creator")} position="bottom" className="shrink-0">
                   <TopCreatorBadge />
@@ -77,10 +83,10 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
             </a>
             {creatorProfile.reputation ? (
               <div
-                className="flex min-w-0 flex-wrap items-center gap-1 text-sm text-muted"
+                className="flex min-w-0 flex-wrap items-center gap-1 rounded-full bg-muted/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
                 aria-label={t("profile.creator_rating")}
               >
-                <Star pack="filled" className="size-4" />
+                <Star pack="filled" className="size-3.5 text-yellow" />
                 {t("profile.creator_rating_summary", {
                   average: creatorProfile.reputation.average,
                   count_reviews: t("storefront.verified_reviews_count", {
@@ -92,11 +98,11 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
             ) : null}
           </div>
           {!hideSubscribeForm ? (
-            <div className="flex basis-full items-center gap-3 border-b border-border p-4 lg:basis-auto lg:border-0 lg:p-0">
+            <div className="flex basis-full items-center gap-3 lg:basis-auto">
               <FollowForm creatorProfile={creatorProfile} />
             </div>
           ) : null}
-          {!isDesktop ? <div className="flex basis-full p-4">{headerButtons}</div> : null}
+          {!isDesktop ? <div className="flex basis-full justify-end pt-2">{headerButtons}</div> : null}
           {isDesktop ? headerButtons : null}
         </div>
       </header>
