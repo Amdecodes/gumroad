@@ -12,7 +12,7 @@ import { Switch } from "$app/components/ui/Switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/wishlists.png";
+import placeholder from "$assets/images/placeholders/wishlists.webp";
 
 export type Wishlist = {
   id: string;

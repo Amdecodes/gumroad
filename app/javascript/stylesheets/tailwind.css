@@ -64,6 +64,8 @@
   --color-warning: rgb(var(--warning));
   --color-warning-foreground: rgb(var(--contrast-warning));
   --color-info: rgb(var(--info));
+  --color-selected-bg: rgb(20 109 253 / 0.1);
+  --color-selected-border: rgb(20 109 253 / 0.35);
 
   --font-sans: "Inter", "Noto Sans Ethiopic", sans-serif;
   --font-heading: "Montserrat", "Noto Sans Ethiopic", sans-serif;
@@ -84,7 +86,7 @@
 
   --logo: url("/images/logo.svg");
   --loading-spinner: url("/images/loading-rainbow.svg");
-  --product-cover-placeholder: url("/images/placeholders/product-cover.png");
+  --product-cover-placeholder: url("/images/placeholders/product-cover.webp");
 }
 
 @layer base {

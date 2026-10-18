@@ -28,7 +28,7 @@ import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { Select } from "$app/components/ui/Select";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
-import placeholder from "$assets/images/placeholders/sales.png";
+import placeholder from "$assets/images/placeholders/sales.webp";
 
 // Must match CreatorAnalytics::Sales::MAX_HOURLY_DATE_RANGE_DAYS on the backend.
 const MAX_HOURLY_DATE_RANGE_DAYS = 7;

@@ -6,8 +6,9 @@ export const WCAG_AA_NORMAL_TEXT = 4.5;
 // In that narrow case, prefer the one that changes the creator's colour less.
 const APCA_TIE_BAND = 10;
 
-const WHITE = "#ffffff";
-const BLACK = "#000000";
+export const WHITE = "#ffffff";
+export const BLACK = "#000000";
+export const CONTRAST_WHITE: "#FFFFFF" = "#FFFFFF";
 
 // Expands a hex colour to [r, g, b] with each channel 0-255, or null if it isn't one.
 //

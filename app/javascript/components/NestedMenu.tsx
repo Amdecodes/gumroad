@@ -253,7 +253,7 @@ const MenubarItem = ({
           "rounded-full! px-3.5! py-1.5! text-sm! font-medium! align-middle transition-colors",
           showExpandableIcon ? "relative cursor-pointer" : "",
           isHighlighted
-            ? "border-royal-blue/30! bg-royal-blue/10! text-navy! shadow-xs! dark:text-blue"
+            ? "border-selected-border! bg-selected-bg! text-navy! font-semibold! shadow-xs! dark:text-blue"
             : "border-transparent! bg-transparent! text-muted! hover:bg-black/5! hover:text-foreground! dark:hover:bg-white/5!",
           { expandable: showExpandableIcon },
         )}

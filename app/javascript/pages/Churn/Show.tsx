@@ -15,7 +15,7 @@ import { InputGroup } from "$app/components/ui/InputGroup";
 import { Placeholder } from "$app/components/ui/Placeholder";
 import { Select } from "$app/components/ui/Select";
 
-import placeholder from "$assets/images/placeholders/sales.png";
+import placeholder from "$assets/images/placeholders/sales.webp";
 
 type RawChurnMetric = {
   churn_rate: number;

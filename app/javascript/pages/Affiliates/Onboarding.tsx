@@ -27,7 +27,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Tabs, Tab } from "$app/components/ui/Tabs";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholderImage from "$assets/images/placeholders/affiliate-signup-form.png";
+import placeholderImage from "$assets/images/placeholders/affiliate-signup-form.webp";
 
 type InvalidProductAttrs = Set<"commission" | "destination_url">;
 

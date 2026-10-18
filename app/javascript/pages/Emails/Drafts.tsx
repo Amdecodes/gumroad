@@ -22,7 +22,7 @@ import { Sheet, SheetHeader } from "$app/components/ui/Sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
-import draftsPlaceholder from "$assets/images/placeholders/draft_posts.png";
+import draftsPlaceholder from "$assets/images/placeholders/draft_posts.webp";
 
 type PageProps = {
   installments: DraftInstallment[];

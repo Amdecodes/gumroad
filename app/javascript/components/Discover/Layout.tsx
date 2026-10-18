@@ -185,7 +185,7 @@ export const Layout: React.FC<{
 
   return (
     <div className={className}>
-      <header className="sticky top-0 z-40 border-b border-navy-border/40 bg-navy px-4 py-3 text-white shadow-xs lg:px-8">
+      <header className="sticky top-0 z-40 border-b border-white/15 dark:border-white/20 bg-navy px-4 py-3 text-white shadow-xs lg:px-8">
         <div className="mx-auto flex max-w-7xl w-full flex-col gap-3">
           {isDesktop ? (
             <DesktopHeaderRows {...headerRowElementsProps} />
@@ -214,7 +214,7 @@ export const Layout: React.FC<{
         </div>
       ) : null}
 
-      <main className="min-h-[calc(100vh-250px)] pb-16 md:pb-0">{children}</main>
+      <main className="min-h-[calc(100vh-250px)] pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
 
       <BuyerMobileTabBar />
     </div>
@@ -228,14 +228,18 @@ const BuyerMobileTabBar: React.FC = () => {
   return (
     <nav
       aria-label={t("navigation.main")}
-      className="fixed bottom-0 inset-x-0 z-30 flex h-14 items-center justify-around border-t border-navy-border/40 bg-navy/95 backdrop-blur-md px-2 text-white md:hidden shadow-lg"
+      className="fixed bottom-0 inset-x-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] items-center justify-around border-t border-white/15 dark:border-white/20 bg-navy/95 backdrop-blur-md px-2 text-white md:hidden shadow-lg"
     >
       <a
         href={Routes.discover_url({ host: discoverDomain })}
-        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/90 hover:text-white no-underline py-1 px-3"
+        aria-current="page"
+        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white font-semibold no-underline py-1 px-3"
       >
         <SearchIcon className="size-5" />
-        <span>{t("navigation.discover")}</span>
+        <span className="relative">
+          {t("navigation.discover")}
+          <span className="absolute -bottom-1 left-1/2 h-0.5 w-3 -translate-x-1/2 rounded-full bg-blue" />
+        </span>
       </a>
       <a
         href={Routes.library_url()}

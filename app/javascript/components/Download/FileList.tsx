@@ -45,7 +45,7 @@ import { WithTooltip } from "$app/components/WithTooltip";
 
 import { NativeAppLink, TrackClick } from "./Interactions";
 
-import thumbnailPlaceholder from "$assets/images/placeholders/product-cover.png";
+import thumbnailPlaceholder from "$assets/images/placeholders/product-cover.webp";
 
 export type SubtitleFile = {
   url: string;

@@ -18,7 +18,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { useDebouncedCallback } from "$app/components/useDebouncedCallback";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
-import placeholder from "$assets/images/placeholders/followers.png";
+import placeholder from "$assets/images/placeholders/followers.webp";
 
 type Follower = {
   id: string;

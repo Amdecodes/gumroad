@@ -59,7 +59,7 @@ import { useUserAgentInfo } from "$app/components/UserAgent";
 import { useSortingTableDriver, Sort } from "$app/components/useSortingTableDriver";
 
 import blackFridayIllustration from "$assets/images/illustrations/black_friday.svg";
-import placeholder from "$assets/images/placeholders/discounts.png";
+import placeholder from "$assets/images/placeholders/discounts.webp";
 
 type ProductScopeKind = "product" | "option" | "deleted";
 

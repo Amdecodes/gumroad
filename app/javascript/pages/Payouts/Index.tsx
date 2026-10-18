@@ -37,7 +37,7 @@ import { useUserAgentInfo } from "$app/components/UserAgent";
 import useRouteLoading from "$app/components/useRouteLoading";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/payouts.png";
+import placeholder from "$assets/images/placeholders/payouts.webp";
 
 const MINIMUM_INSTANT_PAYOUT_AMOUNT_CENTS = 100;
 const MAXIMUM_INSTANT_PAYOUT_AMOUNT_CENTS = 999900;

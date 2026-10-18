@@ -14,7 +14,7 @@ import { Menu, MenuItem } from "$app/components/ui/Menu";
 import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 
-import placeholder from "$assets/images/placeholders/wishlists-following.png";
+import placeholder from "$assets/images/placeholders/wishlists-following.webp";
 
 export type Wishlist = {
   id: string;

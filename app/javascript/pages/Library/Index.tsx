@@ -41,7 +41,7 @@ import { useIsAboveBreakpoint } from "$app/components/useIsAboveBreakpoint";
 import { useOriginalLocation } from "$app/components/useOriginalLocation";
 import { useRunOnce } from "$app/components/useRunOnce";
 
-import placeholder from "$assets/images/placeholders/library.png";
+import placeholder from "$assets/images/placeholders/library.webp";
 
 export type Result = {
   product: {

@@ -9,7 +9,7 @@ import { Button } from "$app/components/Button";
 import { Layout, LayoutProps } from "$app/components/DownloadPage/Layout";
 import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 
-import placeholderImage from "$assets/images/placeholders/comic-stars.png";
+import placeholderImage from "$assets/images/placeholders/comic-stars.webp";
 
 type PageProps = LayoutProps;
 

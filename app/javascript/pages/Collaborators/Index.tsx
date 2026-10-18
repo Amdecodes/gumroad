@@ -17,7 +17,7 @@ import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/collaborators.png";
+import placeholder from "$assets/images/placeholders/collaborators.webp";
 
 type CollaboratorsPageProps = {
   collaborators: Collaborator[];

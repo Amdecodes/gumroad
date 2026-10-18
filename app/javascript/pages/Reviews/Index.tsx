@@ -19,7 +19,7 @@ import { Table, TableBody, TableCaption, TableCell, TableRow } from "$app/compon
 import { useOnChange } from "$app/components/useOnChange";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholderImage from "$assets/images/placeholders/reviews.png";
+import placeholderImage from "$assets/images/placeholders/reviews.webp";
 
 const rawThumbnails = import.meta.glob<string>("$assets/images/native_types/thumbnails/*", {
   eager: true,

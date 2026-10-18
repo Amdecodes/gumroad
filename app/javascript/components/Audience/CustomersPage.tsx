@@ -39,7 +39,7 @@ import { useUserAgentInfo } from "$app/components/UserAgent";
 import { useSortingTableDriver } from "$app/components/useSortingTableDriver";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/customers.png";
+import placeholder from "$assets/images/placeholders/customers.webp";
 
 type Product = { id: string; permalink: string; name: string; variants: { id: string; name: string }[] };
 

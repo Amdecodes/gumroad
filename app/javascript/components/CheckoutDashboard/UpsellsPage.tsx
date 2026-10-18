@@ -55,7 +55,7 @@ import { Textarea } from "$app/components/ui/Textarea";
 import { useDebouncedCallback } from "$app/components/useDebouncedCallback";
 import { Sort, useSortingTableDriver } from "$app/components/useSortingTableDriver";
 
-import placeholder from "$assets/images/placeholders/upsells.png";
+import placeholder from "$assets/images/placeholders/upsells.webp";
 
 type Variant = {
   id: string;

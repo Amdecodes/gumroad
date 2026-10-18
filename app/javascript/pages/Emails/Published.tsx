@@ -20,7 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$
 import { useUserAgentInfo } from "$app/components/UserAgent";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import publishedPlaceholder from "$assets/images/placeholders/published_posts.png";
+import publishedPlaceholder from "$assets/images/placeholders/published_posts.webp";
 
 type PageProps = {
   installments: PublishedInstallment[];

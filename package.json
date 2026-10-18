@@ -135,7 +135,9 @@
     "build:widget": "WIDGET_TARGET=gumroad npx vite build --config vite.config.widget.ts && WIDGET_TARGET=gumroad-embed npx vite build --config vite.config.widget.ts",
     "lint-fast": "DISABLE_TYPE_CHECKED=1 npx eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "node scripts/check-no-hardcoded-hex.mjs && node scripts/check-contrast.mjs && vitest run",
+    "check:hex": "node scripts/check-no-hardcoded-hex.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "setup": "bundle exec rails js:export && npm run build:pages-tailwind",
     "postinstall": "patch-package && ts-patch install -s"
   },

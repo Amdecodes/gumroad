@@ -461,7 +461,7 @@ function DiscoverIndex() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 opacity-15"
               style={{
-                backgroundImage: "radial-gradient(circle, #2199F9 1.5px, transparent 1.5px)",
+                backgroundImage: "radial-gradient(circle, var(--color-blue) 1.5px, transparent 1.5px)",
                 backgroundSize: "24px 24px",
               }}
             />

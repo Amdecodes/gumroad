@@ -28,8 +28,8 @@ import useRouteLoading from "$app/components/useRouteLoading";
 import { Sort, useSortingTableDriver } from "$app/components/useSortingTableDriver";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import noLinksYetPlaceholder from "$assets/images/placeholders/utm_links_empty.png";
-import noLinksFoundPlaceholder from "$assets/images/placeholders/utm_links_not_found.png";
+import noLinksYetPlaceholder from "$assets/images/placeholders/utm_links_empty.webp";
+import noLinksFoundPlaceholder from "$assets/images/placeholders/utm_links_not_found.webp";
 
 type UtmLinksIndexProps = {
   utm_links: SavedUtmLink[];

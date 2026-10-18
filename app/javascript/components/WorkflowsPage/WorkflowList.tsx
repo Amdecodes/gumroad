@@ -13,7 +13,7 @@ import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Layout } from "$app/components/WorkflowsPage";
 
-import placeholder from "$assets/images/placeholders/workflows.png";
+import placeholder from "$assets/images/placeholders/workflows.webp";
 
 type WorkflowListProps = {
   workflows: Workflow[];

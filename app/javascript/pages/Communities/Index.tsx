@@ -29,7 +29,7 @@ import { useDebouncedCallback } from "$app/components/useDebouncedCallback";
 import { useIsAboveBreakpoint } from "$app/components/useIsAboveBreakpoint";
 import { useRunOnce } from "$app/components/useRunOnce";
 
-import placeholderImage from "$assets/images/placeholders/community.png";
+import placeholderImage from "$assets/images/placeholders/community.webp";
 
 const COMMUNITY_CHANNEL_NAME = "CommunityChannel";
 const USER_CHANNEL_NAME = "UserChannel";

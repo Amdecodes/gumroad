@@ -1,7 +1,7 @@
 import { type StripeElementStyleVariant, type StripeElementsOptions } from "@stripe/stripe-js";
 import * as React from "react";
 
-import { getContrastColor, hexToRgb } from "$app/utils/color";
+import { CONTRAST_WHITE, getContrastColor, hexToRgb } from "$app/utils/color";
 import { getCssVariable } from "$app/utils/styles";
 
 import { useIsDarkTheme } from "$app/components/useIsDarkTheme";
@@ -68,7 +68,7 @@ export const CheckoutThemeProvider = Context.Provider;
 export const useCheckoutTheme = () => React.useContext(Context)?.theme ?? null;
 
 export const shouldInvertNativePayPalButton = (theme: CheckoutTheme | null, isDarkTheme: boolean | null) =>
-  theme ? getContrastColor(theme.background_color) === "#FFFFFF" : isDarkTheme === true;
+  theme ? getContrastColor(theme.background_color) === CONTRAST_WHITE : isDarkTheme === true;
 
 export const useShouldInvertNativePayPalButton = () => {
   const theme = useCheckoutTheme();

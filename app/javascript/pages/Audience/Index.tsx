@@ -20,7 +20,7 @@ import { InputGroup } from "$app/components/ui/InputGroup";
 import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { useOnChange } from "$app/components/useOnChange";
 
-import placeholder from "$assets/images/placeholders/audience.png";
+import placeholder from "$assets/images/placeholders/audience.webp";
 
 interface AudiencePageProps {
   total_follower_count: number;

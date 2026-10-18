@@ -4,7 +4,7 @@ import { Link, useMatches, useNavigate } from "react-router-dom";
 
 import { setProductPublished } from "$app/data/publish_product";
 import { classNames } from "$app/utils/classNames";
-import { getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
+import { BLACK, getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
 import { t } from "$app/utils/i18n";
 import { ResponseError } from "$app/utils/request";
 
@@ -154,7 +154,7 @@ export const Layout = ({
 
   // The pay-button/offer-banner accent may be a slightly brightness-adjusted version of the saved
   // colour so its text clears 4.5:1. Every other accent use keeps the saved colour.
-  const accentColors = getAccessibleAccent(currentSeller?.profileHighlightColor ?? "#000000");
+  const accentColors = getAccessibleAccent(currentSeller?.profileHighlightColor ?? BLACK);
 
   const profileColors =
     currentSeller && showBorder

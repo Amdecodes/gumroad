@@ -33,7 +33,7 @@ import useRouteLoading from "$app/components/useRouteLoading";
 import { Sort, useClientSortingTableDriver, useSortingTableDriver } from "$app/components/useSortingTableDriver";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/affiliated.png";
+import placeholder from "$assets/images/placeholders/affiliated.webp";
 
 type SortKey = "affiliate_user_name" | "products" | "fee_percent" | "volume_cents";
 

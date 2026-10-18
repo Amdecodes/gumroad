@@ -95,12 +95,12 @@ const PostCard = ({
       <Link
         href={Routes.gumroad_blog_post_path(post.slug)}
         className={cx(
-          "override grid h-full overflow-hidden rounded-lg border border-black bg-white text-black no-underline transition-all duration-200 ease-in-out hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[3px_3px_#000]",
+          "override grid h-full overflow-hidden rounded-xl border border-border bg-background text-foreground no-underline transition-all duration-200 ease-in-out hover:shadow-md hover:border-royal-blue/30",
           { "grid-rows-[auto_1fr]": !!featureImageUrl },
         )}
       >
         {featureImageUrl ? (
-          <figure className="aspect-1800/1080 overflow-hidden border-b border-black">
+          <figure className="aspect-1800/1080 overflow-hidden border-b border-border">
             <img src={featureImageUrl} alt={post.subject} className="h-full w-full object-cover" loading="lazy" />
           </figure>
         ) : null}
@@ -143,13 +143,13 @@ const CompactPostItem = ({ post }: { post: Post }) => (
   <li className="border-gray-300 py-4 first:pt-0">
     <Link
       href={Routes.gumroad_blog_post_path(post.slug)}
-      className="group flex items-end justify-between text-black no-underline hover:text-pink-600"
+      className="group flex items-end justify-between text-foreground no-underline hover:text-royal-blue"
     >
       <div className="grid grid-cols-1 gap-1">
         <h4 className="mb-0.5 text-2xl font-normal">{post.subject}</h4>
         <p className="pb-0.5 text-base text-gray-500">{formatPostDate(post.published_at, "en-US")}</p>
       </div>
-      <div className="mr-1 ml-3 flex h-10 w-10 shrink-0 items-center justify-center self-end rounded-md border border-gray-400 p-2 transition-all duration-200 ease-in-out group-hover:-translate-x-px group-hover:-translate-y-px group-hover:shadow-[2px_2px_0_0_#000]">
+      <div className="mr-1 ml-3 flex h-10 w-10 shrink-0 items-center justify-center self-end rounded-md border border-border p-2 transition-all duration-200 ease-in-out group-hover:shadow-xs group-hover:border-royal-blue/30">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>

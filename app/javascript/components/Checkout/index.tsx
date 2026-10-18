@@ -100,7 +100,7 @@ import {
   useState,
 } from "./payment";
 
-import placeholder from "$assets/images/placeholders/checkout.png";
+import placeholder from "$assets/images/placeholders/checkout.webp";
 
 // The name a buyer in this country knows the consumption tax by. The same mapping lives in Ruby as
 // Compliance::Countries::TAX_NAME_BY_COUNTRY_CODE (lib/utilities/compliance/countries.rb), which is

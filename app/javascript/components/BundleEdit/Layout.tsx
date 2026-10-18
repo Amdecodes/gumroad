@@ -2,7 +2,7 @@ import { Link as LinkIcon } from "@boxicons/react";
 import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
-import { getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
+import { BLACK, getAccessibleAccent, getContrastColor, hexToRgb } from "$app/utils/color";
 import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
@@ -96,7 +96,7 @@ export const BundleEditLayout = ({
 
   // The pay-button/offer-banner accent may be a slightly brightness-adjusted version of the saved
   // colour so its text clears 4.5:1. Every other accent use keeps the saved colour.
-  const accentColors = getAccessibleAccent(currentSeller?.profileHighlightColor ?? "#000000");
+  const accentColors = getAccessibleAccent(currentSeller?.profileHighlightColor ?? BLACK);
 
   const profileColors = currentSeller
     ? {

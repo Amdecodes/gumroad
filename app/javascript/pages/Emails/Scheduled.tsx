@@ -21,7 +21,7 @@ import { Sheet, SheetHeader } from "$app/components/ui/Sheet";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 
-import scheduledPlaceholder from "$assets/images/placeholders/scheduled_posts.png";
+import scheduledPlaceholder from "$assets/images/placeholders/scheduled_posts.webp";
 
 type PageProps = {
   installments: ScheduledInstallment[];

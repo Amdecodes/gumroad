@@ -20,7 +20,7 @@ import { MenuItem as MenuListItem } from "$app/components/ui/Menu";
 
 export const tiptapButtonClassName = classNames(
   buttonVariants({ size: "default", color: "accent" }),
-  "-translate-1 shadow-[0.25rem_0.25rem_0_var(--color-black)]",
+  "shadow-xs rounded-lg",
 );
 
 export const emailPrimaryButtonStyle =

@@ -18,7 +18,7 @@ import { Select } from "$app/components/ui/Select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Tab, Tabs } from "$app/components/ui/Tabs";
 
-import taxesPlaceholder from "$assets/images/placeholders/taxes.png";
+import taxesPlaceholder from "$assets/images/placeholders/taxes.webp";
 
 type TaxDocument = {
   document: string;

@@ -13,7 +13,7 @@ import { Placeholder, PlaceholderImage } from "$app/components/ui/Placeholder";
 import { useUserAgentInfo } from "$app/components/UserAgent";
 import { WithTooltip } from "$app/components/WithTooltip";
 
-import placeholder from "$assets/images/placeholders/affiliated.png";
+import placeholder from "$assets/images/placeholders/affiliated.webp";
 
 export type CollabsPageProps = {
   products_data: {

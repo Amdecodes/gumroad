@@ -32,7 +32,7 @@ const tabVariants = cva("", {
     {
       variant: "pills",
       active: true,
-      className: "border-royal-blue/40 bg-royal-blue/10 text-foreground font-semibold shadow-xs",
+      className: "border-selected-border bg-selected-bg text-foreground font-semibold shadow-xs",
     },
     {
       variant: "buttons",

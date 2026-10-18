@@ -13,7 +13,7 @@ import { InputGroup } from "$app/components/ui/InputGroup";
 import { useDebouncedCallback } from "$app/components/useDebouncedCallback";
 import { useOnChange } from "$app/components/useOnChange";
 
-import thumbnailPlaceholder from "$assets/images/placeholders/product-cover.png";
+import thumbnailPlaceholder from "$assets/images/placeholders/product-cover.webp";
 
 export const Search = ({ query, setQuery }: { query?: string | undefined; setQuery: (query: string) => void }) => {
   const { autocomplete_results: autocompleteResults } = usePage<{
