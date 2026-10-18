@@ -383,168 +383,177 @@ export const Product = ({
     (basePriceCents !== 0 || product.pwyw);
 
   return (
-    <article className="relative grid rounded border border-border bg-background lg:grid-cols-[2fr_1fr]">
-      <Covers covers={product.covers} mainCoverId={product.main_cover_id} productName={product.name} />
-      {product.quantity_remaining !== null ? <Ribbon>{product.quantity_remaining} left</Ribbon> : null}
-      <section className="lg:border-r">
-        <header className="grid gap-4 p-6 not-first:border-t">
-          {/* dir="auto" lets an RTL product name (Hebrew, Arabic) render right-to-left
-              instead of inheriting the document's LTR base direction, which misplaces
-              neutral characters like quotes and digits (gumroad-private#1259; same
-              rationale as the description fix in #6138).
-              wrap-break-word overrides the inherited global overflow-wrap: anywhere, which
-              splits titles mid-word in narrow in-app browsers. */}
-          <h1 itemProp="name" dir="auto" className="wrap-break-word">
-            {product.name}
-          </h1>
-        </header>
-        {/* Stack on mobile: an inflated price in an auto track leaves the name ~1ch
-            wide, and overflow-wrap:anywhere then stacks it one character at a time. */}
-        <section className="grid grid-cols-1 gap-[1px] border-t border-border p-0 sm:grid-cols-[auto_auto_minmax(max-content,1fr)]">
-          {showPrice ? (
-            <div className="px-6 py-4 outline outline-offset-0 outline-border">
-              <PriceTag
-                currencyCode={product.currency_code}
-                oldPrice={
-                  comparisonPriceCents !== null && discountedPriceCents < comparisonPriceCents
-                    ? comparisonPriceCents
-                    : undefined
-                }
-                price={discountedPriceCents}
-                url={product.long_url}
-                isPayWhatYouWant={!!product.pwyw}
-                isSalesLimited={product.is_sales_limited}
-                creatorName={product.seller?.name}
-                buyerCurrency={product.buyer_currency}
-                buyerLocalCurrencyRate={product.buyer_local_currency_rate}
-                buyerLocalCurrencySubunitToUnit={product.buyer_local_currency_subunit_to_unit}
-                buyerLocalPriceCents={buyerLocalPriceCentsForSelection(
-                  product.buyer_local_price_cents,
-                  discountCode?.valid ? discountCode.discount : null,
-                  selection.quantity,
-                )}
-                buyerLocalOriginalPriceCents={product.buyer_local_original_price_cents}
-              />
-            </div>
-          ) : null}
-          {sellerByline ? (
-            <div
-              className={classNames(
-                "flex min-w-0 flex-wrap items-center gap-2 px-6 py-4 outline outline-offset-0 outline-border",
-                !showPrice && "col-span-full sm:col-auto",
-                showPrice && !(product.ratings != null && product.ratings.count > 0) && "sm:col-[2/-1]",
-              )}
+    <article className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
+      {/* Left Column: Media, Details, Description */}
+      <div className="flex min-w-0 flex-col gap-6 lg:col-start-1 lg:row-start-1">
+        {product.covers.length > 0 ? (
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-background shadow-xs">
+            <Covers covers={product.covers} mainCoverId={product.main_cover_id} productName={product.name} />
+            {product.quantity_remaining !== null ? <Ribbon>{product.quantity_remaining} left</Ribbon> : null}
+          </div>
+        ) : null}
+
+        <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-xs">
+          <header className="p-6 md:p-8">
+            {/* dir="auto" lets an RTL product name (Hebrew, Arabic) render right-to-left
+                instead of inheriting the document's LTR base direction, which misplaces
+                neutral characters like quotes and digits (gumroad-private#1259; same
+                rationale as the description fix in #6138).
+                wrap-break-word overrides the inherited global overflow-wrap: anywhere, which
+                splits titles mid-word in narrow in-app browsers. */}
+            <h1
+              itemProp="name"
+              dir="auto"
+              className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl wrap-break-word"
             >
-              {product.collaborating_user ? (
-                <>
-                  {sellerByline} with{" "}
-                  <AuthorByline
-                    name={product.collaborating_user.name}
-                    profileUrl={product.collaborating_user.profile_url}
-                    avatarUrl={product.collaborating_user.avatar_url}
-                  />
-                </>
-              ) : (
-                sellerByline
-              )}
-            </div>
-          ) : null}
-          {product.ratings != null && product.ratings.count > 0 ? (
-            <div className="flex items-center px-6 py-4 outline outline-offset-0 outline-border max-sm:col-span-full">
-              <RatingsSummary ratings={product.ratings} />
-            </div>
-          ) : null}
-        </section>
-        {purchase !== null ? (
-          <ExistingPurchaseCard
-            purchase={purchase}
-            permalink={product.permalink}
-            isPreorder={product.preorder !== null}
-            isBundle={isBundle}
-            customViewContentButtonText={product.custom_view_content_button_text}
-          />
-        ) : null}
-        {isBundle ? (
-          <section className="grid gap-4 border-t border-border p-6">
-            <h2>{t("storefront.bundle_contains", "This bundle contains...")}</h2>
-            <CartItemList>
-              {product.bundle_products.map((bundleProduct) => {
-                const price =
-                  bundleProduct.currency_code === product.currency_code
-                    ? formatBuyerLocalOrSetPrice(bundleProduct.price, {
-                        currencyCode: product.currency_code,
-                        buyerCurrency: product.buyer_currency,
-                        buyerLocalCurrencyRate: product.buyer_local_currency_rate,
-                        buyerLocalCurrencySubunitToUnit: product.buyer_local_currency_subunit_to_unit,
-                      })
-                    : formatPriceCentsWithCurrencySymbol(bundleProduct.currency_code, bundleProduct.price, {
-                        symbolFormat: "long",
-                      });
-                return (
-                  <CartItem key={bundleProduct.id} isBundleItem>
-                    <CartItemMedia className="h-16 w-16 shrink-0 sm:h-28 sm:w-28">
-                      <Thumbnail url={bundleProduct.thumbnail_url} nativeType={bundleProduct.native_type} />
-                    </CartItemMedia>
-                    {/* Checkout's floor: without it a wide price squeezes this to one letter/line. */}
-                    <CartItemMain className="min-h-16 min-w-2/5 sm:h-28">
-                      <CartItemTitle asChild>
-                        <a href={bundleProduct.url}>
-                          <h4 className="font-bold wrap-break-word">{bundleProduct.name}</h4>
-                        </a>
-                      </CartItemTitle>
-                      {bundleProduct.ratings ? (
-                        <div className="line-clamp-1 flex shrink-0 items-center gap-1" aria-label={t("storefront.rating", "Rating")}>
-                          <Star pack="filled" className="size-5" />
-                          {`${bundleProduct.ratings.average.toFixed(1)} (${bundleProduct.ratings.count})`}
-                        </div>
-                      ) : null}
-                      <span className="sr-only">
-                        {t("storefront.qty", { count: bundleProduct.quantity }, `Qty: ${bundleProduct.quantity}`)}
-                      </span>
-                      {bundleProduct.variant ? (
-                        <CartItemFooter>
-                          <span className="line-clamp-1">
-                            <strong>{variantLabel(bundleProduct.native_type)}:</strong> {bundleProduct.variant}
-                          </span>
-                        </CartItemFooter>
-                      ) : null}
-                    </CartItemMain>
-                    <CartItemEnd className="max-w-1/2 shrink-0 flex-row items-start gap-4 p-4 text-right">
-                      <span className="current-price whitespace-nowrap" aria-label={t("storefront.price", "Price")}>
-                        {comparisonPriceCents !== null && discountedPriceCents < comparisonPriceCents ? (
-                          <s>{price}</s>
-                        ) : (
-                          price
-                        )}
-                      </span>
-                    </CartItemEnd>
-                  </CartItem>
-                );
-              })}
-            </CartItemList>
+              {product.name}
+            </h1>
+          </header>
+          <section className="grid grid-cols-1 gap-3 border-t border-border p-4 sm:flex sm:flex-wrap sm:items-center md:px-8">
+            {showPrice ? (
+              <div className="inline-flex items-center">
+                <PriceTag
+                  currencyCode={product.currency_code}
+                  oldPrice={
+                    comparisonPriceCents !== null && discountedPriceCents < comparisonPriceCents
+                      ? comparisonPriceCents
+                      : undefined
+                  }
+                  price={discountedPriceCents}
+                  url={product.long_url}
+                  isPayWhatYouWant={!!product.pwyw}
+                  isSalesLimited={product.is_sales_limited}
+                  creatorName={product.seller?.name}
+                  buyerCurrency={product.buyer_currency}
+                  buyerLocalCurrencyRate={product.buyer_local_currency_rate}
+                  buyerLocalCurrencySubunitToUnit={product.buyer_local_currency_subunit_to_unit}
+                  buyerLocalPriceCents={buyerLocalPriceCentsForSelection(
+                    product.buyer_local_price_cents,
+                    discountCode?.valid ? discountCode.discount : null,
+                    selection.quantity,
+                  )}
+                  buyerLocalOriginalPriceCents={product.buyer_local_original_price_cents}
+                />
+              </div>
+            ) : null}
+            {sellerByline ? (
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                {product.collaborating_user ? (
+                  <>
+                    {sellerByline} with{" "}
+                    <AuthorByline
+                      name={product.collaborating_user.name}
+                      profileUrl={product.collaborating_user.profile_url}
+                      avatarUrl={product.collaborating_user.avatar_url}
+                    />
+                  </>
+                ) : (
+                  sellerByline
+                )}
+              </div>
+            ) : null}
+            {product.ratings != null && product.ratings.count > 0 ? (
+              <div className="flex items-center">
+                <RatingsSummary ratings={product.ratings} />
+              </div>
+            ) : null}
           </section>
-        ) : null}
-        <section className="border-t border-border p-6">
-          <CollapsibleDescription>
-            {/* dir="auto" gives the description a base direction from its first strong
-                character; per-block direction for mixed-language content is handled by
-                the unicode-bidi: plaintext rule in _rich_text.scss (gumroad-private#1244). */}
-            {pageLoaded ? (
-              <PublicFilesSettingsContext.Provider value={publicFilesSettings}>
-                <EditorContent className="rich-text" dir="auto" editor={descriptionEditor} />
-              </PublicFilesSettingsContext.Provider>
-            ) : (
-              <div
-                className="rich-text"
-                dir="auto"
-                dangerouslySetInnerHTML={{ __html: product.description_html ?? "" }}
-              />
-            )}
-          </CollapsibleDescription>
-        </section>
-      </section>
-      <section>
-        <section className="grid gap-4 p-6 not-first:border-t">
+
+          {purchase !== null ? (
+            <ExistingPurchaseCard
+              purchase={purchase}
+              permalink={product.permalink}
+              isPreorder={product.preorder !== null}
+              isBundle={isBundle}
+              customViewContentButtonText={product.custom_view_content_button_text}
+            />
+          ) : null}
+
+          {isBundle ? (
+            <section className="grid gap-4 border-t border-border p-6 md:p-8">
+              <h2>{t("storefront.bundle_contains", "This bundle contains...")}</h2>
+              <CartItemList>
+                {product.bundle_products.map((bundleProduct) => {
+                  const price =
+                    bundleProduct.currency_code === product.currency_code
+                      ? formatBuyerLocalOrSetPrice(bundleProduct.price, {
+                          currencyCode: product.currency_code,
+                          buyerCurrency: product.buyer_currency,
+                          buyerLocalCurrencyRate: product.buyer_local_currency_rate,
+                          buyerLocalCurrencySubunitToUnit: product.buyer_local_currency_subunit_to_unit,
+                        })
+                      : formatPriceCentsWithCurrencySymbol(bundleProduct.currency_code, bundleProduct.price, {
+                          symbolFormat: "long",
+                        });
+                  return (
+                    <CartItem key={bundleProduct.id} isBundleItem>
+                      <CartItemMedia className="h-16 w-16 shrink-0 sm:h-28 sm:w-28">
+                        <Thumbnail url={bundleProduct.thumbnail_url} nativeType={bundleProduct.native_type} />
+                      </CartItemMedia>
+                      {/* Checkout's floor: without it a wide price squeezes this to one letter/line. */}
+                      <CartItemMain className="min-h-16 min-w-2/5 sm:h-28">
+                        <CartItemTitle asChild>
+                          <a href={bundleProduct.url}>
+                            <h4 className="font-bold wrap-break-word">{bundleProduct.name}</h4>
+                          </a>
+                        </CartItemTitle>
+                        {bundleProduct.ratings ? (
+                          <div className="line-clamp-1 flex shrink-0 items-center gap-1" aria-label={t("storefront.rating", "Rating")}>
+                            <Star pack="filled" className="size-5" />
+                            {`${bundleProduct.ratings.average.toFixed(1)} (${bundleProduct.ratings.count})`}
+                          </div>
+                        ) : null}
+                        <span className="sr-only">
+                          {t("storefront.qty", { count: bundleProduct.quantity }, `Qty: ${bundleProduct.quantity}`)}
+                        </span>
+                        {bundleProduct.variant ? (
+                          <CartItemFooter>
+                            <span className="line-clamp-1">
+                              <strong>{variantLabel(bundleProduct.native_type)}:</strong> {bundleProduct.variant}
+                            </span>
+                          </CartItemFooter>
+                        ) : null}
+                      </CartItemMain>
+                      <CartItemEnd className="max-w-1/2 shrink-0 flex-row items-start gap-4 p-4 text-right">
+                        <span className="current-price whitespace-nowrap" aria-label={t("storefront.price", "Price")}>
+                          {comparisonPriceCents !== null && discountedPriceCents < comparisonPriceCents ? (
+                            <s>{price}</s>
+                          ) : (
+                            price
+                          )}
+                        </span>
+                      </CartItemEnd>
+                    </CartItem>
+                  );
+                })}
+              </CartItemList>
+            </section>
+          ) : null}
+
+          <section className="border-t border-border p-6 md:p-8">
+            <CollapsibleDescription>
+              {/* dir="auto" gives the description a base direction from its first strong
+                  character; per-block direction for mixed-language content is handled by
+                  the unicode-bidi: plaintext rule in _rich_text.scss (gumroad-private#1244). */}
+              {pageLoaded ? (
+                <PublicFilesSettingsContext.Provider value={publicFilesSettings}>
+                  <EditorContent className="rich-text" dir="auto" editor={descriptionEditor} />
+                </PublicFilesSettingsContext.Provider>
+              ) : (
+                <div
+                  className="rich-text"
+                  dir="auto"
+                  dangerouslySetInnerHTML={{ __html: product.description_html ?? "" }}
+                />
+              )}
+            </CollapsibleDescription>
+          </section>
+        </div>
+      </div>
+
+      {/* Right Column: Sticky Purchase Card on Desktop, natural order on Mobile */}
+      <aside className="flex flex-col gap-4 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
+        <div className="rounded-2xl border border-border bg-background p-6 shadow-md md:p-8 space-y-5">
           {notForSaleMessage ? (
             <Alert role="status" variant="warning">
               {notForSaleMessage}
@@ -755,16 +764,22 @@ export const Product = ({
           {product.refund_policy ? (
             <RefundPolicyInfo refundPolicy={product.refund_policy} permalink={product.permalink} />
           ) : null}
+        </div>
+      </aside>
+
+      {/* Reviews & Seller Reputation: Positioned under left content on desktop, after purchase on mobile */}
+      {product.ratings || product.seller_reputation ? (
+        <section className="overflow-hidden rounded-2xl border border-border bg-background shadow-xs lg:col-start-1 lg:row-start-2">
+          {product.ratings ? <Reviews ratings={product.ratings} productId={product.id} seller={product.seller} /> : null}
+          {product.seller_reputation ? (
+            <SellerReputationSection
+              reputation={product.seller_reputation}
+              hasOwnReviews={product.ratings != null && product.ratings.count > 0}
+              seller={product.seller}
+            />
+          ) : null}
         </section>
-        {product.ratings ? <Reviews ratings={product.ratings} productId={product.id} seller={product.seller} /> : null}
-        {product.seller_reputation ? (
-          <SellerReputationSection
-            reputation={product.seller_reputation}
-            hasOwnReviews={product.ratings != null && product.ratings.count > 0}
-            seller={product.seller}
-          />
-        ) : null}
-      </section>
+      ) : null}
     </article>
   );
 };
@@ -789,7 +804,7 @@ const Covers = ({
       activeCoverId={activeCoverId}
       setActiveCoverId={setActiveCoverId}
       productName={productName}
-      className={activeCoverId ? "" : "pb-[25%]"}
+      className={classNames("border-b-0 rounded-2xl", activeCoverId ? "" : "pb-[25%]")}
     />
   );
 };

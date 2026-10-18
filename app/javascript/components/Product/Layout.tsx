@@ -287,7 +287,12 @@ const CtaBar = ({
   return (
     <section
       aria-label={t("storefront.product_info_bar")}
-      className="border-0 bg-background"
+      className={classNames(
+        "bg-background/95 backdrop-blur-md transition-all duration-200",
+        isDesktop
+          ? "border-b border-border shadow-xs"
+          : "border-t border-border shadow-lg pb-[env(safe-area-inset-bottom)]",
+      )}
       style={{
         overflow: "hidden",
         padding: 0,
@@ -295,9 +300,6 @@ const CtaBar = ({
         transition: "var(--transition-duration)",
         flexShrink: 0,
         order: isDesktop ? undefined : 1,
-        boxShadow: visible
-          ? "0 var(--border-width) rgb(var(--color)), 0 calc(-1 * var(--border-width)) rgb(var(--color))"
-          : undefined,
         position: "fixed",
         top: isDesktop ? 0 : undefined,
         bottom: isDesktop ? undefined : 0,
@@ -309,7 +311,7 @@ const CtaBar = ({
     >
       <div
         ref={ref}
-        className="mx-auto flex max-w-product-page items-center justify-between gap-2 p-4 max-sm:flex-col max-sm:items-stretch lg:gap-4 lg:px-8"
+        className="mx-auto flex max-w-product-page items-center justify-between gap-3 p-3 sm:p-4 max-sm:flex-col max-sm:items-stretch lg:gap-4 lg:px-8"
         style={{
           transition: "var(--transition-duration)",
           marginTop: visible || !isDesktop ? undefined : -height,
