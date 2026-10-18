@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction A · Library — ArifDrop</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+/* ── Direction A: Clean Marketplace — Library ── */
+
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  height: 60px; display: flex; align-items: center;
+}
+.nav-inner { display: flex; align-items: center; gap: 1rem; width: 100%; }
+.nav-logo { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: var(--navy); text-decoration: none; letter-spacing: -.02em; }
+[data-theme="dark"] .nav-logo { color: var(--lime); }
+.nav-actions { margin-left: auto; display: flex; align-items: center; gap: .5rem; }
+.user-chip {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem .75rem .3rem .3rem;
+  border: 1px solid var(--border); border-radius: var(--r-full);
+  cursor: pointer; background: var(--surface);
+  font-size: .875rem; font-weight: 500; color: var(--text);
+}
+.user-chip .avatar { width: 28px; height: 28px; font-size: .6rem; }
+
+/* Page header */
+.page-header { padding: 2rem 0 1.5rem; }
+.page-header h1 {
+  font-family: var(--font-head);
+  font-size: 1.6rem; font-weight: 700;
+  color: var(--text); margin-bottom: .75rem;
+}
+:lang(am) .page-header h1 { font-family: var(--font-am); }
+
+/* Filter/search row */
+.filter-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.filter-row .search-wrap { flex: 1; min-width: 200px; max-width: 380px; }
+.filter-row .pill { flex-shrink: 0; }
+
+/* Grid */
+.library-grid { display: grid; gap: 1rem; grid-template-columns: repeat(4,1fr); padding-block: 1.75rem; }
+@media (max-width: 1000px) { .library-grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 700px)  { .library-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 380px)  { .library-grid { grid-template-columns: 1fr; } }
+
+/* Library card */
+.lib-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+.lib-card .card-cover {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  overflow: hidden; background: var(--navy-muted);
+  position: relative;
+}
+.lib-card-body {
+  background: var(--surface);
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  padding: .875rem;
+  box-shadow: var(--shadow-card);
+  flex: 1; display: flex; flex-direction: column; gap: .25rem;
+}
+.lib-card:hover .lib-card-body { box-shadow: var(--shadow-lg); }
+.lib-card-title { font-size: .9rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+.lib-card-seller { font-size: .78rem; color: var(--text-muted); }
+.lib-card-meta { display: flex; align-items: center; gap: .5rem; margin-top: .25rem; }
+
+/* Progress bar */
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: .5rem; }
+.progress-fill { height: 100%; background: var(--royal); border-radius: 2px; }
+[data-theme="dark"] .progress-fill { background: var(--blue); }
+
+/* Downloaded badge */
+.badge-dl {
+  display: inline-flex; align-items: center; gap: .25rem;
+  font-size: .7rem; font-weight: 600;
+  background: rgba(4,120,87,0.1); color: var(--success);
+  padding: .15rem .5rem; border-radius: var(--r-full);
+}
+
+/* Placeholder cover */
+.brand-ph {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--navy-muted), var(--navy));
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.brand-ph::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(193,243,81,0.18) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+.brand-ph-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-head); font-size: .9rem; font-weight: 700;
+  color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .05em;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 5rem 1rem;
+}
+.empty-dot-bg {
+  width: 120px; height: 120px; margin: 0 auto 1.5rem;
+  background-image: radial-gradient(circle, var(--border) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.empty-icon { font-size: 2.5rem; }
+.empty-state h2 {
+  font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+  color: var(--text); margin-bottom: .5rem;
+}
+:lang(am) .empty-state h2 { font-family: var(--font-am); }
+.empty-state p { font-size: .9rem; color: var(--text-muted); max-width: 30ch; margin-inline: auto; margin-bottom: 1.5rem; }
+
+/* Bottom tabs */
+.bottom-tabs {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: none; align-items: stretch; z-index: 100;
+}
+.bottom-tab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: .2rem; font-size: .625rem; font-weight: 600;
+  color: var(--text-muted); text-decoration: none;
+}
+.bottom-tab svg { width: 22px; height: 22px; }
+.bottom-tab.active { color: var(--royal); }
+[data-theme="dark"] .bottom-tab.active { color: var(--blue); }
+
+@media (max-width: 767px) { .bottom-tabs { display: flex; } body { padding-bottom: 56px; } }
+</style>
+</head>
+<body>
+<script>
+  const saved = localStorage.getItem('proto-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  const savedLang = localStorage.getItem('proto-lang') || 'en';
+  if (savedLang === 'am') document.documentElement.setAttribute('lang','am');
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('proto-theme', isDark ? 'light' : 'dark');
+    document.getElementById('tt').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+  function toggleLang() {
+    const isAm = document.documentElement.getAttribute('lang') === 'am';
+    document.documentElement.setAttribute('lang', isAm ? 'en' : 'am');
+    localStorage.setItem('proto-lang', isAm ? 'en' : 'am');
+    document.getElementById('lt').textContent = isAm ? '🇬🇧 English' : '🇪🇹 አማርኛ';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      el.textContent = isAm ? (el.dataset.en || el.textContent) : (el.dataset.am || el.textContent);
+    });
+  }
+</script>
+<button class="lang-toggle" id="lt" onclick="toggleLang()">🇬🇧 English</button>
+<button class="theme-toggle" id="tt" onclick="toggleTheme()">🌙 Dark</button>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="../discover/" class="nav-logo">Arifdrop</a>
+    <div class="nav-actions">
+      <a href="../discover/" class="btn btn-ghost hide-mobile" style="min-height:36px;padding:.4rem .9rem;" data-en="Discover" data-am="ያግኙ">Discover</a>
+      <div class="user-chip">
+        <div class="avatar">KA</div>
+        <span class="hide-mobile">Kaleb</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<main>
+<div class="container">
+  <div class="page-header">
+    <h1 data-en="Library" data-am="ቤተ መፃሕፍቱ">Library</h1>
+    <div class="filter-row">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="input" type="search" placeholder="Search your library" aria-label="Search library" style="padding-inline-start:2.5rem;">
+      </div>
+      <button class="pill active" data-en="All" data-am="ሁሉም">All</button>
+      <button class="pill" data-en="Courses" data-am="ኮርሶች">Courses</button>
+      <button class="pill" data-en="Books" data-am="መጻሕፍት">Books</button>
+      <button class="pill" data-en="Music" data-am="ሙዚቃ">Music</button>
+    </div>
+  </div>
+
+  <div class="library-grid">
+
+    <!-- Card 1: in-progress course -->
+    <a href="../product/" class="lib-card">
+      <div class="card-cover">
+        <div class="brand-ph"><span class="brand-ph-label">Lightroom</span></div>
+      </div>
+      <div class="lib-card-body">
+        <div class="lib-card-title" data-en="Lightroom Mastery: Ethiopian Landscape Edition" data-am="ላይትሩም ምጥቀት፡ የኢትዮጵያ መልክዓ ምድር እትም">Lightroom Mastery: Ethiopian Landscape Edition</div>
+        <div class="lib-card-seller">Yonas Arega</div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65% complete">
+          <div class="progress-fill" style="width:65%"></div>
+        </div>
+        <div class="lib-card-meta">
+          <span style="font-size:.75rem;color:var(--text-muted);" data-en="65% complete" data-am="65% ተጠናቋል">65% complete</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 2: complete -->
+    <a href="#" class="lib-card">
+      <div class="card-cover">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#0b1728,#1c3558);">
+          <span class="brand-ph-label">Afrobeat</span>
+        </div>
+      </div>
+      <div class="lib-card-body">
+        <div class="lib-card-title" data-en="Roots &amp; Rhythms: Afrobeat Production Pack" data-am="ሥሮች እና ምቶች፡ አፍሮቢት ፕሮዳክሽን ፓክ">Roots &amp; Rhythms: Afrobeat Production Pack</div>
+        <div class="lib-card-seller">Mela Tesfaye</div>
+        <div class="lib-card-meta">
+          <span class="badge-dl" data-en="✓ Downloaded" data-am="✓ ወርዷል">✓ Downloaded</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 3: book, not started -->
+    <a href="#" class="lib-card">
+      <div class="card-cover">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#122540,#146dfd22);">
+          <span class="brand-ph-label">Book</span>
+        </div>
+      </div>
+      <div class="lib-card-body">
+        <div class="lib-card-title" data-en="Writing for the Web: Amharic Edition" data-am="ለድህረ ገጽ መጻፍ፡ አማርኛ እትም">Writing for the Web: Amharic Edition</div>
+        <div class="lib-card-seller">Bethel Mengistu</div>
+        <div class="lib-card-meta">
+          <span style="font-size:.75rem;color:var(--text-muted);" data-en="Not started" data-am="አልተጀመረም">Not started</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 4: in-progress -->
+    <a href="#" class="lib-card">
+      <div class="card-cover">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#1c3558,#0b1728);">
+          <span class="brand-ph-label">React</span>
+        </div>
+      </div>
+      <div class="lib-card-body">
+        <div class="lib-card-title" data-en="React &amp; TypeScript Bootcamp" data-am="ሪአክት እና ታይፕስክሪፕት ቡት ካምፕ">React &amp; TypeScript Bootcamp</div>
+        <div class="lib-card-seller">Dawit Girma</div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100" aria-label="22% complete">
+          <div class="progress-fill" style="width:22%"></div>
+        </div>
+        <div class="lib-card-meta">
+          <span style="font-size:.75rem;color:var(--text-muted);" data-en="22% complete" data-am="22% ተጠናቋል">22% complete</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+</main>
+
+<!-- Bottom tabs -->
+<nav class="bottom-tabs" aria-label="Main navigation">
+  <a href="../discover/" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 10 4zm8.94 12.12 1.42 1.42-1.42 1.41-1.41-1.41 1.41-1.42z"/></svg>
+    <span data-en="Discover" data-am="ያግኙ">Discover</span>
+  </a>
+  <a href="#" class="bottom-tab active">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+    <span data-en="Library" data-am="ቤተ መፃሕፍቱ">Library</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm0 13c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z"/></svg>
+    <span data-en="Profile" data-am="መገለጫ">Profile</span>
+  </a>
+</nav>
+
+<script>
+  if (savedLang === 'am') {
+    document.getElementById('lt').textContent = '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => { if (el.dataset.am) el.textContent = el.dataset.am; });
+  }
+  if (saved === 'dark') document.getElementById('tt').textContent = '☀️ Light';
+</script>
+</body>
+</html>

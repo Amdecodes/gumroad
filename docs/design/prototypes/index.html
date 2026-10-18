@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArifDrop Stage 3A Prototypes Viewer</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+body {
+  margin: 0; padding: 0;
+  background: #0f172a; color: #f8fafc;
+  font-family: var(--font-sans);
+  height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+}
+.toolbar {
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding: .75rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 50; gap: 1rem; flex-wrap: wrap;
+}
+.brand-label {
+  font-family: var(--font-head); font-weight: 700; font-size: 1.15rem;
+  color: #fff; display: flex; align-items: center; gap: .5rem;
+}
+.brand-label span.badge {
+  background: var(--lime); color: var(--navy); font-size: .7rem;
+  padding: .15rem .5rem; border-radius: var(--r-full); font-weight: 800;
+}
+.control-group {
+  display: inline-flex; background: rgba(255,255,255,0.08);
+  border-radius: var(--r-full); padding: 3px; border: 1px solid rgba(255,255,255,0.14);
+}
+.ctrl-btn {
+  background: transparent; border: none; color: rgba(255,255,255,0.7);
+  padding: .35rem .85rem; border-radius: var(--r-full); font-size: .8125rem;
+  font-weight: 600; cursor: pointer; transition: all 120ms;
+}
+.ctrl-btn:hover { color: #fff; }
+.ctrl-btn.active { background: var(--royal); color: #fff; }
+.ctrl-btn.active-lime { background: var(--lime); color: var(--navy); }
+
+.preview-container {
+  flex: 1; display: flex; justify-content: center; align-items: center;
+  padding: 1.5rem; background: #0b1320; overflow: auto;
+}
+.frame-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  transition: width 250ms ease, height 250ms ease;
+  height: 100%;
+  max-height: 900px;
+  display: flex; flex-direction: column;
+}
+.frame-wrapper.desktop { width: 1280px; max-width: 100%; }
+.frame-wrapper.mobile { width: 375px; max-height: 812px; border: 8px solid #1e293b; border-radius: 36px; }
+
+iframe {
+  width: 100%; height: 100%; border: none; flex: 1;
+}
+</style>
+</head>
+<body>
+
+<header class="toolbar">
+  <div class="brand-label">
+    ArifDrop Prototypes <span class="badge">STAGE 3A</span>
+  </div>
+
+  <!-- Direction Selector -->
+  <div style="display:flex;align-items:center;gap:.5rem;">
+    <span style="font-size:.8rem;color:rgba(255,255,255,0.5);font-weight:600;">DIRECTION:</span>
+    <div class="control-group">
+      <button class="ctrl-btn active" id="btn-dir-a" onclick="setDirection('direction-a')">A: Clean Marketplace</button>
+      <button class="ctrl-btn" id="btn-dir-b" onclick="setDirection('direction-b')">B: Bold Brand</button>
+    </div>
+  </div>
+
+  <!-- Page Selector -->
+  <div style="display:flex;align-items:center;gap:.5rem;">
+    <span style="font-size:.8rem;color:rgba(255,255,255,0.5);font-weight:600;">SURFACE:</span>
+    <div class="control-group">
+      <button class="ctrl-btn active" id="btn-page-discover" onclick="setPage('discover')">Discover</button>
+      <button class="ctrl-btn" id="btn-page-product" onclick="setPage('product')">Product Page</button>
+      <button class="ctrl-btn" id="btn-page-dashboard" onclick="setPage('dashboard')">Seller Dashboard</button>
+      <button class="ctrl-btn" id="btn-page-library" onclick="setPage('library')">Library</button>
+    </div>
+  </div>
+
+  <!-- Viewport Selector -->
+  <div style="display:flex;align-items:center;gap:.5rem;">
+    <span style="font-size:.8rem;color:rgba(255,255,255,0.5);font-weight:600;">VIEWPORT:</span>
+    <div class="control-group">
+      <button class="ctrl-btn active" id="btn-vp-desk" onclick="setViewport('desktop')">1280px (Desktop)</button>
+      <button class="ctrl-btn" id="btn-vp-mob" onclick="setViewport('mobile')">375px (Mobile)</button>
+    </div>
+  </div>
+</header>
+
+<main class="preview-container">
+  <div class="frame-wrapper desktop" id="frame-wrap">
+    <iframe id="preview-frame" src="direction-a/discover/index.html" title="Prototype Preview"></iframe>
+  </div>
+</main>
+
+<script>
+  let currentDir = 'direction-a';
+  let currentPage = 'discover';
+  let currentViewport = 'desktop';
+
+  function updateIframe() {
+    const url = `${currentDir}/${currentPage}/index.html`;
+    document.getElementById('preview-frame').src = url;
+  }
+
+  function setDirection(dir) {
+    currentDir = dir;
+    document.getElementById('btn-dir-a').className = dir === 'direction-a' ? 'ctrl-btn active' : 'ctrl-btn';
+    document.getElementById('btn-dir-b').className = dir === 'direction-b' ? 'ctrl-btn active-lime' : 'ctrl-btn';
+    updateIframe();
+  }
+
+  function setPage(page) {
+    currentPage = page;
+    ['discover', 'product', 'dashboard', 'library'].forEach(p => {
+      document.getElementById(`btn-page-${p}`).className = p === page ? 'ctrl-btn active' : 'ctrl-btn';
+    });
+    updateIframe();
+  }
+
+  function setViewport(vp) {
+    currentViewport = vp;
+    const wrap = document.getElementById('frame-wrap');
+    if (vp === 'mobile') {
+      wrap.className = 'frame-wrapper mobile';
+    } else {
+      wrap.className = 'frame-wrapper desktop';
+    }
+    document.getElementById('btn-vp-desk').className = vp === 'desktop' ? 'ctrl-btn active' : 'ctrl-btn';
+    document.getElementById('btn-vp-mob').className = vp === 'mobile' ? 'ctrl-btn active' : 'ctrl-btn';
+  }
+</script>
+</body>
+</html>

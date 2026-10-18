@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction B · Seller Dashboard (Bold Brand) — ArifDrop</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+/* ── Direction B: Bold Brand — Seller Dashboard ── */
+
+.dash-shell { display: flex; min-height: 100vh; flex-direction: column; }
+
+/* Top Navy Header */
+.dash-header {
+  background: var(--navy);
+  color: #fff;
+  border-bottom: 2px solid rgba(195,243,81,0.25);
+  position: sticky; top: 0; z-index: 50;
+  overflow: hidden;
+}
+.dash-header .dot-pattern-overlay {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(193,243,81,0.18) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+.header-bar {
+  height: 60px; display: flex; align-items: center; position: relative; z-index: 10;
+}
+.brand-title {
+  font-family: var(--font-head); font-size: 1.25rem; font-weight: 700;
+  color: #fff; text-decoration: none; display: flex; align-items: center; gap: .4rem;
+}
+.brand-title .dot { width: 7px; height: 7px; background: var(--lime); border-radius: 50%; }
+
+.nav-links { display: flex; gap: .5rem; margin-left: 2rem; }
+.nav-pill {
+  color: rgba(255,255,255,0.75); font-size: .875rem; font-weight: 600;
+  padding: .4rem .85rem; border-radius: var(--r-full); text-decoration: none;
+  transition: all 120ms;
+}
+.nav-pill:hover { color: #fff; background: rgba(255,255,255,0.08); text-decoration: none; }
+.nav-pill.active {
+  background: var(--lime); color: var(--navy); font-weight: 700;
+}
+
+.user-profile-badge {
+  margin-left: auto; display: flex; align-items: center; gap: .6rem;
+  padding: .25rem .75rem .25rem .3rem;
+  background: rgba(255,255,255,0.1); border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.avatar-lime {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--lime); color: var(--navy);
+  font-size: .65rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* Dashboard layout */
+.dash-body {
+  display: flex; flex: 1;
+}
+
+/* Sidebar - Direction B Bold Brand */
+.dash-sidebar {
+  width: 240px; background: var(--navy-dark);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 1.5rem 1rem;
+  flex-shrink: 0;
+  position: sticky; top: 60px; height: calc(100vh - 60px);
+}
+@media (max-width: 900px) { .dash-sidebar { display: none; } }
+
+.side-group-label {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: rgba(255,255,255,0.4);
+  padding: .5rem .75rem; margin-top: .75rem;
+}
+.side-item {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .6rem .85rem; border-radius: var(--r-md);
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  font-size: .9rem; font-weight: 500;
+  transition: all 120ms;
+}
+.side-item:hover {
+  background: rgba(255,255,255,0.07); color: #fff; text-decoration: none;
+}
+.side-item.active {
+  background: rgba(195,243,81,0.15); color: var(--lime);
+  font-weight: 700; border-left: 3px solid var(--lime);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.side-item svg { width: 18px; height: 18px; }
+
+/* Main area */
+.dash-content {
+  flex: 1; padding: 2.5rem 2rem; max-width: 1200px;
+}
+@media (max-width: 600px) { .dash-content { padding: 1.5rem 1rem; } }
+
+/* Hero bar within dash */
+.dash-greeting {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.dash-greeting h1 {
+  font-family: var(--font-head); font-size: 1.8rem; font-weight: 700;
+  color: var(--text); letter-spacing: -.03em;
+}
+:lang(am) .dash-greeting h1 { font-family: var(--font-am); }
+.dash-greeting p { color: var(--text-muted); font-size: .9375rem; }
+
+/* Stat Cards in Direction B */
+.stat-cards-grid {
+  display: grid; gap: 1.25rem; grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 1000px) { .stat-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .stat-cards-grid { grid-template-columns: 1fr; } }
+
+.stat-box-bold {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+}
+.stat-box-bold.primary-highlight {
+  background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+  color: #fff;
+  border-color: rgba(195,243,81,0.3);
+}
+.stat-box-bold.primary-highlight .stat-header { color: rgba(255,255,255,0.7); }
+.stat-box-bold.primary-highlight .stat-num { color: var(--lime); }
+.stat-header {
+  font-size: .75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-muted); margin-bottom: .5rem;
+}
+.stat-num {
+  font-family: var(--font-head); font-size: 2.1rem; font-weight: 700;
+  color: var(--text); line-height: 1.1; margin-bottom: .25rem;
+  letter-spacing: -.03em;
+}
+.stat-pill-trend {
+  display: inline-flex; align-items: center; gap: .25rem;
+  font-size: .75rem; font-weight: 700; color: var(--success);
+}
+.stat-box-bold.primary-highlight .stat-pill-trend { color: var(--lime); }
+
+/* Chart and products */
+.analytics-grid {
+  display: grid; gap: 1.5rem; grid-template-columns: 3fr 2fr;
+}
+@media (max-width: 960px) { .analytics-grid { grid-template-columns: 1fr; } }
+
+.framed-widget {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+}
+.framed-widget h2 {
+  font-family: var(--font-head); font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin-bottom: 1.5rem; letter-spacing: -.02em;
+}
+:lang(am) .framed-widget h2 { font-family: var(--font-am); }
+
+/* Bar chart with lime accents */
+.chart-bars {
+  display: flex; align-items: flex-end; gap: .6rem; height: 130px;
+  padding-top: 1rem;
+}
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .5rem; height: 100%; justify-content: flex-end; }
+.bar-actual {
+  width: 100%; background: var(--navy); border-radius: 6px 6px 0 0;
+  transition: height 300ms ease;
+}
+[data-theme="dark"] .bar-actual { background: var(--royal); }
+.bar-actual.peak { background: var(--lime); }
+.bar-month { font-size: .75rem; color: var(--text-muted); font-weight: 600; }
+
+/* Product row item */
+.item-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 0; border-bottom: 1px solid var(--border);
+}
+.item-row:last-child { border-bottom: none; }
+.item-thumb {
+  width: 44px; height: 44px; border-radius: var(--r-md);
+  background: var(--navy); color: var(--lime);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-weight: 700; font-size: .75rem;
+  flex-shrink: 0;
+}
+.item-info { flex: 1; min-width: 0; }
+.item-name { font-weight: 700; font-size: .95rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-sales { font-size: .8rem; color: var(--text-muted); }
+.item-rev { text-align: right; font-family: var(--font-head); font-weight: 700; font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<script>
+  const saved = localStorage.getItem('proto-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  const savedLang = localStorage.getItem('proto-lang') || 'en';
+  if (savedLang === 'am') document.documentElement.setAttribute('lang','am');
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('proto-theme', isDark ? 'light' : 'dark');
+    document.getElementById('tt').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+  function toggleLang() {
+    const isAm = document.documentElement.getAttribute('lang') === 'am';
+    document.documentElement.setAttribute('lang', isAm ? 'en' : 'am');
+    localStorage.setItem('proto-lang', isAm ? 'en' : 'am');
+    document.getElementById('lt').textContent = isAm ? '🇪🇹 አማርኛ' : '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      el.textContent = isAm ? (el.dataset.en || el.textContent) : (el.dataset.am || el.textContent);
+    });
+  }
+</script>
+
+<button class="lang-toggle" id="lt" onclick="toggleLang()">🇬🇧 English</button>
+<button class="theme-toggle" id="tt" onclick="toggleTheme()">🌙 Dark</button>
+
+<div class="dash-shell">
+  <!-- Navy Header -->
+  <header class="dash-header">
+    <div class="dot-pattern-overlay" aria-hidden="true"></div>
+    <div class="container header-bar">
+      <a href="../discover/" class="brand-title">Arifdrop<span class="dot"></span></a>
+      <nav class="nav-links hide-mobile">
+        <a href="#" class="nav-pill active" data-en="Dashboard" data-am="ዳሽቦርድ">Dashboard</a>
+        <a href="#" class="nav-pill" data-en="Products" data-am="ምርቶች">Products</a>
+        <a href="#" class="nav-pill" data-en="Sales" data-am="ሽያጮች">Sales</a>
+        <a href="#" class="nav-pill" data-en="Analytics" data-am="ትንተና">Analytics</a>
+      </nav>
+      <div class="user-profile-badge">
+        <div class="avatar-lime">YA</div>
+        <span style="font-size:.85rem;font-weight:600;" class="hide-mobile">Yonas Arega</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="dash-body">
+    <!-- Sidebar -->
+    <aside class="dash-sidebar" aria-label="Seller navigation">
+      <div class="side-group-label" data-en="Store" data-am="መደብር">Store</div>
+      <a href="#" class="side-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span data-en="Dashboard" data-am="ዳሽቦርድ">Dashboard</span>
+      </a>
+      <a href="#" class="side-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        <span data-en="Products" data-am="ምርቶች">Products</span>
+      </a>
+      <a href="#" class="side-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span data-en="Sales" data-am="ሽያጮች">Sales</span>
+      </a>
+      <a href="#" class="side-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span data-en="Analytics" data-am="ትንተና">Analytics</span>
+      </a>
+      <div class="side-group-label" data-en="Settings" data-am="ቅንብሮች">Settings</div>
+      <a href="#" class="side-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+        <span data-en="Settings" data-am="ቅንብሮች">Settings</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-content">
+      <div class="dash-greeting">
+        <div>
+          <h1 data-en="Seller Overview" data-am="የሻጭ አጠቃላይ እይታ">Seller Overview</h1>
+          <p data-en="Track sales, monitor revenue, and manage store performance." data-am="ሽያጮችን ይከታተሉ፣ ገቢዎን ይመልከቱ እና የመደብርዎን እንቅስቃሴ ይቆጣጠሩ።">Track sales, monitor revenue, and manage store performance.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" style="background:var(--lime);color:var(--navy);font-weight:700;" data-en="+ New Product" data-am="+ አዲስ ምርት">+ New Product</button>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards-grid">
+        <div class="stat-box-bold primary-highlight">
+          <div class="stat-header" data-en="Total Revenue" data-am="ጠቅላላ ገቢ">Total Revenue</div>
+          <div class="stat-num">ETB 12,400</div>
+          <div class="stat-pill-trend">↑ 18.2% <span style="font-weight:500;opacity:.8;">this month</span></div>
+        </div>
+        <div class="stat-box-bold">
+          <div class="stat-header" data-en="Orders Completed" data-am="የተጠናቀቁ ትዕዛዞች">Orders Completed</div>
+          <div class="stat-num">84</div>
+          <div class="stat-pill-trend">↑ 12% <span style="color:var(--text-muted);font-weight:500;">vs last month</span></div>
+        </div>
+        <div class="stat-box-bold">
+          <div class="stat-header" data-en="Total Audience" data-am="ተከታዮች">Total Audience</div>
+          <div class="stat-num">231</div>
+          <div class="stat-pill-trend">↑ 7 new</div>
+        </div>
+        <div class="stat-box-bold">
+          <div class="stat-header" data-en="Active Catalog" data-am="የቀረቡ ምርቶች">Active Catalog</div>
+          <div class="stat-num">24</div>
+          <div style="font-size:.78rem;color:var(--text-muted);">8 unpublished drafts</div>
+        </div>
+      </div>
+
+      <!-- Analytics row -->
+      <div class="analytics-grid">
+        <div class="framed-widget">
+          <h2 data-en="Monthly Revenue Trajectory" data-am="የወርሃዊ ገቢ አዝማሚያ">Monthly Revenue Trajectory</h2>
+          <div class="chart-bars" aria-label="Revenue chart">
+            <div class="bar-wrap"><div class="bar-actual" style="height:40%"></div><span class="bar-month">May</span></div>
+            <div class="bar-wrap"><div class="bar-actual" style="height:55%"></div><span class="bar-month">Jun</span></div>
+            <div class="bar-wrap"><div class="bar-actual" style="height:48%"></div><span class="bar-month">Jul</span></div>
+            <div class="bar-wrap"><div class="bar-actual" style="height:72%"></div><span class="bar-month">Aug</span></div>
+            <div class="bar-wrap"><div class="bar-actual" style="height:64%"></div><span class="bar-month">Sep</span></div>
+            <div class="bar-wrap"><div class="bar-actual peak" style="height:95%"></div><span class="bar-month" style="font-weight:700;color:var(--text);">Oct</span></div>
+          </div>
+        </div>
+
+        <div class="framed-widget">
+          <h2 data-en="Top Performing Creations" data-am="ከፍተኛ አፈፃፀም ያላቸው ስራዎች">Top Performing Creations</h2>
+          <div>
+            <div class="item-row">
+              <div class="item-thumb">LM</div>
+              <div class="item-info">
+                <div class="item-name">Lightroom Mastery</div>
+                <div class="item-sales">45 sales · 4.9 ★</div>
+              </div>
+              <div class="item-rev">ETB 5,400</div>
+            </div>
+            <div class="item-row">
+              <div class="item-thumb" style="background:var(--navy-muted);">RB</div>
+              <div class="item-info">
+                <div class="item-name">Roots &amp; Rhythms Pack</div>
+                <div class="item-sales">28 sales · 4.7 ★</div>
+              </div>
+              <div class="item-rev">ETB 4,200</div>
+            </div>
+            <div class="item-row">
+              <div class="item-thumb" style="background:var(--royal);color:#fff;">TS</div>
+              <div class="item-info">
+                <div class="item-name">Typography Set</div>
+                <div class="item-sales">11 sales · 5.0 ★</div>
+              </div>
+              <div class="item-rev">ETB 2,800</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  if (savedLang === 'am') {
+    document.getElementById('lt').textContent = '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => { if (el.dataset.am) el.textContent = el.dataset.am; });
+  }
+  if (saved === 'dark') document.getElementById('tt').textContent = '☀️ Light';
+</script>
+</body>
+</html>

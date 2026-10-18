@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction B · Library (Bold Brand) — ArifDrop</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+/* ── Direction B: Bold Brand — Library ── */
+
+/* Navy Brand Header */
+.brand-header {
+  background: var(--navy);
+  color: #fff;
+  border-bottom: 2px solid rgba(195,243,81,0.25);
+  position: sticky; top: 0; z-index: 50;
+  overflow: hidden;
+}
+.brand-header .dot-pattern-overlay {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(193,243,81,0.18) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+.header-bar {
+  height: 64px; display: flex; align-items: center; position: relative; z-index: 10;
+}
+.brand-title {
+  font-family: var(--font-head); font-size: 1.35rem; font-weight: 700;
+  color: #fff; text-decoration: none; display: flex; align-items: center; gap: .4rem;
+}
+.brand-title .dot { width: 7px; height: 7px; background: var(--lime); border-radius: 50%; }
+
+.user-profile-badge {
+  margin-left: auto; display: flex; align-items: center; gap: .6rem;
+  padding: .25rem .75rem .25rem .3rem;
+  background: rgba(255,255,255,0.1); border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.avatar-lime {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--lime); color: var(--navy);
+  font-size: .65rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* Page hero */
+.library-hero {
+  background: var(--navy-dark);
+  color: #fff;
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.library-hero h1 {
+  font-family: var(--font-head); font-size: 2rem; font-weight: 700;
+  letter-spacing: -.03em; margin-bottom: 1rem;
+}
+:lang(am) .library-hero h1 { font-family: var(--font-am); }
+
+/* Filter strip */
+.filter-controls {
+  display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
+}
+.filter-search {
+  flex: 1; max-width: 360px; min-width: 200px;
+}
+.filter-search .input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; border-radius: var(--r-full);
+}
+.filter-search .input::placeholder { color: rgba(255,255,255,0.5); }
+.filter-search .input:focus { border-color: var(--lime); }
+
+.pill-bold {
+  display: inline-flex; align-items: center;
+  padding: .4rem 1.1rem; border-radius: var(--r-full);
+  font-size: .875rem; font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer; white-space: nowrap;
+  transition: all 120ms;
+}
+.pill-bold:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.pill-bold.active {
+  background: var(--lime); color: var(--navy); border-color: var(--lime);
+  font-weight: 700;
+}
+
+/* Library Grid */
+.library-grid-bold {
+  display: grid; gap: 1.5rem; grid-template-columns: repeat(4, 1fr);
+  padding: 2.5rem 0 4rem;
+}
+@media (max-width: 1100px) { .library-grid-bold { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .library-grid-bold { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
+@media (max-width: 440px)  { .library-grid-bold { grid-template-columns: 1fr; } }
+
+/* Framed Library Card */
+.framed-lib-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: .75rem;
+  box-shadow: var(--shadow-card);
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.framed-lib-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--royal);
+  box-shadow: 0 12px 28px rgba(18,37,64,0.12);
+  text-decoration: none;
+}
+[data-theme="dark"] .framed-lib-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+}
+
+.cover-mat {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: calc(var(--r-xl) - 4px);
+  overflow: hidden;
+  background: var(--navy-muted);
+  position: relative;
+}
+.cover-mat .brand-ph {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--navy-muted), var(--navy-dark));
+  display: flex; align-items: center; justify-content: center;
+}
+.cover-mat .brand-ph-label {
+  font-family: var(--font-head); font-weight: 700; font-size: 1rem;
+  color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: .06em;
+}
+
+.framed-lib-body {
+  padding: 1rem .5rem .5rem;
+  display: flex; flex-direction: column; gap: .35rem; flex: 1;
+}
+.lib-title-bold {
+  font-family: var(--font-head); font-size: .95rem; font-weight: 700;
+  color: var(--text); line-height: 1.35;
+}
+:lang(am) .lib-title-bold { font-family: var(--font-am); }
+.lib-creator-bold { font-size: .8rem; color: var(--text-muted); }
+
+/* Progress */
+.progress-track-bold {
+  height: 6px; background: var(--border); border-radius: 3px;
+  overflow: hidden; margin-top: .4rem;
+}
+.progress-fill-bold {
+  height: 100%; background: var(--lime); border-radius: 3px;
+}
+[data-theme="light"] .progress-fill-bold { background: var(--royal); }
+
+/* Badge */
+.status-pill {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .75rem; font-weight: 700;
+  color: var(--success); margin-top: .25rem;
+}
+</style>
+</head>
+<body>
+
+<script>
+  const saved = localStorage.getItem('proto-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  const savedLang = localStorage.getItem('proto-lang') || 'en';
+  if (savedLang === 'am') document.documentElement.setAttribute('lang','am');
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('proto-theme', isDark ? 'light' : 'dark');
+    document.getElementById('tt').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+  function toggleLang() {
+    const isAm = document.documentElement.getAttribute('lang') === 'am';
+    document.documentElement.setAttribute('lang', isAm ? 'en' : 'am');
+    localStorage.setItem('proto-lang', isAm ? 'en' : 'am');
+    document.getElementById('lt').textContent = isAm ? '🇪🇹 አማርኛ' : '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      el.textContent = isAm ? (el.dataset.en || el.textContent) : (el.dataset.am || el.textContent);
+    });
+  }
+</script>
+
+<button class="lang-toggle" id="lt" onclick="toggleLang()">🇬🇧 English</button>
+<button class="theme-toggle" id="tt" onclick="toggleTheme()">🌙 Dark</button>
+
+<!-- Header -->
+<header class="brand-header">
+  <div class="dot-pattern-overlay" aria-hidden="true"></div>
+  <div class="container header-bar">
+    <a href="../discover/" class="brand-title">Arifdrop<span class="dot"></span></a>
+    <div class="user-profile-badge">
+      <div class="avatar-lime">KA</div>
+      <span style="font-size:.85rem;font-weight:600;" class="hide-mobile">Kaleb Abebe</span>
+    </div>
+  </div>
+</header>
+
+<!-- Hero / Filter section -->
+<div class="library-hero">
+  <div class="container">
+    <h1 data-en="Your Personal Library" data-am="የእርስዎ የግል ቤተ መፃሕፍት">Your Personal Library</h1>
+    <div class="filter-controls">
+      <div class="filter-search">
+        <input class="input" type="search" placeholder="Search your purchases…" aria-label="Search library">
+      </div>
+      <button class="pill-bold active" data-en="All Works" data-am="ሁሉም ስራዎች">All Works</button>
+      <button class="pill-bold" data-en="Courses" data-am="ኮርሶች">Courses</button>
+      <button class="pill-bold" data-en="E-Books" data-am="ኢ-መጻሕፍት">E-Books</button>
+      <button class="pill-bold" data-en="Audio &amp; Sounds" data-am="ድምጾች">Audio &amp; Sounds</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Grid -->
+<main>
+<div class="container">
+  <div class="library-grid-bold">
+
+    <!-- Card 1 -->
+    <a href="../product/" class="framed-lib-card">
+      <div class="cover-mat">
+        <div class="brand-ph"><span class="brand-ph-label">Lightroom</span></div>
+      </div>
+      <div class="framed-lib-body">
+        <div class="lib-title-bold" data-en="Lightroom Mastery: Ethiopian Landscape Edition" data-am="ላይትሩም ምጥቀት፡ የኢትዮጵያ መልክዓ ምድር እትም">Lightroom Mastery: Ethiopian Landscape Edition</div>
+        <div class="lib-creator-bold">Yonas Arega</div>
+        <div class="progress-track-bold" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-fill-bold" style="width:65%;"></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-top:.2rem;">65% completed</div>
+      </div>
+    </a>
+
+    <!-- Card 2 -->
+    <a href="#" class="framed-lib-card">
+      <div class="cover-mat">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#0b1728,#1c3558);"><span class="brand-ph-label">Afrobeat</span></div>
+      </div>
+      <div class="framed-lib-body">
+        <div class="lib-title-bold" data-en="Roots &amp; Rhythms: Afrobeat Production Pack" data-am="ሥሮች እና ምቶች፡ አፍሮቢት ፕሮዳክሽን ፓክ">Roots &amp; Rhythms: Afrobeat Production Pack</div>
+        <div class="lib-creator-bold">Mela Tesfaye</div>
+        <div class="status-pill">✓ Ready to download</div>
+      </div>
+    </a>
+
+    <!-- Card 3 -->
+    <a href="#" class="framed-lib-card">
+      <div class="cover-mat">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#122540,#146dfd33);"><span class="brand-ph-label">E-Book</span></div>
+      </div>
+      <div class="framed-lib-body">
+        <div class="lib-title-bold" data-en="Writing for the Web: Amharic Edition" data-am="ለድህረ ገጽ መጻፍ፡ አማርኛ እትም">Writing for the Web: Amharic Edition</div>
+        <div class="lib-creator-bold">Bethel Mengistu</div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-top:.2rem;">Unopened</div>
+      </div>
+    </a>
+
+    <!-- Card 4 -->
+    <a href="#" class="framed-lib-card">
+      <div class="cover-mat">
+        <div class="brand-ph" style="background:linear-gradient(135deg,#1c3558,#0b1728);"><span class="brand-ph-label">Code Course</span></div>
+      </div>
+      <div class="framed-lib-body">
+        <div class="lib-title-bold" data-en="React &amp; TypeScript Bootcamp" data-am="ሪአክት እና ታይፕስክሪፕት ቡት ካምፕ">React &amp; TypeScript Bootcamp</div>
+        <div class="lib-creator-bold">Dawit Girma</div>
+        <div class="progress-track-bold" role="progressbar" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-fill-bold" style="width:22%;"></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-top:.2rem;">22% completed</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+</main>
+
+<!-- Bottom tabs (mobile) -->
+<nav class="bottom-tabs" aria-label="Main navigation">
+  <a href="../discover/" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 10 4zm8.94 12.12 1.42 1.42-1.42 1.41-1.41-1.41 1.41-1.42z"/></svg>
+    <span data-en="Discover" data-am="ያግኙ">Discover</span>
+  </a>
+  <a href="#" class="bottom-tab active">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+    <span data-en="Library" data-am="ቤተ መፃሕፍቱ">Library</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm0 13c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z"/></svg>
+    <span data-en="Profile" data-am="መገለጫ">Profile</span>
+  </a>
+</nav>
+
+<script>
+  if (savedLang === 'am') {
+    document.getElementById('lt').textContent = '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => { if (el.dataset.am) el.textContent = el.dataset.am; });
+  }
+  if (saved === 'dark') document.getElementById('tt').textContent = '☀️ Light';
+</script>
+</body>
+</html>

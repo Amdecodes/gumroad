@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction A · Seller Dashboard — ArifDrop</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+/* ── Direction A: Clean Marketplace — Seller Dashboard ── */
+
+/* Shell */
+.app-shell { display: flex; min-height: 100vh; flex-direction: column; }
+
+/* Top bar */
+.topbar {
+  height: 56px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; z-index: 40;
+  position: sticky; top: 0;
+}
+.topbar-inner { display: flex; align-items: center; gap: 1rem; width: 100%; }
+.topbar-logo { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--navy); text-decoration: none; letter-spacing: -.02em; }
+[data-theme="dark"] .topbar-logo { color: var(--lime); }
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+.user-chip {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem .75rem .3rem .3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  cursor: pointer; background: var(--surface);
+  font-size: .875rem; font-weight: 500;
+  color: var(--text);
+}
+.user-chip .avatar { width: 28px; height: 28px; font-size: .6rem; }
+
+/* Content area */
+.content-area {
+  display: flex; flex: 1;
+}
+
+/* Sidebar — direction A uses simple top-anchored slim sidebar */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.25rem 0;
+  position: sticky; top: 56px; height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+@media (max-width: 900px) { .sidebar { display: none; } }
+
+.sidebar-section {
+  padding: 0 .75rem .5rem;
+  font-size: .65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-subtle);
+  margin-top: 1rem;
+}
+.sidebar-section:first-child { margin-top: 0; }
+
+.sidebar-link {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .55rem .85rem;
+  margin: .1rem .5rem;
+  border-radius: var(--r-md);
+  text-decoration: none;
+  font-size: .875rem; font-weight: 500;
+  color: var(--text-muted);
+  transition: background 120ms, color 120ms;
+}
+.sidebar-link:hover { background: var(--bg); color: var(--text); text-decoration: none; }
+.sidebar-link.active {
+  background: rgba(20,109,253,0.1);
+  color: var(--royal);
+  font-weight: 600;
+}
+[data-theme="dark"] .sidebar-link.active { background: rgba(33,153,249,0.12); color: var(--blue); }
+.sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+.sidebar-link.active svg { opacity: 1; }
+
+/* Main content */
+.main-content {
+  flex: 1; min-width: 0;
+  padding: 2rem 1.5rem;
+}
+@media (max-width: 640px) { .main-content { padding: 1.25rem .875rem; } }
+
+/* Page header */
+.page-header { margin-bottom: 2rem; }
+.page-header h1 {
+  font-family: var(--font-head);
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--text); margin-bottom: .25rem;
+}
+:lang(am) .page-header h1 { font-family: var(--font-am); }
+.page-header p { color: var(--text-muted); font-size: .9rem; }
+
+/* Stats grid */
+.stats-grid { display: grid; gap: 1rem; grid-template-columns: repeat(4,1fr); margin-bottom: 2rem; }
+@media (max-width: 1000px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px)  { .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+.stat-label {
+  font-size: .75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-muted); margin-bottom: .4rem;
+}
+:lang(am) .stat-label { font-family: var(--font-am); }
+.stat-value {
+  font-family: var(--font-head);
+  font-size: 1.75rem; font-weight: 700;
+  color: var(--text); line-height: 1.1;
+}
+.stat-trend {
+  font-size: .8rem; color: var(--success);
+  margin-top: .25rem; display: flex; align-items: center; gap: .25rem;
+}
+.stat-trend.down { color: var(--danger); }
+
+/* Chart card */
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1.5rem;
+}
+.chart-card h2 {
+  font-family: var(--font-head);
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 1.25rem; color: var(--text);
+}
+:lang(am) .chart-card h2 { font-family: var(--font-am); }
+
+/* Simple bar chart simulation */
+.bar-chart { display: flex; align-items: flex-end; gap: .4rem; height: 100px; }
+.bar-chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+.bar-chart-bar { width: 100%; background: var(--royal); border-radius: 4px 4px 0 0; opacity: .85; }
+.bar-chart-label { font-size: .65rem; color: var(--text-muted); }
+
+/* Products mini list */
+.product-row {
+  display: flex; align-items: center; gap: .875rem;
+  padding: .875rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.product-row:last-child { border-bottom: none; }
+.product-thumb {
+  width: 48px; height: 48px; border-radius: var(--r-md);
+  background: var(--navy-muted); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .55rem; font-weight: 700; color: rgba(255,255,255,0.4);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.product-info { flex: 1; min-width: 0; }
+.product-info .name { font-size: .9rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-info .meta { font-size: .8rem; color: var(--text-muted); }
+.product-stat { text-align: right; flex-shrink: 0; }
+.product-stat .amount { font-weight: 700; font-size: .9rem; }
+.product-stat .count { font-size: .75rem; color: var(--text-muted); }
+
+/* Dashboard grid for chart + products side by side */
+.dash-grid { display: grid; gap: 1.5rem; grid-template-columns: 3fr 2fr; }
+@media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
+
+/* Quick action strip */
+.quick-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.quick-action {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .6rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: .875rem; font-weight: 500;
+  color: var(--text); background: var(--surface);
+  cursor: pointer; text-decoration: none;
+  transition: background 120ms;
+}
+.quick-action:hover { background: var(--bg); text-decoration: none; color: var(--text); }
+.quick-action.primary { background: var(--royal); color: #fff; border-color: transparent; }
+.quick-action.primary:hover { background: var(--royal-hover); }
+</style>
+</head>
+<body>
+<script>
+  const saved = localStorage.getItem('proto-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  const savedLang = localStorage.getItem('proto-lang') || 'en';
+  if (savedLang === 'am') document.documentElement.setAttribute('lang','am');
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('proto-theme', isDark ? 'light' : 'dark');
+    document.getElementById('tt').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+  function toggleLang() {
+    const isAm = document.documentElement.getAttribute('lang') === 'am';
+    document.documentElement.setAttribute('lang', isAm ? 'en' : 'am');
+    localStorage.setItem('proto-lang', isAm ? 'en' : 'am');
+    document.getElementById('lt').textContent = isAm ? '🇬🇧 English' : '🇪🇹 አማርኛ';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      el.textContent = isAm ? (el.dataset.en || el.textContent) : (el.dataset.am || el.textContent);
+    });
+  }
+</script>
+<button class="lang-toggle" id="lt" onclick="toggleLang()">🇬🇧 English</button>
+<button class="theme-toggle" id="tt" onclick="toggleTheme()">🌙 Dark</button>
+
+<div class="app-shell">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../discover/" class="topbar-logo">Arifdrop</a>
+      <nav style="display:flex;gap:.25rem;margin-left:1.5rem;" class="hide-mobile">
+        <a href="#" class="sidebar-link active" style="margin:0;padding:.4rem .75rem;font-size:.85rem;" data-en="Dashboard" data-am="ዳሽቦርድ">Dashboard</a>
+        <a href="#" class="sidebar-link" style="margin:0;padding:.4rem .75rem;font-size:.85rem;" data-en="Products" data-am="ምርቶች">Products</a>
+        <a href="#" class="sidebar-link" style="margin:0;padding:.4rem .75rem;font-size:.85rem;" data-en="Sales" data-am="ሽያጮች">Sales</a>
+        <a href="#" class="sidebar-link" style="margin:0;padding:.4rem .75rem;font-size:.85rem;" data-en="Analytics" data-am="ትንተና">Analytics</a>
+      </nav>
+      <div class="topbar-actions">
+        <a href="#" class="btn btn-primary" style="min-height:34px;padding:.35rem .9rem;font-size:.875rem;" data-en="+ New product" data-am="+ አዲስ ምርት">+ New product</a>
+        <div class="user-chip">
+          <div class="avatar">YA</div>
+          <span class="hide-mobile">Yonas</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content-area">
+    <!-- Sidebar (desktop only, slimmer than current) -->
+    <aside class="sidebar" aria-label="Seller navigation">
+      <div class="sidebar-section" data-en="Store" data-am="መደብር">Store</div>
+      <a href="../discover/" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span data-en="Dashboard" data-am="ዳሽቦርድ">Dashboard</span>
+      </a>
+      <a href="#" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span data-en="Products" data-am="ምርቶች">Products</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span data-en="Sales" data-am="ሽያጮች">Sales</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span data-en="Analytics" data-am="ትንተና">Analytics</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span data-en="Audience" data-am="ተደራሲ">Audience</span>
+      </a>
+      <div class="sidebar-section" data-en="Payouts" data-am="ክፍያዎች">Payouts</div>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span data-en="Payouts" data-am="ክፍያዎች">Payouts</span>
+      </a>
+      <div class="sidebar-section" data-en="Settings" data-am="ቅንብሮች">Settings</div>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M4.93 4.93A10 10 0 0 0 19.07 19.07"/></svg>
+        <span data-en="Settings" data-am="ቅንብሮች">Settings</span>
+      </a>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1 data-en="Dashboard" data-am="ዳሽቦርድ">Dashboard</h1>
+        <p data-en="Welcome back, Yonas. Here's how your store is doing." data-am="እንኳን ደህና መጡ፣ ዮናስ። መደብርዎ እንዴት እንዳለ ይሄ ነው።">Welcome back, Yonas. Here's how your store is doing.</p>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <a href="#" class="quick-action primary" data-en="+ New product" data-am="+ አዲስ ምርት">+ New product</a>
+        <a href="#" class="quick-action" data-en="Share storefront" data-am="መደብሩን አጋራ">Share storefront</a>
+        <a href="#" class="quick-action" data-en="View sales" data-am="ሽያጮችን ይመልከቱ">View sales</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label" data-en="Revenue" data-am="ገቢ">Revenue</div>
+          <div class="stat-value">ETB 12,400</div>
+          <div class="stat-trend">↑ 18% <span data-en="vs last month" data-am="ከባለፈው ወር">vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-en="Sales" data-am="ሽያጮች">Sales</div>
+          <div class="stat-value">84</div>
+          <div class="stat-trend">↑ 12% <span data-en="vs last month" data-am="ከባለፈው ወር">vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-en="Followers" data-am="ተከታዮች">Followers</div>
+          <div class="stat-value">231</div>
+          <div class="stat-trend">↑ 7 <span data-en="this week" data-am="ይህ ሳምንት">this week</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-en="Products" data-am="ምርቶች">Products</div>
+          <div class="stat-value">24</div>
+          <div class="stat-trend" style="color:var(--text-muted);">8 <span data-en="unpublished" data-am="ያልታተመ">unpublished</span></div>
+        </div>
+      </div>
+
+      <!-- Charts + products side by side -->
+      <div class="dash-grid">
+        <div class="chart-card">
+          <h2 data-en="Revenue — last 7 months" data-am="ገቢ — ባለፉት 7 ወራት">Revenue — last 7 months</h2>
+          <div class="bar-chart" aria-label="Revenue chart">
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:38%"></div><span class="bar-chart-label">Apr</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:52%"></div><span class="bar-chart-label">May</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:45%"></div><span class="bar-chart-label">Jun</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:70%"></div><span class="bar-chart-label">Jul</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:60%"></div><span class="bar-chart-label">Aug</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:85%"></div><span class="bar-chart-label">Sep</span></div>
+            <div class="bar-chart-col"><div class="bar-chart-bar" style="height:100%;background:var(--lime);"></div><span class="bar-chart-label">Oct</span></div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h2 data-en="Top products" data-am="ምርጥ ምርቶች">Top products</h2>
+          <div>
+            <div class="product-row">
+              <div class="product-thumb">LM</div>
+              <div class="product-info">
+                <div class="name" data-en="Lightroom Mastery" data-am="ላይትሩም ምጥቀት">Lightroom Mastery</div>
+                <div class="meta" data-en="45 sales" data-am="45 ሽያጮች">45 sales</div>
+              </div>
+              <div class="product-stat">
+                <div class="amount">ETB 5,400</div>
+                <div class="count">ETB/sale avg</div>
+              </div>
+            </div>
+            <div class="product-row">
+              <div class="product-thumb" style="background:linear-gradient(135deg,var(--navy),var(--royal));">RB</div>
+              <div class="product-info">
+                <div class="name" data-en="Roots &amp; Rhythms" data-am="ሥሮች እና ምቶች">Roots &amp; Rhythms</div>
+                <div class="meta" data-en="28 sales" data-am="28 ሽያጮች">28 sales</div>
+              </div>
+              <div class="product-stat">
+                <div class="amount">ETB 4,200</div>
+                <div class="count">ETB/sale avg</div>
+              </div>
+            </div>
+            <div class="product-row">
+              <div class="product-thumb" style="background:var(--navy-muted);">TS</div>
+              <div class="product-info">
+                <div class="name" data-en="Typography Set" data-am="ፊደሎ ስብስብ">Typography Set</div>
+                <div class="meta" data-en="11 sales" data-am="11 ሽያጮች">11 sales</div>
+              </div>
+              <div class="product-stat">
+                <div class="amount">ETB 2,800</div>
+                <div class="count">ETB/sale avg</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /content-area -->
+</div><!-- /app-shell -->
+
+<script>
+  if (savedLang === 'am') {
+    document.getElementById('lt').textContent = '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => { if (el.dataset.am) el.textContent = el.dataset.am; });
+  }
+  if (saved === 'dark') document.getElementById('tt').textContent = '☀️ Light';
+</script>
+</body>
+</html>

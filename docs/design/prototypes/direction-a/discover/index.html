@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction A · Discover — ArifDrop</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+/* ── Direction A: Clean Marketplace ── */
+
+/* Nav */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 60px; display: flex; align-items: center;
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 1rem; width: 100%;
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-size: 1.3rem; font-weight: 700;
+  color: var(--navy); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -.02em;
+}
+[data-theme="dark"] .nav-logo { color: var(--lime); }
+.nav-search { flex: 1; max-width: 520px; }
+.nav-actions { margin-left: auto; display: flex; align-items: center; gap: .5rem; }
+
+/* Hero band (brand pattern accent, not full header) */
+.hero-band {
+  background: var(--navy);
+  position: relative; overflow: hidden;
+  padding: 3rem 0 3.5rem;
+}
+.hero-band .dot-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(193,243,81,0.28) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+.hero-band .hero-content {
+  position: relative; z-index: 1;
+  text-align: center;
+}
+.hero-headline {
+  font-family: var(--font-head);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700; color: #fff;
+  line-height: 1.15; margin-bottom: .75rem;
+}
+:lang(am) .hero-headline { font-family: var(--font-am); }
+.hero-sub { color: rgba(255,255,255,0.72); font-size: 1rem; margin-bottom: 1.5rem; }
+.hero-search-wrap { max-width: 560px; margin-inline: auto; display: flex; gap: .5rem; }
+.hero-search-wrap .input {
+  flex: 1; background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25); color: #fff;
+}
+.hero-search-wrap .input::placeholder { color: rgba(255,255,255,0.5); }
+.hero-search-wrap .input:focus { border-color: var(--lime); }
+
+/* Category chips strip */
+.cats {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.cats-scroll {
+  display: flex; gap: .5rem;
+  overflow-x: auto; padding-bottom: .25rem;
+  scrollbar-width: none;
+}
+.cats-scroll::-webkit-scrollbar { display: none; }
+
+/* Section heading */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.section-head h2 {
+  font-family: var(--font-head);
+  font-size: 1.175rem; font-weight: 700;
+  color: var(--text);
+}
+:lang(am) .section-head h2 { font-family: var(--font-am); }
+.section-head a { font-size: .875rem; color: var(--royal); }
+[data-theme="dark"] .section-head a { color: var(--blue); }
+
+/* Product grid */
+.grid-4 { display: grid; gap: 1.25rem; grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 767px)  { .grid-4 { grid-template-columns: repeat(2, 1fr); gap: .75rem; } }
+@media (max-width: 420px)  { .grid-4 { grid-template-columns: 1fr; } }
+
+/* Product card */
+.product-card { display: block; text-decoration: none; color: inherit; }
+.product-card .card-cover { aspect-ratio: 4/3; }
+.product-card .card-body { display: flex; flex-direction: column; gap: .3rem; }
+.product-title {
+  font-size: .9375rem; font-weight: 600;
+  color: var(--text); line-height: 1.3;
+  overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.product-seller { font-size: .8rem; color: var(--text-muted); }
+.product-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: .25rem; }
+.rating { font-size: .8rem; color: var(--text-muted); display: flex; align-items: center; gap: .2rem; }
+.rating .star { color: #f59e0b; }
+
+/* Featured (wider) */
+.featured-card { grid-column: span 2; }
+@media (max-width: 767px) { .featured-card { grid-column: span 1; } }
+.featured-card .card-cover { aspect-ratio: 16/9; }
+
+/* Brand pattern placeholder */
+.brand-ph {
+  width: 100%; background: linear-gradient(135deg, var(--navy-muted), var(--navy));
+  display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+}
+.brand-ph::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(193,243,81,0.2) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+.brand-ph-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-head); font-weight: 700; font-size: 1.1rem;
+  color: rgba(255,255,255,0.5); letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* Seller mini info */
+.seller-row { display: flex; align-items: center; gap: .5rem; margin-top: .2rem; }
+.avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--navy-muted); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6rem; font-weight: 700; color: var(--lime);
+}
+
+/* Footer */
+footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.7);
+  padding: 3rem 0;
+  margin-top: 4rem;
+}
+footer a { color: rgba(255,255,255,0.55); font-size: .875rem; }
+footer a:hover { color: #fff; }
+.footer-brand {
+  font-family: var(--font-head); font-weight: 700;
+  font-size: 1.2rem; color: #fff; margin-bottom: 1.5rem;
+  letter-spacing: -.02em;
+}
+.footer-grid { display: grid; gap: 2rem; grid-template-columns: 2fr 1fr 1fr; }
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } }
+.footer-col h4 { color: rgba(255,255,255,0.4); font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .75rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.powered {
+  margin-top: 2rem; padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  font-size: .8rem; color: rgba(255,255,255,0.4);
+  display: flex; justify-content: space-between; align-items: center;
+}
+</style>
+</head>
+<body>
+
+<script>
+  // Theme/lang toggle helpers
+  const saved = localStorage.getItem('proto-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  const savedLang = localStorage.getItem('proto-lang') || 'en';
+  if (savedLang === 'am') document.documentElement.setAttribute('lang','am');
+
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('proto-theme', isDark ? 'light' : 'dark');
+    document.getElementById('tt').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+  function toggleLang() {
+    const isAm = document.documentElement.getAttribute('lang') === 'am';
+    document.documentElement.setAttribute('lang', isAm ? 'en' : 'am');
+    localStorage.setItem('proto-lang', isAm ? 'en' : 'am');
+    document.getElementById('lt').textContent = isAm ? '🇪🇹 አማርኛ' : '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      el.textContent = isAm ? (el.dataset.en || el.textContent) : (el.dataset.am || el.textContent);
+    });
+  }
+</script>
+
+<button class="lang-toggle" id="lt" onclick="toggleLang()">🇬🇧 English</button>
+<button class="theme-toggle" id="tt" onclick="toggleTheme()">🌙 Dark</button>
+
+<!-- ── Nav ─────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">Arifdrop</a>
+
+    <div class="nav-search hide-mobile">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="input" type="search" placeholder="Search products" aria-label="Search products">
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="#" class="btn btn-ghost hide-mobile" style="min-height:36px;padding:.4rem .9rem;" data-en="Sell" data-am="ሽጥ">Sell</a>
+      <a href="#" class="btn btn-ghost hide-mobile" style="min-height:36px;padding:.4rem .9rem;" data-en="Library" data-am="ቤተ መፃሕፍቱ">Library</a>
+      <a href="#" class="btn btn-primary" style="min-height:36px;padding:.4rem 1rem;" data-en="Sign in" data-am="ግባ">Sign in</a>
+      <button class="btn btn-ghost hide-desktop" style="min-height:36px;padding:.4rem .6rem;" aria-label="Search">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero (brand pattern accent on Discover only) ── -->
+<section class="hero-band">
+  <div class="dot-bg" aria-hidden="true"></div>
+  <div class="container hero-content">
+    <h1 class="hero-headline" data-en="Discover creative works" data-am="የፈጠራ ሥራዎችን ያግኙ">Discover creative works</h1>
+    <p class="hero-sub" data-en="Books, music, courses &amp; more from independent creators" data-am="ከነጻ ፈጣሪዎች መጻሕፍት፣ ሙዚቃ፣ ኮርሶች እና ሌሎችም">Books, music, courses &amp; more from independent creators</p>
+    <div class="hero-search-wrap">
+      <input class="input" type="search" placeholder="Search anything…" aria-label="Search products" style="padding-inline-start:1rem;">
+      <button class="btn btn-primary" style="background:var(--lime);color:var(--navy);" data-en="Search" data-am="ፈልግ">Search</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── Category chips ──────────────────────────────── -->
+<div class="cats">
+  <div class="container">
+    <div class="cats-scroll" role="list">
+      <button class="pill active" role="listitem" data-en="All" data-am="ሁሉም">All</button>
+      <button class="pill" role="listitem" data-en="Music" data-am="ሙዚቃ">Music</button>
+      <button class="pill" role="listitem" data-en="Books" data-am="መጻሕፍት">Books</button>
+      <button class="pill" role="listitem" data-en="Courses" data-am="ኮርሶች">Courses</button>
+      <button class="pill" role="listitem" data-en="Software" data-am="ሶፍትዌር">Software</button>
+      <button class="pill" role="listitem" data-en="Art &amp; Design" data-am="ጥበብ እና ዲዛይን">Art &amp; Design</button>
+      <button class="pill" role="listitem" data-en="Podcasts" data-am="ፖድካስቶች">Podcasts</button>
+      <button class="pill" role="listitem" data-en="Templates" data-am="ናሙናዎች">Templates</button>
+      <button class="pill" role="listitem" data-en="Fitness" data-am="ጤና">Fitness</button>
+      <button class="pill" role="listitem" data-en="Comics" data-am="ኮሚክስ">Comics</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main content ────────────────────────────────── -->
+<main>
+<div class="container" style="padding-top:2.5rem; padding-bottom:2.5rem;">
+
+  <!-- Featured section -->
+  <div class="section-head">
+    <h2 data-en="Featured" data-am="ተለይቶ የቀረበ">Featured</h2>
+    <a href="#" data-en="See all" data-am="ሁሉንም ይመልከቱ">See all</a>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:3rem;">
+    <!-- Featured wide card 1 -->
+    <a href="#" class="product-card featured-card card">
+      <div class="brand-ph card-cover" style="aspect-ratio:16/9;">
+        <span class="brand-ph-label">Photo Editing</span>
+      </div>
+      <div class="card-body">
+        <div class="product-meta">
+          <span class="price-chip">ETB 450</span>
+          <span class="price-chip" style="background:var(--royal);color:#fff;font-size:.7rem;">NEW</span>
+        </div>
+        <div class="product-title" data-en="Lightroom Mastery: Ethiopian Landscape Edition" data-am="ላይትሩም ምጥቀት፡ የኢትዮጵያ መልክዓ ምድር እትም">Lightroom Mastery: Ethiopian Landscape Edition</div>
+        <div class="seller-row">
+          <div class="avatar">YA</div>
+          <span class="product-seller">Yonas Arega</span>
+        </div>
+        <div class="rating"><span class="star">★</span> 4.9 · <span data-en="128 ratings" data-am="128 ደረጃ">128 ratings</span></div>
+      </div>
+    </a>
+
+    <!-- Featured wide card 2 -->
+    <a href="#" class="product-card featured-card card">
+      <div class="brand-ph card-cover" style="aspect-ratio:16/9; background:linear-gradient(135deg,#0b1728,#1c3558);">
+        <span class="brand-ph-label">Music</span>
+      </div>
+      <div class="card-body">
+        <div class="product-meta">
+          <span class="price-chip">ETB 200</span>
+        </div>
+        <div class="product-title" data-en="Roots &amp; Rhythms: Afrobeat Production Pack" data-am="ሥሮች እና ምቶች፡ አፍሮቢት ፕሮዳክሽን ፓክ">Roots &amp; Rhythms: Afrobeat Production Pack</div>
+        <div class="seller-row">
+          <div class="avatar">MT</div>
+          <span class="product-seller">Mela Tesfaye</span>
+        </div>
+        <div class="rating"><span class="star">★</span> 4.7 · <span data-en="84 ratings" data-am="84 ደረጃ">84 ratings</span></div>
+      </div>
+    </a>
+
+    <!-- Regular card 1 -->
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover" style="background:linear-gradient(135deg,#122540,#146dfd22);">
+        <span class="brand-ph-label">Book</span>
+      </div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip free" data-en="Free" data-am="ነጻ">Free</span></div>
+        <div class="product-title" data-en="Writing for the Web: Amharic Edition" data-am="ለድህረ ገጽ መጻፍ፡ አማርኛ እትም">Writing for the Web: Amharic Edition</div>
+        <div class="seller-row"><div class="avatar">BM</div><span class="product-seller">Bethel Mengistu</span></div>
+      </div>
+    </a>
+
+    <!-- Regular card 2 -->
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover" style="background:linear-gradient(135deg,#1c3558,#0b1728);">
+        <span class="brand-ph-label">Course</span>
+      </div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip">ETB 1,200</span></div>
+        <div class="product-title" data-en="React &amp; TypeScript Bootcamp" data-am="ሪአክት እና ታይፕስክሪፕት ቡት ካምፕ">React &amp; TypeScript Bootcamp</div>
+        <div class="seller-row"><div class="avatar">DG</div><span class="product-seller">Dawit Girma</span></div>
+        <div class="rating"><span class="star">★</span> 4.8 · <span data-en="311 ratings" data-am="311 ደረጃ">311 ratings</span></div>
+      </div>
+    </a>
+  </div>
+
+  <!-- New & Trending -->
+  <div class="section-head">
+    <h2 data-en="New &amp; Trending" data-am="አዲስ እና አዝማሚያ">New &amp; Trending</h2>
+    <a href="#" data-en="See all" data-am="ሁሉንም ይመልከቱ">See all</a>
+  </div>
+
+  <div class="grid-4">
+    <!-- 4 standard cards -->
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover"><span class="brand-ph-label">Template</span></div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip">ETB 350</span></div>
+        <div class="product-title" data-en="Notion Business Dashboard 2026" data-am="ኖሽን ቢዝነስ ዳሽቦርድ 2026">Notion Business Dashboard 2026</div>
+        <div class="seller-row"><div class="avatar">SH</div><span class="product-seller">Sara Haile</span></div>
+      </div>
+    </a>
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover" style="background:linear-gradient(135deg,#0b1728,#2199f922);"><span class="brand-ph-label">Art</span></div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip">ETB 600</span></div>
+        <div class="product-title" data-en="Ethiopian Geometric Pattern Brush Pack" data-am="የኢትዮጵያ ጂኦሜትሪክ ንድፍ ብሩሽ ፓክ">Ethiopian Geometric Pattern Brush Pack</div>
+        <div class="seller-row"><div class="avatar">RA</div><span class="product-seller">Ruth Alemu</span></div>
+        <div class="rating"><span class="star">★</span> 5.0 · <span data-en="22 ratings" data-am="22 ደረጃ">22 ratings</span></div>
+      </div>
+    </a>
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover" style="background:linear-gradient(135deg,#122540,#c3f35122);"><span class="brand-ph-label">Podcast</span></div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip free" data-en="Free" data-am="ነጻ">Free</span></div>
+        <div class="product-title" data-en="Tech in Amharic: Season 3 Archive" data-am="ቴክ በአማርኛ፡ 3ኛ ዘዴ ማህደር">Tech in Amharic: Season 3 Archive</div>
+        <div class="seller-row"><div class="avatar">TW</div><span class="product-seller">Tewodros Worku</span></div>
+      </div>
+    </a>
+    <a href="#" class="product-card card">
+      <div class="brand-ph card-cover" style="background:linear-gradient(135deg,#1c3558,#146dfd22);"><span class="brand-ph-label">Software</span></div>
+      <div class="card-body">
+        <div class="product-meta"><span class="price-chip">ETB 800</span></div>
+        <div class="product-title" data-en="Amharic Spell Checker CLI v2" data-am="የአማርኛ ፊደሎ ማረሚያ CLI v2">Amharic Spell Checker CLI v2</div>
+        <div class="seller-row"><div class="avatar">AB</div><span class="product-seller">Abel Berhane</span></div>
+        <div class="rating"><span class="star">★</span> 4.6 · <span data-en="57 ratings" data-am="57 ደረጃ">57 ratings</span></div>
+      </div>
+    </a>
+  </div>
+
+</div>
+</main>
+
+<!-- ── Footer ──────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-brand">Arifdrop</div>
+    <div class="footer-grid">
+      <div>
+        <p style="font-size:.875rem;line-height:1.6;max-width:28ch;" data-en="The marketplace for independent Ethiopian creators." data-am="ለነጻ ኢትዮጵያዊ ፈጣሪዎች ገበያ።">The marketplace for independent Ethiopian creators.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Discover" data-am="ያግኙ">Discover</h4>
+        <ul>
+          <li><a href="#" data-en="Music" data-am="ሙዚቃ">Music</a></li>
+          <li><a href="#" data-en="Books" data-am="መጻሕፍት">Books</a></li>
+          <li><a href="#" data-en="Courses" data-am="ኮርሶች">Courses</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Company" data-am="ኩባንያ">Company</h4>
+        <ul>
+          <li><a href="#" data-en="About" data-am="ስለ">About</a></li>
+          <li><a href="#" data-en="Pricing" data-am="ዋጋ">Pricing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="powered">
+      <span data-en="© 2026 Arifdrop" data-am="© 2026 አሪፍድሮፕ">© 2026 Arifdrop</span>
+      <span data-en="Powered by Arifdrop" data-am="በ አሪፍድሮፕ ታግዟል">Powered by Arifdrop</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Bottom tabs (mobile) ────────────────────────── -->
+<nav class="bottom-tabs" aria-label="Main navigation">
+  <a href="#" class="bottom-tab active">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 10 4zm8.94 12.12 1.42 1.42-1.42 1.41-1.41-1.41 1.41-1.42z"/></svg>
+    <span data-en="Discover" data-am="ያግኙ">Discover</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+    <span data-en="Library" data-am="ቤተ መፃሕፍቱ">Library</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm0 13c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z"/></svg>
+    <span data-en="Profile" data-am="መገለጫ">Profile</span>
+  </a>
+</nav>
+
+<script>
+  // Restore lang state on load
+  if (savedLang === 'am') {
+    document.getElementById('lt').textContent = '🇬🇧 English';
+    document.querySelectorAll('[data-en],[data-am]').forEach(el => {
+      if (el.dataset.am) el.textContent = el.dataset.am;
+    });
+  }
+  if (saved === 'dark') document.getElementById('tt').textContent = '☀️ Light';
+</script>
+</body>
+</html>
