@@ -60,10 +60,10 @@ describe "Seller mailer locale handling" do
     it "renders top_creator_announcement in user's locale" do
       mail = CreatorMailer.top_creator_announcement(user_id: user_am.id)
 
-      expect(mail.subject).to eq("እርስዎ ምርጥ ፈጣሪ ነዎት!")
+      expect(mail.subject).to eq("እርስዎ ምርጥ ሻጭ ነዎት!")
       body = mail.body.encoded
-      expect(body).to include("በ#{PlatformConfig::APP_NAME} ላይ ከፍተኛ ፈጣሪ ባጅ አግኝተዋል።")
-      expect(body).to include("ምርጥ ፈጣሪ")
+      expect(body).to include("በ#{PlatformConfig::APP_NAME} ላይ ከፍተኛ ሻጭ ባጅ አግኝተዋል።")
+      expect(body).to include("ምርጥ ሻጭ")
     end
 
     it "renders scheduled_payout_chargeback_hold in user's locale" do
@@ -76,7 +76,7 @@ describe "Seller mailer locale handling" do
     it "renders bundles_marketing in seller's locale" do
       mail = CreatorMailer.bundles_marketing(seller_id: user_am.id)
 
-      expect(mail.subject).to eq("ከ$300,000 በላይ ጥቅል ምርቶችን ከሸጡ ምርጥ ፈጣሪዎች ጋር ይቀላቀሉ")
+      expect(mail.subject).to eq("ከ$300,000 በላይ ጥቅል ምርቶችን ከሸጡ ምርጥ ሻጮች ጋር ይቀላቀሉ")
     end
   end
 

@@ -20,7 +20,7 @@ export const auth = {
   and: "እና",
   join_referrer_on_gumroad: "{name}ን በጋምሮድ ይቀላቀሉ",
   signup_and_connect_app: "ለጋምሮድ ይመዝገቡ እና {app}ን ያገናኙ",
-  creator_stats_headline: "ዲጂታል ምርቶችን እና አባልነቶችን በጋምሮድ በመሸጥ ከ{amount} በላይ ያገኙ ከ{creators} በላይ ፈጣሪዎችን ይቀላቀሉ።",
+  creator_stats_headline: "ዲጂታል ምርቶችን እና አባልነቶችን በጋምሮድ በመሸጥ ከ{amount} በላይ ያገኙ ከ{creators} በላይ ሻጮችን ይቀላቀሉ።",
   email_reset_instructions: "የዳግም ማስጀመሪያ መመሪያ የሚላክበት ኢሜይል",
   send: "ላክ",
   sending: "በመላክ ላይ...",
