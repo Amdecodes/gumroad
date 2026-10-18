@@ -322,7 +322,7 @@ export default function MainPage() {
               type="email"
               id={`${uid}-support-email`}
               value={form.data.user.support_email}
-              placeholder="you@example.com"
+              placeholder={t("seller.settings.main.support_email_placeholder", "you@example.com")}
               disabled={isFormDisabled}
               onChange={(e) => updateUserSettings({ support_email: e.target.value })}
             />

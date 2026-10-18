@@ -1,6 +1,8 @@
 import typia from "typia";
 
 import { SearchRequest } from "$app/data/search";
+import { t } from "$app/utils/i18n";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 const rawCategoryImages = import.meta.glob<string>("$assets/images/discover/*", {
   eager: true,
@@ -60,25 +62,28 @@ export const discoverTitleGenerator = (
   defaultSortOrder?: string,
 ) => {
   const searchOrTagsTitle = params.query
-    ? `Search results for “${params.query}”`
+    ? t("discover.search_results_for", { query: params.query }, `Search results for “${params.query}”`)
     : params.tags?.map((t) => t.trim().replace(/[-\s]+/gu, " ")).join(", ");
   let taxonomyTitle = params.taxonomy
     ?.split("/")
-    .map((slug) => taxonomies.find((t) => t.slug === slug)?.label ?? slug)
+    .map((slug) => getTaxonomyLabel(slug, taxonomies.find((t) => t.slug === slug)?.label ?? slug))
     .join(" » ");
   // Mirror DiscoverController#category_seo_page? exactly, off the URL itself — not `params`,
   // which also carries client-only defaults (e.g. sort defaults to "curated", curated_product_ids
   // is populated from server props) that aren't real user filters and shouldn't disqualify the page.
   const urlParams = new URLSearchParams(locationSearch);
   urlParams.delete("from");
+  urlParams.delete("locale");
   // The effect that builds `locationSearch` serializes state.params.sort into the URL even when
   // it's the implicit curated default (never chosen by the user), so drop it here too — otherwise
   // an unfiltered taxonomy URL with curated products reads as filtered and loses the SEO suffix.
   if (defaultSortOrder && urlParams.get("sort") === defaultSortOrder) urlParams.delete("sort");
   const isCategorySeoPage = urlParams.size === 0;
-  if (taxonomyTitle && isCategorySeoPage) taxonomyTitle += " — digital products by independent creators";
+  if (taxonomyTitle && isCategorySeoPage) {
+    taxonomyTitle += ` — ${t("discover.seo_suffix", "digital products by independent creators")}`;
+  }
   if (!searchOrTagsTitle && !taxonomyTitle && isCategorySeoPage) {
-    return "Discover digital products from independent creators | Gumroad";
+    return `${t("discover.seo_title", "Discover digital products from independent creators")} | Gumroad`;
   }
   return [searchOrTagsTitle, taxonomyTitle, "Gumroad"].filter((s) => s).join(" | ");
 };

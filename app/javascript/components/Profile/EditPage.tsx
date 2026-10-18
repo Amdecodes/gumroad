@@ -7,6 +7,7 @@ import { ReactSortable as Sortable } from "react-sortablejs";
 
 import { updateProfileSettings } from "$app/data/profile_settings";
 import GuidGenerator from "$app/utils/guid_generator";
+import { t } from "$app/utils/i18n";
 import { assertResponseError } from "$app/utils/request";
 
 import AutoLink from "$app/components/AutoLink";
@@ -78,7 +79,7 @@ const EditTab = ({
         </h4>
       </RowContent>
       <RowActions>
-        <Button size="icon" color="danger" outline aria-label="Remove page" onClick={() => setConfirmingDelete(true)}>
+        <Button size="icon" color="danger" outline aria-label={t("profile.remove_page", "Remove page")} onClick={() => setConfirmingDelete(true)}>
           <Trash className="size-5" />
         </Button>
       </RowActions>
@@ -86,17 +87,21 @@ const EditTab = ({
         <Modal
           open
           onClose={() => setConfirmingDelete(false)}
-          title="Delete page?"
+          title={t("profile.delete_page_title", "Delete page?")}
           footer={
             <>
-              <Button onClick={() => setConfirmingDelete(false)}>No, cancel</Button>
+              <Button onClick={() => setConfirmingDelete(false)}>{t("actions.no_cancel", "No, cancel")}</Button>
               <Button color="danger" onClick={remove}>
-                Yes, delete
+                {t("actions.yes_delete", "Yes, delete")}
               </Button>
             </>
           }
         >
-          Are you sure you want to delete the page "{tab.name}"? <strong>This action cannot be undone.</strong>
+          {t(
+            "profile.delete_page_confirm",
+            { name: tab.name },
+            `Are you sure you want to delete the page "${tab.name}"? This action cannot be undone.`,
+          )}
         </Modal>
       ) : null}
     </Row>
@@ -105,7 +110,7 @@ const EditTab = ({
 
 // TODO: Use a better library than react-sortablejs that can solve this more cleanly
 const TabList = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows role="list" ref={ref} aria-label="Pages">
+  <Rows role="list" ref={ref} aria-label={t("profile.pages", "Pages")}>
     {children}
   </Rows>
 ));
@@ -213,8 +218,8 @@ export const EditProfile = ({ controls = true, selectedTabIndex, onChange, ...pr
         <header className="relative grid gap-4 border-b border-border px-4 py-8">
           {controls ? (
             <SectionToolbar>
-              <EditorMenu label="Page settings" onClose={() => void saveTabs(tabs)}>
-                <EditorSubmenu heading="Pages" text={tabs.length}>
+              <EditorMenu label={t("profile.page_settings", "Page settings")} onClose={() => void saveTabs(tabs)}>
+                <EditorSubmenu heading={t("profile.pages", "Pages")} text={tabs.length}>
                   {tabs.length > 0 ? (
                     <Sortable
                       list={tabs}
@@ -236,7 +241,7 @@ export const EditProfile = ({ controls = true, selectedTabIndex, onChange, ...pr
                       ))}
                     </Sortable>
                   ) : null}
-                  <Button onClick={addTab}>New page</Button>
+                  <Button onClick={addTab}>{t("profile.new_page", "New page")}</Button>
                 </EditorSubmenu>
               </EditorMenu>
             </SectionToolbar>
@@ -249,7 +254,7 @@ export const EditProfile = ({ controls = true, selectedTabIndex, onChange, ...pr
               </p>
             ) : null}
             {controls || tabs.length > 1 ? (
-              <Tabs aria-label="Profile Tabs">
+              <Tabs aria-label={t("profile.tabs", "Profile Tabs")}>
                 {tabs.map((tab) => (
                   <Tab
                     key={tab.id}

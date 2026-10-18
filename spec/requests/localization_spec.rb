@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "Localization (English & Amharic)" do
+  include Devise::Test::IntegrationHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -45,10 +47,86 @@ RSpec.describe "Localization (English & Amharic)" do
       expect(body["props"]["locale"]).to eq("am")
       expect(body["props"]["supported_locales"]).to eq(%w[en am])
     end
+
+    it "prioritizes explicit ?locale= param over user and cookie, persisting to user and cookie" do
+      user = create(:user, locale: "en")
+      sign_in user
+      cookies[:locale] = "en"
+
+      get "/discover?locale=am"
+      expect(response).to have_http_status(:ok)
+      expect(I18n.locale).to eq(:am)
+      expect(cookies[:locale]).to eq("am")
+      expect(user.reload.locale).to eq("am")
+    end
+
+    it "prioritizes logged-in user's saved choice over cookie" do
+      user = create(:user, locale: "am")
+      sign_in user
+      cookies[:locale] = "en"
+
+      get "/discover"
+      expect(response).to have_http_status(:ok)
+      expect(I18n.locale).to eq(:am)
+      expect(cookies[:locale]).to eq("am")
+    end
+
+    it "prioritizes cookie over Accept-Language header" do
+      cookies[:locale] = "am"
+      get "/login", headers: { "HTTP_ACCEPT_LANGUAGE" => "en-US,en;q=0.9" }
+      expect(response).to have_http_status(:ok)
+      expect(I18n.locale).to eq(:am)
+    end
+
+    it "resolves Accept-Language header when no param, user, or cookie is present" do
+      get "/login", headers: { "HTTP_ACCEPT_LANGUAGE" => "am,en;q=0.8" }
+      expect(response).to have_http_status(:ok)
+      expect(I18n.locale).to eq(:am)
+    end
+
+    it "ignores unsupported languages in Accept-Language and falls back to :en" do
+      get "/login", headers: { "HTTP_ACCEPT_LANGUAGE" => "fr-FR,fr;q=0.9,es;q=0.8" }
+      expect(response).to have_http_status(:ok)
+      expect(I18n.locale).to eq(:en)
+    end
+  end
+
+  describe "Cookie Attributes & Configuration" do
+    it "sets host-only cookie in development" do
+      allow(Rails.env).to receive(:production?).and_return(false)
+      allow(Rails.env).to receive(:staging?).and_return(false)
+
+      get "/login?locale=am"
+      locale_cookie = Array(response.headers["set-cookie"]).find { |c| c.start_with?("locale=") }
+      expect(locale_cookie).to include("locale=am")
+      expect(locale_cookie).not_to include("domain=")
+    end
+
+    it "sets root domain cookie in production" do
+      allow(Rails.env).to receive(:production?).and_return(true)
+      allow(Rails.env).to receive(:staging?).and_return(false)
+
+      options = ApplicationController.locale_cookie_options(:am)
+      expect(options[:domain]).to eq(:all)
+      expect(options[:tld_length]).to eq(2)
+      expect(options[:httponly]).to be(false)
+    end
+
+    it "sets root domain cookie in staging" do
+      allow(Rails.env).to receive(:production?).and_return(false)
+      allow(Rails.env).to receive(:staging?).and_return(true)
+
+      options = ApplicationController.locale_cookie_options(:am)
+      expect(options[:domain]).to eq(:all)
+      expect(options[:tld_length]).to eq(3)
+    end
   end
 
   describe "Locale Switcher Endpoint (POST /locale & GET /locale/:locale)" do
-    it "switches to Amharic via JSON POST /locale" do
+    it "switches to Amharic via JSON POST /locale and updates logged-in user" do
+      user = create(:user, locale: "en")
+      sign_in user
+
       post "/locale", params: { locale: "am" }.to_json, headers: {
         "CONTENT_TYPE" => "application/json",
         "ACCEPT" => "application/json"
@@ -58,6 +136,7 @@ RSpec.describe "Localization (English & Amharic)" do
       expect(json["success"]).to be(true)
       expect(json["locale"]).to eq("am")
       expect(cookies[:locale]).to eq("am")
+      expect(user.reload.locale).to eq("am")
     end
 
     it "switches via GET /locale/am and redirects back" do
@@ -75,6 +154,20 @@ RSpec.describe "Localization (English & Amharic)" do
       json = JSON.parse(response.body)
       expect(json["locale"]).to eq("en")
       expect(cookies[:locale]).to eq("en")
+    end
+  end
+
+  describe "Cross-Host Links" do
+    let(:seller) { create(:named_seller) }
+    let(:product) { create(:product, user: seller) }
+
+    it "carries ?locale=<current> in product long_url" do
+      I18n.with_locale(:am) do
+        expect(product.long_url).to include("locale=am")
+      end
+      I18n.with_locale(:en) do
+        expect(product.long_url).to include("locale=en")
+      end
     end
   end
 
@@ -121,6 +214,27 @@ RSpec.describe "Localization (English & Amharic)" do
         expect(mail.body.encoded).to include("will automatically renew on")
         expect(mail.body.encoded).to include("Manage membership")
       end
+    end
+  end
+
+  describe "Settings > Profile Language Setting" do
+    let(:seller) { create(:user, locale: "en") }
+
+    around do |example|
+      original = ActionController::Base.allow_forgery_protection
+      ActionController::Base.allow_forgery_protection = false
+      example.run
+    ensure
+      ActionController::Base.allow_forgery_protection = original
+    end
+
+    it "updates users.locale and syncs cookie when saving profile settings" do
+      sign_in seller
+      put "/profile", params: { user: { locale: "am" } }, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(seller.reload.locale).to eq("am")
+      expect(cookies[:locale]).to eq("am")
+      expect(I18n.locale).to eq(:am)
     end
   end
 end

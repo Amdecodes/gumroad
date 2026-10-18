@@ -12,6 +12,7 @@ import { Button, NavigationButton } from "$app/components/Button";
 import { CartItem } from "$app/components/Checkout/cartState";
 import { useState } from "$app/components/Checkout/payment";
 import { DiscordButton } from "$app/components/DiscordButton";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { showAlert } from "$app/components/server-components/Alert";
 import { Alert } from "$app/components/ui/Alert";
@@ -288,17 +289,20 @@ export const Receipt = ({
   return (
     <Card className="mx-auto my-8 max-w-2xl">
       <CardContent asChild>
-        <header>
+        <header className="flex items-center justify-between">
           {/* Intentionally not a heading: this is card chrome (a title bar), not document
               structure — keeping it out of the outline avoids an h4 before the h2 below. */}
           <div className="font-bold">{t("checkout.title")}</div>
-          <a
-            href={discoverUrl}
-            aria-label={t("actions.close")}
-            className="text-muted transition-colors hover:text-foreground"
-          >
-            <XCircle className="size-5" />
-          </a>
+          <div className="flex items-center gap-3">
+            <LanguageToggle variant="compact" />
+            <a
+              href={discoverUrl}
+              aria-label={t("actions.close")}
+              className="text-muted transition-colors hover:text-foreground"
+            >
+              <XCircle className="size-5" />
+            </a>
+          </div>
         </header>
       </CardContent>
       <CardContent asChild details>

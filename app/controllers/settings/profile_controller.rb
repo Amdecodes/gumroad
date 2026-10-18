@@ -97,7 +97,16 @@ class Settings::ProfileController < Settings::BaseController
         end
         seller_profile.assign_attributes(permitted_params[:seller_profile]) if permitted_params[:seller_profile].present?
         seller_profile.save!
-        current_seller.update!(permitted_params[:user]) if permitted_params[:user]
+        if permitted_params[:user]
+          current_seller.update!(permitted_params[:user])
+          if permitted_params.dig(:user, :locale).present?
+            new_locale = permitted_params[:user][:locale].to_s.presence_in(ApplicationController::SUPPORTED_LOCALES)
+            if new_locale
+              cookies[:locale] = locale_cookie_options(new_locale)
+              I18n.locale = new_locale.to_sym
+            end
+          end
+        end
         current_seller.clear_products_cache if permitted_params[:profile_picture_blob_id].present?
       end
       respond_success

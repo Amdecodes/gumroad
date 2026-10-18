@@ -6,6 +6,7 @@ import { CSSProperties } from "react";
 import { isOpenTuple } from "$app/utils/array";
 import { assert } from "$app/utils/assert";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
@@ -123,7 +124,12 @@ const Menubar = ({ moreLabel, ...extraAriaAttrs }: { moreLabel?: string | undefi
 
   const itemsUnderMore = useArrangeMenubarItems(parentRef, topLevelMenuItems);
   const menubarItems = itemsUnderMore?.length ? topLevelMenuItems.slice(0, -itemsUnderMore.length) : topLevelMenuItems;
-  const moreMenuItem = { key: "more#key", label: "More", children: itemsUnderMore ?? [], parent: null };
+  const moreMenuItem = {
+    key: "more#key",
+    label: moreLabel ?? t("common.more", "More"),
+    children: itemsUnderMore ?? [],
+    parent: null,
+  };
   return (
     <div
       ref={parentRef}
@@ -334,10 +340,10 @@ const OverlayMenu = ({
         modal
         className="w-[calc(20rem+3rem)] bg-transparent p-0 pr-12 md:left-0 md:border-l-0"
       >
-        <Dialog.Title className="sr-only">{buttonLabel ?? "Categories"}</Dialog.Title>
+        <Dialog.Title className="sr-only">{buttonLabel ?? t("discover.categories", "Categories")}</Dialog.Title>
         <Dialog.Close
           className="absolute top-4 right-4 z-40 cursor-pointer bg-transparent all-unset"
-          aria-label="Close Menu"
+          aria-label={t("common.close_menu", "Close Menu")}
         >
           <X className="size-6 text-white" />
         </Dialog.Close>
@@ -346,7 +352,7 @@ const OverlayMenu = ({
           menuId={overlayMenuUID}
           menuItem={{
             key: "items#key",
-            label: buttonLabel ?? "More",
+            label: buttonLabel ?? t("common.more", "More"),
             children: topLevelMenuItems,
             parent: null,
           }}

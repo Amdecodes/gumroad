@@ -239,7 +239,7 @@ class PriceCheckerService
 
     def taxonomy_label_for(taxonomy)
       return nil if taxonomy.nil?
-      Discover::TaxonomyPresenter::TAXONOMY_LABELS[taxonomy.slug] || taxonomy.slug.humanize
+      Discover::TaxonomyPresenter.taxonomy_label(taxonomy.slug) || taxonomy.slug.humanize
     end
 
     def nice_interval(p5, p95)

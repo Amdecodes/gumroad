@@ -3,6 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 
 export const Sheet = ({
   children,
@@ -34,7 +35,7 @@ export const Sheet = ({
 export const SheetHeader = ({ children }: { children: React.ReactNode }) => (
   <div className="flex items-start gap-4">
     <Dialog.Title>{children}</Dialog.Title>
-    <Dialog.Close className="ml-auto cursor-pointer all-unset" aria-label="Close">
+    <Dialog.Close className="ml-auto cursor-pointer all-unset" aria-label={t("actions.close", "Close")}>
       <X className="size-5" />
     </Dialog.Close>
   </div>

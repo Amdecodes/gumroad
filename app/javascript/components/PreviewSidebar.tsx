@@ -3,6 +3,8 @@ import cx from "classnames";
 import * as React from "react";
 import { createPortal } from "react-dom";
 
+import { t } from "$app/utils/i18n";
+
 import { Button } from "$app/components/Button";
 import { useIsAboveBreakpoint } from "$app/components/useIsAboveBreakpoint";
 import { useWindowDimensions } from "$app/components/useWindowDimensions";
@@ -122,7 +124,7 @@ export const PreviewChrome = ({ children, ...props }: PreviewChromeProps) => (
           children: (
             <>
               <ArrowUpRight className="size-5" />
-              Open in new tab
+              {t("common.open_in_new_tab", "Open in new tab")}
             </>
           ),
         })}
@@ -143,12 +145,12 @@ export const PreviewChrome = ({ children, ...props }: PreviewChromeProps) => (
         // tab, and there is no open-in-new-tab arrow — an email has no URL to open.
         <div className="flex flex-col gap-0.5 border-b border-border bg-body px-4 py-2 text-sm select-none">
           <div className="flex min-w-0 gap-2">
-            <span className="shrink-0 text-muted">From</span>
+            <span className="shrink-0 text-muted">{t("common.from", "From")}</span>
             <span className="truncate">{props.from}</span>
           </div>
           {props.subject ? (
             <div className="flex min-w-0 gap-2">
-              <span className="shrink-0 text-muted">Subject</span>
+              <span className="shrink-0 text-muted">{t("common.subject", "Subject")}</span>
               <span className="truncate font-medium">{props.subject}</span>
             </div>
           ) : null}
@@ -224,7 +226,7 @@ export const PreviewSidebar = ({
         )}
         // The old visible "Preview" heading is gone (the PreviewChrome bar announces the
         // preview now), so the region needs an accessible name for screen readers.
-        aria-label="Preview"
+        aria-label={t("common.preview", "Preview")}
         {...props}
       >
         {mobilePaneRendersPreview || dimensions === null ? null : children}
@@ -236,7 +238,11 @@ export const PreviewSidebar = ({
       {!isDesktop && modeContext ? (
         <>
           {mode === "preview" ? (
-            <section data-mobile-preview aria-label="Preview" className="flex flex-col gap-4 p-4 pb-24 lg:hidden">
+            <section
+              data-mobile-preview
+              aria-label={t("common.preview", "Preview")}
+              className="flex flex-col gap-4 p-4 pb-24 lg:hidden"
+            >
               {/* The children render their own PreviewChrome, whose arrow button covers the
                   open-in-new-tab affordance on mobile too — no separate button row needed. */}
               {children}
@@ -252,7 +258,7 @@ export const PreviewSidebar = ({
             >
               <div
                 role="tablist"
-                aria-label="Edit or preview"
+                aria-label={t("common.edit_or_preview", "Edit or preview")}
                 className="flex gap-1 rounded-full border border-border bg-background p-1"
               >
                 <Button
@@ -264,7 +270,7 @@ export const PreviewSidebar = ({
                   onClick={() => modeContext.setMode("edit")}
                 >
                   <Pencil className="size-4" />
-                  Edit
+                  {t("actions.edit", "Edit")}
                 </Button>
                 <Button
                   role="tab"
@@ -275,7 +281,7 @@ export const PreviewSidebar = ({
                   onClick={() => modeContext.setMode("preview")}
                 >
                   <Eye className="size-4" />
-                  Preview
+                  {t("common.preview", "Preview")}
                 </Button>
               </div>
             </div>,

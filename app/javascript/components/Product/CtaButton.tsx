@@ -3,7 +3,7 @@ import * as React from "react";
 import { trackUserProductAction } from "$app/data/user_action_event";
 import type { Discount } from "$app/parsers/checkout";
 import { CustomButtonTextOption } from "$app/parsers/product";
-import { t } from "$app/utils/i18n";
+import { t, useTranslation } from "$app/utils/i18n";
 import { formatInstallmentPaymentSchedule } from "$app/utils/price";
 import { assertResponseError } from "$app/utils/request";
 import { trackProductEvent } from "$app/utils/user_analytics";
@@ -100,6 +100,7 @@ export const CtaButton = React.forwardRef<HTMLAnchorElement, Props>(
   ({ product, purchase, discountCode, selection, label, onClick, showInstallmentPlanNotes = false }, ref) => {
     const compactOnMobile = "max-lg:text-sm max-lg:px-2 max-lg:py-3 whitespace-nowrap shrink-0";
     const { searchParams } = new URL(useOriginalLocation());
+    const { locale } = useTranslation();
 
     const [referrer, setReferrer] = React.useState("");
     useRunOnce(() => setReferrer(document.referrer));
@@ -119,6 +120,7 @@ export const CtaButton = React.forwardRef<HTMLAnchorElement, Props>(
       url.searchParams.set(transformations[key] ?? key, value);
     }
 
+    if (locale) url.searchParams.set("locale", locale);
     url.searchParams.set("product", product.permalink);
     if (selection.optionId) url.searchParams.set("option", selection.optionId);
     if (selection.recurrence) url.searchParams.set("recurrence", selection.recurrence);

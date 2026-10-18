@@ -59,4 +59,7 @@ export const discover = {
   sale: "Sale",
   black_friday: "Black Friday",
   recently_viewed: "Recently viewed",
+  seo_title: "Discover digital products from independent creators",
+  seo_suffix: "digital products by independent creators",
+  search_results_for: "Search results for “{query}”",
 } as const;

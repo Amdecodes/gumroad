@@ -1,6 +1,8 @@
 import { Deferred, usePage } from "@inertiajs/react";
 import React from "react";
 
+import { t } from "$app/utils/i18n";
+
 import { ProductsLayout } from "$app/components/ProductsLayout";
 import ProductsPage from "$app/components/ProductsPage";
 import { ProductsContentLoading } from "$app/components/ProductsPage/ContentLoading";
@@ -35,7 +37,7 @@ const ArchivedProductsIndexPage = () => {
   return (
     <ProductsLayout
       selectedTab="archived"
-      title="Products"
+      title={t("navigation.products", "Products")}
       archivedTabVisible
       ctaButton={<HeaderButtons query={query} setQuery={setQuery} />}
     >

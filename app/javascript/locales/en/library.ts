@@ -1,4 +1,10 @@
 export const library = {
+  title: "Library",
+  purchases: "Purchases",
+  saved: "Saved",
+  following: "Following",
+  reviews: "Reviews",
+
   // Card actions
   archive: "Archive",
   unarchive: "Unarchive",
@@ -45,4 +51,5 @@ export const library = {
   removing: "Removing...",
   remove_modal_body:
     "You keep access through this page's link, and our support team can put the card back if you change your mind.",
+  open_product_action_menu: "Open product action menu",
 } as const;

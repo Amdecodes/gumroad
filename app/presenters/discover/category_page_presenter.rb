@@ -82,7 +82,7 @@ class Discover::CategoryPagePresenter
   def subcategory_links
     taxonomy.children.order(:slug).map do |child|
       {
-        label: Discover::TaxonomyPresenter::TAXONOMY_LABELS[child.slug] || child.slug,
+        label: Discover::TaxonomyPresenter.taxonomy_label(child.slug) || child.slug,
         href: UrlService.discover_full_path("/#{taxonomy_path}/#{child.slug}")
       }
     end
@@ -91,7 +91,7 @@ class Discover::CategoryPagePresenter
   def self.root_category_links
     Taxonomy.roots.order(:slug).map do |root|
       {
-        label: Discover::TaxonomyPresenter::TAXONOMY_LABELS[root.slug] || root.slug,
+        label: Discover::TaxonomyPresenter.taxonomy_label(root.slug) || root.slug,
         href: UrlService.discover_full_path("/#{root.slug}")
       }
     end
@@ -103,6 +103,6 @@ class Discover::CategoryPagePresenter
     end
 
     def labels
-      @labels ||= slugs.map { |slug| Discover::TaxonomyPresenter::TAXONOMY_LABELS[slug] || slug }
+      @labels ||= slugs.map { |slug| Discover::TaxonomyPresenter.taxonomy_label(slug) || slug }
     end
 end

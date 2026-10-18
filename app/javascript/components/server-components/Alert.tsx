@@ -3,6 +3,7 @@ import * as React from "react";
 import typia from "typia";
 
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 
 import { Alert } from "$app/components/ui/Alert";
 import { useGlobalEventListener } from "$app/components/useGlobalEventListener";
@@ -99,7 +100,7 @@ const ToastAlert = ({ initial }: { initial: AlertPayload | null }) => {
           <button
             type="button"
             className="relative flex size-[1lh] shrink-0 cursor-pointer items-center justify-center text-muted all-unset before:absolute before:-inset-2 before:content-[''] hover:text-primary"
-            aria-label="Close"
+            aria-label={t("actions.close", "Close")}
             onClick={dismiss}
           >
             <X className="size-4" />

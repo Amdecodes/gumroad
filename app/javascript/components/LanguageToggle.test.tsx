@@ -4,9 +4,11 @@ import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LanguageToggle } from "$app/components/LanguageToggle";
+import { resetCurrentLocaleForTesting, setCurrentLocale, useTranslation } from "$app/utils/i18n";
 
 describe("LanguageToggle", () => {
   beforeEach(() => {
+    resetCurrentLocaleForTesting();
     document.cookie = "locale=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
     vi.restoreAllMocks();
   });
@@ -98,5 +100,26 @@ describe("LanguageToggle", () => {
     const container = screen.getByRole("group", { name: "Language selection" });
     expect(container.className).toContain("bg-black/40");
     expect(container.className).toContain("text-white/80");
+  });
+
+  it("ensures toggle and translations read the same source", () => {
+    setCurrentLocale("am");
+    const ConsumerComponent = () => {
+      const { t } = useTranslation();
+      return (
+        <div>
+          <LanguageToggle />
+          <span data-testid="translated">{t("auth.log_in")}</span>
+        </div>
+      );
+    };
+
+    render(<ConsumerComponent />);
+
+    const amButton = screen.getByRole("button", { name: "አማ" });
+    const enButton = screen.getByRole("button", { name: "EN" });
+    expect(amButton.getAttribute("aria-pressed")).toBe("true");
+    expect(enButton.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByTestId("translated").textContent).toBe("ግባ");
   });
 });

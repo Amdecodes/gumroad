@@ -5,6 +5,7 @@ import { SettingPage as Page } from "$app/parsers/settings";
 import { useTranslation } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { PageHeader } from "$app/components/ui/PageHeader";
 import { Tab, Tabs } from "$app/components/ui/Tabs";
 import { useReactNativeMessage } from "$app/components/useReactNativeMessage";
@@ -66,11 +67,14 @@ export const Layout = ({ onSave, pages, currentPage, children, canUpdate }: Prop
         className="sticky-top"
         title={t("seller.settings.title", "Settings")}
         actions={
-          onSave ? (
-            <Button color="accent" onClick={onSave} disabled={!canUpdate}>
-              {t("seller.settings.update_settings", "Update settings")}
-            </Button>
-          ) : null
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            {onSave ? (
+              <Button color="accent" onClick={onSave} disabled={!canUpdate}>
+                {t("seller.settings.update_settings", "Update settings")}
+              </Button>
+            ) : null}
+          </div>
         }
       >
         <Tabs>

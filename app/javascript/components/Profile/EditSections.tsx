@@ -35,6 +35,7 @@ import { PROFILE_SORT_KEYS } from "$app/parsers/product";
 import { assertDefined } from "$app/utils/assert";
 import { classNames } from "$app/utils/classNames";
 import { ALLOWED_EXTENSIONS } from "$app/utils/file";
+import { t } from "$app/utils/i18n";
 import { assertResponseError, request, ResponseError } from "$app/utils/request";
 
 import { Popover, PopoverContent, PopoverTrigger } from "$app/components/Popover";
@@ -199,7 +200,11 @@ export const EditorMenu = ({
         {isSubmenu(activeSubmenu) ? (
           <div className="flex w-75 flex-col gap-4 p-4">
             <h4 className="grid grid-cols-[1em_1fr_1em]">
-              <button className="cursor-pointer all-unset" onClick={() => setMenuState("menu")} aria-label="Go back">
+              <button
+                className="cursor-pointer all-unset"
+                onClick={() => setMenuState("menu")}
+                aria-label={t("profile.go_back", "Go back")}
+              >
                 <ChevronLeft className="size-5" />
               </button>
               <div className="text-center">{activeSubmenu.props.heading}</div>
@@ -297,21 +302,21 @@ export const SectionLayout = ({
       {section.header ? <h2>{section.header}</h2> : null}
       {controls ? (
         <SectionToolbar>
-          <EditorMenu label="Edit section" onClose={onClose}>
-            <EditorSubmenu heading="Name" text={section.header}>
+          <EditorMenu label={t("profile.edit_section", "Edit section")} onClose={onClose}>
+            <EditorSubmenu heading={t("profile.section_name", "Name")} text={section.header}>
               <Fieldset>
                 <Input
-                  aria-label="Name"
+                  aria-label={t("profile.section_name", "Name")}
                   value={section.header}
                   onChange={(e) => updateSection({ header: e.target.value })}
-                  placeholder="Leave blank to hide"
+                  placeholder={t("profile.leave_blank_to_hide", "Leave blank to hide")}
                 />
               </Fieldset>
             </EditorSubmenu>
             {menuItems}
             <CardContent asChild>
               <button className="cursor-pointer all-unset" onClick={copyLink} type="button">
-                <h5 className="grow font-bold">{linkCopied ? "Copied!" : "Copy link"}</h5>
+                <h5 className="grow font-bold">{linkCopied ? t("storefront.copy", "Copied!") : t("storefront.copy_link", "Copy link")}</h5>
                 <Link className="size-5" />
               </button>
             </CardContent>
@@ -322,13 +327,13 @@ export const SectionLayout = ({
                 style={{ color: "rgb(var(--danger))" }}
                 type="button"
               >
-                <h5 className="grow font-bold">Remove</h5>
+                <h5 className="grow font-bold">{t("actions.remove", "Remove")}</h5>
                 <Trash className="size-5" />
               </button>
             </CardContent>
           </EditorMenu>
           <button
-            aria-label="Move section up"
+            aria-label={t("profile.move_up", "Move section up")}
             disabled={index === 0}
             onClick={() => move("move-section-up")}
             className={sectionButtonClasses}
@@ -337,7 +342,7 @@ export const SectionLayout = ({
             <ArrowUp className="size-5" />
           </button>
           <button
-            aria-label="Move section down"
+            aria-label={t("profile.move_down", "Move section down")}
             disabled={index === state.sections.length - 1}
             onClick={() => move("move-section-down")}
             className={sectionButtonClasses}
@@ -354,7 +359,7 @@ export const SectionLayout = ({
 };
 
 export const ProductList = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows role="list" ref={ref} aria-label="Products">
+  <Rows role="list" ref={ref} aria-label={t("storefront.products", "Products")}>
     {children}
   </Rows>
 ));
@@ -385,7 +390,7 @@ const ProductsSettings = ({ section }: { section: ProductsSection }) => {
     <div className="flex flex-col gap-4 overflow-auto" style={{ maxHeight: "min(100vh, 500px)" }}>
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor={`${uid}-defaultProductSort`}>Default sort order</Label>
+          <Label htmlFor={`${uid}-defaultProductSort`}>{t("profile.default_sort_order", "Default sort order")}</Label>
         </FieldsetTitle>
         <TypeSafeOptionSelect
           id={`${uid}-defaultProductSort`}
@@ -400,12 +405,12 @@ const ProductsSettings = ({ section }: { section: ProductsSection }) => {
       <Switch
         checked={section.show_filters}
         onChange={() => updateSection({ show_filters: !section.show_filters })}
-        label="Show product filters"
+        label={t("profile.show_product_filters", "Show product filters")}
       />
       <Switch
         checked={section.add_new_products}
         onChange={() => updateSection({ add_new_products: !section.add_new_products })}
-        label="Add new products by default"
+        label={t("profile.add_new_products_default", "Add new products by default")}
       />
       {products.length > 0 ? (
         <Sortable list={products} setList={setProducts} tag={ProductList} handle="[aria-grabbed]">
@@ -594,10 +599,10 @@ const SubscribeSectionView = ({ section, controls = true }: { section: Subscribe
       menuItems={
         controls
           ? [
-              <EditorSubmenu key="0" heading="Button Label" text={section.button_label}>
+              <EditorSubmenu key="0" heading={t("profile.button_label", "Button Label")} text={section.button_label}>
                 <Input
                   type="text"
-                  aria-label="Button Label"
+                  aria-label={t("profile.button_label", "Button Label")}
                   value={section.button_label}
                   onChange={(evt) => updateSection({ button_label: evt.target.value })}
                 />
@@ -641,14 +646,14 @@ const FeaturedProductSectionView = ({
       menuItems={
         controls
           ? [
-              <EditorSubmenu key="0" heading="Featured Product" text={product?.name}>
+              <EditorSubmenu key="0" heading={t("profile.featured_product", "Featured Product")} text={product?.name}>
                 <Select
                   inputId={uid}
                   options={state.products.map(({ id, name }) => ({ id, label: name }))}
                   value={product ? { id: product.id, label: product.name } : null}
                   onChange={(option) => updateSection(option ? { featured_product_id: option.id } : {})}
-                  placeholder="Search products"
-                  aria-label="Featured Product"
+                  placeholder={t("profile.search_products", "Search products")}
+                  aria-label={t("profile.featured_product", "Featured Product")}
                   isMulti={false}
                   autoFocus
                 />
@@ -728,7 +733,7 @@ export const AddSectionButton = ({ side, index }: { index: number; side?: "top" 
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger aria-label="Add section" asChild>
+      <PopoverTrigger aria-label={t("profile.add_section", "Add section")} asChild>
         <button
           className={classNames(
             "absolute -top-px box-border aspect-square cursor-pointer place-self-center font-[inherit] text-[inherit] all-unset",
@@ -749,27 +754,27 @@ export const AddSectionButton = ({ side, index }: { index: number; side?: "top" 
         <Menu onClick={() => setOpen(false)}>
           <MenuItem onClick={() => addSection("SellerProfileProductsSection")}>
             <Grid className="size-5" />
-            Products
+            {t("storefront.products", "Products")}
           </MenuItem>
           <MenuItem onClick={() => addSection("SellerProfilePostsSection")}>
             <Envelope pack="filled" className="size-5" />
-            Posts
+            {t("profile.posts", "Posts")}
           </MenuItem>
           <MenuItem onClick={() => addSection("SellerProfileFeaturedProductSection")}>
             <Box className="size-5" />
-            Featured Product
+            {t("profile.featured_product", "Featured Product")}
           </MenuItem>
           <MenuItem onClick={() => addSection("SellerProfileRichTextSection")}>
             <FileDetail className="size-5" />
-            Rich text
+            {t("profile.rich_text", "Rich text")}
           </MenuItem>
           <MenuItem onClick={() => addSection("SellerProfileSubscribeSection")}>
             <Bell pack="filled" className="size-5" />
-            Subscribe
+            {t("profile.subscribe", "Subscribe")}
           </MenuItem>
           <MenuItem onClick={() => addSection("SellerProfileWishlistsSection")}>
             <FileDetail pack="filled" className="size-5" />
-            Wishlists
+            {t("profile.wishlists", "Wishlists")}
           </MenuItem>
         </Menu>
       </PopoverContent>

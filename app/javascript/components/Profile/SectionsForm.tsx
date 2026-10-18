@@ -17,7 +17,7 @@ import * as React from "react";
 
 import { PROFILE_SORT_KEYS, type ProfileSortKey } from "$app/parsers/product";
 import GuidGenerator from "$app/utils/guid_generator";
-import { useTranslate } from "$app/utils/i18n";
+import { t, useTranslate } from "$app/utils/i18n";
 
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -89,14 +89,14 @@ const optionOrder = (ids: string[], shownIds: string[]) =>
   });
 
 const SortablePageRows = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows ref={ref} role="list" aria-label="Pages">
+  <Rows ref={ref} role="list" aria-label={t("profile.pages", "Pages")}>
     {children}
   </Rows>
 ));
 SortablePageRows.displayName = "SortablePageRows";
 
 const SortableSectionRows = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows ref={ref} role="list" aria-label="Sections">
+  <Rows ref={ref} role="list" aria-label={t("profile.sections", "Sections")}>
     {children}
   </Rows>
 ));
@@ -165,14 +165,14 @@ const PageRow = ({
 };
 
 const SortableProductRows = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows ref={ref} role="list" aria-label="Products">
+  <Rows ref={ref} role="list" aria-label={t("storefront.products", "Products")}>
     {children}
   </Rows>
 ));
 SortableProductRows.displayName = "SortableProductRows";
 
 const SortableWishlistRows = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(({ children }, ref) => (
-  <Rows ref={ref} role="list" aria-label="Wishlists">
+  <Rows ref={ref} role="list" aria-label={t("profile.wishlists", "Wishlists")}>
     {children}
   </Rows>
 ));
@@ -516,7 +516,7 @@ const PostsSectionFields = ({
     <Fieldset>
       <FieldsetTitle>{t("seller.settings.profile.section_posts")}</FieldsetTitle>
       {state.posts.length ? (
-        <Rows role="list" aria-label="Posts">
+        <Rows role="list" aria-label={t("profile.posts", "Posts")}>
           {state.posts.map((post) => (
             <OptionRow
               key={post.id}

@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { AssetPreview } from "$app/parsers/product";
 import { classNames } from "$app/utils/classNames";
+import { t } from "$app/utils/i18n";
 import { MAX_PORTRAIT_FRAME_HEIGHT } from "$app/utils/videoFrame";
 
 import { useElementDimensions } from "$app/components/useElementDimensions";
@@ -104,7 +105,7 @@ export const Covers = ({
         frameIsShaped ? "bg-background" : "bg-(image:--product-cover-placeholder)",
         className,
       )}
-      aria-label="Product preview"
+      aria-label={t("storefront.preview", "Product preview")}
     >
       {closeButton}
       {prevCover ? <PreviewArrow direction="previous" onClick={() => setActiveCoverId(prevCover.id)} /> : null}
@@ -122,14 +123,14 @@ export const Covers = ({
       {covers.length > 1 && activeCover?.type !== "oembed" && activeCover?.type !== "video" ? (
         <div
           role="tablist"
-          aria-label="Select a cover"
+          aria-label={t("storefront.select_cover", "Select a cover")}
           className="absolute bottom-0 flex w-full flex-wrap justify-center gap-2 p-3"
         >
           {covers.map((cover, i) => (
             <div
               key={i}
               role="tab"
-              aria-label={`Show cover ${i + 1}`}
+              aria-label={t("storefront.show_cover", { index: i + 1 }, `Show cover ${i + 1}`)}
               aria-selected={i === activeCoverIndex}
               aria-controls={cover.id}
               onClick={(e) => {

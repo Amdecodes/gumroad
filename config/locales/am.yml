@@ -14,26 +14,31 @@ am:
     download: ያውርዱ
     edit: አስተካክል
     get_access: መዳረሻ ያግኙ
+    insert: አስገባ
     installment_plan: የክፍያ ዕቅድ
     learn_more: የበለጠ ለመረዳት
+    load_more: ተጨማሪ ጫን
     manage_installment_plan: የክፍያ ዕቅድን ያስተዳድሩ
     manage_membership: ምዝገባን ያስተዳድሩ
     membership: አባልነት
     no_cancel: አይ፣ ሰርዝ
     pay: ክፈል
     pay_with_chapa: በቻፓ ይክፈሉ
+    reload: እንደገና ጫን
     remove: አስወግድ
     renew: አድስ
     renew_subscription: ምዝገባን ያድሱ
     save: አስቀምጥ
     save_changes: ለውጦችን አስቀምጥ
     saving: በማስቀመጥ ላይ...
+    select_all: ሁሉንም ምረጥ
     sign_up: ይመዝገቡ
     signing_up: በመመዝገብ ላይ...
     switch_language: ቋንቋ ይቀይሩ
     upgrade: ያሻሽሉ
     uploading: በመጫን ላይ...
     view: ይመልከቱ
+    yes_delete: አዎ፣ ሰርዝ
     yes_reset: አዎ፣ ዳግም አስጀምር
   activerecord:
     errors:
@@ -228,16 +233,41 @@ am:
     valid_email_prompt: እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።
     zip_code: የፖስታ ቁጥር
   common:
+    all_time: ሁልጊዜ
+    close_menu: ሜኑ ዝጋ
+    custom_range: ብጁ የቀን ክልል...
     date: ቀን
+    date_range_selector: የቀን ክልል መምረጫ
+    discount: ቅናሽ
+    edit_or_preview: አርትዕ ወይም ቅድመ-ዕይታ
     "false": አይ
     free: ነፃ
+    from: ከ
+    from_including: ከ (ጨምሮ)
     here: እዚህ
+    last_30_days: ያለፉት 30 ቀናት
+    last_3_months: ያለፉት 3 ወራት
+    last_7_days: ያለፉት 7 ቀናት
+    last_month: ያለፈው ወር
+    last_quarter: ያለፈው ሩብ ዓመት
+    last_year: ያለፈው ዓመት
     loading: በመጫን ላይ...
+    more: ተጨማሪ
+    must_be_after_from_date: ከመነሻው ቀን በኋላ መሆን አለበት
+    open_in_new_tab: በአዲስ ትር ክፈት
     optional: አማራጭ
     or: ወይም
     other: ሌላ
+    preview: ቅድመ-ዕይታ
+    product: ምርት
     something_went_wrong: ችግር ተፈጥሯል።
+    subject: ርዕሰ-ጉዳይ
+    this_month: የዚህ ወር
+    this_quarter: የዚህ ሩብ ዓመት
+    this_year: የዚህ ዓመት
     time: ሰዓት
+    to_including: እስከ (ጨምሮ)
+    today: ዛሬ
     "true": አዎ
   content:
     access_expired_desc: የዚህ ምርት መዳረሻዎ ጊዜው ያለፈበት ይመስላል። እባክዎ ለተጨማሪ እርዳታ ሻጩን ያነጋግሩ።
@@ -468,6 +498,9 @@ am:
     recently_viewed: በቅርብ የታዩ
     sale: ቅናሽ
     search_products: ምርቶችን ይፈልጉ
+    seo_title: ከተናጠል ፈጣሪዎች የዲጂታል ምርቶችን ያግኙ
+    seo_suffix: ከተናጠል ፈጣሪዎች የተዘጋጁ የዲጂታል ምርቶች
+    search_results_for: "የፍለጋ ውጤቶች ለ “%{query}”"
   disputes:
     add_to_response: በምላሽዎ ላይ ያክሉ
     additional_evidence_prompt: ማቅረብ የሚፈልጉት ተጨማሪ ማስረጃ አለ?
@@ -580,6 +613,7 @@ am:
     empty_desc: አንዴ ከገዙ፣ ሁሉንም ግዢዎችዎን ማውረድ፣ መመልከት፣ ማንበብ ወይም ማዳመጥ እንዲችሉ እዚህ ይታያሉ።
     empty_header: እስካሁን ምንም አልገዙም!
     no_products_found: ምንም ምርት አልተገኘም
+    open_product_action_menu: የምርት እርምጃ ሜኑ ክፈት
     preparing_zip: ዚፕ (ZIP) በማዘጋጀት ላይ
     product_archived: ምርቱ ወደ ማህደር ተቀምጧል!
     product_unarchived: ምርቱ ከማህደር ወጥቷል!
@@ -918,13 +952,13 @@ am:
       subject: Your receipt for %{product}
       thank_you: Thank you for your purchase!
     subscription_renewal_reminder:
-      contact_seller: Contact %{seller} by replying to this email
-      installment_body: This is a reminder that your next installment payment of %{price} for %{product} will be charged on %{date}.
-      installment_subject: Upcoming installment payment reminder
-      membership_body: This is a reminder that your membership to "%{product}" will automatically renew on %{date}.
-      membership_subject: Upcoming automatic membership renewal
-      paying: You're paying %{price}.
-      questions: Questions about your product?
+      contact_seller: ለዚህ ኢሜይል ምላሽ በመስጠት %{seller}ን ያግኙ
+      installment_body: የሚቀጥለው የ%{price} ክፍያዎ ለ%{product} በ%{date} እንደሚከፈል ማስታወሻ ነው።
+      installment_subject: የሚቀጥለው የክፍያ ዕድሳት ማስታወሻ
+      membership_body: የ"%{product}" የአባልነት ምዝገባዎ በ%{date} በራስ-ሰር እንደሚታደስ እና ዕድሳት እንደሚፈልግ ማስታወሻ ነው።
+      membership_subject: የአባልነት ምዝገባ ዕድሳት ማስታወሻ
+      paying: "%{price} እየከፈሉ ነው።"
+      questions: ስለ ምርትዎ ጥያቄ አለዎት?
     two_factor_authentication:
       authentication_token:
         action: ግባ
@@ -1152,17 +1186,41 @@ am:
       invite:
         subject: የ%{app_name} የቡድን ግብዣ
   profile:
+    add_new_products_default: አዳዲስ ምርቶችን በነባሪነት ጨምር
+    add_section: ክፍል ጨምር
+    button_label: የአዝራር ስያሜ
     cannot_follow_self: የዚህ መገለጫ ሻጭ ስለሆኑ ራስዎን መከተል አይችሉም!
     creator_rating: የሻጭ ደረጃ
     creator_rating_summary: "%{average} ከ%{count_reviews} በ%{products_count} ምርቶች ላይ"
+    default_sort_order: ነባሪ የመለያ ቅደም ተከተል
+    delete_page_confirm: እርግጠኛ ነዎት “%{name}” የሚለውን ገጽ መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊመለስ አይችልም።
+    delete_page_title: ገጹ ይሰረዝ?
+    edit_section: ክፍልን አርትዕ
     enter_email: እባክዎ የኢሜይል አድራሻዎን ያስገቡ።
     enter_valid_email: እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።
+    featured_product: ተለይቶ የቀረበ ምርት
+    go_back: ተመለስ
+    leave_blank_to_hide: ለመደበቅ ባዶ ይተዉት
+    move_down: ክፍሉን ወደ ታች አንቀሳቅስ
+    move_up: ክፍሉን ወደ ላይ አንቀሳቅስ
+    new_page: አዲስ ገጽ
     no_wishlists_selected: ምንም የምኞት ዝርዝር አልተመረጠም
+    page_settings: የገጽ ቅንብሮች
+    pages: ገጾች
+    posts: ልጥፎች
+    preview_title: ብጁ የመገለጫ ገጽ ቅድመ-ዕይታ
+    remove_page: ገጽ አስወግድ
+    rich_text: ባለጸጋ ጽሑፍ
+    section_name: ስም
+    sections: ክፍሎች
+    show_product_filters: የምርት ማጣሪያዎችን አሳይ
     subscribe: ይመዝገቡ
     subscribe_updates_from: ከ'%{name}' የኢሜይል ዝማኔዎችን ለማግኘት ይመዝገቡ።
     subscribed: ተመዝግበዋል
     subscribing: በመመዝገብ ላይ...
+    tabs: የመገለጫ ታቦች
     top_creator: ከፍተኛ ሻጭ
+    wishlists: የምኞት ዝርዝሮች
     your_email_address: የኢሜይል አድራሻዎ
   receipt:
     account_created_notice: ተጠናቋል! መለያዎ ተፈጥሯል። የማረጋገጫ ኢሜይል በቅርቡ ይደርስዎታል።
@@ -1213,6 +1271,26 @@ am:
     add_to_wishlist: ወደ ምኞት ዝርዝር ጨምር
     added_to_wishlist: ወደ ምኞት ዝርዝር ታክሏል!
     adding_to_wishlist: ወደ ምኞት ዝርዝር በማከል ላይ...
+    available_on: "በ%{date} ይገኛል"
+    bundle_contains: "ይህ ጥቅል የያዛቸው..."
+    commission_deposit_notice: "ትዕዛዝዎን ዛሬ በ%{percent} ቅድመ ክፍያ ያረጋግጡ፤ ቀሪው ሂሳብ ስራው ሲጠናቀቅ ይከፈላል።"
+    discount_first_payment_only: "ይህ ቅናሽ የሚተገበረው ለመጀመሪያው የደንበኝነት ክፍያዎ ላይ ብቻ ነው።"
+    discount_min_spend: "ይህ ቅናሽ የሚተገበረው %{amount} ወይም ከዚያ በላይ ሲያወጡ ነው።"
+    discount_min_spend_seller: "ይህ ቅናሽ የሚተገበረው በ%{seller} ምርቶች ላይ %{amount} ወይም ከዚያ በላይ ሲያወጡ ነው።"
+    free_trial_notice: "ሁሉም አባልነቶች የ%{amount} %{unit} ነፃ ሙከራ ያካትታሉ"
+    membership_ends_months:
+      one: "ይህ አባልነት ከ%{count} ወር በኋላ በራስ-ሰር ያበቃል"
+      other: "ይህ አባልነት ከ%{count} ወራት በኋላ በራስ-ሰር ያበቃል"
+    membership_ends_one_month: "ይህ አባልነት ከአንድ ወር በኋላ በራስ-ሰር ያበቃል"
+    ppp_discount_notice: "ይህ ምርት የግዢ አቅም ተመጣጣኝነትን ይደግፋል። በ%{country} ስለሚገኙ ዋጋው በ%{percent} ቀንሶ ወደ %{price} ደርሷል።"
+    ppp_greater_discount: "ይህ ቅናሽ ከአቅርቦት ኮዱ ቅናሽ ስለሚበልጥ ተተግብሯል።"
+    preview: "የምርት ቅድመ-ዕይታ"
+    price: "ዋጋ"
+    product_info_bar: "የምርት መረጃ አሞሌ"
+    qty: "ብዛት፦ %{count}"
+    select_cover: "ሽፋን ይምረጡ"
+    show_cover: "ሽፋን %{index} አሳይ"
+    watch_link_provided: "የመመልከቻ አገናኝ ከግዢ በኋላ ይሰጣል"
     already_bought_this: አስቀድመው ገዝተውታል?
     already_own_bundle: ይህንን ጥቅል አስቀድመው ገዝተዋል
     already_own_product: ይህንን ምርት አስቀድመው ገዝተዋል
@@ -1349,6 +1427,7 @@ am:
     teams: ቡድኖች
     toggle_navigation: አሰሳን ቀይር
     workflows: የስራ ፍሰቶች
+    youtube: YouTube
   auth:
     and: እና
     auth_token_sent_notice: "መለያዎን ለመጠበቅ የማረጋገጫ ቶከን ወደ %{email} ልከናል፤ ለመቀጠል እባክዎ እዚህ ያስገቡት።"

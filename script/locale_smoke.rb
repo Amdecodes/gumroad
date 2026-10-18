@@ -80,8 +80,11 @@ Rails.application.config.action_controller.asset_host = nil
 Rails.application.config.asset_host = nil
 cfg = ViteRuby.instance.config.instance_variable_get(:@config).dup
 cfg["asset_host"] = nil
+cfg["auto_build"] = false
 ViteRuby.instance.config.instance_variable_set(:@config, cfg.freeze)
 ViteRuby.instance.config.define_singleton_method(:asset_host) { nil }
+ViteRuby.instance.config.define_singleton_method(:auto_build) { false }
+
 
 # Sanitize baked-in asset host in Vite chunks for headless Capybara
 Dir.glob(Rails.root.join("public/vite-dev/assets/*.js")).each do |file|
@@ -103,12 +106,21 @@ Capybara.register_driver :locale_smoke do |app|
   options.add_argument("--disable-dev-shm-usage")
   options.add_argument("--disable-gpu")
   options.add_argument("--window-size=1280,900")
-  options.binary = "/usr/bin/google-chrome" if File.exist?("/usr/bin/google-chrome")
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
+  options.add_argument("--disable-background-networking")
+  options.add_argument("--disable-default-apps")
+  options.add_argument("--disable-sync")
+  options.add_argument("--disable-translate")
+  options.add_argument("--disable-extensions")
+  options.add_argument("--metrics-recording-only")
+  options.add_argument("--mute-audio")
+  client = Selenium::WebDriver::Remote::Http::Default.new
+  client.read_timeout = 180
+  client.open_timeout = 60
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options:, http_client: client)
 end
 
 Capybara.default_driver        = :locale_smoke
-Capybara.default_max_wait_time = 15
+Capybara.default_max_wait_time = 10
 Capybara.app                   = Rails.application
 Capybara.server                = :puma, { Silent: true }
 Capybara.server_host           = "127.0.0.1"
@@ -125,6 +137,47 @@ class LocaleSmokeRunner
 
   FIND_UNTRANSLATED_JS = <<~JS
     (function() {
+      var untranslated = [];
+
+      // 1. Check document title
+      var pageTitle = document.title ? document.title.trim() : '';
+      if (pageTitle && /[a-zA-Z]{2,}/.test(pageTitle) && pageTitle.indexOf('\u27E6') === -1) {
+        var segments = pageTitle.split('|').map(function(s) { return s.trim(); });
+        var untranslatedSegments = segments.filter(function(s) {
+          return s && /[a-zA-Z]{2,}/.test(s) && !/^(Gumroad|ArifDrop|GitHub)$/i.test(s) && s.indexOf('\u27E6') === -1;
+        });
+        if (untranslatedSegments.length > 0) {
+          untranslated.push("[title] " + pageTitle);
+        }
+      }
+
+      // 2. Check input and textarea placeholders
+      var inputs = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+      inputs.forEach(function(el) {
+        if (el.closest && (el.closest('[data-user-data]') || el.closest('[data-language-toggle]') || el.closest('[role="group"][aria-label="Language selection"]'))) return;
+        var style = window.getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden') return;
+        var ph = el.getAttribute('placeholder') ? el.getAttribute('placeholder').trim() : '';
+        if (ph && /[a-zA-Z]{2,}/.test(ph) && ph.indexOf('\u27E6') === -1 && !/^(Gumroad|ArifDrop)$/i.test(ph)) {
+          untranslated.push("[placeholder] " + ph);
+        }
+      });
+
+      // 3. Check interactive element aria-labels
+      var labeled = document.querySelectorAll('button[aria-label], a[aria-label], input[aria-label]');
+      labeled.forEach(function(el) {
+        if (el.closest && (el.closest('[data-user-data]') || el.closest('[role="group"][aria-label="Language selection"]') || el.closest('[data-language-toggle]'))) return;
+        var style = window.getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden' || (style.opacity === '0' && !el.offsetParent)) return;
+        var aria = el.getAttribute('aria-label') ? el.getAttribute('aria-label').trim() : '';
+        if (aria && /[a-zA-Z]{2,}/.test(aria) && aria.indexOf('\u27E6') === -1 && !/^(Gumroad|ArifDrop|GitHub)$/i.test(aria)) {
+          if (!aria.includes('://') && !aria.includes('@') && !/^\\d/.test(aria)) {
+            untranslated.push("[aria-label] " + aria);
+          }
+        }
+      });
+
+      // 4. Walk DOM text nodes, excluding user/product data
       var walker = document.createTreeWalker(
         document.body,
         NodeFilter.SHOW_TEXT,
@@ -133,10 +186,38 @@ class LocaleSmokeRunner
             var parent = node.parentElement;
             if (!parent) return NodeFilter.FILTER_REJECT;
             var tag = parent.tagName.toLowerCase();
-            if (['script', 'style', 'noscript', 'template', 'svg'].includes(tag))
+            if (['script', 'style', 'noscript', 'template', 'svg', 'pre', 'code'].includes(tag))
               return NodeFilter.FILTER_REJECT;
             if (parent.closest && parent.closest('.profiler-results, .profiler-queries, .rack-mini-profiler, #bullet-footer, #bullet-alerts, .bullet-warning, [id*="bullet"]'))
               return NodeFilter.FILTER_REJECT;
+
+            // Reject user-generated product / buyer / seller data containers
+            if (parent.closest) {
+              if (parent.closest('[data-user-data]')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              if (parent.closest('[role="group"][aria-label="Language selection"], [data-language-toggle]')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              // Product cards: exclude product name, author byline, description
+              var inProductCard = parent.closest('article, [data-component="product-card"], [data-testid="product-card"]');
+              if (inProductCard && !parent.closest('button, [role="button"], .ribbon')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              // Schema.org data markup
+              if (parent.closest('[itemprop="name"], [itemprop="author"], [itemprop="description"], [itemprop="review"], [itemprop="reviewBody"]')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              // RTL user content or user bio
+              if (parent.closest('[dir="auto"], [data-testid="user-bio"], .user-bio, .creator-bio')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              // Wishlist user data
+              if (parent.closest('[data-wishlist] h2, [data-wishlist] h3, [data-wishlist] p')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+            }
+
             var style = window.getComputedStyle(parent);
             if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')
               return NodeFilter.FILTER_REJECT;
@@ -145,13 +226,18 @@ class LocaleSmokeRunner
         }
       );
 
-      var untranslated = [];
       var node;
       while ((node = walker.nextNode())) {
         var text = node.textContent.trim();
         // Skip blank, single-char, or purely non-alpha content (numbers, punctuation)
         if (!text || text.length < 2) continue;
         if (!/[a-zA-Z]{2,}/.test(text)) continue;
+        // Skip email addresses, URLs, pure numbers/currencies/percentages
+        if (text.includes('@') && text.includes('.')) continue;
+        if (text.includes('://')) continue;
+        if (/^\\$?\\d+[\\d,\\.]*\\s*[%\\+]?$/i.test(text)) continue;
+        // Skip invariant brand names
+        if (/^(Gumroad|ArifDrop|GitHub)$/i.test(text)) continue;
         // If the text contains the pseudo marker ⟦ (\u27E6), it's translated!
         if (text.indexOf('\u27E6') !== -1) continue;
         untranslated.push(text);
@@ -321,6 +407,14 @@ class LocaleSmokeRunner
       }
     ]
 
+    if ENV["ROUTE"].present?
+      filter = ENV["ROUTE"]
+      persona_routes.each do |p|
+        p[:routes].select! { |r| r.include?(filter) }
+      end
+      persona_routes.reject! { |p| p[:routes].empty? }
+    end
+
     untranslated_report = {}
     failed_routes       = {}
     route_final_urls    = {}
@@ -369,8 +463,7 @@ class LocaleSmokeRunner
         texts = raw.is_a?(Array) ? raw : []
         untranslated_report[route] = texts
         puts "    Status:    #{texts.empty? ? '✓ 0 untranslated' : "✗ #{texts.size} untranslated"}"
-        texts.first(8).each { |t| puts "      • #{t}" }
-        puts "      ... and #{texts.size - 8} more" if texts.size > 8
+        texts.each { |t| puts "      • #{t}" }
       end
     end
 
@@ -387,6 +480,11 @@ class LocaleSmokeRunner
       { role: "Seller", login: true,  email: SELLER_EMAIL, route: "/settings/payments?locale=am",   label: "seller_payments_am" },
       { role: "Admin",  login: true,  email: ADMIN_EMAIL,  route: "/admin?locale=am",              label: "admin_overview_am" }
     ]
+
+    if ENV["ROUTE"].present?
+      filter = ENV["ROUTE"]
+      screenshot_routes.select! { |r| r[:route].include?(filter) }
+    end
 
     saved_screenshots = []
     screenshot_hashes = Hash.new { |h, k| h[k] = {} } # width => { sha256 => { route:, label:, file: } }
@@ -573,8 +671,9 @@ class LocaleSmokeRunner
     end
 
     def logout_user
+      return if @current_logged_in_user.nil?
+
       @current_logged_in_user = nil
-      page.driver.browser.manage.delete_all_cookies rescue nil
       visit "/logout" rescue nil
       wait_for_page_ready rescue nil
       page.driver.browser.manage.delete_all_cookies rescue nil

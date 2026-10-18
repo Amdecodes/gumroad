@@ -4,6 +4,7 @@ import * as React from "react";
 import { classNames } from "$app/utils/classNames";
 import { getRootTaxonomy, getRootTaxonomyCss, Taxonomy } from "$app/utils/discover";
 import { t } from "$app/utils/i18n";
+import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
 import { NavigationButton } from "$app/components/Button";
 import { CartNavigationButton } from "$app/components/Checkout/CartNavigationButton";
@@ -142,7 +143,7 @@ export const Layout: React.FC<{
   const userActionButtons = <UserActionButtons />;
 
   const logoLink = (
-    <a href={Routes.discover_url({ host: discoverDomain })} className="shrink-0" aria-label="Gumroad">
+    <a href={Routes.discover_url({ host: discoverDomain })} className="shrink-0" aria-label={t("navigation.discover")}>
       <Logo className="h-auto w-[245px]" />
     </a>
   );
@@ -232,7 +233,8 @@ const TaxonomyCategoryBreadcrumbs = ({
     >
       {taxonomyPath.split("/").map((slug, index, breadcrumbs) => {
         const taxonomySlugPath = breadcrumbs.slice(0, index + 1).join("/");
-        const label = taxonomies.find((t) => t.slug === slug)?.label ?? slug;
+        const fallback = taxonomies.find((t) => t.slug === slug)?.label ?? slug;
+        const label = getTaxonomyLabel(slug, fallback);
         const isPage = index === breadcrumbs.length - 1;
         return (
           <li key={taxonomySlugPath} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">

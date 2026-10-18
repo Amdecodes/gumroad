@@ -25,6 +25,12 @@ class ApplicationMailer < ActionMailer::Base
 
   after_action :validate_from_email_domain!
 
+  def default_url_options
+    opts = super || {}
+    opts[:locale] = I18n.locale.to_s if I18n.locale.present?
+    opts
+  end
+
   ruby2_keywords def process(name, *args)
     super
     redirect_united_internet_recipients_to_sendgrid!
@@ -91,7 +97,7 @@ class ApplicationMailer < ActionMailer::Base
       when Purchase
         target.locale.presence || target.user&.locale.presence || I18n.default_locale
       when Subscription
-        target.original_purchase&.locale.presence || target.user&.locale.presence || I18n.default_locale
+        target.user&.locale.presence || target.original_purchase&.locale.presence || I18n.default_locale
       when Preorder
         target.authorization_purchase&.locale.presence || target.user&.locale.presence || I18n.default_locale
       when Shipment

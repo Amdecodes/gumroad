@@ -217,11 +217,11 @@ class DiscoverController < ApplicationController
         title_parts << tags.map { |tag| tag.strip.gsub(/[-\s]+/, " ") }.join(", ")
       end
       if params[:taxonomy].present?
-        labels = params[:taxonomy].split("/").map { |slug| Discover::TaxonomyPresenter::TAXONOMY_LABELS[slug] || slug }
+        labels = params[:taxonomy].split("/").map { |slug| Discover::TaxonomyPresenter.taxonomy_label(slug) || slug }
         title_parts << labels.join(" » ")
       end
       title = if title_parts.empty?
-        "Discover digital products from independent creators | Gumroad"
+        "#{t("discover.seo_title", default: "Discover digital products from independent creators")} | Gumroad"
       else
         (title_parts + ["Gumroad"]).join(" | ")
       end
@@ -250,7 +250,7 @@ class DiscoverController < ApplicationController
     # those params — SEO treatment there would spawn duplicate titles, and its search offset
     # follows different rules than the pagination links assume.
     def category_seo_page?
-      taxonomy.present? && request.query_parameters.except("from").blank?
+      taxonomy.present? && request.query_parameters.except("from", "locale").blank?
     end
 
     def prepare_category_seo(search_results:)

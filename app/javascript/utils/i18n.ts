@@ -15,12 +15,26 @@ export const SUPPORTED_LOCALES: readonly SupportedLocale[] = ["en", "am"];
 
 export const isSupportedLocale = (val: string): val is SupportedLocale => val === "en" || val === "am";
 
-// Only true outside of production builds.
-export const isPseudoLocale = (val: string): boolean => val === PSEUDO_LOCALE && import.meta.env.PROD !== true;
+export const isPseudoLocale = (val: string): boolean => val === PSEUDO_LOCALE;
 
 const dictionaries: Record<SupportedLocale, Record<string, unknown>> = {
   en,
   am,
+};
+
+let currentServerLocale: ActiveLocale | null = null;
+let currentCookieDomain: string | null = null;
+
+export const setCurrentLocale = (loc: ActiveLocale | null) => {
+  currentServerLocale = loc;
+};
+
+export const resetCurrentLocaleForTesting = () => {
+  currentServerLocale = null;
+  currentCookieDomain = null;
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = "";
+  }
 };
 
 export const getCookieLocale = (): ActiveLocale => {
@@ -34,14 +48,49 @@ export const getCookieLocale = (): ActiveLocale => {
   return "en";
 };
 
+export const getSharedCookieDomain = (): string | null => {
+  if (currentCookieDomain) return currentCookieDomain;
+  if (typeof document === "undefined") return null;
+  try {
+    const appEl = document.getElementById("app");
+    if (appEl?.dataset?.page) {
+      const parsed = JSON.parse(appEl.dataset.page);
+      return parsed.props?.cookie_domain || null;
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return null;
+};
+
 export const resolveCurrentLocale = (): ActiveLocale => {
+  if (currentServerLocale && (isSupportedLocale(currentServerLocale) || isPseudoLocale(currentServerLocale))) {
+    return currentServerLocale;
+  }
   if (typeof document !== "undefined") {
+    try {
+      const appEl = document.getElementById("app");
+      if (appEl?.dataset?.page) {
+        const parsed = JSON.parse(appEl.dataset.page);
+        const pageLoc = parsed.props?.locale;
+        if (pageLoc && isPseudoLocale(pageLoc)) {
+          return PSEUDO_LOCALE;
+        }
+        if (pageLoc && isSupportedLocale(pageLoc)) {
+          return pageLoc;
+        }
+      }
+    } catch {
+      // Ignore
+    }
+
     const match = /(?:^|;\s*)locale=([^;]+)/u.exec(document.cookie);
     if (match) {
       const val = match[1] ?? "";
       if (isPseudoLocale(val)) return PSEUDO_LOCALE;
       if (isSupportedLocale(val)) return val;
     }
+
     const lang = document.documentElement.lang;
     if (isPseudoLocale(lang)) return PSEUDO_LOCALE;
     if (isSupportedLocale(lang)) return lang;
@@ -119,7 +168,7 @@ const VOWEL_ACCENTS: Record<string, string> = {
 };
 
 // Replaces vowels with accented equivalents, then pads to ~130% of original length.
-const pseudoExpand = (text: string): string => {
+export const pseudoExpand = (text: string): string => {
   const accented = text.replace(/[aeiouAEIOU]/gu, (c) => VOWEL_ACCENTS[c] ?? c);
   const targetLen = Math.ceil(text.length * 1.3);
   const pad = "ẋ".repeat(Math.max(0, targetLen - accented.length));
@@ -210,15 +259,23 @@ export const t: TFunction = (
   return translate(key, locale, params, fallback);
 };
 
-export const switchLocale = async (newLocale: string): Promise<void> => {
+export const switchLocale = async (newLocale: string, domain?: string | null): Promise<void> => {
   // Allow 'pseudo' only in non-production environments.
   const isAllowed = isSupportedLocale(newLocale) || isPseudoLocale(newLocale);
   if (!isAllowed) return;
 
+  const resolvedDomain = domain !== undefined ? domain : getSharedCookieDomain();
+
   if (typeof document !== "undefined") {
-    document.cookie = `locale=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
+    let cookieVal = `locale=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
+    if (resolvedDomain) {
+      cookieVal += `;domain=${resolvedDomain}`;
+    }
+    document.cookie = cookieVal;
     document.documentElement.lang = newLocale;
   }
+
+  currentServerLocale = newLocale as ActiveLocale;
 
   // Only POST to server for real (server-persisted) locales; pseudo is client-only.
   if (isSupportedLocale(newLocale)) {
@@ -238,25 +295,54 @@ export const switchLocale = async (newLocale: string): Promise<void> => {
     }
   }
 
-  if (typeof window !== "undefined") {
-    window.location.reload();
+  if (typeof window !== "undefined" && window.location) {
+    try {
+      const href = window.location.href;
+      if (href && (href.startsWith("http://") || href.startsWith("https://"))) {
+        const url = new URL(href);
+        if (url.searchParams.has("locale")) {
+          url.searchParams.set("locale", newLocale);
+          window.location.href = url.toString();
+          return;
+        }
+      }
+    } catch {
+      // Ignore
+    }
+
+    if (typeof window.location.reload === "function") {
+      window.location.reload();
+    }
   }
 };
 
 export const useTranslation = () => {
   let locale: ActiveLocale = "en";
+  let cookieDomain: string | null = currentCookieDomain;
+  let hasInertiaLocale = false;
+
   try {
-    const page = usePage<{ locale?: string }>();
-    const pageLocale = page.props.locale;
+    const page = usePage<{ locale?: string; cookie_domain?: string | null }>();
+    const pageLocale = page.props?.locale;
     if (pageLocale && isPseudoLocale(pageLocale)) {
       locale = PSEUDO_LOCALE;
+      hasInertiaLocale = true;
     } else if (pageLocale && isSupportedLocale(pageLocale)) {
       locale = pageLocale;
-    } else {
-      locale = getCookieLocale();
+      hasInertiaLocale = true;
+    }
+    if (page.props?.cookie_domain !== undefined) {
+      cookieDomain = page.props.cookie_domain || null;
+      currentCookieDomain = cookieDomain;
     }
   } catch {
-    locale = getCookieLocale();
+    // outside Inertia page context
+  }
+
+  if (hasInertiaLocale) {
+    currentServerLocale = locale;
+  } else {
+    locale = resolveCurrentLocale();
   }
 
   // Use the resolved SupportedLocale for DOM class/attr effects; pseudo behaves like 'en' visually.
@@ -285,10 +371,15 @@ export const useTranslation = () => {
     [locale],
   );
 
+  const boundSwitchLocale = React.useCallback(
+    (newLocale: string) => switchLocale(newLocale, cookieDomain),
+    [cookieDomain],
+  );
+
   return {
     t: translateWithCurrentLocale,
     locale,
-    switchLocale,
+    switchLocale: boundSwitchLocale,
   };
 };
 

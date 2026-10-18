@@ -68,6 +68,7 @@ class ProfilePresenter
           profile_picture_blob_id: seller.avatar.signed_id,
           product_page_storefront_enabled: seller.product_page_storefront_enabled?,
           hide_follow_form: seller.hide_follow_form?,
+          locale: seller.locale.presence || "en",
         },
         editable_profile: shared_profile_props(seller_custom_domain_url: nil, request:),
         # Version stamp for optimistic concurrency: the editor sends it back on save so the server

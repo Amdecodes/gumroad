@@ -38,6 +38,7 @@ import { Fieldset, FieldsetDescription, FieldsetTitle } from "$app/components/ui
 import { Input } from "$app/components/ui/Input";
 import { Label } from "$app/components/ui/Label";
 import { PageHeader } from "$app/components/ui/PageHeader";
+import { Select } from "$app/components/ui/Select";
 import { Tab, Tabs } from "$app/components/ui/Tabs";
 import { Textarea } from "$app/components/ui/Textarea";
 import { useReactNativeMessage } from "$app/components/useReactNativeMessage";
@@ -319,7 +320,7 @@ export default function SettingsPage() {
   );
 
   const tabBar = (
-    <Tabs aria-label="Profile settings sections">
+    <Tabs aria-label={t("seller.settings.profile.settings_sections")}>
       {renderTab("about", t("seller.settings.profile.about_tab"))}
       {renderTab("design", t("seller.settings.profile.design_tab"))}
       {showPagesTab ? renderTab("pages", t("seller.settings.profile.pages_tab")) : null}
@@ -501,6 +502,21 @@ export default function SettingsPage() {
                 />
                 <FieldsetDescription>{t("seller.settings.profile.hide_follow_form_desc")}</FieldsetDescription>
               </Fieldset>
+              <Fieldset>
+                <FieldsetTitle>
+                  <Label htmlFor={`${uid}-locale`}>{t("seller.settings.profile.language")}</Label>
+                </FieldsetTitle>
+                <Select
+                  id={`${uid}-locale`}
+                  value={profileSettings.locale ?? "en"}
+                  disabled={!canUpdate}
+                  onChange={(e) => updateProfileSettings({ locale: e.target.value })}
+                >
+                  <option value="en">{t("seller.settings.profile.language_english")}</option>
+                  <option value="am">{t("seller.settings.profile.language_amharic")}</option>
+                </Select>
+                <FieldsetDescription>{t("seller.settings.profile.language_desc")}</FieldsetDescription>
+              </Fieldset>
             </section>
           ) : tab === "design" ? (
             <section className="grid gap-8 p-4! md:p-8!">
@@ -654,7 +670,7 @@ export default function SettingsPage() {
                 </Alert>
                 <AgentSupportFallbackNote subject={t("seller.settings.profile.help_with_profile_page")} />
               </section>
-              <section aria-label="Profile section editor">
+              <section aria-label={t("seller.settings.profile.section_editor")}>
                 <ProfileSectionsForm
                   {...editableProfile}
                   creator_profile={creatorProfile}

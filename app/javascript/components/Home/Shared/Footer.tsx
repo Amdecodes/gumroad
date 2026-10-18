@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
+import { t } from "$app/utils/i18n";
 import logoG from "$assets/images/logo-g.svg";
 
 const FooterLink = ({
@@ -81,29 +82,29 @@ export const HomeFooter = ({
         <div className="flex flex-1 gap-16">
           <div className="flex flex-1 flex-col gap-3">
             <FooterLink href={Routes.discover_path()} isInertia>
-              Discover
+              {t("navigation.discover")}
             </FooterLink>
             <FooterLink href={Routes.gumroad_blog_root_path()} isInertia>
-              Blog
+              {t("navigation.blog")}
             </FooterLink>
-            <FooterLink href={Routes.pricing_path()}>Pricing</FooterLink>
-            <FooterLink href={Routes.features_path()}>Features</FooterLink>
-            <FooterLink href={Routes.about_path()}>About</FooterLink>
-            <FooterLink href={Routes.gumclaw_path()}>Gumclaw</FooterLink>
-            <FooterLink href={Routes.small_bets_path()}>Small Bets</FooterLink>
+            <FooterLink href={Routes.pricing_path()}>{t("navigation.pricing")}</FooterLink>
+            <FooterLink href={Routes.features_path()}>{t("navigation.features")}</FooterLink>
+            <FooterLink href={Routes.about_path()}>{t("navigation.about")}</FooterLink>
+            <FooterLink href={Routes.gumclaw_path()}>{t("navigation.gumclaw")}</FooterLink>
+            <FooterLink href={Routes.small_bets_path()}>{t("navigation.small_bets")}</FooterLink>
           </div>
           <div className="flex flex-1 flex-col gap-3">
             <FooterLink href={Routes.help_center_root_path()} isInertia>
-              Help
+              {t("navigation.help")}
             </FooterLink>
             <a
               href="https://www.youtube.com/playlist?list=PL_DfN-mKCGNuswqERc6sIA8urYAKARc6s"
               className="no-underline hover:text-pink"
             >
-              Board meetings
+              {t("navigation.board_meetings")}
             </a>
-            <FooterLink href={Routes.terms_path()}>Terms of Service</FooterLink>
-            <FooterLink href={Routes.privacy_path()}>Privacy Policy</FooterLink>
+            <FooterLink href={Routes.terms_path()}>{t("navigation.terms_of_service")}</FooterLink>
+            <FooterLink href={Routes.privacy_path()}>{t("navigation.privacy_policy")}</FooterLink>
           </div>
         </div>
         {social && Object.keys(social).length > 0 ? (

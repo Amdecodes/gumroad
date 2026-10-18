@@ -11,6 +11,7 @@ import { assertResponseError, request } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
 import { PageListLayout } from "$app/components/Download/PageListLayout";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { Modal } from "$app/components/Modal";
 import { PurchaseArchiveButton } from "$app/components/PurchaseArchiveButton";
@@ -272,7 +273,10 @@ export const Layout = ({
             className={`flex min-h-18 min-w-0 flex-1 items-center justify-between gap-2 py-3 pr-4 ${loggedInUser ? "pl-4" : "pl-8"}`}
           >
             <h1 className="line-clamp-2 hidden! min-w-0 flex-1 text-2xl sm:block!">{purchase?.product_name}</h1>
-            {headerActions ? <div className="flex shrink-0 items-center gap-2">{headerActions}</div> : null}
+            <div className="flex shrink-0 items-center gap-2">
+              <LanguageToggle variant="compact" />
+              {headerActions}
+            </div>
           </div>
         </header>
       )}

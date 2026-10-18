@@ -32,6 +32,7 @@ import {
 } from "$app/components/CartItemList";
 import { GiftForm } from "$app/components/Checkout/GiftForm";
 import { PaymentForm } from "$app/components/Checkout/PaymentForm";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "$app/components/Popover";
 import { PriceInput } from "$app/components/PriceInput";
 import { Card } from "$app/components/Product/Card";
@@ -541,9 +542,12 @@ export const Checkout = ({
         className="border-none pb-0 md:px-16 md:pb-0 @[64rem]:mb-2"
         title={t("checkout.title")}
         actions={
-          <NavigationButton className="hidden @[64rem]:inline-flex" href={cart.returnUrl ?? discoverUrl}>
-            {t("actions.continue_shopping")}
-          </NavigationButton>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <NavigationButton className="hidden @[64rem]:inline-flex" href={cart.returnUrl ?? discoverUrl}>
+              {t("actions.continue_shopping")}
+            </NavigationButton>
+          </div>
         }
         showTitleOnMobile
       />

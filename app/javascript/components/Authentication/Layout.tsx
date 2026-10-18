@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { useDomains } from "$app/components/DomainSettings";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { Logo } from "$app/components/Logo";
 import { PageHeader } from "$app/components/ui/PageHeader";
 
@@ -26,7 +27,12 @@ export const Layout = ({
               <Logo />
             </a>
           }
-          actions={headerActions}
+          actions={
+            <div className="flex items-center gap-4">
+              <LanguageToggle />
+              {headerActions}
+            </div>
+          }
           className="p-8 sm:p-16"
         >
           {header}

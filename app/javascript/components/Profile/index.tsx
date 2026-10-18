@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { Tab } from "$app/parsers/profile";
 import GuidGenerator from "$app/utils/guid_generator";
+import { t } from "$app/utils/i18n";
 
 import AutoLink from "$app/components/AutoLink";
 import { FollowUserFormBlock } from "$app/components/Profile/FollowUserForm";
@@ -126,7 +127,7 @@ const PublicProfile = (props: Props) => {
               </p>
             ) : null}
             {props.tabs.length > 1 ? (
-              <UITabs aria-label="Profile Tabs">
+              <UITabs aria-label={t("profile.tabs", "Profile Tabs")}>
                 {tabs.map((tab) => (
                   <UITab key={tab.id} isSelected={tab === selectedTab} onClick={() => setSelectedTab(tab)}>
                     {tab.name}

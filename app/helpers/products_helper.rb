@@ -56,6 +56,7 @@ module ProductsHelper
 
   def url_for_product_page(product, request:, recommended_by: nil, recommender_model_name: nil, layout: nil, affiliate_id: nil, query: nil, offer_code: nil)
     options = {}
+    options[:locale] = I18n.locale.to_s if I18n.locale.present?
     options[:code] = offer_code if offer_code.present?
     if request.present? && user_by_domain(request.host) == product.user
       options.merge!(host: request.host_with_port, protocol: request.protocol)

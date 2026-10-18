@@ -8,11 +8,7 @@ class LocalesController < ApplicationController
     resolved = I18n.available_locales.map(&:to_s).include?(target) ? target : I18n.default_locale.to_s
 
     I18n.locale = resolved.to_sym
-    cookies[:locale] = {
-      value: resolved,
-      expires: 1.year.from_now,
-      httponly: false
-    }
+    cookies[:locale] = locale_cookie_options(resolved)
 
     if logged_in_user.present?
       logged_in_user.update_column(:locale, resolved)

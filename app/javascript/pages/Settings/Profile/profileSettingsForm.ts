@@ -11,6 +11,7 @@ export type ProfileSettingsForm = {
   profile_picture_blob_id: string | null;
   product_page_storefront_enabled: boolean;
   hide_follow_form: boolean;
+  locale?: string;
 };
 
 export const profileThemeColors = (backgroundColor: string, highlightColor: string) => {
@@ -48,6 +49,9 @@ export const changedProfileSettings = (
   if (current.hide_follow_form !== baseline.hide_follow_form) {
     changes.hide_follow_form = current.hide_follow_form;
   }
+  if (current.locale !== baseline.locale && current.locale !== undefined) {
+    changes.locale = current.locale;
+  }
   return changes;
 };
 
@@ -55,29 +59,36 @@ export const rebaseProfileSettings = (
   current: ProfileSettingsForm,
   previousBaseline: ProfileSettingsForm,
   incoming: ProfileSettingsForm,
-): ProfileSettingsForm => ({
-  name: current.name === previousBaseline.name ? incoming.name : current.name,
-  bio: current.bio === previousBaseline.bio ? incoming.bio : current.bio,
-  profile_picture_blob_id:
-    current.profile_picture_blob_id === previousBaseline.profile_picture_blob_id
-      ? incoming.profile_picture_blob_id
-      : current.profile_picture_blob_id,
-  font: current.font === previousBaseline.font ? incoming.font : current.font,
-  background_color:
-    current.background_color === previousBaseline.background_color
-      ? incoming.background_color
-      : current.background_color,
-  highlight_color:
-    current.highlight_color === previousBaseline.highlight_color ? incoming.highlight_color : current.highlight_color,
-  border_radius:
-    current.border_radius === previousBaseline.border_radius ? incoming.border_radius : current.border_radius,
-  button_hover: current.button_hover === previousBaseline.button_hover ? incoming.button_hover : current.button_hover,
-  product_page_storefront_enabled:
-    current.product_page_storefront_enabled === previousBaseline.product_page_storefront_enabled
-      ? incoming.product_page_storefront_enabled
-      : current.product_page_storefront_enabled,
-  hide_follow_form:
-    current.hide_follow_form === previousBaseline.hide_follow_form
-      ? incoming.hide_follow_form
-      : current.hide_follow_form,
-});
+): ProfileSettingsForm => {
+  const result: ProfileSettingsForm = {
+    name: current.name === previousBaseline.name ? incoming.name : current.name,
+    bio: current.bio === previousBaseline.bio ? incoming.bio : current.bio,
+    profile_picture_blob_id:
+      current.profile_picture_blob_id === previousBaseline.profile_picture_blob_id
+        ? incoming.profile_picture_blob_id
+        : current.profile_picture_blob_id,
+    font: current.font === previousBaseline.font ? incoming.font : current.font,
+    background_color:
+      current.background_color === previousBaseline.background_color
+        ? incoming.background_color
+        : current.background_color,
+    highlight_color:
+      current.highlight_color === previousBaseline.highlight_color ? incoming.highlight_color : current.highlight_color,
+    border_radius:
+      current.border_radius === previousBaseline.border_radius ? incoming.border_radius : current.border_radius,
+    button_hover: current.button_hover === previousBaseline.button_hover ? incoming.button_hover : current.button_hover,
+    product_page_storefront_enabled:
+      current.product_page_storefront_enabled === previousBaseline.product_page_storefront_enabled
+        ? incoming.product_page_storefront_enabled
+        : current.product_page_storefront_enabled,
+    hide_follow_form:
+      current.hide_follow_form === previousBaseline.hide_follow_form
+        ? incoming.hide_follow_form
+        : current.hide_follow_form,
+  };
+  const resolvedLocale = current.locale === previousBaseline.locale ? incoming.locale : current.locale;
+  if (resolvedLocale !== undefined) {
+    result.locale = resolvedLocale;
+  }
+  return result;
+};

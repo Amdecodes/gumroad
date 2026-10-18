@@ -3,6 +3,7 @@ import typia from "typia";
 
 import { ProductNativeType } from "$app/parsers/product";
 import { CurrencyCode } from "$app/utils/currency";
+import { t } from "$app/utils/i18n";
 import { assertResponseError, request } from "$app/utils/request";
 
 import { Button } from "$app/components/Button";
@@ -136,19 +137,19 @@ export const UpsellSelectModal = ({
     <Modal
       open={isOpen}
       onClose={onClose}
-      title="Insert upsell"
+      title={t("seller.products.insert_upsell", "Insert upsell")}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{t("actions.cancel", "Cancel")}</Button>
           <Button color="primary" onClick={handleInsert} disabled={!selectedProduct}>
-            Insert
+            {t("actions.insert", "Insert")}
           </Button>
         </>
       }
     >
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor="product-select">Product</Label>
+          <Label htmlFor="product-select">{t("common.product", "Product")}</Label>
         </FieldsetTitle>
         <Select
           inputId="product-select"
@@ -175,21 +176,21 @@ export const UpsellSelectModal = ({
             if (action === "input-change") debouncedFetchProducts(inputValue);
           }}
           isLoading={isLoading}
-          placeholder="Select a product"
+          placeholder={t("seller.products.select_product", "Select a product")}
           isClearable
         />
       </Fieldset>
 
       <Fieldset>
         <FieldsetTitle>
-          <Label htmlFor="discount">Discount</Label>
+          <Label htmlFor="discount">{t("common.discount", "Discount")}</Label>
         </FieldsetTitle>
         <Details open={!!discount}>
           <DetailsToggle chevronPosition="none" className="mb-0">
             <Switch
               checked={!!discount}
               onChange={(evt) => setDiscount(evt.target.checked ? { type: "percent", value: 0 } : null)}
-              label="Add a discount to the offered product"
+              label={t("seller.products.add_discount_to_offered_product", "Add a discount to the offered product")}
             />
           </DetailsToggle>
           {discount && selectedProduct ? (
