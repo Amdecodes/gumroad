@@ -24,8 +24,8 @@ describe("Tiptap button styling", () => {
   it("renders inserted buttons as always-visible accent CTAs", () => {
     expect(tiptapButtonClassName).toContain("bg-accent-with-text");
     expect(tiptapButtonClassName).toContain("text-accent-foreground");
-    expect(tiptapButtonClassName).toContain("-translate-1");
-    expect(tiptapButtonClassName).toContain("shadow-[0.25rem_0.25rem_0_var(--color-black)]");
+    expect(tiptapButtonClassName).toContain("shadow-xs");
+    expect(tiptapButtonClassName).toContain("rounded-lg");
     expect(tiptapButtonClassName).not.toContain("bg-primary text-primary-foreground");
   });
 
