@@ -20,6 +20,7 @@ function DiscoverProductShowPage() {
       taxonomyPath={props.taxonomy_path ?? undefined}
       taxonomiesForNav={props.taxonomies_for_nav}
       forceDomain
+      hideTabBar
     >
       <Layout cart hasHero {...props} />
       {/* Render an empty div for the add section button */}

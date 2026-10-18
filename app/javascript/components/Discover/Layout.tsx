@@ -111,6 +111,7 @@ export const Layout: React.FC<{
   className?: string;
   children: React.ReactNode;
   forceDomain?: boolean;
+  hideTabBar?: boolean;
 }> = ({
   taxonomiesForNav,
   taxonomyPath,
@@ -121,6 +122,7 @@ export const Layout: React.FC<{
   className,
   children,
   forceDomain = false,
+  hideTabBar = false,
 }) => {
   const { discoverDomain, appDomain } = useDomains();
   const isDesktop = useIsAboveBreakpoint("lg");
@@ -214,9 +216,16 @@ export const Layout: React.FC<{
         </div>
       ) : null}
 
-      <main className="min-h-[calc(100vh-250px)] pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+      <main
+        className={classNames(
+          "min-h-[calc(100vh-250px)]",
+          hideTabBar ? "pb-0" : "pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0",
+        )}
+      >
+        {children}
+      </main>
 
-      <BuyerMobileTabBar />
+      {hideTabBar ? null : <BuyerMobileTabBar />}
     </div>
   );
 };
