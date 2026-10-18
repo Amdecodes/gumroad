@@ -160,6 +160,13 @@ export const admin = {
     full_refund_suffix: "{amount} (Full)",
     refund_reason_placeholder: "State the reason for this refund...",
     status_successful: "successful",
+    chapa_tx_ref: "Chapa tx_ref",
+    chapa_reference: "Chapa Reference",
+    gateway_status: "Gateway Status",
+    gateway_mode: "Gateway Mode",
+    gateway_fee: "Gateway Fee",
+    reverifying: "Verifying...",
+    reverify_gateway_status: "Re-verify Gateway Status",
   },
 
   // Creators Pages

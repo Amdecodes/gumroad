@@ -97,6 +97,10 @@ class LinksController < ApplicationController
       return redirect_to new_product_path, alert: "Only ETB currency is supported for ArifDrop products."
     end
 
+    if !Feature.active?(:recurring_products, current_seller) && (params[:link][:is_recurring_billing] || params[:link][:native_type].in?(%w[membership newsletter podcast]))
+      return redirect_to new_product_path, alert: "Recurring subscriptions (memberships) are currently unavailable with Chapa. Only one-time purchases in ETB are supported."
+    end
+
     begin
       # Building the product and setting the price range both assign price_cents,
       # which raises Link::LinkInvalid when the price exceeds the maximum allowed.

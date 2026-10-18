@@ -246,6 +246,7 @@ class Link < ApplicationRecord
   validate :custom_permalink_of_licensed_product, if: :custom_permalink_or_is_licensed_changed?
   validate :max_purchase_count_is_greater_than_or_equal_to_inventory_sold
   validate :free_trial_only_enabled_if_recurring_billing
+  validate :ensure_recurring_not_enabled_without_flag
   validates :native_type, inclusion: { in: NATIVE_TYPES }
   validates :discover_fee_per_thousand, inclusion: { in: [300], message: "must be 30%" }
   validates :free_trial_duration_unit, presence: true, if: :free_trial_enabled?
@@ -1810,6 +1811,17 @@ class Link < ApplicationRecord
     def free_trial_only_enabled_if_recurring_billing
       if !is_recurring_billing && (free_trial_enabled? || free_trial_duration_unit.present? || free_trial_duration_amount.present?)
         errors.add(:base, "Free trials are only allowed for subscription products.")
+      end
+    end
+
+    def ensure_recurring_not_enabled_without_flag
+      return if Feature.active?(:recurring_products, user)
+
+      if is_recurring_billing?
+        errors.add(:base, "Recurring subscriptions (memberships) are currently unavailable with Chapa.")
+      end
+      if is_in_preorder_state?
+        errors.add(:base, "Preorders are currently unavailable with Chapa.")
       end
     end
 

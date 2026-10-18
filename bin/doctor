@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "../config/boot"
+require "active_support/all"
+
+puts "Running ArifDrop diagnostic doctor..."
+puts "--------------------------------------"
+
+ok = true
+
+# 1. Ruby & Rails
+puts "Checking Ruby & Rails..."
+puts "  Ruby: #{RUBY_VERSION} (OK)"
+
+# 2. Database
+print "Checking Database connection... "
+begin
+  require_relative "../config/environment"
+  ActiveRecord::Base.connection.execute("SELECT 1")
+  puts "OK (Connected to #{ActiveRecord::Base.connection.current_database})"
+rescue StandardError => e
+  puts "FAILED (#{e.message})"
+  ok = false
+end
+
+# 3. Redis
+print "Checking Redis connection... "
+begin
+  redis = Redis.new(url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"))
+  redis.ping
+  puts "OK"
+rescue StandardError => e
+  puts "FAILED (#{e.message})"
+  ok = false
+end
+
+# 4. Chapa Configuration
+puts "Checking Chapa Payment Gateway..."
+secret_key = ENV["CHAPA_SECRET_KEY"].presence || Rails.application.credentials.dig(:chapa, :secret_key)
+webhook_secret = ENV["CHAPA_WEBHOOK_SECRET"].presence || Rails.application.credentials.dig(:chapa, :webhook_secret)
+
+if secret_key.blank?
+  puts "  CHAPA_SECRET_KEY: MISSING (Set via ENV or credentials)"
+  ok = false
+elsif secret_key.start_with?("CHASECK_TEST")
+  if Rails.env.production?
+    puts "  CHAPA_SECRET_KEY: ERROR (Test key in production!)"
+    ok = false
+  else
+    puts "  CHAPA_SECRET_KEY: OK (Test mode: CHASECK_TEST-***)"
+  end
+else
+  if Rails.env.development?
+    puts "  CHAPA_SECRET_KEY: WARNING (Live key detected in development environment!)"
+  else
+    puts "  CHAPA_SECRET_KEY: OK (Live key configured)"
+  end
+end
+
+if webhook_secret.blank?
+  puts "  CHAPA_WEBHOOK_SECRET: MISSING (Required for HMAC-SHA256 signature verification)"
+  ok = false
+else
+  puts "  CHAPA_WEBHOOK_SECRET: OK (Configured)"
+end
+
+puts "--------------------------------------"
+if ok
+  puts "All diagnostic checks PASSED. System is ready."
+  exit 0
+else
+  puts "Some checks FAILED. Review errors above."
+  exit 1
+end

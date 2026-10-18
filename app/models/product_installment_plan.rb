@@ -31,6 +31,10 @@ class ProductInstallmentPlan < ApplicationRecord
     end
 
     def eligibility_erorr_message_for_product(link)
+      unless Feature.active?(:recurring_products, link&.user)
+        return "Installment plans are currently unavailable with Chapa"
+      end
+
       if link.is_recurring_billing? || link.is_tiered_membership?
         return "Installment plans are not available for membership products"
       end

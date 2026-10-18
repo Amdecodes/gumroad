@@ -28,6 +28,9 @@ Rails.application.config.after_initialize do
   unless Flipper.exist?(:social_connections)
     Flipper.disable(:social_connections)
   end
+  unless Flipper.exist?(:recurring_products)
+    Flipper.disable(:recurring_products)
+  end
   unless Flipper.exist?(:advanced_settings)
     Flipper.disable(:advanced_settings)
   end

@@ -137,6 +137,32 @@ class Admin::OrdersController < Admin::BaseController
       return
     end
 
+    if @order.charge_processor_id == "chapa" || @order.order&.charges&.where(processor: "chapa")&.exists?
+      service = Chapa::RefundService.new(
+        purchase: @order,
+        amount_cents: params[:amount_cents],
+        reason:,
+        admin_user: current_user
+      )
+      result = service.perform
+      if result[:success]
+        message = result[:message] || "Successfully refunded order"
+        if request.inertia? || request.format.html?
+          redirect_to admin_order_path(@order.external_id), notice: message
+        else
+          render json: { success: true, message: }, status: :ok
+        end
+      else
+        error_message = result[:error] || "Refund failed"
+        if request.inertia? || request.format.html?
+          redirect_to admin_order_path(@order.external_id), alert: error_message
+        else
+          render json: { success: false, message: error_message }, status: :unprocessable_entity
+        end
+      end
+      return
+    end
+
     result = Admin::InternalApiCaller.call(
       admin_user: current_user,
       method: :post,
@@ -161,6 +187,27 @@ class Admin::OrdersController < Admin::BaseController
       else
         render json: result.data, status: result.status
       end
+    end
+  end
+
+  def reverify
+    tx_ref = params[:tx_ref].presence || @order.processor_transaction_id.presence
+    if tx_ref.blank?
+      chapa_tx = @order.order&.chapa_transactions&.order(created_at: :desc)&.first ||
+                 ChapaTransaction.where(order_id: @order.order_id).order(created_at: :desc).first
+      tx_ref = chapa_tx&.tx_ref
+    end
+
+    if tx_ref.blank?
+      return redirect_to admin_order_path(@order.external_id), alert: "No Chapa transaction found to re-verify"
+    end
+
+    result = Chapa::FinalizerService.new(tx_ref:).reverify!
+    if result[:success]
+      status_text = result[:already_finalized] ? "already finalized" : "successfully verified"
+      redirect_to admin_order_path(@order.external_id), notice: "Transaction #{status_text}: #{result[:status]}"
+    else
+      redirect_to admin_order_path(@order.external_id), alert: "Re-verification failed: #{result[:error]}"
     end
   end
 
@@ -258,7 +305,21 @@ class Admin::OrdersController < Admin::BaseController
         chargeback_date: order.chargeback_date&.as_json,
         created_at: order.created_at.as_json,
         payment_processor: order.charge_processor_id,
-        transaction_id: order.stripe_transaction_id.presence || order.paypal_order_id.presence,
+        transaction_id: order.stripe_transaction_id.presence || order.paypal_order_id.presence || order.processor_transaction_id,
+        chapa_details: begin
+          chapa_tx = order.order&.chapa_transactions&.order(created_at: :desc)&.first ||
+                     ChapaTransaction.where(order_id: order.order_id).order(created_at: :desc).first ||
+                     ChapaTransaction.find_by(tx_ref: order.processor_transaction_id)
+          chapa_tx ? {
+            tx_ref: chapa_tx.tx_ref,
+            chapa_reference: chapa_tx.chapa_reference,
+            status: chapa_tx.status,
+            mode: chapa_tx.mode,
+            charge_formatted: chapa_tx.charge_decimal.present? ? "#{chapa_tx.charge_decimal} ETB" : nil,
+            payment_method: chapa_tx.payment_method,
+            verified_at: chapa_tx.verified_at&.as_json
+          } : nil
+        end,
         refunds: order.refunds.map do |refund|
           {
             id: refund.id,

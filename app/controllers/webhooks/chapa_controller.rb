@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
+require "digest"
+
 module Webhooks
   class ChapaController < ApplicationController
     skip_before_action :verify_authenticity_token
 
     def create
       raw_body = request.raw_post
-      signature = request.headers["Chapa-Signature"] ||
+      signature = request.headers["x-chapa-signature"] ||
+                  request.headers["chapa-signature"] ||
+                  request.headers["Chapa-Signature"] ||
                   request.headers["HTTP_CHAPA_SIGNATURE"] ||
-                  request.headers["x-chapa-signature"]
+                  request.headers["HTTP_X_CHAPA_SIGNATURE"]
 
       client = Chapa::Client.new
       unless client.valid_signature?(raw_body, signature)
@@ -17,73 +21,29 @@ module Webhooks
       end
 
       payload = parse_payload(raw_body)
+      event_type = payload["event"] || payload["type"] || "transaction"
       tx_ref = payload["tx_ref"] || payload.dig("data", "tx_ref")
 
-      if tx_ref.blank?
-        return render json: { error: "Missing tx_ref" }, status: :bad_request
+      # Generate collision-resistant unique idempotency key
+      idempotency_key = payload["id"] ||
+                        payload.dig("data", "id") ||
+                        "#{event_type}_#{tx_ref}_#{Digest::SHA256.hexdigest(raw_body)}"
+
+      event = ChapaWebhookEvent.find_or_create_by(idempotency_key:) do |e|
+        e.event_type = event_type
+        e.tx_ref = tx_ref
+        e.raw_payload = raw_body
+        e.status = "received"
       end
 
-      purchase = Purchase.find_by_processor_transaction_id(tx_ref)
-      unless purchase
-        return render json: { error: "Purchase not found" }, status: :not_found
+      if event.status == "processed"
+        return render json: { status: "success", message: "Event already processed" }, status: :ok
       end
 
-      if purchase.successful?
-        return render json: { status: "success", message: "Purchase already finalized" }, status: :ok
-      end
+      # Return HTTP 200 fast, delegate heavy processing to asynchronous Sidekiq job
+      Chapa::ProcessWebhookJob.perform_async(event.id)
 
-      verification = client.verify_transaction(tx_ref)
-      unless verification[:success]
-        Rails.logger.warn("[Chapa Webhook] Gateway verification returned unsuccessful status for #{tx_ref}: #{verification[:status] || verification[:error]}")
-        return render json: { error: "Gateway verification failed" }, status: :unprocessable_entity
-      end
-
-      verified_currency = verification[:currency].to_s.upcase
-      verified_amount_santims = (verification[:amount].to_f * 100).round
-
-      if verified_currency != "ETB" || verified_currency != purchase.displayed_price_currency_type.to_s.upcase
-        Rails.logger.error("[Chapa Webhook] Currency mismatch for #{tx_ref}: expected #{purchase.displayed_price_currency_type.to_s.upcase}, got #{verified_currency}")
-        return render json: { error: "Currency mismatch" }, status: :unprocessable_entity
-      end
-
-      expected_santims = purchase.respond_to?(:price_in_currency_cents) ? purchase.price_in_currency_cents : purchase.price_cents
-      if verified_amount_santims != expected_santims
-        Rails.logger.error("[Chapa Webhook] Amount mismatch for #{tx_ref}: expected #{expected_santims} santims, got #{verified_amount_santims} santims")
-        return render json: { error: "Amount mismatch" }, status: :unprocessable_entity
-      end
-
-      ActiveRecord::Base.transaction do
-        purchase.lock!
-        if purchase.successful?
-          return render json: { status: "success", message: "Purchase already finalized" }, status: :ok
-        end
-
-        reference = verification[:reference].presence || tx_ref
-        purchases_to_finalize = purchase.order.present? ? purchase.order.purchases.select(&:in_progress?) : [purchase]
-
-        purchases_to_finalize.each do |p|
-          p.stripe_transaction_id = reference
-          p.charge_processor_id = "chapa"
-          p.calculate_fees if p.fee_cents.nil?
-          p.fee_cents ||= 0
-          if (charge = p.charge)
-            charge.processor = "chapa"
-            charge.processor_transaction_id = reference
-            charge.save!
-          end
-
-          if p.subscription.present?
-            p.subscription.lock!
-            p.subscription.advance_renewal_period!(p)
-          else
-            Purchase::MarkSuccessfulService.new(p).perform
-          end
-        end
-
-        purchase.order.send_charge_receipts if purchase.order.present?
-      end
-
-      render json: { status: "success", message: "Purchase successfully finalized" }, status: :ok
+      render json: { status: "success", message: "Webhook received" }, status: :ok
     end
 
     private

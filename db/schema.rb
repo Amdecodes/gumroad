@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_12_16_130002) do
+ActiveRecord::Schema[7.1].define(version: 2026_12_16_140000) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name", limit: 191, null: false
     t.string "record_type", limit: 191, null: false
@@ -535,6 +535,48 @@ ActiveRecord::Schema[7.1].define(version: 2026_12_16_130002) do
     t.index ["order_id"], name: "index_carts_on_order_id"
     t.index ["updated_at"], name: "index_carts_on_updated_at"
     t.index ["user_id"], name: "index_carts_on_user_id"
+  end
+
+  create_table "chapa_transactions", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "tx_ref", null: false
+    t.bigint "order_id", null: false
+    t.bigint "purchase_id"
+    t.bigint "amount_santims", null: false
+    t.decimal "amount_decimal", precision: 12, scale: 2, null: false
+    t.string "currency", default: "ETB", null: false
+    t.string "status", default: "pending", null: false
+    t.string "chapa_reference"
+    t.string "mode"
+    t.bigint "charge_cents", default: 0
+    t.decimal "charge_decimal", precision: 10, scale: 2
+    t.string "payment_method"
+    t.json "raw_payload"
+    t.text "error_message"
+    t.datetime "verified_at"
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chapa_reference"], name: "index_chapa_transactions_on_chapa_reference"
+    t.index ["created_at"], name: "index_chapa_transactions_on_created_at"
+    t.index ["order_id"], name: "index_chapa_transactions_on_order_id"
+    t.index ["purchase_id"], name: "index_chapa_transactions_on_purchase_id"
+    t.index ["status"], name: "index_chapa_transactions_on_status"
+    t.index ["tx_ref"], name: "index_chapa_transactions_on_tx_ref", unique: true
+  end
+
+  create_table "chapa_webhook_events", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "idempotency_key", null: false
+    t.string "event_type", null: false
+    t.string "tx_ref"
+    t.string "status", default: "received", null: false
+    t.text "raw_payload", null: false
+    t.text "error_message"
+    t.datetime "processed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["idempotency_key"], name: "index_chapa_webhook_events_on_idempotency_key", unique: true
+    t.index ["status"], name: "index_chapa_webhook_events_on_status"
+    t.index ["tx_ref"], name: "index_chapa_webhook_events_on_tx_ref"
   end
 
   create_table "charge_presentments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|

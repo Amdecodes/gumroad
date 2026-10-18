@@ -264,6 +264,13 @@ Rails.application.routes.draw do
         post :confirm
         post :finalize
         post :confirm_error
+        if named_routes
+          get :return, action: :chapa_return, as: :chapa_return
+          get :chapa_status, action: :chapa_status, as: :chapa_status
+        else
+          get :return, action: :chapa_return
+          get :chapa_status, action: :chapa_status
+        end
       end
       collection do
         post :prepare
@@ -832,6 +839,8 @@ Rails.application.routes.draw do
         post :confirm
         post :finalize
         post :confirm_error
+        get :return, action: :chapa_return
+        get :chapa_status, action: :chapa_status
       end
       collection do
         post :prepare

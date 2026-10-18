@@ -8,6 +8,7 @@ class Order < ApplicationRecord
   has_many :purchases, through: :order_purchases, dependent: :destroy
 
   has_many :charges, dependent: :destroy
+  has_many :chapa_transactions, dependent: :destroy
   has_one :cart, dependent: :destroy
 
   attr_accessor :setup_future_charges
@@ -48,6 +49,14 @@ class Order < ApplicationRecord
 
   def test?
     purchase_as_orderable&.is_test_purchase? || false
+  end
+
+  def total_price_santims
+    purchases.sum { _1.respond_to?(:price_in_currency_cents) ? _1.price_in_currency_cents : _1.price_cents }
+  end
+
+  def formatted_total_price
+    "#{Chapa::Money.santims_to_birr_string(total_price_santims)} ETB"
   end
 
   def send_charge_receipts

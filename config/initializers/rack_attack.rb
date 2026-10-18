@@ -549,6 +549,10 @@ class Rack::Attack
     req.remote_ip if req.path == "/webhooks/chapa" && req.post?
   end
 
+  throttle("chapa_status/ip", limit: 60, period: 60.seconds) do |req|
+    req.remote_ip if req.path.match?(%r{\A/orders/[^/]+/chapa_status\z}) && req.get?
+  end
+
   Rack::Attack.throttled_responder = lambda do |req|
     match_data = req.env["rack.attack.match_data"]
     now = match_data ? match_data[:epoch_time] : Time.now.to_i

@@ -16,6 +16,8 @@ module PlatformConfig
     CUSTOMERS_MAIL_DOMAIN
     FOLLOWER_CONFIRMATION_MAIL_DOMAIN
     CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN
+    CHAPA_SECRET_KEY
+    CHAPA_WEBHOOK_SECRET
   ].freeze
 
   class << self
@@ -103,16 +105,29 @@ module PlatformConfig
     end
 
     def validate_production_config!(env = Rails.env)
+      if env.development?
+        dev_chapa_key = ENV["CHAPA_SECRET_KEY"].presence || Rails.application.credentials.dig(:chapa, :secret_key)
+        if dev_chapa_key.present? && !dev_chapa_key.start_with?("CHASECK_TEST")
+          Rails.logger.warn("[SECURITY WARNING] Live Chapa secret key detected in development environment! Please use a test key (CHASECK_TEST-*) in dev.")
+        end
+      end
+
       return unless env.production?
 
       missing = REQUIRED_PRODUCTION_KEYS.select do |key|
         val = GlobalConfig.get(key)
         val = GlobalConfig.get("#{key}_PROD") if val.blank?
+        val = ENV[key] if val.blank?
         val.blank?
       end
       if missing.any?
         raise "Missing required platform configuration in production: #{missing.join(', ')}. " \
               "Please configure these via ENV or Rails credentials."
+      end
+
+      prod_chapa_key = ENV["CHAPA_SECRET_KEY"].presence || Rails.application.credentials.dig(:chapa, :secret_key) || GlobalConfig.get("CHAPA_SECRET_KEY")
+      if prod_chapa_key.to_s.start_with?("CHASECK_TEST")
+        raise "Security boot failure: Test mode key (CHASECK_TEST) is forbidden in production! Please provide a live Chapa secret key."
       end
     end
 

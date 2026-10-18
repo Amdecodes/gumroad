@@ -16,6 +16,7 @@ namespace :admin do
       post :resend_receipt
       post :refund
       post :cancel_subscription
+      post :reverify
     end
   end
 

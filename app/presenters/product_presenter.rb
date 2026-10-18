@@ -35,6 +35,9 @@ class ProductPresenter
   def self.new_page_props(current_seller:)
     native_product_types = Link::NATIVE_TYPES - Link::LEGACY_TYPES - Link::SERVICE_TYPES
     native_product_types -= [Link::NATIVE_TYPE_PHYSICAL] unless current_seller.can_create_physical_products?
+    unless Feature.active?(:recurring_products, current_seller)
+      native_product_types -= [Link::NATIVE_TYPE_MEMBERSHIP, Link::NATIVE_TYPE_NEWSLETTER, Link::NATIVE_TYPE_PODCAST]
+    end
     service_product_types = Link::SERVICE_TYPES
     release_at_date = displayable_release_at_date(1.month.from_now, current_seller.timezone)
 

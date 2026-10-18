@@ -126,4 +126,21 @@ export const checkout = {
   payment_processing_partial:
     "የክፍያው የተወሰነ ክፍል በመከናወን ላይ ነው — ደረሰኙን በኢሜይልዎ ያረጋግጡ። ያልተከፈለባቸው እቃዎች እንደገና ለመሞከር በቅርጫትዎ ውስጥ ቀርተዋል።",
   payment_processing_full: "ክፍያዎ በመከናወን ላይ ነው — ደረሰኙን በኢሜይልዎ ያረጋግጡ። እባክዎ ደግመው አይክፈሉ።",
+  chapa_verifying_title: "ክፍያዎን በማረጋገጥ ላይ...",
+  chapa_verifying_desc: "ግብይትዎን ከቻፓ ጋር እስክናረጋግጥ ድረስ እባክዎ ይጠብቁ። ይህን መስኮት አይዝጉት።",
+  chapa_success_title: "ክፍያው በተሳካ ሁኔታ ተጠናቋል!",
+  chapa_success_desc: "ክፍያዎ ተረጋግጧል። ወደ ደረሰኝዎ በማዘዋወር ላይ...",
+  chapa_failed_title: "ክፍያው አልተሳካም",
+  chapa_failed_desc: "ክፍያዎን ከቻፓ ጋር ማረጋገጥ አልተቻለም። እባክዎ እንደገና ይሞክሩ ወይም ሌላ የክፍያ ዘዴ ይጠቀሙ።",
+  chapa_cancelled_title: "ክፍያው ተሰርዟል",
+  chapa_cancelled_desc: "በቻፓ ላይ ክፍያውን ሰርዘዋል።",
+  chapa_expired_title: "የክፍያ ጊዜው አልቋል",
+  chapa_expired_desc: "የዚህ ትዕዛዝ የክፍያ ጊዜ አልቋል። እባክዎ አዲስ ግዢ ይጀምሩ።",
+  chapa_timeout_title: "ማረጋገጫው ከተለመደው ጊዜ በላይ እየወሰደ ነው",
+  chapa_timeout_desc: "አሁንም ከቻፓ ማረጋገጫ በመጠበቅ ላይ ነን። ከሂሳብዎ ከተቆረጠ ደረሰኝዎ በቅርቡ በኢሜይል ይላክልዎታል።",
+  chapa_retry_button: "እንደገና ይሞክሩ",
+  chapa_return_to_store: "ወደ መደብሩ ይመለሱ",
+  chapa_order_details: "የትዕዛዝ ዝርዝሮች",
+  recurring_not_supported_notice:
+    "የደንበኝነት ምዝገባዎች፣ የክፍያ ዕቅዶች እና ቅድመ-ትዕዛዞች በአሁኑ ጊዜ በቻፓ አይደገፉም። የአንድ ጊዜ ክፍያዎች በብር (ETB) ብቻ ይደገፋሉ።",
 } as const;

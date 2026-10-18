@@ -159,6 +159,13 @@ export const admin = {
     full_refund_suffix: "{amount} (ሙሉ)",
     refund_reason_placeholder: "የዚህን ተመላሽ ክፍያ ምክንያት ይግለጹ...",
     status_successful: "የተሳካ",
+    chapa_tx_ref: "የቻፓ tx_ref",
+    chapa_reference: "የቻፓ መለያ",
+    gateway_status: "የመተላለፊያ ሁኔታ",
+    gateway_mode: "የመተላለፊያ ሞድ",
+    gateway_fee: "የመተላለፊያ ክፍያ",
+    reverifying: "በማረጋገጥ ላይ...",
+    reverify_gateway_status: "የመተላለፊያ ሁኔታን በድጋሚ አረጋግጥ",
   },
 
   // Creators Pages

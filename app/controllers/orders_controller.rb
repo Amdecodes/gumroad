@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
   # Each of these reads back an order a previous request from the same buyer just created —
   # `prepare` for the client-confirm actions, `create` for #confirm — so a lagging replica can
   # miss it entirely.
-  around_action :use_primary_database, only: %i[confirm finalize confirm_error]
+  around_action :use_primary_database, only: %i[confirm finalize confirm_error chapa_return chapa_status]
 
   def create
     order_params = build_order_params
@@ -29,6 +29,19 @@ class OrdersController < ApplicationController
           success: false,
           error_message: "Only ETB currency is supported for checkout."
         }, status: :unprocessable_entity
+      end
+
+      # Block recurring products (memberships, installments, preorders) behind feature flag
+      unless Feature.active?(:recurring_products)
+        has_recurring = line_items.any? { _1[:is_preorder] || _1[:pay_in_installments] } ||
+                        Link.where(unique_permalink: product_permalinks).is_recurring_billing.exists? ||
+                        Link.where(unique_permalink: product_permalinks).is_in_preorder_state.exists?
+        if has_recurring
+          return render json: {
+            success: false,
+            error_message: "Recurring subscriptions, installments, and preorders are currently unavailable with Chapa."
+          }, status: :unprocessable_entity
+        end
       end
     end
 
@@ -79,23 +92,53 @@ class OrdersController < ApplicationController
         return render json: { success: true, line_items: purchase_responses, offer_codes:, can_buyer_sign_up: }
       end
 
-      callback_url = chapa_webhook_url
-      return_url = chapa_callback_purchase_url(primary_purchase.external_id)
+      # Canonical URLs for gateway callbacks
+      canonical_domain = defined?(DOMAIN) && DOMAIN.present? ? DOMAIN : request.host
+      canonical_protocol = defined?(PROTOCOL) && PROTOCOL.present? ? PROTOCOL : request.protocol.sub(/:?\/\/\z/, "")
+      callback_url = chapa_webhook_url(host: canonical_domain, protocol: canonical_protocol)
+      return_url = chapa_return_order_url(order.external_id, host: canonical_domain, protocol: canonical_protocol)
+
+      total_santims = order.purchases.sum do |p|
+        p.respond_to?(:price_in_currency_cents) ? p.price_in_currency_cents : p.price_cents
+      end
+      amount_decimal = Chapa::Money.santims_to_birr(total_santims)
+
+      # Collision-resistant unique unguessable reference per attempt
+      tx_ref = "chk_#{order.external_id}_#{SecureRandom.hex(6)}"
+
+      chapa_tx = ChapaTransaction.create!(
+        tx_ref:,
+        order:,
+        purchase: primary_purchase,
+        amount_santims: total_santims,
+        amount_decimal:,
+        currency: "ETB",
+        status: "pending",
+        mode: Rails.env.production? ? "live" : "test",
+        expires_at: 1.hour.from_now,
+        raw_payload: {
+          "email" => primary_purchase.email,
+          "order_id" => order.external_id,
+          "line_items_count" => order.purchases.count
+        }
+      )
 
       client = Chapa::Client.new
       init_result = client.initialize_transaction(
+        amount_santims: total_santims,
+        order:,
         purchase: primary_purchase,
         return_url:,
-        callback_url:
+        callback_url:,
+        tx_ref:
       )
 
       if init_result[:success]
-        tx_ref = init_result[:tx_ref]
         charge = order.charges.create!(
           seller_id: primary_purchase.seller_id,
           processor: "chapa",
           processor_transaction_id: tx_ref,
-          amount_cents: order.purchases.sum(&:price_cents)
+          amount_cents: total_santims
         )
         order.purchases.each do |p|
           p.charge_processor_id = "chapa"
@@ -121,6 +164,7 @@ class OrdersController < ApplicationController
           return redirect_to init_result[:checkout_url], allow_other_host: true
         end
       else
+        chapa_tx.mark_failed!(init_result[:error])
         return render json: {
           success: false,
           error_message: init_result[:error] || "Payment initialization failed. Please try again."
@@ -260,6 +304,80 @@ class OrdersController < ApplicationController
       reservations_released: cleanup_succeeded && unavailable_once_per_cart_ids.empty?,
       unavailable_once_per_cart_ids:,
     }
+  end
+
+  def chapa_return
+    @order = Order.find_by_external_id(params[:id])
+    e404 unless @order
+
+    if params[:status] == "cancelled" || params[:cancel] == "true"
+      latest_tx = @order.chapa_transactions.order(created_at: :desc).first
+      latest_tx&.mark_cancelled! if latest_tx&.pending?
+    end
+
+    if @order.purchases.present? && @order.purchases.all?(&:successful?)
+      primary_purchase = @order.purchases.first
+      return redirect_to primary_purchase.receipt_url, allow_other_host: true
+    end
+
+    render inertia: "Checkout/Returns/ChapaReturn", props: {
+      orderId: @order.external_id,
+      statusUrl: chapa_status_order_path(@order.external_id),
+      productName: @order.purchases.first&.link&.name || "Product",
+      priceFormatted: @order.formatted_total_price,
+      sellerName: @order.purchases.first&.seller&.name
+    }
+  end
+
+  def chapa_status
+    order = Order.find_by_external_id(params[:id])
+    return render json: { status: "not_found" }, status: :not_found unless order
+
+    if order.purchases.present? && order.purchases.all?(&:successful?)
+      primary_purchase = order.purchases.first
+      return render json: {
+        status: "success",
+        redirect_url: primary_purchase.receipt_url
+      }
+    end
+
+    latest_tx = order.chapa_transactions.order(created_at: :desc).first
+    return render json: { status: "not_found" }, status: :not_found unless latest_tx
+
+    if latest_tx.cancelled?
+      return render json: { status: "cancelled" }
+    end
+
+    if latest_tx.expired? || (latest_tx.expires_at.present? && latest_tx.expires_at < Time.current)
+      latest_tx.mark_expired! unless latest_tx.expired?
+      return render json: { status: "expired" }
+    end
+
+    if latest_tx.failed?
+      return render json: {
+        status: "failed",
+        error_message: latest_tx.error_message.presence || "Payment failed"
+      }
+    end
+
+    if latest_tx.pending? && latest_tx.created_at < 3.seconds.ago
+      finalizer = Chapa::FinalizerService.new(tx_ref: latest_tx.tx_ref)
+      result = finalizer.perform
+      if result[:success]
+        primary_purchase = order.purchases.reload.first
+        return render json: {
+          status: "success",
+          redirect_url: primary_purchase.receipt_url
+        }
+      elsif result[:status] == "failed"
+        return render json: {
+          status: "failed",
+          error_message: result[:error] || "Payment verification failed"
+        }
+      end
+    end
+
+    render json: { status: "pending" }
   end
 
   private

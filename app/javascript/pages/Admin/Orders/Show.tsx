@@ -13,6 +13,8 @@ import {
 import { Link, router } from "@inertiajs/react";
 import * as React from "react";
 
+import { useTranslation } from "$app/utils/i18n";
+
 import { AdminLayout } from "$app/components/Admin/AdminLayout";
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -20,7 +22,6 @@ import { Card, CardContent } from "$app/components/ui/Card";
 import { PageHeader } from "$app/components/ui/PageHeader";
 import { Pill } from "$app/components/ui/Pill";
 import { Textarea } from "$app/components/ui/Textarea";
-import { useTranslation } from "$app/utils/i18n";
 
 export type OrderRefund = {
   id: number;
@@ -86,6 +87,15 @@ export type OrderDetailProps = {
     created_at: string;
     payment_processor?: string | null;
     transaction_id?: string | null;
+    chapa_details?: {
+      tx_ref: string;
+      chapa_reference?: string | null;
+      status: string;
+      mode?: string | null;
+      charge_formatted?: string | null;
+      payment_method?: string | null;
+      verified_at?: string | null;
+    } | null;
     refunds: OrderRefund[];
     subscription?: OrderSubscription | null;
     license?: OrderLicense | null;
@@ -120,6 +130,18 @@ export default function Show({ order }: OrderDetailProps) {
 
   const [isCancelSubModalOpen, setIsCancelSubModalOpen] = React.useState(false);
   const [isCancellingSub, setIsCancellingSub] = React.useState(false);
+  const [isReverifying, setIsReverifying] = React.useState(false);
+
+  const handleReverify = () => {
+    setIsReverifying(true);
+    router.post(
+      `/admin/orders/${order.id}/reverify`,
+      {},
+      {
+        onFinish: () => setIsReverifying(false),
+      },
+    );
+  };
 
   const handleResendReceipt = () => {
     setIsSendingReceipt(true);
@@ -330,6 +352,38 @@ export default function Show({ order }: OrderDetailProps) {
                     {order.transaction_id || t("admin.orders_page.none_recorded", undefined, "None recorded")}
                   </div>
                 </div>
+
+                {order.chapa_details ? (
+                  <>
+                    <div>
+                      <div className="text-xs text-muted">{t("admin.orders_page.chapa_tx_ref")}</div>
+                      <div className="font-mono text-sm break-all">{order.chapa_details.tx_ref}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted">{t("admin.orders_page.chapa_reference")}</div>
+                      <div className="font-mono text-sm break-all">{order.chapa_details.chapa_reference || "—"}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted">{t("admin.orders_page.gateway_status")}</div>
+                      <div className="text-sm font-medium capitalize">{order.chapa_details.status}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted">{t("admin.orders_page.gateway_mode")}</div>
+                      <div className="font-mono text-sm uppercase">{order.chapa_details.mode || "—"}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted">{t("admin.orders_page.gateway_fee")}</div>
+                      <div className="text-sm font-medium">{order.chapa_details.charge_formatted || "—"}</div>
+                    </div>
+                    <div className="flex items-end">
+                      <Button outline disabled={isReverifying} onClick={handleReverify} className="text-xs">
+                        {isReverifying
+                          ? t("admin.orders_page.reverifying")
+                          : t("admin.orders_page.reverify_gateway_status")}
+                      </Button>
+                    </div>
+                  </>
+                ) : null}
 
                 {order.is_chargeback ? (
                   <div>

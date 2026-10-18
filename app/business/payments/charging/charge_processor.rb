@@ -12,12 +12,14 @@ module ChargeProcessor
     StripeChargeProcessor.charge_processor_id => StripeChargeProcessor::DISPLAY_NAME,
     BraintreeChargeProcessor.charge_processor_id => BraintreeChargeProcessor::DISPLAY_NAME,
     PaypalChargeProcessor.charge_processor_id => PaypalChargeProcessor::DISPLAY_NAME,
+    ChapaChargeProcessor.charge_processor_id => ChapaChargeProcessor::DISPLAY_NAME,
   }.freeze
 
   CHARGE_PROCESSOR_CLASS_MAP = {
     StripeChargeProcessor.charge_processor_id => StripeChargeProcessor,
     BraintreeChargeProcessor.charge_processor_id => BraintreeChargeProcessor,
     PaypalChargeProcessor.charge_processor_id => PaypalChargeProcessor,
+    ChapaChargeProcessor.charge_processor_id => ChapaChargeProcessor,
   }.freeze
   private_constant :CHARGE_PROCESSOR_CLASS_MAP
 

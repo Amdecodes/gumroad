@@ -7,6 +7,7 @@ module Feature
     chapa_payments: true,
     stripe_payments: false,
     paypal_payments: false,
+    recurring_products: false,
     ai_features: false,
     advanced_us_tax: false,
   }.freeze

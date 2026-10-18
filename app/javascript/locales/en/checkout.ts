@@ -134,4 +134,22 @@ export const checkout = {
     "Part of your payment is being processed — check your email for its receipt. The items that couldn't be charged are still in your cart to try again.",
   payment_processing_full:
     "Your payment is being processed — check your email for your receipt. Please do not pay again.",
+  chapa_verifying_title: "Verifying your payment...",
+  chapa_verifying_desc: "Please wait while we confirm your transaction with Chapa. Do not close this window.",
+  chapa_success_title: "Payment Successful!",
+  chapa_success_desc: "Your payment has been verified. Redirecting you to your receipt...",
+  chapa_failed_title: "Payment Failed",
+  chapa_failed_desc: "We could not verify your payment with Chapa. Please try again or use a different payment method.",
+  chapa_cancelled_title: "Payment Cancelled",
+  chapa_cancelled_desc: "You cancelled your payment on Chapa.",
+  chapa_expired_title: "Payment Expired",
+  chapa_expired_desc: "The payment window for this order has expired. Please initiate a new checkout.",
+  chapa_timeout_title: "Verification Taking Longer Than Usual",
+  chapa_timeout_desc:
+    "We are still waiting for confirmation from Chapa. If your account was debited, your receipt will be emailed shortly.",
+  chapa_retry_button: "Try Again",
+  chapa_return_to_store: "Return to Store",
+  chapa_order_details: "Order Details",
+  recurring_not_supported_notice:
+    "Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported.",
 } as const;

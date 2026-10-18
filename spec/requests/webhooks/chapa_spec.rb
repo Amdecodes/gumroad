@@ -2,164 +2,124 @@
 
 require "spec_helper"
 
-RSpec.describe "POST /webhooks/chapa" do
-  let(:webhook_secret) { "TEST_CHAPA_WEBHOOK_SECRET_XYZ" }
-  let(:seller) { create(:user) }
-  let(:product) { create(:product, user: seller, price_currency_type: "etb") }
-  let(:tx_ref) { "arifdrop-test-purchase-9988" }
-  let(:order) { create(:order) }
-  let!(:purchase) do
-    create(
-      :purchase,
-      link: product,
-      seller:,
-      price_cents: 25000,
-      displayed_price_cents: 25000,
-      displayed_price_currency_type: "etb",
-      email: "buyer@example.com",
-      purchase_state: "in_progress",
-      charge_processor_id: "chapa",
-      processor_payment_intent_id: tx_ref,
-      stripe_transaction_id: tx_ref,
-      order:
-    )
+describe "Chapa Webhooks", type: :request do
+  let(:secret_key) { "CHASECK_TEST-abcdef123456" }
+  let(:webhook_secret) { "test_webhook_secret_hash_987" }
+  let(:raw_payload) do
+    {
+      event: "charge.complete",
+      tx_ref: "chk_test_webhook_1234",
+      reference: "chp_ref_789",
+      amount: "100.00",
+      currency: "ETB",
+      status: "success"
+    }.to_json
+  end
+
+  let(:headers) do
+    {
+      "CONTENT_TYPE" => "application/json",
+      "HOST" => VALID_REQUEST_HOSTS.first
+    }
   end
 
   before do
-    host! DOMAIN
     allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("CHAPA_SECRET_KEY").and_return(secret_key)
     allow(ENV).to receive(:[]).with("CHAPA_WEBHOOK_SECRET").and_return(webhook_secret)
-    allow(ENV).to receive(:[]).with("CHAPA_SECRET_KEY").and_return("TEST_SECRET_KEY")
   end
 
-  def compute_signature(body, secret = webhook_secret)
-    OpenSSL::HMAC.hexdigest("SHA256", secret, body)
-  end
+  describe "POST /webhooks/chapa" do
+    context "with valid signature computed from webhook_secret" do
+      let(:signature) { OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, raw_payload) }
 
-  context "when signature is invalid" do
-    it "returns 401 Unauthorized and does not alter purchase state" do
-      payload = { event: "charge.complete", tx_ref: purchase.processor_transaction_id }.to_json
-      invalid_sig = compute_signature(payload, "WRONG_SECRET")
+      it "verifies raw body signature, persists event and dispatches background job" do
+        expect do
+          post "/webhooks/chapa",
+               params: raw_payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => signature)
+        end.to change(ChapaWebhookEvent, :count).by(1)
+           .and change(Chapa::ProcessWebhookJob.jobs, :size).by(1)
 
-      post "/webhooks/chapa", params: payload, headers: {
-        "CONTENT_TYPE" => "application/json",
-        "HTTP_CHAPA_SIGNATURE" => invalid_sig
-      }
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["status"]).to eq("success")
 
-      expect(response).to have_http_status(:unauthorized)
-      expect(JSON.parse(response.body)["error"]).to eq("Invalid signature")
-      expect(purchase.reload.purchase_state).to eq("in_progress")
-    end
-  end
+        event = ChapaWebhookEvent.last
+        expect(event.tx_ref).to eq("chk_test_webhook_1234")
+        expect(event.event_type).to eq("charge.complete")
+      end
 
-  context "when purchase cannot be found" do
-    it "returns 404 Not Found" do
-      payload = { event: "charge.complete", tx_ref: "non-existent-tx-ref" }.to_json
-      sig = compute_signature(payload)
+      it "accepts chapa-signature header variant" do
+        post "/webhooks/chapa",
+             params: raw_payload,
+             headers: headers.merge("HTTP_CHAPA_SIGNATURE" => signature)
 
-      post "/webhooks/chapa", params: payload, headers: {
-        "CONTENT_TYPE" => "application/json",
-        "HTTP_CHAPA_SIGNATURE" => sig
-      }
-
-      expect(response).to have_http_status(:not_found)
-      expect(JSON.parse(response.body)["error"]).to eq("Purchase not found")
-    end
-  end
-
-  context "when webhook signature is valid" do
-    let(:payload) { { event: "charge.complete", tx_ref: }.to_json }
-    let(:sig) { compute_signature(payload) }
-
-    it "validates with Chapa API server-to-server and finalizes the purchase" do
-      allow_any_instance_of(Chapa::Client).to receive(:verify_transaction)
-        .with(tx_ref)
-        .and_return({
-                      success: true,
-                      status: "success",
-                      amount: 250.00,
-                      currency: "ETB",
-                      reference: "CHAPA_TRANS_776655",
-                      tx_ref:
-                    })
-
-      expect do
-        post "/webhooks/chapa", params: payload, headers: {
-          "CONTENT_TYPE" => "application/json",
-          "HTTP_CHAPA_SIGNATURE" => sig
-        }
-      end.to change { purchase.reload.purchase_state }.from("in_progress").to("successful")
-
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["status"]).to eq("success")
-      expect(purchase.reload.stripe_transaction_id).to eq("CHAPA_TRANS_776655")
-      expect(purchase.charge_processor_id).to eq("chapa")
-      expect(purchase.card_type).to be_nil
-      expect(purchase.card_type).not_to eq(CardType::UNKNOWN)
-
-      payment_info = ReceiptPresenter::PaymentInfo.new(purchase)
-      expect(payment_info.send(:credit_card_note)).to be_nil
-      expect(payment_info.notes).to be_empty
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "rejects when gateway verification reports amount mismatch" do
-      allow_any_instance_of(Chapa::Client).to receive(:verify_transaction)
-        .with(tx_ref)
-        .and_return({
-                      success: true,
-                      status: "success",
-                      amount: 100.00, # Only 100 ETB instead of 250 ETB
-                      currency: "ETB",
-                      reference: "CHAPA_TRANS_776655",
-                      tx_ref:
-                    })
+    context "with valid signature fallback to secret_key" do
+      let(:signature) { OpenSSL::HMAC.hexdigest("SHA256", secret_key, raw_payload) }
 
-      post "/webhooks/chapa", params: payload, headers: {
-        "CONTENT_TYPE" => "application/json",
-        "HTTP_CHAPA_SIGNATURE" => sig
-      }
+      it "authenticates successfully when signed with API secret key" do
+        post "/webhooks/chapa",
+             params: raw_payload,
+             headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => signature)
 
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to eq("Amount mismatch")
-      expect(purchase.reload.purchase_state).to eq("in_progress")
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "rejects when gateway verification reports currency mismatch" do
-      allow_any_instance_of(Chapa::Client).to receive(:verify_transaction)
-        .with(tx_ref)
-        .and_return({
-                      success: true,
-                      status: "success",
-                      amount: 250.00,
-                      currency: "USD", # Mismatch!
-                      reference: "CHAPA_TRANS_776655",
-                      tx_ref:
-                    })
+    context "with invalid signature" do
+      it "rejects request with 401 unauthorized" do
+        expect do
+          post "/webhooks/chapa",
+               params: raw_payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => "invalid_signature_hash")
+        end.not_to change(ChapaWebhookEvent, :count)
 
-      post "/webhooks/chapa", params: payload, headers: {
-        "CONTENT_TYPE" => "application/json",
-        "HTTP_CHAPA_SIGNATURE" => sig
-      }
-
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to eq("Currency mismatch")
-      expect(purchase.reload.purchase_state).to eq("in_progress")
+        expect(response).to have_http_status(:unauthorized)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Invalid signature")
+      end
     end
 
-    it "is idempotent and does not duplicate financial effects on retried callbacks" do
-      # Pre-finalize purchase
-      purchase.update_columns(purchase_state: "successful")
+    context "with missing signature" do
+      it "rejects request with 401 unauthorized" do
+        post "/webhooks/chapa",
+             params: raw_payload,
+             headers: headers
 
-      expect_any_instance_of(Chapa::Client).not_to receive(:verify_transaction)
-      expect_any_instance_of(Purchase).not_to receive(:increment_sellers_balance!)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
 
-      post "/webhooks/chapa", params: payload, headers: {
-        "CONTENT_TYPE" => "application/json",
-        "HTTP_CHAPA_SIGNATURE" => sig
-      }
+    context "when webhook is a duplicate that has already been processed" do
+      let(:signature) { OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, raw_payload) }
 
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["message"]).to eq("Purchase already finalized")
+      before do
+        idempotency_key = "charge.complete_chk_test_webhook_1234_#{Digest::SHA256.hexdigest(raw_payload)}"
+        ChapaWebhookEvent.create!(
+          idempotency_key:,
+          event_type: "charge.complete",
+          tx_ref: "chk_test_webhook_1234",
+          raw_payload:,
+          status: "processed"
+        )
+      end
+
+      it "returns 200 ok fast without re-enqueuing job" do
+        expect do
+          post "/webhooks/chapa",
+               params: raw_payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => signature)
+        end.not_to change(Chapa::ProcessWebhookJob.jobs, :size)
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to include("already processed")
+      end
     end
   end
 end
