@@ -240,7 +240,7 @@ describe("product page sticky CTA readiness", () => {
       />,
     );
 
-    return screen.getByRole("region", { name: "Product information bar" });
+    return screen.getByRole("region", { name: /Product info(rmation)? bar/i });
   };
 
   const option = (id: string): ProductData["options"][number] => ({
@@ -370,7 +370,7 @@ describe("product page bundle mobile layout", () => {
       />,
     );
 
-    const bar = screen.getByRole("region", { name: "Product information bar" });
+    const bar = screen.getByRole("region", { name: /Product info(rmation)? bar/i });
     const inner = bar.querySelector(".max-w-product-page");
     const innerClasses = inner?.className.split(" ");
     expect(innerClasses).toEqual(expect.arrayContaining(["flex", "max-sm:flex-col", "max-sm:items-stretch"]));
