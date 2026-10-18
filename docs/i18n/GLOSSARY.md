@@ -96,3 +96,9 @@ This glossary documents the standard terminology and stylistic conventions used 
   5. `config/locales/am.yml:64` (`checkout.processing`): `"በቻፓ ክፍያ በማስኬድ ላይ..."`
   6. `config/locales/am.yml:68` (`checkout.redirecting`): `"ወደ ቻፓ ክፍያ በማዛወር ላይ..."`
   7. `app/javascript/locales/am/errors.ts:7` (`errors.card_declined_chapa`): `"ካርድዎ ተቀባይነት አላገኘም። እባክዎ ሌላ ካርድ ይጠቀሙ ወይም በ Chapa ይክፈሉ።"`
+
+### E. Independent Creators / Sellers: ራሳቸውን የቻሉ ሻጮች vs ከተናጠል
+
+- **Decision**: Standardized on **ራሳቸውን የቻሉ ሻጮች** (or **የግል ሻጮች**) for "independent creators / sellers" (e.g., `discover.hero_title` and `discover.seo_title`: `"ራሳቸውን ከቻሉ ሻጮች የዲጂታል ምርቶችን ያግኙ"`).
+- **Rationale**: Replaces **ከተናጠል** and **ፈጣሪዎች**. In Amharic, **ተናጠል** describes discrete, isolated objects or units (e.g., items sold separately), which sounds awkward and dehumanizing when applied to creative individuals. **ራሳቸውን የቻሉ** directly and elegantly expresses autonomy, self-reliance, and independence.
+- **Applied**: Enforced by automated glossary compliance checks in `parity.test.ts` and `localization_parity_spec.rb`.

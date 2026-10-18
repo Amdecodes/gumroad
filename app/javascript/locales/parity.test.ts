@@ -78,3 +78,63 @@ describe("Locale Parity", () => {
     );
   });
 });
+
+describe("Glossary Compliance", () => {
+  const FORBIDDEN_RULES = [
+    {
+      pattern: /ፈጣሪ/u,
+      name: "ፈጣሪ (creator)",
+      message:
+        "GLOSSARY.md Rule A: Standardize on 'ሻጭ' (plural 'ሻጮች', possessive 'የሻጭ') instead of 'ፈጣሪ' to avoid theological ambiguity.",
+    },
+    {
+      pattern: /ከተናጠል\s+(?:ፈጣሪ|ሻጭ)/u,
+      name: "ከተናጠል (independent)",
+      message:
+        "GLOSSARY.md: 'ተናጠል' means discrete/isolated. Use 'ራሳቸውን ከቻሉ' or 'የግል' for independent creators/sellers.",
+    },
+  ];
+
+  interface GlossaryViolation {
+    key: string;
+    value: string;
+    rule: string;
+  }
+
+  const collectViolations = (obj: Record<string, unknown>, prefix = ""): GlossaryViolation[] => {
+    let violations: GlossaryViolation[] = [];
+    for (const [k, v] of Object.entries(obj)) {
+      const fullKey = prefix ? `${prefix}.${k}` : k;
+      if (isRecord(v)) {
+        violations = violations.concat(collectViolations(v, fullKey));
+      } else if (typeof v === "string") {
+        for (const rule of FORBIDDEN_RULES) {
+          if (rule.pattern.test(v)) {
+            violations.push({ key: fullKey, value: v, rule: rule.message });
+          }
+        }
+      }
+    }
+    return violations;
+  };
+
+  it("ensures no Amharic TypeScript dictionary contains forbidden glossary terms", () => {
+    const amObj: Record<string, unknown> = am;
+    const violations = collectViolations(amObj);
+    const failureMsg = violations.map((v) => `  • Key '${v.key}': "${v.value}" violates rule: ${v.rule}`).join("\n");
+    expect(violations, `Forbidden glossary terms found in TypeScript am dictionary:\n${failureMsg}`).toEqual([]);
+  });
+
+  it("ensures config/locales/am.yml contains no forbidden glossary terms", () => {
+    const rootDir = process.cwd();
+    const amYamlContent = fs.readFileSync(path.join(rootDir, "config/locales/am.yml"), "utf-8");
+    const amParsedUnknown: unknown = yaml.parse(amYamlContent);
+    if (!isRecord(amParsedUnknown) || !isRecord(amParsedUnknown.am)) {
+      throw new Error("Invalid am.yml structure");
+    }
+
+    const violations = collectViolations(amParsedUnknown.am);
+    const failureMsg = violations.map((v) => `  • Key '${v.key}': "${v.value}" violates rule: ${v.rule}`).join("\n");
+    expect(violations, `Forbidden glossary terms found in config/locales/am.yml:\n${failureMsg}`).toEqual([]);
+  });
+});

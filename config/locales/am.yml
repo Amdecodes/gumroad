@@ -484,11 +484,12 @@ am:
     average_discount: አማካይ ቅናሽ
     big_savings: ትልቅ ቅናሾች
     black_friday: ብላክ ፍራይዴይ
-    black_friday_hero_text: የፈጣሪዎች ቅናሾች ከማለቃቸው በፊት ይጠቀሙባቸው።
+    black_friday_hero_text: የሻጮች ቅናሾች ከማለቃቸው በፊት ይጠቀሙባቸው።
     black_friday_live: ብላክ ፍራይዴይ ተጀምሯል
     categories: ምድቦች
-    creator_made_products: በፈጣሪዎች የተሰሩ ምርቶች
+    creator_made_products: በሻጮች የተሰሩ ምርቶች
     get_black_friday_deals: የብላክ ፍራይዴይ ቅናሾችን ያግኙ
+    hero_title: ራሳቸውን ከቻሉ ሻጮች የዲጂታል ምርቶችን ያግኙ
     in_sales_so_far: እስካሁን የተሸጠ
     keep_shopping_for: ግዢዎን ይቀጥሉ
     more_categories: ተጨማሪ ምድቦች
@@ -498,8 +499,8 @@ am:
     recently_viewed: በቅርብ የታዩ
     sale: ቅናሽ
     search_products: ምርቶችን ይፈልጉ
-    seo_title: ከተናጠል ፈጣሪዎች የዲጂታል ምርቶችን ያግኙ
-    seo_suffix: ከተናጠል ፈጣሪዎች የተዘጋጁ የዲጂታል ምርቶች
+    seo_title: ራሳቸውን ከቻሉ ሻጮች የዲጂታል ምርቶችን ያግኙ
+    seo_suffix: ራሳቸውን በቻሉ ሻጮች የተዘጋጁ የዲጂታል ምርቶች
     search_results_for: "የፍለጋ ውጤቶች ለ “%{query}”"
   disputes:
     add_to_response: በምላሽዎ ላይ ያክሉ
@@ -1150,7 +1151,7 @@ am:
         subject: የቅድመ-ዕይታ ቪዲዮዎን ማስተናገድ አልቻልንም።
     creator:
       bundles_marketing:
-        subject: ከ$300,000 በላይ ጥቅል ምርቶችን ከሸጡ ምርጥ ፈጣሪዎች ጋር ይቀላቀሉ
+        subject: ከ$300,000 በላይ ጥቅል ምርቶችን ከሸጡ ምርጥ ሻጮች ጋር ይቀላቀሉ
       gumroad_day_fee_saved:
         subject: በ%{app_name} ቀን %{fee} ክፍያ ቆጥበዋል!
       marketing_x_reconnect:
@@ -1158,9 +1159,9 @@ am:
       scheduled_payout_chargeback_hold:
         subject: ክፍያዎ ዘግይቷል
       top_creator_announcement:
-        body_1: በ%{app_name} ላይ ከፍተኛ ፈጣሪ ባጅ አግኝተዋል።
-        body_2: አሁን በመገለጫዎ እና ምርቶችዎ በሚታዩበት ቦታ ሁሉ ቀርቧል፤ ስለዚህ ገዢዎች ከምርጥ የ%{app_name} ፈጣሪዎች እንደሚያገኙ ሁልጊዜ ያውቃሉ። ምንም እርምጃ አያስፈልግም። ዋናውን ክፍል አጠናቀዋል።
-        subject: እርስዎ ምርጥ ፈጣሪ ነዎት!
+        body_1: በ%{app_name} ላይ ከፍተኛ ሻጭ ባጅ አግኝተዋል።
+        body_2: አሁን በመገለጫዎ እና ምርቶችዎ በሚታዩበት ቦታ ሁሉ ቀርቧል፤ ስለዚህ ገዢዎች ከምርጥ የ%{app_name} ሻጮች እንደሚያገኙ ሁልጊዜ ያውቃሉ። ምንም እርምጃ አያስፈልግም። ዋናውን ክፍል አጠናቀዋል።
+        subject: እርስዎ ምርጥ ሻጭ ነዎት!
       year_in_review:
         subject: የ%{year} ዓመትዎ በጨረፍታ
     merchant_registration:
@@ -1437,7 +1438,7 @@ am:
     connect_app_to_gumroad: "%{app}ን ከጋምሮድ ጋር ያገናኙ"
     create_account: መለያ ፍጠር
     creating_account: በመፍጠር ላይ...
-    creator_stats_headline: "ዲጂታል ምርቶችን እና አባልነቶችን በጋምሮድ በመሸጥ ከ%{amount} በላይ ያገኙ ከ%{creators} በላይ ፈጣሪዎችን ይቀላቀሉ።"
+    creator_stats_headline: "ዲጂታል ምርቶችን እና አባልነቶችን በጋምሮድ በመሸጥ ከ%{amount} በላይ ያገኙ ከ%{creators} በላይ ሻጮችን ይቀላቀሉ።"
     email: ኢሜይል
     email_reset_instructions: የዳግም ማስጀመሪያ መመሪያ የሚላክበት ኢሜይል
     enter_authenticator_code: ከማረጋገጫ መተግበሪያዎ ኮዱን ያስገቡ።

@@ -35,6 +35,35 @@ RSpec.describe "Localization Parity" do
     expect(am_keys).to eq(en_keys)
   end
 
+  it "ensures config/locales/am.yml contains no forbidden glossary terms" do
+    am_yaml = YAML.load_file(Rails.root.join("config/locales/am.yml"))
+    expect(am_yaml["am"]).to be_present
+
+    forbidden_patterns = [
+      { pattern: /ፈጣሪ/, message: "Standardize on 'ሻጭ' per GLOSSARY.md Rule A" },
+      { pattern: /ከተናጠል\s+(?:ፈጣሪ|ሻጭ)/, message: "Use 'ራሳቸውን ከቻሉ' or 'የግል' for independent sellers per GLOSSARY.md" },
+    ]
+
+    violations = []
+    check_values = lambda do |hash, prefix = ""|
+      hash.each do |k, v|
+        full_key = prefix.empty? ? k.to_s : "#{prefix}.#{k}"
+        if v.is_a?(Hash)
+          check_values.call(v, full_key)
+        elsif v.is_a?(String)
+          forbidden_patterns.each do |rule|
+            if v.match?(rule[:pattern])
+              violations << "Key '#{full_key}': #{v.inspect} violates #{rule[:message]}"
+            end
+          end
+        end
+      end
+    end
+    check_values.call(am_yaml["am"])
+
+    expect(violations).to be_empty, "Forbidden glossary terms found in config/locales/am.yml:\n#{violations.join("\n")}"
+  end
+
   it "automatically injects default platform parameters into I18n.t" do
     expect(I18n.t("test", locale: :en, default: "Welcome to %{app_name} (%{statement_descriptor}) | %{support_email}")).to eq(
       "Welcome to ArifDrop (ARIFDROP*) | support@arifdrop.com"
