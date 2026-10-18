@@ -192,4 +192,29 @@ Per the strict instructions (*"Don't edit locale files, t()/translate() calls, t
 4. **Error Page Home Links**:
    - `public/404.html` & `public/500.html`: `<a href="https://gumroad.com">Go home?</a>`
 5. **Seller Storefront Fallback Default**:
-   - `app/models/seller_profile.rb:35` and `app/javascript/pages/Settings/Profile/Show.tsx:100`: Fallback default preset `highlight_color: "#ff90e8"`. We recommend migrating the new profile default to Lime `#c3f351`.
+   - `app/models/seller_profile.rb:35` and `app/javascript/pages/Settings/Profile/Show.tsx:100`: Fallback default preset `highlight_color: "#ff90e8"`. We recommend migrating the new profile default to Royal Blue `#146dfd` (lime fails contrast as text on white).
+
+---
+
+## 8. One-Command Asset Swap Pipeline
+
+When final vector SVGs arrive for the wordmark (`public/images/logo.svg`) or the icon mark (`public/images/logo-g.svg`), all derived platform assets (favicons, touch icons, PWA manifest icons, email header band, and OpenGraph share card) can be regenerated automatically with a single command:
+
+```bash
+node scripts/generate-brand-assets.mjs
+```
+
+### Pipeline Specification
+
+| Output Asset | Dimensions | Source Vector | Processing / Output |
+| :--- | :--- | :--- | :--- |
+| `public/favicon.ico` | 16x16, 32x32, 48x48 | `public/images/logo-g.svg` | Multi-resolution ICO container |
+| `public/favicon-16x16.png` | 16×16 | `public/images/logo-g.svg` | Crisp raster icon for standard tabs |
+| `public/favicon-32x32.png` | 32×32 | `public/images/logo-g.svg` | Retina desktop tab favicon |
+| `public/apple-touch-icon.png` | 180×180 | `public/images/logo-g.svg` | iOS home screen bookmark |
+| `public/icon-192.png` | 192×192 | `public/images/logo-g.svg` | PWA manifest Android icon |
+| `public/icon-512.png` | 512×512 | `public/images/logo-g.svg` | PWA manifest splash / install icon |
+| `public/images/email/wordmark_logo.png` | 600×140 | `public/images/logo.svg` | Solid Navy `#122540` band with white wordmark |
+| `public/images/opengraph_image.png` | 1200×630 | `public/images/logo.svg` + `logo-g.svg` | Social share preview card with pattern accent |
+| `public/images/opengraph_image.webp` | 1200×630 | `public/images/opengraph_image.png` | Ultra-lightweight WebP social card (~24 KB) |
+
