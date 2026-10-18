@@ -467,7 +467,7 @@ function DiscoverIndex() {
             />
             <div className="relative mx-auto max-w-3xl">
               <h1 className="font-heading text-3xl font-bold tracking-tight text-white md:text-5xl">
-                {t("discover.seo_title")}
+                {t("discover.hero_title")}
               </h1>
             </div>
           </section>

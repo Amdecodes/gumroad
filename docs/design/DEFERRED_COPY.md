@@ -9,9 +9,9 @@ Per the strict multi-agent rules:
 
 ## 1. Discover Hero Section
 
-| Key | Current Fallback / Workaround | Redesign Usage Location | Proposed English (`en`) | Proposed Amharic (`am`) |
+| Key | Current Fallback / Status | Redesign Usage Location | Proposed English (`en`) | Proposed Amharic (`am`) |
 |---|---|---|---|---|
-| `discover.hero_title` | Reusing `discover.seo_title` | `app/javascript/pages/Discover/Index.tsx` hero headline | "Discover products from Ethiopian and global creators" | "ከኢትዮጵያና ከዓለም ዙሪያ ፈጣሪዎች ልዩ ዲጂታል ምርቶችን ያግኙ" |
+| `discover.hero_title` | **Resolved** (Added in `19ca86925`, merged) | `app/javascript/pages/Discover/Index.tsx` hero headline | "Discover digital products from independent creators" | "ከገለልተኛ ፈጣሪዎች ዲጂታል ምርቶችን ያግኙ" |
 | `discover.hero_subtitle` | *(Omitted currently to avoid hardcoded text)* | `app/javascript/pages/Discover/Index.tsx` hero subtext | "Explore digital assets, software, courses, and art delivered instantly." | "ዲጂታል ንብረቶችን፣ ሶፍትዌሮችን፣ ስልጠናዎችን እና የጥበብ ስራዎችን ወዲያውኑ ያግኙ።" |
 
 ---
