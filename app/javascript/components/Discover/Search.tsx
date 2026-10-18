@@ -75,12 +75,12 @@ export const Search = ({ query, setQuery }: { query?: string | undefined; setQue
       onToggle={setAutocompleteOpen}
       editable
       input={(props) => (
-        <InputGroup>
-          <SearchIcon className="size-5" />
+        <InputGroup className="rounded-full border-white/20 bg-white/10 text-white focus-within:border-royal-blue focus-within:bg-white/15 focus-within:outline-hidden">
+          <SearchIcon className="size-5 text-white/70" />
           <Input
             {...props}
             type="search"
-            className="cursor-text!"
+            className="cursor-text! border-none bg-transparent text-white placeholder:text-white/70 focus:outline-hidden"
             placeholder={t("discover.search_products")}
             aria-label={t("discover.search_products")}
             value={enteredQuery}

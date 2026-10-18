@@ -1,8 +1,8 @@
-import { BookmarkHeart } from "@boxicons/react";
+import { BookmarkHeart, Search as SearchIcon, User } from "@boxicons/react";
 import * as React from "react";
 
 import { classNames } from "$app/utils/classNames";
-import { getRootTaxonomy, getRootTaxonomyCss, Taxonomy } from "$app/utils/discover";
+import { Taxonomy } from "$app/utils/discover";
 import { t } from "$app/utils/i18n";
 import { getTaxonomyLabel } from "$app/utils/taxonomy";
 
@@ -23,8 +23,8 @@ const UserActionButtons: React.FC = () => {
   if (currentSeller) {
     return (
       <>
-        <NavigationButton href={Routes.library_url()} className="flex-1 lg:flex-none">
-          <BookmarkHeart pack="filled" className="size-5" /> {t("navigation.library")}
+        <NavigationButton href={Routes.library_url()} className="border-white/20 text-white hover:bg-white/10 flex-1 lg:flex-none">
+          <BookmarkHeart pack="filled" className="size-4" /> {t("navigation.library")}
         </NavigationButton>
         {currentSeller.has_published_products ? null : (
           <NavigationButton href={Routes.products_url()} color="primary" className="flex-1 lg:flex-none">
@@ -37,7 +37,7 @@ const UserActionButtons: React.FC = () => {
 
   return (
     <>
-      <NavigationButton href={Routes.login_url()} className="flex-1 lg:flex-none">
+      <NavigationButton href={Routes.login_url()} className="border-white/20 text-white hover:bg-white/10 flex-1 lg:flex-none">
         {t("auth.log_in")}
       </NavigationButton>
       <NavigationButton href={Routes.signup_url()} color="primary" className="flex-1 lg:flex-none">
@@ -63,23 +63,19 @@ const DesktopHeaderRows: React.FC<HeaderRowElementsProps> = ({
   userActionButtons,
   cartButton,
   avatarElement,
-  navElementNoFooter,
 }) => (
-  <>
-    <div className="flex w-full items-center gap-4">
+  <div className="flex w-full items-center justify-between gap-6">
+    <div className="flex items-center gap-6 flex-1 max-w-2xl">
       {logoLink}
       {searchBar}
-      <div className="flex shrink-0 items-center space-x-4">
-        <LanguageToggle />
-        {userActionButtons}
-        {cartButton}
-      </div>
     </div>
-    <div className="flex w-full items-center justify-between gap-4">
-      <div className="grow">{navElementNoFooter}</div>
+    <div className="flex shrink-0 items-center space-x-3">
+      <LanguageToggle />
+      {userActionButtons}
+      {cartButton}
       {avatarElement}
     </div>
-  </>
+  </div>
 );
 
 const MobileHeaderRows: React.FC<HeaderRowElementsProps> = ({
@@ -90,15 +86,15 @@ const MobileHeaderRows: React.FC<HeaderRowElementsProps> = ({
   navElementWithFooter,
 }) => (
   <>
-    <div className="flex w-full items-center justify-between">
+    <div className="flex w-full items-center justify-between gap-3">
       {logoLink}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <LanguageToggle variant="compact" />
         {avatarElement}
         {cartButton}
       </div>
     </div>
-    <div className="flex w-full items-center gap-4">
+    <div className="flex w-full items-center gap-2">
       {searchBar}
       {navElementWithFooter}
     </div>
@@ -130,8 +126,6 @@ export const Layout: React.FC<{
   const isDesktop = useIsAboveBreakpoint("lg");
   const currentSeller = useCurrentSeller();
 
-  const rootTaxonomy = getRootTaxonomy(taxonomyPath);
-
   setQuery ??= (query) => (window.location.href = Routes.discover_url({ host: discoverDomain, query }));
 
   onTaxonomyChange ??= (newTaxonomyPath) => {
@@ -143,8 +137,8 @@ export const Layout: React.FC<{
   const userActionButtons = <UserActionButtons />;
 
   const logoLink = (
-    <a href={Routes.discover_url({ host: discoverDomain })} className="shrink-0" aria-label={t("navigation.discover")}>
-      <Logo className="h-auto w-[245px]" />
+    <a href={Routes.discover_url({ host: discoverDomain })} className="flex shrink-0 items-center" aria-label={t("navigation.discover")}>
+      <Logo className="h-8 w-auto text-white" />
     </a>
   );
   const searchBar = (
@@ -152,7 +146,7 @@ export const Layout: React.FC<{
       <Search query={query} setQuery={setQuery} />
     </div>
   );
-  const cartButton = <CartNavigationButton className="link-button shrink-0" />;
+  const cartButton = <CartNavigationButton className="shrink-0 text-white border-white/20 hover:bg-white/10" />;
   const avatarElement = currentSeller ? (
     <a href={Routes.dashboard_url({ host: appDomain })} aria-label={t("navigation.dashboard")} className="shrink-0">
       <Avatar src={currentSeller.avatarUrl} />
@@ -191,28 +185,83 @@ export const Layout: React.FC<{
 
   return (
     <div className={className}>
-      <header
-        className="hero relative z-20 border-t-0 border-b border-border bg-body px-4 py-8 lg:ps-16 lg:pe-16"
-        style={showTaxonomy && rootTaxonomy ? getRootTaxonomyCss(rootTaxonomy) : undefined}
-      >
-        <div className="flex w-full flex-col gap-4">
+      <header className="sticky top-0 z-40 border-b border-navy-border/40 bg-navy px-4 py-3 text-white shadow-xs lg:px-8">
+        <div className="mx-auto flex max-w-7xl w-full flex-col gap-3">
           {isDesktop ? (
             <DesktopHeaderRows {...headerRowElementsProps} />
           ) : (
             <MobileHeaderRows {...headerRowElementsProps} />
           )}
         </div>
-
-        {showTaxonomy && taxonomyPath ? (
-          <TaxonomyCategoryBreadcrumbs
-            taxonomyPath={taxonomyPath}
-            taxonomies={taxonomiesForNav}
-            onClickTaxonomy={onTaxonomyChange}
-          />
-        ) : null}
       </header>
-      {children}
+
+      {/* Category navigation strip */}
+      <nav aria-label={t("discover.categories")} className="border-b border-border/80 bg-background/95 backdrop-blur-sm px-4 py-2 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="grow overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{navElementNoFooter}</div>
+        </div>
+      </nav>
+
+      {showTaxonomy && taxonomyPath ? (
+        <div className="border-b border-border/60 bg-muted/20 px-4 py-2 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <TaxonomyCategoryBreadcrumbs
+              taxonomyPath={taxonomyPath}
+              taxonomies={taxonomiesForNav}
+              onClickTaxonomy={onTaxonomyChange}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      <main className="min-h-[calc(100vh-250px)] pb-16 md:pb-0">{children}</main>
+
+      <BuyerMobileTabBar />
     </div>
+  );
+};
+
+const BuyerMobileTabBar: React.FC = () => {
+  const { discoverDomain, appDomain } = useDomains();
+  const currentSeller = useCurrentSeller();
+
+  return (
+    <nav
+      aria-label={t("navigation.main")}
+      className="fixed bottom-0 inset-x-0 z-30 flex h-14 items-center justify-around border-t border-navy-border/40 bg-navy/95 backdrop-blur-md px-2 text-white md:hidden shadow-lg"
+    >
+      <a
+        href={Routes.discover_url({ host: discoverDomain })}
+        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/90 hover:text-white no-underline py-1 px-3"
+      >
+        <SearchIcon className="size-5" />
+        <span>{t("navigation.discover")}</span>
+      </a>
+      <a
+        href={Routes.library_url()}
+        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+      >
+        <BookmarkHeart className="size-5" />
+        <span>{t("navigation.library")}</span>
+      </a>
+      {currentSeller ? (
+        <a
+          href={Routes.dashboard_url({ host: appDomain })}
+          className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+        >
+          <User className="size-5" />
+          <span>{t("navigation.dashboard")}</span>
+        </a>
+      ) : (
+        <a
+          href={Routes.login_url()}
+          className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+        >
+          <User className="size-5" />
+          <span>{t("auth.log_in")}</span>
+        </a>
+      )}
+    </nav>
   );
 };
 

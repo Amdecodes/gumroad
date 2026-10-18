@@ -455,7 +455,23 @@ function DiscoverIndex() {
               </div>
             </div>
           </header>
-        ) : null}
+        ) : (
+          <section className="relative overflow-hidden border-b border-navy-border/40 bg-navy py-12 px-6 text-center text-white lg:py-16 lg:px-12">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 opacity-15"
+              style={{
+                backgroundImage: "radial-gradient(circle, #2199F9 1.5px, transparent 1.5px)",
+                backgroundSize: "24px 24px",
+              }}
+            />
+            <div className="relative mx-auto max-w-3xl">
+              <h1 className="font-heading text-3xl font-bold tracking-tight text-white md:text-5xl">
+                {t("discover.seo_title")}
+              </h1>
+            </div>
+          </section>
+        )}
         <div className="grid gap-16! px-4 py-16 lg:ps-16 lg:pe-16">
           {showRecommendationSections ? (
             <Deferred data={["recommended_products"]} fallback={<ProductsCarouselSkeleton />}>
