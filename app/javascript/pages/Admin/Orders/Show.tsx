@@ -79,6 +79,7 @@ export type OrderDetailProps = {
     amount_formatted: string;
     price_cents: number;
     currency: string;
+    platform_fee_formatted?: string | null;
     refunded_amount_formatted?: string | null;
     status: string;
     refund_status?: string | null;
@@ -353,6 +354,18 @@ export default function Show({ order }: OrderDetailProps) {
                   </div>
                 </div>
 
+                <div>
+                  <div className="text-xs text-muted">{t("admin.orders_page.platform_fee", undefined, "Platform fee (15%)")}</div>
+                  <div className="text-sm font-medium">{order.platform_fee_formatted || "—"}</div>
+                </div>
+
+                {order.chapa_details ? (
+                  <div>
+                    <div className="text-xs text-muted">{t("admin.orders_page.gateway_fee", undefined, "Chapa gateway fee")}</div>
+                    <div className="text-sm font-medium">{order.chapa_details.charge_formatted || "—"}</div>
+                  </div>
+                ) : null}
+
                 {order.chapa_details ? (
                   <>
                     <div>
@@ -370,10 +383,6 @@ export default function Show({ order }: OrderDetailProps) {
                     <div>
                       <div className="text-xs text-muted">{t("admin.orders_page.gateway_mode")}</div>
                       <div className="font-mono text-sm uppercase">{order.chapa_details.mode || "—"}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted">{t("admin.orders_page.gateway_fee")}</div>
-                      <div className="text-sm font-medium">{order.chapa_details.charge_formatted || "—"}</div>
                     </div>
                     <div className="flex items-end">
                       <Button outline disabled={isReverifying} onClick={handleReverify} className="text-xs">

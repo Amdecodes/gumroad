@@ -71,7 +71,40 @@ describe "Admin::Orders GET /admin/orders/:id", type: :request, inertia: true do
       expect(order_props["status"]).to eq("successful")
       expect(order_props["price_cents"]).to eq(9900)
       expect(order_props["currency"]).to eq("ETB")
+      expect(order_props["platform_fee_formatted"]).to eq(MoneyFormatter.format(purchase.fee_cents, purchase.displayed_price_currency_type))
       expect(order_props["access"]["receipt_url"]).to be_present
+    end
+
+    it "serializes Chapa details with actual gateway charge vs platform fee" do
+      order = create(:order)
+      OrderPurchase.create!(order:, purchase:)
+      ChapaTransaction.create!(
+        tx_ref: "arifdrop-test-12345",
+        order:,
+        purchase:,
+        amount_santims: 9900,
+        amount_decimal: BigDecimal("99.00"),
+        currency: "ETB",
+        status: "success",
+        mode: "test",
+        chapa_reference: "CHAPA-REF-999",
+        charge_decimal: BigDecimal("35.00"),
+        payment_method: "telebirr"
+      )
+
+      get admin_order_path(purchase.external_id), headers: { "X-Inertia" => "true" }
+
+      expect(response).to have_http_status(:ok)
+      order_props = JSON.parse(response.body)["props"]["order"]
+
+      expect(order_props["platform_fee_formatted"]).to eq(MoneyFormatter.format(purchase.fee_cents, purchase.displayed_price_currency_type))
+      expect(order_props["chapa_details"]).to be_present
+      expect(order_props["chapa_details"]["tx_ref"]).to eq("arifdrop-test-12345")
+      expect(order_props["chapa_details"]["chapa_reference"]).to eq("CHAPA-REF-999")
+      expect(order_props["chapa_details"]["status"]).to eq("success")
+      expect(order_props["chapa_details"]["mode"]).to eq("test")
+      expect(order_props["chapa_details"]["charge_formatted"]).to eq("35.0 ETB")
+      expect(order_props["chapa_details"]["payment_method"]).to eq("telebirr")
     end
 
     it "includes subscription and license details when present" do

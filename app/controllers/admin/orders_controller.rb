@@ -194,7 +194,7 @@ class Admin::OrdersController < Admin::BaseController
     tx_ref = params[:tx_ref].presence || @order.processor_transaction_id.presence
     if tx_ref.blank?
       chapa_tx = @order.order&.chapa_transactions&.order(created_at: :desc)&.first ||
-                 ChapaTransaction.where(order_id: @order.order_id).order(created_at: :desc).first
+                 ChapaTransaction.where(purchase_id: @order.id).order(created_at: :desc).first
       tx_ref = chapa_tx&.tx_ref
     end
 
@@ -298,6 +298,7 @@ class Admin::OrdersController < Admin::BaseController
         amount_formatted: order.formatted_total_price,
         price_cents: order.price_cents,
         currency: order.displayed_price_currency_type.to_s.upcase,
+        platform_fee_formatted: MoneyFormatter.format(order.fee_cents, order.displayed_price_currency_type),
         refunded_amount_formatted: (order.refunded? || order.amount_refunded_cents.to_i > 0) ? MoneyFormatter.format(order.amount_refunded_cents.to_i, order.displayed_price_currency_type) : nil,
         status: order.purchase_state,
         refund_status: order.refunded? ? "refunded" : (order.stripe_partially_refunded ? "partially_refunded" : nil),
@@ -308,8 +309,8 @@ class Admin::OrdersController < Admin::BaseController
         transaction_id: order.stripe_transaction_id.presence || order.paypal_order_id.presence || order.processor_transaction_id,
         chapa_details: begin
           chapa_tx = order.order&.chapa_transactions&.order(created_at: :desc)&.first ||
-                     ChapaTransaction.where(order_id: order.order_id).order(created_at: :desc).first ||
-                     ChapaTransaction.find_by(tx_ref: order.processor_transaction_id)
+                     ChapaTransaction.where(purchase_id: order.id).order(created_at: :desc).first ||
+                     (order.processor_transaction_id.present? ? ChapaTransaction.find_by(tx_ref: order.processor_transaction_id) : nil)
           chapa_tx ? {
             tx_ref: chapa_tx.tx_ref,
             chapa_reference: chapa_tx.chapa_reference,

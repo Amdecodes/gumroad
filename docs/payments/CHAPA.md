@@ -199,18 +199,21 @@ When issuing a full or partial refund:
 
 ArifDrop operates as a creator marketplace with a transparent 15% platform fee model:
 
+> [!NOTE]
+> **Dynamic Chapa Gateway Fees**: 2.5% was an illustrative example from Chapa's standard pricing table, but in reality Chapa fees vary dynamically by payment channel (Telebirr, CBE Birr, cards, etc.) and are read dynamically from Chapa's verification API `data.charge` into `ChapaTransaction#charge_decimal`. ArifDrop absorbs this dynamic gateway charge as an operating expense, while collecting the 15% ArifDrop platform fee (`order.fee_cents`).
+
 #### Case A: Full Refund of a 1,000 ETB Sale
 
 - **Initial Sale**:
   - Buyer pays: 1,000 ETB
   - ArifDrop Platform Fee (15%): 150 ETB
   - Seller Net Earnings (85%): 850 ETB
-  - Chapa Gateway Processing Fee (e.g. 2.5%): 25 ETB (absorbed by platform)
+  - Chapa Gateway Processing Fee (actual): Dynamically read from `data.charge` / `charge_decimal` (absorbed by platform)
 - **Upon Full Refund**:
   - **Buyer**: Receives 1,000 ETB (100% refund).
   - **ArifDrop Platform**: Forgives 100% of its 150 ETB platform fee (net platform revenue from this sale becomes 0 ETB).
   - **Seller Balance**: Debited by 850 ETB (the exact net earnings previously credited).
-  - **Chapa Gateway Fee**: Chapa's 25 ETB processing fee is non-refundable by Chapa; ArifDrop platform absorbs this gateway charge as an operating expense.
+  - **Chapa Gateway Fee**: Chapa's gateway processing fee is non-refundable by Chapa; ArifDrop platform absorbs this gateway charge as an operating expense.
 - **Negative Balance Handling**:
   - If the seller has already withdrawn or been paid out their balance, debiting 850 ETB results in a **negative balance** (e.g. -850 ETB).
   - ArifDrop’s ledger allows negative balances; subsequent product sales automatically offset the deficit before future payouts can occur.
