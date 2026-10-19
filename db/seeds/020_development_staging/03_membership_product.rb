@@ -9,6 +9,8 @@
 #
 # find_by (not Link.fetch, which scopes to visible) keeps re-runs idempotent even if the product
 # gets soft-deleted.
+return unless Feature.active?(:recurring_products)
+
 seller = User.find_by(email: "seller@gumroad.com")
 if seller.present? && Link.find_by(unique_permalink: "membershipdemo").blank?
   seller.products.create!(

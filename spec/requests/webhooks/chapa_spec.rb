@@ -121,5 +121,85 @@ describe "Chapa Webhooks", type: :request do
         expect(json["message"]).to include("already processed")
       end
     end
+
+    context "with documented Chapa payload variants" do
+      it "accepts charge.refunded payload and enqueues job" do
+        payload = {
+          event: "charge.refunded",
+          currency: "ETB",
+          amount: "400.00",
+          charge: "12.00",
+          status: "refunded",
+          mode: "live",
+          reference: "AP634JFwEbxd",
+          tx_ref: "4FGFF4FFGD3"
+        }.to_json
+        sig = OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, payload)
+
+        expect do
+          post "/webhooks/chapa",
+               params: payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => sig)
+        end.to change(Chapa::ProcessWebhookJob.jobs, :size).by(1)
+
+        expect(response).to have_http_status(:ok)
+        event = ChapaWebhookEvent.last
+        expect(event.event_type).to eq("charge.refunded")
+        expect(event.tx_ref).to eq("4FGFF4FFGD3")
+      end
+
+      it "accepts charge.reversed payload and enqueues job" do
+        payload = {
+          event: "charge.reversed",
+          status: "reversed",
+          reference: "AP634JFwEbxd",
+          tx_ref: "4FGFF4FFGD3"
+        }.to_json
+        sig = OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, payload)
+
+        expect do
+          post "/webhooks/chapa",
+               params: payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => sig)
+        end.to change(Chapa::ProcessWebhookJob.jobs, :size).by(1)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "accepts charge.failed/cancelled payload and enqueues job" do
+        payload = {
+          event: "charge.failed/cancelled",
+          status: "failed",
+          reference: "AP634JFwEbxd",
+          tx_ref: "4FGFF4FFGD3"
+        }.to_json
+        sig = OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, payload)
+
+        expect do
+          post "/webhooks/chapa",
+               params: payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => sig)
+        end.to change(Chapa::ProcessWebhookJob.jobs, :size).by(1)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "accepts unknown event payload, returns 200 and enqueues job" do
+        payload = {
+          event: "custom.unknown_event",
+          status: "unsupported",
+          reference: "MYMER3434989"
+        }.to_json
+        sig = OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, payload)
+
+        expect do
+          post "/webhooks/chapa",
+               params: payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => sig)
+        end.to change(Chapa::ProcessWebhookJob.jobs, :size).by(1)
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 end

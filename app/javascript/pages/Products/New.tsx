@@ -76,6 +76,7 @@ type NewProductPageProps = {
   current_seller_currency_code: CurrencyCode;
   native_product_types: ProductNativeType[];
   service_product_types: ProductServiceType[];
+  recurring_products_enabled?: boolean;
   release_at_date: string;
   show_orientation_text: boolean;
   eligible_for_service_products: boolean;
@@ -89,6 +90,7 @@ const NewProductPage = () => {
     current_seller_currency_code,
     native_product_types,
     service_product_types,
+    recurring_products_enabled = false,
     release_at_date,
     show_orientation_text,
     eligible_for_service_products,
@@ -109,7 +111,7 @@ const NewProductPage = () => {
     link: {
       name: "",
       price_range: "",
-      price_currency_type: current_seller_currency_code || "etb",
+      price_currency_type: current_seller_currency_code,
       native_type: "digital",
       is_physical: false,
       is_recurring_billing: false,
@@ -133,6 +135,9 @@ const NewProductPage = () => {
   const selectedCurrency = findCurrencyByCode(form.data.link.price_currency_type);
 
   const handleProductTypeChange = (type: ProductNativeType) => {
+    if (!recurring_products_enabled && typia.is<RecurringProductType>(type)) {
+      return;
+    }
     form.setData("link", {
       ...form.data.link,
       native_type: type,
@@ -389,6 +394,7 @@ const NewProductPage = () => {
                   selectedType={form.data.link.native_type}
                   types={native_product_types}
                   onChange={handleProductTypeChange}
+                  recurringProductsEnabled={recurring_products_enabled}
                 />
               </Fieldset>
               {service_product_types.length > 0 ? (
@@ -576,11 +582,13 @@ const ProductTypeSelector = ({
   types,
   onChange,
   disabled,
+  recurringProductsEnabled = false,
 }: {
   selectedType: ProductNativeType;
   types: ProductNativeType[];
   onChange: (type: ProductNativeType) => void;
   disabled?: boolean;
+  recurringProductsEnabled?: boolean;
 }) => (
   <Tabs
     variant="buttons"
@@ -589,6 +597,8 @@ const ProductTypeSelector = ({
   >
     {types.map((type) => {
       const isSelected = type === selectedType;
+      const isRecurring = typia.is<RecurringProductType>(type);
+      const isTypeDisabled = disabled || (!recurringProductsEnabled && isRecurring);
       const typeButton = (
         <Tab
           key={type}
@@ -597,12 +607,18 @@ const ProductTypeSelector = ({
           className="not-active:hover:translate-0 not-active:hover:shadow-none"
         >
           <Button
-            className={classNames("flex-col hover:translate-0 hover:shadow-none", isSelected && "shadow-none")}
+            className={classNames(
+              "flex-col hover:translate-0 hover:shadow-none",
+              isSelected && "shadow-none",
+              isTypeDisabled && "cursor-not-allowed opacity-50",
+            )}
             role="radio"
             aria-checked={isSelected}
             data-type={type}
-            onClick={() => onChange(type)}
-            disabled={disabled}
+            onClick={() => {
+              if (!isTypeDisabled) onChange(type);
+            }}
+            disabled={isTypeDisabled}
           >
             <img
               src={nativeTypeIcons[`./${type}.png`]}
@@ -618,13 +634,21 @@ const ProductTypeSelector = ({
           </Button>
         </Tab>
       );
-      return disabled ? (
-        <WithTooltip tip={t("seller.products.service_tooltip")} key={type}>
-          {typeButton}
-        </WithTooltip>
-      ) : (
-        typeButton
-      );
+      if (disabled) {
+        return (
+          <WithTooltip tip={t("seller.products.service_tooltip")} key={type}>
+            {typeButton}
+          </WithTooltip>
+        );
+      }
+      if (!recurringProductsEnabled && isRecurring) {
+        return (
+          <WithTooltip tip={t("seller.products.recurring_disabled_notice")} key={type}>
+            {typeButton}
+          </WithTooltip>
+        );
+      }
+      return typeButton;
     })}
     {/* Grid spacers: keep the button grid visually balanced when fewer than 3 product types are available. */}
     {types.length < 2 ? <div /> : null}

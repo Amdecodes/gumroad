@@ -108,6 +108,14 @@ am:
     team_member_not_found: የቡድኑ አባል አልተገኘም
     title: የአስተዳዳሪ ፖርታል
     user_not_found: ተጠቃሚው አልተገኘም
+  chapa:
+    errors:
+      duplicate_ref: ይህ የግብይት ማጣቀሻ ከዚህ ቀደም ጥቅም ላይ ውሏል።
+      generic_failure: ክፍያው አልተሳካም። እባክዎ እንደገና ይሞክሩ።
+      insufficient_funds: ግብይቱን ለማጠናቀቅ በቂ የሂሳብ ቀሪ የለም።
+      merchant_disabled: የሻጭ ክፍያዎች በአሁኑ ጊዜ ተሰናክለዋል።
+      network_error: "ከክፍያ መተላለፊያ ጋር ሲገናኝ የኔትወርክ ስህተት አጋጥሟል፦ %{msg}"
+      payment_declined: ክፍያው ተቀባይነት አላገኘም ወይም ተሰርዟል። እባክዎ እንደገና ይሞክሩ።
   checkout:
     accept_terms_error: እባክዎ ውሎችን እና ግዴታዎችን ይቀበሉ።
     accept_terms_prefix: እስማማለሁ

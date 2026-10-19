@@ -7,6 +7,7 @@ describe Chapa::RefundService do
   let(:product) { create(:product, user: seller, price_cents: 100_00, price_currency_type: "etb") }
   let(:order) { create(:order) }
   let(:tx_ref) { "chk_test_#{SecureRandom.hex(6)}" }
+  let(:chapa_reference) { "CHAPA_REF_#{SecureRandom.hex(4)}" }
   let(:purchase) do
     create(
       :purchase,
@@ -15,12 +16,13 @@ describe Chapa::RefundService do
       seller:,
       price_cents: 100_00,
       charge_processor_id: "chapa",
-      stripe_transaction_id: tx_ref
+      stripe_transaction_id: chapa_reference
     )
   end
   let!(:chapa_tx) do
     ChapaTransaction.create!(
       tx_ref:,
+      chapa_reference:,
       order:,
       purchase:,
       amount_santims: 100_00,
@@ -38,35 +40,52 @@ describe Chapa::RefundService do
     context "when refund completes immediately on gateway" do
       before do
         allow(mock_client).to receive(:refund_transaction).with(
-          tx_ref:,
-          amount_santims: 100_00,
-          reason: ""
+          hash_including(
+            identifier: chapa_reference,
+            fallback_identifier: tx_ref,
+            amount_santims: 100_00,
+            reason: ""
+          )
         ).and_return(
           success: true,
           ref_id: "chp_ref_123",
           status: "refunded",
+          used_identifier: chapa_reference,
           raw: { "status" => "success" }
         )
       end
 
-      it "marks purchase refunded and updates transaction logs" do
+      it "marks purchase refunded and records both IDs in transaction logs" do
         result = subject.perform
         expect(result[:success]).to be true
         expect(result[:status]).to eq("refunded")
         expect(purchase.reload.stripe_refunded).to be true
+
+        chapa_tx.reload
+        refunds = chapa_tx.raw_payload["refunds"]
+        expect(refunds).to be_an(Array)
+        recorded = refunds.last
+        expect(recorded["ref_id"]).to eq("chp_ref_123")
+        expect(recorded["refund_reference"]).to start_with("rf_")
+        expect(recorded["chapa_reference"]).to eq(chapa_reference)
+        expect(recorded["tx_ref"]).to eq(tx_ref)
       end
     end
 
     context "when refund is initiated or processing asynchronously" do
       before do
         allow(mock_client).to receive(:refund_transaction).with(
-          tx_ref:,
-          amount_santims: 100_00,
-          reason: ""
+          hash_including(
+            identifier: chapa_reference,
+            fallback_identifier: tx_ref,
+            amount_santims: 100_00,
+            reason: ""
+          )
         ).and_return(
           success: true,
           ref_id: "chp_ref_processing_456",
           status: "initiated",
+          used_identifier: chapa_reference,
           raw: { "status" => "pending" }
         )
         allow(Chapa::PollRefundStatusJob).to receive(:perform_in)
@@ -91,9 +110,12 @@ describe Chapa::RefundService do
     context "when gateway reports insufficient merchant balance" do
       before do
         allow(mock_client).to receive(:refund_transaction).with(
-          tx_ref:,
-          amount_santims: 100_00,
-          reason: ""
+          hash_including(
+            identifier: chapa_reference,
+            fallback_identifier: tx_ref,
+            amount_santims: 100_00,
+            reason: ""
+          )
         ).and_return(
           success: false,
           error: "Insufficient balance to perform refund"
@@ -114,13 +136,17 @@ describe Chapa::RefundService do
 
       before do
         allow(mock_client).to receive(:refund_transaction).with(
-          tx_ref:,
-          amount_santims: 40_00,
-          reason: "Defective item"
+          hash_including(
+            identifier: chapa_reference,
+            fallback_identifier: tx_ref,
+            amount_santims: 40_00,
+            reason: "Defective item"
+          )
         ).and_return(
           success: true,
           ref_id: "chp_partial_789",
           status: "refunded",
+          used_identifier: chapa_reference,
           raw: { "status" => "success" }
         )
       end

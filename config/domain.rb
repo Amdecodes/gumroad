@@ -115,6 +115,14 @@ else
   VALID_DISCOVER_REQUEST_HOST = config[:valid_discover_host]
 end
 
-if environment == :development && !ENV["LOCAL_PROXY_DOMAIN"].nil?
-  VALID_REQUEST_HOSTS << ENV["LOCAL_PROXY_DOMAIN"].sub(/https?:\/\//, "")
+if environment == :development
+  if ENV["LOCAL_PROXY_DOMAIN"] && !ENV["LOCAL_PROXY_DOMAIN"].empty?
+    VALID_REQUEST_HOSTS << ENV["LOCAL_PROXY_DOMAIN"].sub(%r{https?://}, "").split(":").first
+  end
+  if ENV["TUNNEL_HOST"] && !ENV["TUNNEL_HOST"].empty?
+    VALID_REQUEST_HOSTS << ENV["TUNNEL_HOST"].sub(%r{https?://}, "").split(":").first
+  end
+  if ENV["CANONICAL_HOST"] && !ENV["CANONICAL_HOST"].empty?
+    VALID_REQUEST_HOSTS << ENV["CANONICAL_HOST"].sub(%r{https?://}, "").split(":").first
+  end
 end

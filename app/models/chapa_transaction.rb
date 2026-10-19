@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ChapaTransaction < ApplicationRecord
-  STATUSES = %w[pending success failed cancelled expired].freeze
+  STATUSES = %w[pending success failed cancelled expired refunded reversed].freeze
 
   belongs_to :order
   belongs_to :purchase, optional: true
@@ -15,6 +15,8 @@ class ChapaTransaction < ApplicationRecord
   scope :pending, -> { where(status: "pending") }
   scope :successful, -> { where(status: "success") }
   scope :failed, -> { where(status: "failed") }
+  scope :refunded, -> { where(status: "refunded") }
+  scope :reversed, -> { where(status: "reversed") }
   scope :reconciliation_candidates, ->(window) { pending.where("created_at < ?", window) }
   scope :abandoned_candidates, ->(window) { pending.where("created_at < ?", window) }
 

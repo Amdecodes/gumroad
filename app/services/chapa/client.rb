@@ -214,10 +214,13 @@ module Chapa
       }
     end
 
-    # Initiates a full or partial refund via POST /v1/refund/<tx_ref>.
-    # Never retries on POST failures.
-    def refund_transaction(tx_ref:, amount_santims: nil, reason: nil, reference: nil)
-      return { success: false, error: "Missing tx_ref" } if tx_ref.blank?
+    # Initiates a full or partial refund via POST /v1/refund/<identifier>.
+    # Tries primary identifier (Chapa reference) first; falls back once to fallback_identifier (tx_ref)
+    # if Chapa returns a 404 / not found response.
+    # Never retries on non-idempotent POST failures (like timeouts or validation errors).
+    def refund_transaction(identifier: nil, fallback_identifier: nil, tx_ref: nil, amount_santims: nil, reason: nil, reference: nil)
+      primary_id = identifier.presence || tx_ref
+      return { success: false, error: "Missing refund identifier" } if primary_id.blank?
 
       payload = {}
       if amount_santims.present? && amount_santims > 0
@@ -226,40 +229,15 @@ module Chapa
       payload[:reason] = reason.truncate(255) if reason.present?
       payload[:reference] = reference.truncate(100) if reference.present?
 
-      response = http_client.post("refund/#{CGI.escape(tx_ref.to_s)}") do |req|
-        req.headers["Authorization"] = "Bearer #{secret_key}"
-        req.headers["Content-Type"] = "application/json"
-        req.body = payload.to_json
+      result = attempt_refund_post(primary_id, payload)
+
+      # Fallback to secondary identifier once if primary was not found
+      if !result[:success] && fallback_identifier.present? && fallback_identifier.to_s != primary_id.to_s && not_found_response?(result)
+        Rails.logger.warn("[Chapa::Client refund] Primary identifier '#{primary_id}' not found. Retrying once with fallback identifier '#{fallback_identifier}'.")
+        result = attempt_refund_post(fallback_identifier, payload)
       end
 
-      body = parse_json(response.body)
-
-      if response.success? && body["status"] == "success"
-        data = body["data"] || {}
-        {
-          success: true,
-          ref_id: data["ref_id"],
-          status: data["status"] || "initiated",
-          amount: data["amount"],
-          currency: data["currency"],
-          payment_reference: data["payment_reference"],
-          raw: body
-        }
-      else
-        error_msg = body["message"] || "Failed to initiate refund (HTTP #{response.status})"
-        {
-          success: false,
-          error: map_error_message(error_msg),
-          error_code: body["message"],
-          raw: body
-        }
-      end
-    rescue Faraday::Error => e
-      log_safe_error("refund", e)
-      {
-        success: false,
-        error: I18n.t("chapa.errors.network_error", default: "Network error connecting to payment gateway: %{msg}", msg: e.message)
-      }
+      result
     end
 
     # Verifies a refund by ref_id via GET /v1/refund/<ref_id>/verify.
@@ -404,6 +382,64 @@ module Chapa
           end
           raise e
         end
+      end
+
+      def not_found_response?(result)
+        return true if result[:status_code] == 404
+
+        raw_str = "#{result[:error_code]} #{result[:error]} #{result[:raw]}".downcase
+        raw_str.include?("not found") ||
+          raw_str.include?("cannot be found") ||
+          raw_str.include?("record not found") ||
+          raw_str.include?("transaction not found") ||
+          raw_str.include?("invalid transaction") ||
+          raw_str.include?("does not exist") ||
+          raw_str.include?("doesn't exist")
+      end
+
+      def attempt_refund_post(id, payload)
+        response = http_client.post("refund/#{CGI.escape(id.to_s)}") do |req|
+          req.headers["Authorization"] = "Bearer #{secret_key}"
+          req.headers["Content-Type"] = "application/json"
+          req.body = payload.to_json
+        end
+
+        body = parse_json(response.body)
+
+        if response.success? && body["status"] == "success"
+          data = body["data"] || {}
+          {
+            success: true,
+            ref_id: data["ref_id"],
+            status: data["status"] || "initiated",
+            amount: data["amount"],
+            currency: data["currency"],
+            payment_reference: data["payment_reference"],
+            refund_reference: payload[:reference],
+            used_identifier: id,
+            raw: body
+          }
+        else
+          error_msg = body["message"] || "Failed to initiate refund (HTTP #{response.status})"
+          {
+            success: false,
+            status_code: response.status,
+            error: map_error_message(error_msg),
+            error_code: body["message"],
+            refund_reference: payload[:reference],
+            used_identifier: id,
+            raw: body
+          }
+        end
+      rescue Faraday::Error => e
+        log_safe_error("refund", e)
+        {
+          success: false,
+          status_code: nil,
+          error: I18n.t("chapa.errors.network_error", default: "Network error connecting to payment gateway: %{msg}", msg: e.message),
+          refund_reference: payload[:reference],
+          used_identifier: id
+        }
       end
 
       def parse_json(raw)

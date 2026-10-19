@@ -122,6 +122,8 @@ RSpec.describe "Localization Parity" do
       allow(GlobalConfig).to receive(:get).with("CUSTOMERS_MAIL_DOMAIN").and_return("customers.arifdrop.com")
       allow(GlobalConfig).to receive(:get).with("FOLLOWER_CONFIRMATION_MAIL_DOMAIN").and_return("followers.arifdrop.com")
       allow(GlobalConfig).to receive(:get).with("CREATOR_CONTACTING_CUSTOMERS_MAIL_DOMAIN").and_return("creators.arifdrop.com")
+      allow(GlobalConfig).to receive(:get).with("CHAPA_SECRET_KEY").and_return("CHASECK-livekey123")
+      allow(GlobalConfig).to receive(:get).with("CHAPA_WEBHOOK_SECRET").and_return("webhooksecret123")
 
       expect do
         PlatformConfig.validate_production_config!(prod_env)

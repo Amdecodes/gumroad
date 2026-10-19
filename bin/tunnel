@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# bin/tunnel: exposes the local Rails application via tunnel (e.g. ngrok or cloudflared)
+# so Chapa callbacks and webhooks can reach the development server.
+
+PORT="${1:-${DEV_LANE_PORT:-3000}}"
+
+echo "=========================================================="
+echo " Starting Chapa Webhook & Callback Tunnel for port ${PORT}"
+echo "=========================================================="
+echo "Important: After starting the tunnel:"
+echo "1. Set TUNNEL_HOST or CANONICAL_HOST in your environment:"
+echo "   export TUNNEL_HOST=<your-tunnel-subdomain>.ngrok-free.app"
+echo "2. Configure the webhook URL in Chapa Dashboard:"
+echo "   https://<your-tunnel-subdomain>.ngrok-free.app/webhooks/chapa"
+echo "3. Ensure CHAPA_WEBHOOK_SECRET matches your Dashboard Secret Hash"
+echo "=========================================================="
+echo ""
+
+if command -v ngrok &>/dev/null; then
+  exec ngrok http "${PORT}"
+elif command -v cloudflared &>/dev/null; then
+  exec cloudflared tunnel --url "http://localhost:${PORT}"
+else
+  echo "Error: Neither ngrok nor cloudflared was found in PATH." >&2
+  echo "Please install ngrok (https://ngrok.com) or cloudflared." >&2
+  exit 1
+fi

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/BulkChangeTable
 class CreateChapaTables < ActiveRecord::Migration[7.1]
   def change
     create_table :chapa_transactions do |t|
@@ -44,3 +45,4 @@ class CreateChapaTables < ActiveRecord::Migration[7.1]
     add_index :chapa_webhook_events, :status
   end
 end
+# rubocop:enable Rails/BulkChangeTable

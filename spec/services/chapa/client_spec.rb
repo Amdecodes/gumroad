@@ -192,14 +192,60 @@ RSpec.describe Chapa::Client do
           headers: { "Content-Type" => "application/json" }
         )
 
-      result = client.refund_transaction(tx_ref:, amount_santims: 10000, reason: "Customer return")
+      result = client.refund_transaction(tx_ref:, amount_santims: 10000, reason: "Customer return", reference: "rf_test_123")
 
       expect(result[:success]).to be true
       expect(result[:ref_id]).to eq("REF-12345-ABC")
       expect(result[:status]).to eq("initiated")
+      expect(result[:refund_reference]).to eq("rf_test_123")
+      expect(result[:used_identifier]).to eq(tx_ref)
     end
 
-    it "maps Insufficient Balance error properly" do
+    it "falls back once to tx_ref when primary Chapa reference returns 404 not found" do
+      primary_ref = "CHAPA_REF_404"
+      fallback_tx_ref = "arifdrop-order-123"
+      primary_endpoint = "https://api.chapa.co/v1/refund/#{primary_ref}"
+      fallback_endpoint = "https://api.chapa.co/v1/refund/#{fallback_tx_ref}"
+
+      stub_request(:post, primary_endpoint)
+        .to_return(
+          status: 404,
+          body: {
+            status: "failed",
+            message: "Transaction not found"
+          }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+
+      stub_request(:post, fallback_endpoint)
+        .to_return(
+          status: 200,
+          body: {
+            status: "success",
+            data: {
+              ref_id: "REF-FALLBACK-OK",
+              status: "refunded",
+              amount: 50.00,
+              currency: "ETB"
+            }
+          }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+
+      result = client.refund_transaction(
+        identifier: primary_ref,
+        fallback_identifier: fallback_tx_ref,
+        amount_santims: 5000,
+        reference: "rf_fallback_123"
+      )
+
+      expect(result[:success]).to be true
+      expect(result[:ref_id]).to eq("REF-FALLBACK-OK")
+      expect(result[:status]).to eq("refunded")
+      expect(result[:used_identifier]).to eq(fallback_tx_ref)
+    end
+
+    it "maps Insufficient Balance error properly and does not fall back" do
       stub_request(:post, endpoint)
         .to_return(
           status: 400,
@@ -210,7 +256,7 @@ RSpec.describe Chapa::Client do
           headers: { "Content-Type" => "application/json" }
         )
 
-      result = client.refund_transaction(tx_ref:)
+      result = client.refund_transaction(identifier: tx_ref, fallback_identifier: "fallback-ref")
 
       expect(result[:success]).to be false
       expect(result[:error_code]).to eq("Insufficient Balance")

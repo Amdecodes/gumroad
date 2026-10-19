@@ -75,6 +75,8 @@ export const seller = {
     field_products: "ምርቶች",
     field_services: "አገልግሎቶች",
     service_tooltip: "የአገልግሎት ምርቶች መለያዎ 30 ቀናት እስኪሞላው ድረስ አይፈቀዱም።",
+    recurring_disabled_notice:
+      "የደንበኝነት ምዝገባዎች፣ የክፍያ ዕቅዶች እና ቅድመ-ትዕዛዞች በአሁኑ ጊዜ በቻፓ አይደገፉም። የአንድ ጊዜ ክፍያዎች በብር (ETB) ብቻ ይደገፋሉ።",
     default_subscription_duration: "ነባሪ የደንበኝነት ምዝገባ ቆይታ",
     ai_banner_title: "አዲስ።",
     ai_banner_description: "አሁን በAI በመታገዝ ምርትዎን መፍጠር ይችላሉ። ለመጀመር ከላይ ያለውን የብርሃን ብልጭታ ቁልፍ ይጫኑ።",

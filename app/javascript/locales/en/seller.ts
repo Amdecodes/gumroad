@@ -76,6 +76,8 @@ export const seller = {
     field_products: "Products",
     field_services: "Services",
     service_tooltip: "Service products are disabled until your account is 30 days old.",
+    recurring_disabled_notice:
+      "Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported.",
     default_subscription_duration: "Default subscription duration",
     ai_banner_title: "New.",
     ai_banner_description:

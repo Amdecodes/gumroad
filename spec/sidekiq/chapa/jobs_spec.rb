@@ -81,20 +81,161 @@ describe "Chapa Background Jobs" do
   end
 
   describe Chapa::ProcessWebhookJob do
-    let!(:event) do
-      ChapaWebhookEvent.create!(
-        idempotency_key: "evt_test_123",
-        event_type: "charge.complete",
-        tx_ref: "chk_wh_proc_1",
-        raw_payload: { tx_ref: "chk_wh_proc_1" }.to_json,
-        status: "received"
+    let(:tx_ref) { "4FGFF4FFGD3" }
+    let(:reference) { "AP634JFwEbxd" }
+    let!(:chapa_tx) do
+      ChapaTransaction.create!(
+        tx_ref:,
+        chapa_reference: reference,
+        order:,
+        purchase:,
+        amount_santims: 100_00,
+        amount_decimal: BigDecimal("100.00"),
+        currency: "ETB",
+        status: "pending"
       )
     end
+    let(:client) { instance_double(Chapa::Client) }
 
-    it "processes event via FinalizerService and marks event processed" do
+    before do
+      allow(Chapa::Client).to receive(:new).and_return(client)
+    end
+
+    it "processes documented charge.success payload via FinalizerService" do
+      sample_payload = {
+        "event" => "charge.success",
+        "first_name" => "",
+        "last_name" => "",
+        "email" => nil,
+        "mobile" => "25190000000",
+        "currency" => "ETB",
+        "amount" => "400.00",
+        "charge" => "12.00",
+        "status" => "success",
+        "mode" => "live",
+        "reference" => reference,
+        "type" => "API",
+        "tx_ref" => tx_ref,
+        "payment_method" => "telebirr"
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_doc_sample_1",
+        event_type: "charge.success",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
       finalizer = instance_double(Chapa::FinalizerService)
-      allow(Chapa::FinalizerService).to receive(:new).with(tx_ref: "chk_wh_proc_1").and_return(finalizer)
+      allow(Chapa::FinalizerService).to receive(:new).with(tx_ref:, client:).and_return(finalizer)
       allow(finalizer).to receive(:perform).and_return(success: true, status: "success")
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("processed")
+    end
+
+    it "processes documented charge.refunded payload, re-verifies via API, and marks refunded" do
+      sample_payload = {
+        "event" => "charge.refunded",
+        "currency" => "ETB",
+        "amount" => "400.00",
+        "status" => "refunded",
+        "mode" => "live",
+        "reference" => reference,
+        "tx_ref" => tx_ref
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_doc_sample_refund",
+        event_type: "charge.refunded",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with(tx_ref).and_return(
+        success: true,
+        status: "refunded",
+        reference:
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("processed")
+      expect(chapa_tx.reload.status).to eq("refunded")
+      expect(purchase.reload.stripe_refunded).to be true
+    end
+
+    it "processes documented charge.reversed payload and re-verifies via API" do
+      sample_payload = {
+        "event" => "charge.reversed",
+        "status" => "reversed",
+        "reference" => reference,
+        "tx_ref" => tx_ref
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_doc_sample_reversed",
+        event_type: "charge.reversed",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with(tx_ref).and_return(
+        success: true,
+        status: "reversed",
+        reference:
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("processed")
+      expect(chapa_tx.reload.status).to eq("reversed")
+    end
+
+    it "processes documented charge.failed/cancelled payload and updates transaction status" do
+      sample_payload = {
+        "event" => "charge.failed/cancelled",
+        "status" => "failed",
+        "reference" => reference,
+        "tx_ref" => tx_ref
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_doc_sample_failed",
+        event_type: "charge.failed/cancelled",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with(tx_ref).and_return(
+        success: false,
+        status: "failed"
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("processed")
+      expect(chapa_tx.reload.status).to eq("failed")
+    end
+
+    it "safely acknowledges unknown events with log line and marks processed" do
+      sample_payload = {
+        "event" => "payout.success",
+        "type" => "Payout",
+        "status" => "success",
+        "reference" => "MYMER3434989"
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_unknown_payout",
+        event_type: "payout.success",
+        tx_ref: nil,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(Rails.logger).to receive(:info).and_call_original
+      expect(Rails.logger).to receive(:info).with(/Acknowledged unknown event/).and_call_original
 
       described_class.new.perform(event.id)
 

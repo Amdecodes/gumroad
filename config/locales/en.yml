@@ -108,6 +108,14 @@ en:
     team_member_not_found: Team member not found
     title: Admin Portal
     user_not_found: User not found
+  chapa:
+    errors:
+      duplicate_ref: This transaction reference has already been used.
+      generic_failure: Payment failed. Please try again.
+      insufficient_funds: Insufficient account balance to complete the transaction.
+      merchant_disabled: Merchant payments are currently disabled.
+      network_error: "Network error connecting to payment gateway: %{msg}"
+      payment_declined: The payment was declined or cancelled. Please try again.
   checkout:
     accept_terms_error: Please accept the Terms and Conditions.
     accept_terms_prefix: I accept

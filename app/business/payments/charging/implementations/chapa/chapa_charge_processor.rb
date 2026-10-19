@@ -16,12 +16,23 @@ class ChapaChargeProcessor
     raise ChargeProcessorInvalidRequestError, "Purchase is required for Chapa refunds" unless purchase
 
     client = Chapa::Client.new
-    tx_ref = purchase.processor_transaction_id.presence || purchase.stripe_transaction_id.presence || charge_id
+    tx_ref = purchase.processor_transaction_id.presence || charge_id
     chapa_tx = purchase.order&.chapa_transactions&.successful&.last || ChapaTransaction.find_by(tx_ref:)
 
-    identifier = chapa_tx&.tx_ref || tx_ref
+    chapa_ref = chapa_tx&.chapa_reference.presence || purchase.stripe_transaction_id.presence
+    primary_id = chapa_ref.presence || chapa_tx&.tx_ref || tx_ref
+    fallback_id = (primary_id == chapa_ref && chapa_tx&.tx_ref.present? && chapa_tx.tx_ref != chapa_ref) ? chapa_tx.tx_ref : nil
+
     refund_amount_cents = amount_cents.presence || purchase.amount_refundable_cents
-    result = client.refund_transaction(tx_ref: identifier, amount_santims: refund_amount_cents, reason:)
+    unique_ref = "rf_#{chapa_tx&.tx_ref || purchase.id}_#{refund_amount_cents}_#{SecureRandom.hex(4)}"
+
+    result = client.refund_transaction(
+      identifier: primary_id,
+      fallback_identifier: fallback_id,
+      amount_santims: refund_amount_cents,
+      reason:,
+      reference: unique_ref
+    )
 
     unless result[:success]
       error_msg = result[:error].to_s
