@@ -193,6 +193,13 @@ describe Chapa::RefundService do
         allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
           success: true,
           status: "refunded",
+          amount: 100.00,
+          currency: "ETB",
+          reference: chapa_reference,
+          tx_ref:,
+          mode: "test",
+          charge: nil,
+          payment_method: nil,
           raw: { "status" => "success", "data" => { "status" => "refunded" } }
         )
 
@@ -204,10 +211,33 @@ describe Chapa::RefundService do
         expect(purchase.reload.stripe_refunded).to be true
         expect(chapa_refund.reload.status).to eq("refunded")
       end
+
+      it "finalizes refund even if verification[:success] is false when status is refunded" do
+        ChapaRefund.create!(
+          purchase:,
+          amount_santims: 100_00,
+          refund_reference: stable_ref,
+          status: "initiated",
+          attempts_count: 1
+        )
+
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: false,
+          status: "refunded",
+          raw: { "status" => "success", "data" => { "status" => "refunded" } }
+        )
+
+        expect(mock_client).not_to receive(:refund_transaction)
+
+        result = subject.perform
+        expect(result[:success]).to be true
+        expect(result[:status]).to eq("refunded")
+        expect(purchase.reload.stripe_refunded).to be true
+      end
     end
 
     context "when two simultaneous requests occur" do
-      it "creates only one refund record when two simultaneous requests occur" do
+      it "creates only one refund record and dispatches one refund POST when two simultaneous requests occur" do
         allow(mock_client).to receive(:refund_transaction).and_return(
           success: true,
           ref_id: "chp_ref_concurrent",
@@ -215,17 +245,64 @@ describe Chapa::RefundService do
           used_identifier: chapa_reference,
           raw: { "status" => "success" }
         )
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "refunded",
+          raw: { "status" => "success", "data" => { "status" => "refunded" } }
+        )
 
         service1 = described_class.new(purchase:, client: mock_client)
         service2 = described_class.new(purchase:, client: mock_client)
 
-        result1 = service1.perform
-        result2 = service2.perform
+        barrier = Queue.new
+        threads = [service1, service2].map do |service|
+          Thread.new do
+            barrier.pop
+            service.perform
+          end
+        end
 
-        expect(result1[:success]).to be true
-        expect(result2[:success]).to be true
+        2.times { barrier << true }
+        results = threads.map(&:value)
+
+        expect(results.all? { |r| r[:success] }).to be true
+        expect(results.map { |r| r[:status] }).to eq(%w[refunded refunded])
         expect(ChapaRefund.where(purchase:).count).to eq(1)
         expect(mock_client).to have_received(:refund_transaction).once
+        expect(purchase.reload.stripe_refunded).to be true
+        expect(purchase.refunds.count).to eq(1)
+      end
+
+      it "handles ActiveRecord::RecordNotUnique gracefully on duplicate refund_reference" do
+        allow(mock_client).to receive(:refund_transaction).and_return(
+          success: true,
+          ref_id: "chp_ref_unique_test",
+          status: "refunded",
+          used_identifier: chapa_reference,
+          raw: { "status" => "success" }
+        )
+
+        call_count = 0
+        allow_any_instance_of(ChapaRefund).to receive(:save!).and_wrap_original do |method, *args|
+          call_count += 1
+          if call_count == 1
+            ChapaRefund.create!(
+              purchase:,
+              amount_santims: 100_00,
+              refund_reference: "rf_chp_#{chapa_tx.tx_ref}_1",
+              status: "initiated"
+            )
+            raise ActiveRecord::RecordNotUnique, "Duplicate entry"
+          else
+            method.call(*args)
+          end
+        end
+
+        result = subject.perform
+        expect(result[:success]).to be true
+        expect(result[:status]).to eq("refunded")
+        expect(ChapaRefund.where(purchase:).count).to eq(1)
+        expect(purchase.reload.stripe_refunded).to be true
       end
     end
   end
@@ -244,6 +321,29 @@ describe Chapa::RefundService do
       expect(result[:success]).to be true
       expect(result[:status]).to eq("refunded")
       expect(purchase.reload.stripe_refunded).to be true
+    end
+
+    it "does not update ChapaRefund status to error when verification encounters an error" do
+      chapa_refund = ChapaRefund.create!(
+        purchase:,
+        amount_santims: 100_00,
+        refund_reference: "rf_chp_#{tx_ref}_1",
+        chapa_ref_id: "ref_poll_error",
+        status: "initiated"
+      )
+
+      allow(mock_client).to receive(:verify_refund).with("ref_poll_error").and_return(
+        success: false,
+        status: "error",
+        error: "Network error connecting to payment gateway",
+        raw: {}
+      )
+
+      result = subject.check_and_finalize_refund("ref_poll_error", 100_00)
+      expect(result[:success]).to be false
+      expect(result[:status]).to eq("error")
+      expect(chapa_refund.reload.status).to eq("initiated")
+      expect(chapa_refund.error_message).to eq("Network error connecting to payment gateway")
     end
   end
 end

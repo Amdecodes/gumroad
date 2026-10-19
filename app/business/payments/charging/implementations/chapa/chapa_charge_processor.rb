@@ -15,6 +15,14 @@ class ChapaChargeProcessor
   def refund!(charge_id, amount_cents: nil, purchase: nil, reason: nil, **_args)
     raise ChargeProcessorInvalidRequestError, "Purchase is required for Chapa refunds" unless purchase
 
+    refund_amount_cents = amount_cents.presence || purchase.amount_refundable_cents
+    if refund_amount_cents <= 0
+      raise ChargeProcessorInvalidRequestError, "Refund amount must be greater than zero"
+    end
+    if refund_amount_cents > purchase.amount_refundable_cents
+      raise ChargeProcessorInvalidRequestError, "Refund amount cannot exceed remaining refundable amount"
+    end
+
     client = Chapa::Client.new
     tx_ref = purchase.processor_transaction_id.presence || charge_id
     chapa_tx = purchase.order&.chapa_transactions&.successful&.last || ChapaTransaction.find_by(tx_ref:)
@@ -23,7 +31,6 @@ class ChapaChargeProcessor
     primary_id = chapa_ref.presence || chapa_tx&.tx_ref || tx_ref
     fallback_id = (primary_id == chapa_ref && chapa_tx&.tx_ref.present? && chapa_tx.tx_ref != chapa_ref) ? chapa_tx.tx_ref : nil
 
-    refund_amount_cents = amount_cents.presence || purchase.amount_refundable_cents
     stable_ref = "rf_chp_#{chapa_tx&.tx_ref || purchase.id}_#{purchase.refunds.count + 1}"
 
     refund_record = purchase.chapa_refunds.find_or_initialize_by(refund_reference: stable_ref)
@@ -36,7 +43,8 @@ class ChapaChargeProcessor
 
     if refund_record.persisted? && refund_record.attempts_count > 0
       verification = refund_record.chapa_ref_id.present? ? client.verify_refund(refund_record.chapa_ref_id) : client.verify_transaction(tx_ref)
-      if verification && verification[:success] && verification[:status].to_s.downcase == "refunded"
+      verify_status = verification&.dig(:status).to_s.downcase
+      if verification && verify_status == "refunded"
         refund_record.update!(status: "refunded", raw_payload: verification[:raw])
         return ChapaChargeRefund.new(verification, charge_id, refund_amount_cents)
       end
@@ -44,7 +52,15 @@ class ChapaChargeProcessor
 
     refund_record.attempts_count += 1
     refund_record.status = "initiated" if refund_record.status.blank? || refund_record.status == "failed"
-    refund_record.save!
+    begin
+      refund_record.save!
+    rescue ActiveRecord::RecordNotUnique
+      refund_record = purchase.chapa_refunds.find_by!(refund_reference: stable_ref)
+      if refund_record.status == "refunded"
+        return ChapaChargeRefund.new({ ref_id: refund_record.chapa_ref_id, status: "refunded" }, charge_id, refund_amount_cents)
+      end
+      refund_record.increment!(:attempts_count)
+    end
 
     result = client.refund_transaction(
       identifier: primary_id,
