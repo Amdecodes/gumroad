@@ -8,6 +8,30 @@ RSpec.describe Chapa::Client do
   let(:webhook_secret) { "WEBHOOK_HASH_SECRET_123" }
   let(:client) { described_class.new(secret_key:, public_key:, webhook_secret:) }
 
+  describe "#initialize" do
+    it "raises SecurityError outside test/dev if api_base_url is not https://api.chapa.co/v1" do
+      allow(Rails.env).to receive(:test?).and_return(false)
+      allow(Rails.env).to receive(:development?).and_return(false)
+      expect do
+        described_class.new(api_base_url: "https://evil.host/v1")
+      end.to raise_error(SecurityError, /Untrusted Chapa API host/)
+    end
+
+    it "allows https://api.chapa.co/v1 outside test/dev" do
+      allow(Rails.env).to receive(:test?).and_return(false)
+      allow(Rails.env).to receive(:development?).and_return(false)
+      expect do
+        described_class.new(api_base_url: "https://api.chapa.co/v1")
+      end.not_to raise_error
+    end
+
+    it "permits custom api_base_url in test or development environments" do
+      expect do
+        described_class.new(api_base_url: "http://localhost:9999/v1")
+      end.not_to raise_error
+    end
+  end
+
   let(:seller) { create(:user) }
   let(:product) { create(:product, user: seller, price_currency_type: "etb") }
   let(:purchase) do

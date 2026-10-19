@@ -112,6 +112,11 @@ module PlatformConfig
         end
       end
 
+      chapa_url = ENV["CHAPA_API_URL"].presence || GlobalConfig.get("CHAPA_API_URL")
+      if !env.test? && !env.development? && chapa_url.present? && chapa_url.chomp("/") != "https://api.chapa.co/v1"
+        raise "Security boot failure: CHAPA_API_URL outside test/dev must only be https://api.chapa.co/v1. Received: #{chapa_url}"
+      end
+
       return unless env.production?
 
       missing = REQUIRED_PRODUCTION_KEYS.select do |key|

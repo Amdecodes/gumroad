@@ -11,7 +11,7 @@ Payment credentials are configured strictly via environment variables or Rails c
 | `CHAPA_SECRET_KEY`     | Merchant API secret key. Must start with `CHASECK_TEST-` in dev/test, and live key in prod. | `CHASECK_TEST-xxxxxxxxxxxxxxxx`  |
 | `CHAPA_WEBHOOK_SECRET` | Secret hash set in the Chapa merchant dashboard for webhook HMAC-SHA256 signatures.         | `my_webhook_secret_hash_32chars` |
 | `CHAPA_PUBLIC_KEY`     | Public key used for client integrations (optional).                                         | `CHAPUBK_TEST-xxxxxxxxxxxxxxxx`  |
-| `CHAPA_API_URL`        | Base API URL (defaults to `https://api.chapa.co`).                                          | `https://api.chapa.co`           |
+| `CHAPA_API_URL`        | Base API URL (defaults to `https://api.chapa.co/v1`).                                       | `https://api.chapa.co/v1`        |
 | `CANONICAL_HOST`       | Canonical hostname for callbacks and webhooks in local multi-domain setups.                 | `arifdrop.test:3000`             |
 | `TUNNEL_HOST`          | Hostname of tunnel (ngrok or cloudflared) for webhook delivery in dev.                      | `abc-123.ngrok-free.app`         |
 

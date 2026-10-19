@@ -3,10 +3,13 @@
 require "faraday"
 require "json"
 require "openssl"
+require "uri"
 
 module Chapa
   class Client
     DEFAULT_API_BASE_URL = "https://api.chapa.co/v1"
+    ALLOWED_HOST = "api.chapa.co"
+    ALLOWED_PATH_PREFIX = "/v1"
     DEFAULT_TIMEOUT_SECONDS = 15
     DEFAULT_OPEN_TIMEOUT_SECONDS = 5
     MAX_GET_RETRIES = 2
@@ -37,6 +40,18 @@ module Chapa
       @api_base_url = api_base_url.presence ||
                       ENV["CHAPA_API_URL"].presence ||
                       DEFAULT_API_BASE_URL
+
+      if !Rails.env.test? && !Rails.env.development?
+        uri = begin
+          URI.parse(@api_base_url)
+        rescue URI::InvalidURIError, ArgumentError
+          nil
+        end
+
+        unless uri && uri.scheme == "https" && uri.host == ALLOWED_HOST && uri.path.start_with?(ALLOWED_PATH_PREFIX)
+          raise SecurityError, "Untrusted Chapa API host: #{@api_base_url}. Secret key must never go to another host."
+        end
+      end
     end
 
     def test_mode?
