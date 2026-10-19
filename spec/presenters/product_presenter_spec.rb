@@ -40,6 +40,7 @@ describe ProductPresenter do
           current_seller_currency_code: "usd",
           native_product_types: ["digital", "course", "ebook", "membership", "bundle"],
           service_product_types: ["commission", "call", "coffee"],
+          recurring_products_enabled: false,
           release_at_date:,
           show_orientation_text: true,
           eligible_for_service_products: false,
@@ -58,6 +59,7 @@ describe ProductPresenter do
           current_seller_currency_code: "usd",
           native_product_types: ["digital", "course", "ebook", "membership", "bundle"],
           service_product_types: ["commission", "call", "coffee"],
+          recurring_products_enabled: false,
           release_at_date:,
           show_orientation_text: false,
           eligible_for_service_products: false,
@@ -214,7 +216,7 @@ describe ProductPresenter do
     end
   end
 
-  describe "product page storefront catalog" do
+  describe "product page storefront catalog", :recurring_products do
     let(:request) { ActionDispatch::TestRequest.create }
     let(:seller) { create(:user, product_page_storefront_enabled: true) }
     let(:visitor_pundit_user) { SellerContext.logged_out }
@@ -837,7 +839,7 @@ describe ProductPresenter do
       end
     end
 
-    context "membership" do
+    context "membership", :recurring_products do
       let(:membership) do
         create(
           :membership_product,
@@ -1470,7 +1472,7 @@ describe ProductPresenter do
       end
     end
 
-    context "a membership product" do
+    context "a membership product", :recurring_products do
       before do
         @product = create(:membership_product_with_preset_tiered_pricing, :with_free_trial_enabled, name: "Sample Product", description: "https://gumroad.com", user: create(:named_user))
         @instance = described_class.new(product: @product)

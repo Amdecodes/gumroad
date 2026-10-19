@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Subscription choice modal on product page", :js, type: :system do
+describe "Subscription choice modal on product page", :recurring_products, :js, type: :system do
   let(:seller) { create(:named_user) }
   let(:product) { create(:membership_product, user: seller, price_cents: 500) }
   let(:tier) { product.default_tier }

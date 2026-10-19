@@ -445,6 +445,16 @@ RSpec.configure do |config|
     end
   end
 
+  config.around(:each, :recurring_products) do |example|
+    Feature.activate(:recurring_products)
+    example.run
+    Feature.deactivate(:recurring_products)
+  end
+
+  config.before(:each, :recurring_products) do
+    Feature.activate(:recurring_products)
+  end
+
   config.around(:each) do |example|
     Thread.current[:_rspec_example_metadata] = example.metadata
     config.instance_variable_set(:@curr_file_path, example.metadata[:example_group][:file_path])

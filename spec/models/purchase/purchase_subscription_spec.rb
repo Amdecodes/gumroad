@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "PurchaseSubscription", :vcr do
+describe "PurchaseSubscription", :recurring_products, :vcr do
   include CurrencyHelper
   include ProductsHelper
 

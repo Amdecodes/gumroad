@@ -74,7 +74,7 @@ describe "InstallmentJson"  do
       end
     end
 
-    context "for a subscription purchase" do
+    context "for a subscription purchase", :recurring_products do
       before do
         @installment.link.update!(is_recurring_billing: true)
         @purchase = create(:membership_purchase, link: @installment.link)

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "POST /webhooks/chapa (Subscription Renewal)" do
+RSpec.describe "POST /webhooks/chapa (Subscription Renewal)", :recurring_products, skip: "Recurring products disabled on ArifDrop pending gateway subscription support" do
   let(:webhook_secret) { "TEST_CHAPA_WEBHOOK_SECRET_XYZ" }
   let(:seller) { create(:named_seller) }
   let(:subscriber) { create(:user) }

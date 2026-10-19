@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ProductInstallmentPlan do
+RSpec.describe ProductInstallmentPlan, :recurring_products do
   subject(:product_installment_plan) { build(:product_installment_plan) }
 
   describe "validations" do

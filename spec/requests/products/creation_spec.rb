@@ -80,7 +80,7 @@ describe "Product creation", type: :system, js: true do
       expect(product.should_include_last_post).to be_falsey
     end
 
-    it "creates a membership product" do
+    it "creates a membership product", :recurring_products do
       visit new_product_path
       fill_in("Name", with: "membership product native type")
       choose("Membership")
