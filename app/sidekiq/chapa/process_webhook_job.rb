@@ -47,7 +47,8 @@ module Chapa
           return
         end
 
-        tx = ChapaTransaction.find_by(tx_ref:) || ChapaTransaction.find_by(chapa_reference:)
+        tx = ChapaTransaction.find_by(tx_ref:) if tx_ref.present?
+        tx ||= ChapaTransaction.find_by(chapa_reference:) if chapa_reference.present?
         verification = client.verify_transaction(tx&.tx_ref || lookup_ref)
 
         if verification[:success]
@@ -70,28 +71,42 @@ module Chapa
 
       when status == "reversed" || event_type.include?("reversed")
         lookup_ref = tx_ref.presence || chapa_reference
-        if lookup_ref.present?
-          verification = client.verify_transaction(lookup_ref)
-          tx = ChapaTransaction.find_by(tx_ref:) || ChapaTransaction.find_by(chapa_reference:)
-          if tx.present? && verification[:success] && verification[:status].to_s.downcase == "reversed"
-            tx.update!(status: "reversed")
+        if lookup_ref.blank?
+          event.mark_failed!("Missing reference to verify reversal event")
+          return
+        end
 
+        tx = ChapaTransaction.find_by(tx_ref:) if tx_ref.present?
+        tx ||= ChapaTransaction.find_by(chapa_reference:) if chapa_reference.present?
+        verification = client.verify_transaction(tx&.tx_ref || lookup_ref)
+
+        if verification[:success]
+          api_status = verification[:status].to_s.downcase
+          if tx.present? && api_status == "reversed"
             purchase = tx.purchase || tx.order&.purchases&.first
+            should_notify = purchase.present? ? !purchase.stripe_refunded : (tx.status != "reversed")
+
             if purchase.present? && !purchase.stripe_refunded
               flow_of_funds = FlowOfFunds.build_simple_flow_of_funds(Currency::ETB, -purchase.amount_refundable_cents)
               refund_obj = OpenStruct.new(id: "rev_#{tx.tx_ref}", status: "reversed")
               purchase.refund_purchase!(flow_of_funds, nil, refund_obj, false, note: "Gateway reversal: Chapa charge reversed")
             end
 
-            ErrorNotifier.notify(
-              "Chapa transaction reversed",
-              context: { tx_ref:, chapa_reference:, purchase_id: purchase&.id, order_id: tx.order_id }
-            )
-          end
-        end
+            tx.update!(status: "reversed")
 
-        Rails.logger.warn("[Chapa Webhook] Charge reversed for tx_ref: #{tx_ref}, reference: #{chapa_reference}")
-        event.mark_processed!
+            if should_notify
+              ErrorNotifier.notify(
+                "Chapa transaction reversed",
+                context: { tx_ref:, chapa_reference:, purchase_id: purchase&.id, order_id: tx.order_id }
+              )
+            end
+          end
+
+          Rails.logger.warn("[Chapa Webhook] Charge reversed for tx_ref: #{tx_ref}, reference: #{chapa_reference}")
+          event.mark_processed!
+        else
+          event.mark_failed!("Re-verification failed for reversal event: #{verification[:error]}")
+        end
 
       when status.in?(%w[failed cancelled]) || event_type.include?("failed") || event_type.include?("cancelled")
         # Always re-verify via the API

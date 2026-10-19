@@ -183,6 +183,34 @@ RSpec.describe Chapa::Client do
       expect(result[:amount]).to eq(250.00)
     end
 
+    it "treats reversed transaction status as a successful verification query" do
+      stub_request(:get, endpoint)
+        .with(headers: { "Authorization" => "Bearer #{secret_key}" })
+        .to_return(
+          status: 200,
+          body: {
+            status: "success",
+            data: {
+              status: "reversed",
+              amount: 250.00,
+              currency: "ETB",
+              reference: "CHAPA_REF_998877",
+              tx_ref:,
+              charge: 3.50,
+              mode: "test",
+              payment_method: "telebirr"
+            }
+          }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+
+      result = client.verify_transaction(tx_ref)
+
+      expect(result[:success]).to be true
+      expect(result[:status]).to eq("reversed")
+      expect(result[:amount]).to eq(250.00)
+    end
+
     it "retries safe GETs on transient 5xx errors" do
       stub_request(:get, endpoint)
         .to_return(status: 502, body: "Bad Gateway")

@@ -155,12 +155,12 @@ module Chapa
 
       body = parse_json(response.body)
 
-      if response.success? && %w[success refunded].include?(body["status"].to_s.downcase)
+      if response.success? && %w[success refunded reversed].include?(body["status"].to_s.downcase)
         data = body["data"] || {}
         status = (data["status"] || body["status"]).to_s.downcase
 
         {
-          success: %w[success refunded].include?(status),
+          success: %w[success refunded reversed].include?(status),
           status:,
           amount: data["amount"],
           currency: data["currency"],

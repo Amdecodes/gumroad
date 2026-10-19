@@ -208,6 +208,122 @@ describe "Chapa Background Jobs" do
       )
     end
 
+    it "marks reversal event failed when lookup reference is missing" do
+      sample_payload = {
+        "event" => "charge.reversed",
+        "status" => "reversed"
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_rev_missing_ref",
+        event_type: "charge.reversed",
+        tx_ref: nil,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("failed")
+      expect(event.error_message).to include("Missing reference to verify reversal event")
+    end
+
+    it "marks reversal event failed when re-verification fails" do
+      sample_payload = {
+        "event" => "charge.reversed",
+        "status" => "reversed",
+        "tx_ref" => tx_ref
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_rev_verify_fail",
+        event_type: "charge.reversed",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with(tx_ref).and_return(
+        success: false,
+        error: "Network timeout on verify"
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(event.reload.status).to eq("failed")
+      expect(event.error_message).to include("Re-verification failed for reversal event: Network timeout on verify")
+      expect(chapa_tx.reload.status).to eq("pending")
+    end
+
+    it "does not duplicate admin alerts when reversal webhook is retried for an already-refunded purchase" do
+      sample_payload = {
+        "event" => "charge.reversed",
+        "status" => "reversed",
+        "reference" => reference,
+        "tx_ref" => tx_ref
+      }
+      event1 = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_rev_idempotency_1",
+        event_type: "charge.reversed",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+      event2 = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_rev_idempotency_2",
+        event_type: "charge.reversed",
+        tx_ref:,
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with(tx_ref).and_return(
+        success: true,
+        status: "reversed",
+        reference:
+      )
+      allow(ErrorNotifier).to receive(:notify).and_call_original
+      allow(ErrorNotifier).to receive(:notify).with("Chapa transaction reversed", any_args)
+
+      described_class.new.perform(event1.id)
+      expect(ErrorNotifier).to have_received(:notify).with("Chapa transaction reversed", any_args).once
+
+      described_class.new.perform(event2.id)
+      expect(ErrorNotifier).to have_received(:notify).with("Chapa transaction reversed", any_args).once
+    end
+
+    it "does not match arbitrary ChapaTransaction records when chapa_reference is nil in payload" do
+      orphan_tx = ChapaTransaction.create!(
+        order: create(:order),
+        amount_santims: 50_00,
+        amount_decimal: BigDecimal("50.00"),
+        currency: "ETB",
+        status: "pending",
+        chapa_reference: nil,
+        tx_ref: "tx_orphan_123"
+      )
+
+      sample_payload = {
+        "event" => "charge.refunded",
+        "status" => "refunded",
+        "tx_ref" => "tx_nonexistent_ref"
+      }
+      event = ChapaWebhookEvent.create!(
+        idempotency_key: "evt_no_accidental_match",
+        event_type: "charge.refunded",
+        tx_ref: "tx_nonexistent_ref",
+        raw_payload: sample_payload.to_json,
+        status: "received"
+      )
+
+      allow(client).to receive(:verify_transaction).with("tx_nonexistent_ref").and_return(
+        success: true,
+        status: "refunded"
+      )
+
+      described_class.new.perform(event.id)
+
+      expect(orphan_tx.reload.status).to eq("pending")
+    end
+
     it "processes documented charge.failed/cancelled payload and updates transaction status" do
       sample_payload = {
         "event" => "charge.failed/cancelled",
