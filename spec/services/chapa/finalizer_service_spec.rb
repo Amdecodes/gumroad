@@ -156,6 +156,105 @@ describe Chapa::FinalizerService do
       end
     end
 
+    # Five-check rejection matrix: each example exercises one of the five integrity gates
+    # in validate_verification_integrity! (or the upstream success guard). A buyer must
+    # never receive access from a failed, tampered, or short payment.
+    context "five-check rejection matrix" do
+      # Purchase is 100.00 ETB = 10_000 santims.
+
+      it "rejects amount short by 0.01 ETB (9_999 vs 10_000 santims)" do
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "success",
+          tx_ref:,
+          reference: "chp_ref_ok",
+          amount: BigDecimal("99.99"),   # 9_999 santims — 1 santim short
+          currency: "ETB",
+          mode: "test"
+        )
+
+        result = subject.perform
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to include("Amount mismatch")
+        expect(result[:error]).to include("9999")
+        expect(chapa_tx.reload.status).to eq("failed")
+        expect(purchase.reload.in_progress?).to be true
+      end
+
+      it "rejects wrong currency (USD instead of ETB)" do
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "success",
+          tx_ref:,
+          reference: "chp_ref_ok",
+          amount: BigDecimal("100.00"),
+          currency: "USD",
+          mode: "test"
+        )
+
+        result = subject.perform
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to match(/Currency mismatch.*USD/i)
+        expect(chapa_tx.reload.status).to eq("failed")
+        expect(purchase.reload.in_progress?).to be true
+      end
+
+      it "rejects wrong tx_ref returned by gateway" do
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "success",
+          tx_ref: "arifdrop-other-order-aabbcc",
+          reference: "chp_ref_ok",
+          amount: BigDecimal("100.00"),
+          currency: "ETB",
+          mode: "test"
+        )
+
+        result = subject.perform
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to match(/reference mismatch/i)
+        expect(purchase.reload.in_progress?).to be true
+      end
+
+      it "rejects test-mode transaction received in production config" do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "success",
+          tx_ref:,
+          reference: "chp_ref_ok",
+          amount: BigDecimal("100.00"),
+          currency: "ETB",
+          mode: "test"           # test key in production — must be rejected
+        )
+
+        result = subject.perform
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to match(/test mode.*production/i)
+        expect(purchase.reload.in_progress?).to be true
+      end
+
+      it "rejects non-success status returned by gateway (e.g. failed payment)" do
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: false,
+          status: "failed",
+          error: "Payment declined by issuing bank"
+        )
+
+        result = subject.perform
+
+        # Gateway returned success:false — the service must surface failure
+        # and leave the purchase in its unfinalized state.
+        expect(result[:success]).to be false
+        expect(result[:status]).to eq("failed")
+        expect(purchase.reload.in_progress?).to be true
+      end
+    end
+
     context "when order is unknown" do
       it "returns error when tx_ref cannot be found" do
         service = described_class.new(tx_ref: "unknown_ref", client: mock_client)

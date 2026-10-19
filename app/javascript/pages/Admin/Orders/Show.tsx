@@ -355,13 +355,17 @@ export default function Show({ order }: OrderDetailProps) {
                 </div>
 
                 <div>
-                  <div className="text-xs text-muted">{t("admin.orders_page.platform_fee", undefined, "Platform fee (15%)")}</div>
+                  <div className="text-xs text-muted">
+                    {t("admin.orders_page.platform_fee", undefined, "Platform fee (15%)")}
+                  </div>
                   <div className="text-sm font-medium">{order.platform_fee_formatted || "—"}</div>
                 </div>
 
                 {order.chapa_details ? (
                   <div>
-                    <div className="text-xs text-muted">{t("admin.orders_page.gateway_fee", undefined, "Chapa gateway fee")}</div>
+                    <div className="text-xs text-muted">
+                      {t("admin.orders_page.gateway_fee", undefined, "Chapa gateway fee")}
+                    </div>
                     <div className="text-sm font-medium">{order.chapa_details.charge_formatted || "—"}</div>
                   </div>
                 ) : null}
