@@ -158,6 +158,76 @@ describe Chapa::RefundService do
         expect(purchase.reload.amount_refundable_cents).to eq(60_00)
       end
     end
+
+    context "when partial refund exceeds refundable amount" do
+      subject { described_class.new(purchase:, amount_cents: 150_00, client: mock_client) }
+
+      it "rejects partial refunds exceeding the refundable amount locally" do
+        expect(mock_client).not_to receive(:refund_transaction)
+
+        result = subject.perform
+        expect(result[:success]).to be false
+        expect(result[:error]).to include("cannot exceed")
+        expect(ChapaRefund.count).to eq(0) if defined?(ChapaRefund)
+      end
+    end
+
+    context "when retrying after a timeout" do
+      let(:stable_ref) { "rf_chp_#{tx_ref}_1" }
+
+      it "reuses stable refund reference and does not double-refund after a timeout retry" do
+        allow(mock_client).to receive(:refund_transaction).with(
+          hash_including(reference: stable_ref)
+        ).and_return(
+          success: false,
+          error: "Network error connecting to payment gateway: execution expired"
+        )
+
+        first_result = subject.perform
+        expect(first_result[:success]).to be false
+        expect(purchase.reload.refunded?).to be false
+
+        chapa_refund = ChapaRefund.find_by!(refund_reference: stable_ref)
+        expect(chapa_refund.attempts_count).to eq(1)
+
+        allow(mock_client).to receive(:verify_transaction).with(tx_ref).and_return(
+          success: true,
+          status: "refunded",
+          raw: { "status" => "success", "data" => { "status" => "refunded" } }
+        )
+
+        expect(mock_client).not_to receive(:refund_transaction)
+
+        second_result = subject.perform
+        expect(second_result[:success]).to be true
+        expect(second_result[:status]).to eq("refunded")
+        expect(purchase.reload.stripe_refunded).to be true
+        expect(chapa_refund.reload.status).to eq("refunded")
+      end
+    end
+
+    context "when two simultaneous requests occur" do
+      it "creates only one refund record when two simultaneous requests occur" do
+        allow(mock_client).to receive(:refund_transaction).and_return(
+          success: true,
+          ref_id: "chp_ref_concurrent",
+          status: "refunded",
+          used_identifier: chapa_reference,
+          raw: { "status" => "success" }
+        )
+
+        service1 = described_class.new(purchase:, client: mock_client)
+        service2 = described_class.new(purchase:, client: mock_client)
+
+        result1 = service1.perform
+        result2 = service2.perform
+
+        expect(result1[:success]).to be true
+        expect(result2[:success]).to be true
+        expect(ChapaRefund.where(purchase:).count).to eq(1)
+        expect(mock_client).to have_received(:refund_transaction).once
+      end
+    end
   end
 
   describe "#check_and_finalize_refund" do

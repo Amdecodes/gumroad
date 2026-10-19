@@ -16,15 +16,24 @@ module Chapa
 
     def perform
       return { success: false, error: "Purchase is required" } unless purchase
-      return { success: false, error: "Purchase is already fully refunded" } if purchase.stripe_refunded
+
+      if purchase.stripe_refunded
+        if purchase.chapa_refunds.refunded.exists?
+          return { success: true, status: "refunded", message: "Successfully refunded purchase." }
+        end
+        return { success: false, error: "Purchase is already fully refunded" }
+      end
+
       return { success: false, error: "No refundable amount remaining" } if purchase.amount_refundable_cents <= 0
 
       refund_santims = amount_cents.presence || purchase.amount_refundable_cents
       if refund_santims > purchase.amount_refundable_cents
         return { success: false, error: "Refund amount cannot exceed remaining refundable amount" }
       end
+      if refund_santims <= 0
+        return { success: false, error: "Refund amount must be greater than zero" }
+      end
 
-      # Find associated transaction
       tx = purchase.order&.chapa_transactions&.successful&.last ||
            purchase.order&.chapa_transactions&.last ||
            ChapaTransaction.where(purchase:).successful.last ||
@@ -37,54 +46,113 @@ module Chapa
 
       primary_identifier = chapa_ref.presence || tx_ref
       fallback_identifier = (primary_identifier == chapa_ref && tx_ref.present? && tx_ref != chapa_ref) ? tx_ref : nil
-      unique_refund_ref = "rf_#{tx_ref || purchase.id}_#{refund_santims}_#{SecureRandom.hex(4)}"
+      stable_refund_ref = "rf_chp_#{tx&.tx_ref || purchase.id}_#{purchase.refunds.count + 1}"
 
-      result = client.refund_transaction(
-        identifier: primary_identifier,
-        fallback_identifier:,
-        amount_santims: refund_santims,
-        reason:,
-        reference: unique_refund_ref
-      )
+      refund_record = nil
+      purchase.with_lock do
+        purchase.reload
 
-      unless result[:success]
-        error_msg = result[:error].to_s
-        if error_msg.match?(/insufficient/i)
-          return { success: false, status: "insufficient_balance", error: "Insufficient Chapa merchant balance to process refund. Please top up your balance." }
+        if purchase.stripe_refunded
+          if purchase.chapa_refunds.refunded.exists?
+            return { success: true, status: "refunded", message: "Successfully refunded purchase." }
+          end
+          return { success: false, error: "Purchase is already fully refunded" }
         end
 
-        return { success: false, status: "failed", error: error_msg }
-      end
+        refund_record = purchase.chapa_refunds.find_or_initialize_by(refund_reference: stable_refund_ref)
+        refund_record.chapa_transaction ||= tx
+        refund_record.amount_santims ||= refund_santims
 
-      ref_id = result[:ref_id] || "ref_#{SecureRandom.hex(6)}"
-      status = result[:status].to_s.downcase.presence || "initiated"
-      used_id = result[:used_identifier] || primary_identifier
+        if refund_record.persisted? && refund_record.status == "refunded"
+          return { success: true, status: "refunded", message: "Successfully refunded purchase." }
+        end
 
-      # Record in ChapaTransaction with both IDs stored
-      record_refund_attempt(
-        tx,
-        ref_id:,
-        refund_reference: unique_refund_ref,
-        used_identifier: used_id,
-        amount_santims: refund_santims,
-        status:,
-        raw: result[:raw]
-      )
+        if refund_record.persisted? && refund_record.attempts_count > 0
+          verification =
+            if refund_record.chapa_ref_id.present?
+              client.verify_refund(refund_record.chapa_ref_id)
+            elsif tx_ref.present?
+              client.verify_transaction(tx_ref)
+            end
 
-      case status
-      when "refunded"
-        mark_purchase_refunded!(refund_santims, ref_id, unique_refund_ref)
-        { success: true, status: "refunded", message: "Successfully refunded purchase." }
-      when "initiated", "processing", "pending"
-        PollRefundStatusJob.perform_in(30.seconds, ref_id, purchase.id, refund_santims, reason, admin_user&.id)
-        { success: true, status:, message: "Refund initiated and is currently processing with Chapa." }
-      when "reversed"
-        { success: false, status: "reversed", error: "Refund was reversed by Chapa." }
-      else
-        PollRefundStatusJob.perform_in(30.seconds, ref_id, purchase.id, refund_santims, reason, admin_user&.id)
-        { success: true, status:, message: "Refund #{status} with Chapa." }
+          verify_status = verification&.dig(:status).to_s.downcase
+          if verification && verification[:success] && verify_status == "refunded"
+            refund_record.update!(
+              status: "refunded",
+              raw_payload: (refund_record.raw_payload || {}).merge("verification" => verification[:raw])
+            )
+            mark_purchase_refunded!(refund_santims, refund_record.chapa_ref_id || stable_refund_ref, stable_refund_ref)
+            return { success: true, status: "refunded", message: "Successfully refunded purchase." }
+          end
+        end
+
+        refund_record.attempts_count += 1
+        refund_record.status = "initiated" if refund_record.status.blank? || refund_record.status == "failed"
+        refund_record.save!
+
+        result = client.refund_transaction(
+          identifier: primary_identifier,
+          fallback_identifier:,
+          amount_santims: refund_santims,
+          reason:,
+          reference: stable_refund_ref
+        )
+
+        unless result[:success]
+          error_msg = result[:error].to_s
+          refund_record.update(
+            status: "failed",
+            error_message: error_msg,
+            raw_payload: (refund_record.raw_payload || {}).merge("response" => result[:raw])
+          )
+
+          if error_msg.match?(/insufficient/i)
+            return { success: false, status: "insufficient_balance", error: "Insufficient Chapa merchant balance to process refund. Please top up your balance." }
+          elsif error_msg.match?(/already refunded/i)
+            refund_record.update!(status: "refunded")
+            mark_purchase_refunded!(refund_santims, refund_record.chapa_ref_id || stable_refund_ref, stable_refund_ref)
+            return { success: true, status: "refunded", message: "Successfully refunded purchase." }
+          end
+
+          return { success: false, status: "failed", error: error_msg }
+        end
+
+        ref_id = result[:ref_id] || "ref_#{SecureRandom.hex(6)}"
+        status = result[:status].to_s.downcase.presence || "initiated"
+        used_id = result[:used_identifier] || primary_identifier
+
+        refund_record.update!(
+          status:,
+          chapa_ref_id: ref_id,
+          raw_payload: (refund_record.raw_payload || {}).merge("response" => result[:raw])
+        )
+
+        record_refund_attempt(
+          tx,
+          ref_id:,
+          refund_reference: stable_refund_ref,
+          used_identifier: used_id,
+          amount_santims: refund_santims,
+          status:,
+          raw: result[:raw]
+        )
+
+        case status
+        when "refunded"
+          mark_purchase_refunded!(refund_santims, ref_id, stable_refund_ref)
+          { success: true, status: "refunded", message: "Successfully refunded purchase." }
+        when "initiated", "processing", "pending"
+          PollRefundStatusJob.perform_in(30.seconds, ref_id, purchase.id, refund_santims, reason, admin_user&.id)
+          { success: true, status:, message: "Refund initiated and is currently processing with Chapa." }
+        when "reversed"
+          { success: false, status: "reversed", error: "Refund was reversed by Chapa." }
+        else
+          PollRefundStatusJob.perform_in(30.seconds, ref_id, purchase.id, refund_santims, reason, admin_user&.id)
+          { success: true, status:, message: "Refund #{status} with Chapa." }
+        end
       end
     rescue StandardError => e
+      refund_record&.update(error_message: e.message) if refund_record&.persisted?
       Rails.logger.error("[Chapa::RefundService] Error processing refund: #{e.message}")
       { success: false, error: e.message }
     end
@@ -97,8 +165,12 @@ module Chapa
            ChapaTransaction.find_by(tx_ref: purchase.processor_transaction_id)
       update_refund_status(tx, ref_id:, status:)
 
+      chapa_refund = ChapaRefund.find_by(chapa_ref_id: ref_id) ||
+                     purchase.chapa_refunds.where(status: %w[initiated processing]).last
+      chapa_refund&.update(status:)
+
       if status == "refunded"
-        mark_purchase_refunded!(refund_santims, ref_id)
+        mark_purchase_refunded!(refund_santims, ref_id, chapa_refund&.refund_reference)
         { success: true, status: "refunded" }
       else
         { success: false, status: }

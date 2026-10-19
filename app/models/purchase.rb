@@ -128,6 +128,7 @@ class Purchase < ApplicationRecord
   belongs_to :price, optional: true
   has_many :events
   has_many :refunds
+  has_many :chapa_refunds
   has_many :ping_deliveries
   # Only refunds whose money actually left our account (see Refund.effective). Every
   # financial, tax, and reporting query that sums "how much of this purchase was

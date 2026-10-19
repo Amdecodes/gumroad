@@ -5,6 +5,7 @@ class ChapaTransaction < ApplicationRecord
 
   belongs_to :order
   belongs_to :purchase, optional: true
+  has_many :chapa_refunds, dependent: :nullify
 
   validates :tx_ref, presence: true, uniqueness: true
   validates :amount_santims, presence: true, numericality: { greater_than_or_equal_to: 0 }

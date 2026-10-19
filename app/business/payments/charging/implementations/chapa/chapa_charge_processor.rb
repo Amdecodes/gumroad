@@ -24,26 +24,54 @@ class ChapaChargeProcessor
     fallback_id = (primary_id == chapa_ref && chapa_tx&.tx_ref.present? && chapa_tx.tx_ref != chapa_ref) ? chapa_tx.tx_ref : nil
 
     refund_amount_cents = amount_cents.presence || purchase.amount_refundable_cents
-    unique_ref = "rf_#{chapa_tx&.tx_ref || purchase.id}_#{refund_amount_cents}_#{SecureRandom.hex(4)}"
+    stable_ref = "rf_chp_#{chapa_tx&.tx_ref || purchase.id}_#{purchase.refunds.count + 1}"
+
+    refund_record = purchase.chapa_refunds.find_or_initialize_by(refund_reference: stable_ref)
+    refund_record.chapa_transaction ||= chapa_tx
+    refund_record.amount_santims ||= refund_amount_cents
+
+    if refund_record.persisted? && refund_record.status == "refunded"
+      return ChapaChargeRefund.new({ ref_id: refund_record.chapa_ref_id, status: "refunded" }, charge_id, refund_amount_cents)
+    end
+
+    if refund_record.persisted? && refund_record.attempts_count > 0
+      verification = refund_record.chapa_ref_id.present? ? client.verify_refund(refund_record.chapa_ref_id) : client.verify_transaction(tx_ref)
+      if verification && verification[:success] && verification[:status].to_s.downcase == "refunded"
+        refund_record.update!(status: "refunded", raw_payload: verification[:raw])
+        return ChapaChargeRefund.new(verification, charge_id, refund_amount_cents)
+      end
+    end
+
+    refund_record.attempts_count += 1
+    refund_record.status = "initiated" if refund_record.status.blank? || refund_record.status == "failed"
+    refund_record.save!
 
     result = client.refund_transaction(
       identifier: primary_id,
       fallback_identifier: fallback_id,
       amount_santims: refund_amount_cents,
       reason:,
-      reference: unique_ref
+      reference: stable_ref
     )
 
     unless result[:success]
       error_msg = result[:error].to_s
+      refund_record.update(status: "failed", error_message: error_msg, raw_payload: result[:raw])
       if error_msg.match?(/insufficient/i)
         raise ChargeProcessorInsufficientFundsError, "Insufficient Chapa merchant balance: #{error_msg}"
       elsif error_msg.match?(/already refunded/i)
-        raise ChargeProcessorAlreadyRefundedError, "Charge already refunded: #{error_msg}"
+        refund_record.update!(status: "refunded")
+        return ChapaChargeRefund.new(result, charge_id, refund_amount_cents)
       else
         raise ChargeProcessorInvalidRequestError, "Chapa refund failed: #{error_msg}"
       end
     end
+
+    refund_record.update!(
+      status: result[:status].to_s.downcase.presence || "refunded",
+      chapa_ref_id: result[:ref_id],
+      raw_payload: result[:raw]
+    )
 
     ChapaChargeRefund.new(result, charge_id, refund_amount_cents)
   end

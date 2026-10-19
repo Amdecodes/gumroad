@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_12_16_140000) do
+ActiveRecord::Schema[7.1].define(version: 2026_12_16_150000) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name", limit: 191, null: false
     t.string "record_type", limit: 191, null: false
@@ -535,6 +535,24 @@ ActiveRecord::Schema[7.1].define(version: 2026_12_16_140000) do
     t.index ["order_id"], name: "index_carts_on_order_id"
     t.index ["updated_at"], name: "index_carts_on_updated_at"
     t.index ["user_id"], name: "index_carts_on_user_id"
+  end
+
+  create_table "chapa_refunds", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "purchase_id", null: false
+    t.bigint "chapa_transaction_id"
+    t.bigint "amount_santims", null: false
+    t.string "refund_reference", null: false
+    t.string "status", default: "initiated", null: false
+    t.integer "attempts_count", default: 0, null: false
+    t.string "chapa_ref_id"
+    t.text "error_message"
+    t.json "raw_payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chapa_transaction_id"], name: "index_chapa_refunds_on_chapa_transaction_id"
+    t.index ["purchase_id"], name: "index_chapa_refunds_on_purchase_id"
+    t.index ["refund_reference"], name: "index_chapa_refunds_on_refund_reference", unique: true
+    t.index ["status"], name: "index_chapa_refunds_on_status"
   end
 
   create_table "chapa_transactions", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
@@ -3451,4 +3469,6 @@ create_table "ping_deliveries", charset: "utf8mb4", collation: "utf8mb4_unicode_
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chapa_refunds", "chapa_transactions"
+  add_foreign_key "chapa_refunds", "purchases"
 end
