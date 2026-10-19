@@ -84,7 +84,7 @@ RSpec.describe "Chapa Checkout & Lifecycle", type: :request do
       expect(body["error_message"]).to eq("Chapa service unavailable")
     end
 
-    it "rejects recurring products when recurring_products feature flag is off" do
+    it "rejects recurring products in English when recurring_products feature flag is off" do
       allow(Feature).to receive(:active?).and_call_original
       allow(Feature).to receive(:active?).with(:recurring_products, any_args).and_return(true)
       membership = create(:membership_product, user: seller, price_cents: 100_00, price_currency_type: "etb")
@@ -106,7 +106,32 @@ RSpec.describe "Chapa Checkout & Lifecycle", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       body = JSON.parse(response.body)
       expect(body["success"]).to be false
-      expect(body["error_message"]).to include("Recurring subscriptions, installments, and preorders are currently unavailable")
+      expect(body["error_message"]).to eq("Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported.")
+    end
+
+    it "returns localized 422 error message in Amharic when locale is am" do
+      allow(Feature).to receive(:active?).and_call_original
+      allow(Feature).to receive(:active?).with(:recurring_products, any_args).and_return(true)
+      membership = create(:membership_product, user: seller, price_cents: 100_00, price_currency_type: "etb")
+      allow(Feature).to receive(:active?).with(:recurring_products, any_args).and_return(false)
+
+      post "/orders", params: {
+        email: "buyer@example.com",
+        full_name: "Tadesse Mesfin",
+        line_items: [
+          {
+            permalink: membership.unique_permalink,
+            perceived_price_cents: "10000",
+            quantity: "1",
+            uid: "uid_line_recurring"
+          }
+        ]
+      }, headers: headers.merge("HTTP_ACCEPT_LANGUAGE" => "am")
+
+      expect(response).to have_http_status(:unprocessable_content)
+      body = JSON.parse(response.body)
+      expect(body["success"]).to be false
+      expect(body["error_message"]).to eq("የደንበኝነት ምዝገባዎች፣ የክፍያ ዕቅዶች እና ቅድመ-ትዕዛዞች በአሁኑ ጊዜ በቻፓ አይደገፉም። የአንድ ጊዜ ክፍያዎች በብር (ETB) ብቻ ይደገፋሉ።")
     end
   end
 

@@ -564,6 +564,9 @@ const createOrder = async (payload: StartCartPurchaseRequestPayload) => {
     accept: "json",
     data,
   });
+  if (response.status === 422) {
+    return typia.assert<OrderErrorResponse>(await response.json());
+  }
   if (!response.ok) throw new ResponseError();
   return typia.assert<OrderSuccessResponse | OrderErrorResponse>(await response.json());
 };

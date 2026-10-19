@@ -202,6 +202,7 @@ am:
     recipient_email: የተቀባይ ኢሜይል
     recipient_email_placeholder: የተቀባይ ኢሜይል አድራሻ
     redirecting: ወደ ቻፓ የክፍያ ገጽ በመሄድ ላይ...
+    recurring_not_supported_notice: "የደንበኝነት ምዝገባዎች፣ የክፍያ ዕቅዶች እና ቅድመ-ትዕዛዞች በአሁኑ ጊዜ በቻፓ አይደገፉም። የአንድ ጊዜ ክፍያዎች በብር (ETB) ብቻ ይደገፋሉ።"
     reset_gift_message: የስጦታ አማራጩን ሊያጠፉ ነው። ይህንን ዳግም በስጦታ ለመስጠት ወደ ገጹ ተመልሰው "በስጦታ ይስጡ" የሚለውን መምረጥ ይኖርብዎታል።
     reset_gift_title: የስጦታ አማራጭን ዳግም ማስጀመር ይፈልጋሉ?
     retry_price_update: የዋጋ ዝመናን እንደገና ይሞክሩ

@@ -230,6 +230,26 @@ describe("startOrderCreation", () => {
     expect(result.offerCodes).toEqual(activeOfferCodes);
   });
 
+  it("translates 422 response into line item errors with error_message", async () => {
+    vi.stubGlobal("Routes", { orders_path: () => "/orders" });
+    const errorMessage =
+      "Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported.";
+    requestMock
+      .mockReset()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ success: false, error_message: errorMessage }), { status: 422 }),
+      );
+
+    const result = await startOrderCreation(requestData);
+
+    const firstLine = requestData.lineItems.at(0);
+    if (!firstLine) throw new Error("Missing test line item");
+    expect(result.lineItems[firstLine.uid]).toEqual({
+      success: false,
+      error_message: errorMessage,
+    });
+  });
+
   it("sends failed-line code candidates for server revalidation after SCA", async () => {
     vi.stubGlobal("Routes", {
       orders_path: () => "/orders",

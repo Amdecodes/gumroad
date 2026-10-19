@@ -202,6 +202,7 @@ en:
     recipient_email: Recipient email
     recipient_email_placeholder: Recipient email address
     redirecting: Redirecting to Chapa checkout...
+    recurring_not_supported_notice: "Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported."
     reset_gift_message: You are about to switch off the gift option. To gift this wishlist again, you will need to return to the wishlist page and select "Gift this product".
     reset_gift_title: Reset gift option?
     retry_price_update: Retry price update

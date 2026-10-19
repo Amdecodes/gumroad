@@ -754,6 +754,15 @@ const CheckoutIndexPage = () => {
         return;
       }
 
+      const firstError = Object.values(result.lineItems).find(
+        (i) => !i.success && "error_message" in i && i.error_message,
+      );
+      if (firstError && !firstError.success && firstError.error_message && failedResults.length === results.length) {
+        showAlert(firstError.error_message, "error");
+        dispatch({ type: "cancel" });
+        return;
+      }
+
       const failedItems = cartForm.data.cart.items.flatMap((item) => {
         const lineItem = result.lineItems[getCartItemUid(item)];
         return lineItem && !lineItem.success

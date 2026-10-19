@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
         if has_recurring
           return render json: {
             success: false,
-            error_message: "Recurring subscriptions, installments, and preorders are currently unavailable with Chapa."
+            error_message: I18n.t("checkout.recurring_not_supported_notice")
           }, status: :unprocessable_entity
         end
       end

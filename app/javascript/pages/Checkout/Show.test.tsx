@@ -398,3 +398,28 @@ it("keeps a method-forced listed currency when a matching preference is persiste
   expect(mocks.clientOrder.mock.calls[0]?.[0].directListedAmountToken).toBe("listed-1600");
   expect(screen.getByLabelText("buyer currency").textContent).toBe("eur");
 });
+
+it("surfaces localized error_message via showAlert when order creation fails for all items", async () => {
+  const { showAlert } = await import("$app/components/server-components/Alert");
+  mocks.props.checkout_payment = config(false);
+  mocks.surcharges.mockResolvedValue(quote("2999-01-01T00:00:00Z"));
+  const errorMessage =
+    "Subscriptions, installments, and preorders are currently unavailable with Chapa. Only one-time purchases in ETB are supported.";
+  mocks.order.mockResolvedValueOnce({
+    lineItems: {
+      "test-product ": {
+        success: false,
+        error_message: errorMessage,
+      },
+    },
+    canBuyerSignUp: false,
+    offerCodes: [],
+  });
+
+  render(<CheckoutPage />);
+  await act(() => vi.advanceTimersByTimeAsync(400));
+  fireEvent.click(screen.getByRole("button", { name: "Pay" }));
+  await act(() => vi.advanceTimersByTimeAsync(0));
+
+  expect(showAlert).toHaveBeenCalledWith(errorMessage, "error");
+});
