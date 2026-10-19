@@ -166,7 +166,7 @@ describe "Chapa Background Jobs" do
       expect(purchase.reload.stripe_refunded).to be true
     end
 
-    it "processes documented charge.reversed payload and re-verifies via API" do
+    it "processes documented charge.reversed payload, re-verifies via API, and executes full refund lifecycle" do
       sample_payload = {
         "event" => "charge.reversed",
         "status" => "reversed",
@@ -186,11 +186,26 @@ describe "Chapa Background Jobs" do
         status: "reversed",
         reference:
       )
+      allow(ErrorNotifier).to receive(:notify)
 
-      described_class.new.perform(event.id)
+      expect do
+        described_class.new.perform(event.id)
+      end.to change { purchase.reload.stripe_refunded? }.from(false).to(true)
+        .and change { BalanceTransaction.where(user: seller).count }.by_at_least(1)
+        .and have_enqueued_mail(CustomerMailer, :refund).with(purchase.email, product.id, purchase.id)
 
       expect(event.reload.status).to eq("processed")
       expect(chapa_tx.reload.status).to eq("reversed")
+      expect(seller.balance_transactions.where(refund: purchase.refunds.last).first.holding_amount_net_cents).to be_negative
+      expect(ErrorNotifier).to have_received(:notify).with(
+        "Chapa transaction reversed",
+        context: {
+          tx_ref:,
+          chapa_reference: reference,
+          purchase_id: purchase.id,
+          order_id: chapa_tx.order_id
+        }
+      )
     end
 
     it "processes documented charge.failed/cancelled payload and updates transaction status" do

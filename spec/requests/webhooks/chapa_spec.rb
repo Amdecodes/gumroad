@@ -166,6 +166,59 @@ describe "Chapa Webhooks", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
+      it "handles charge.reversed webhook and executes full reversal lifecycle when job runs" do
+        seller = create(:user)
+        product = create(:product, user: seller, price_cents: 100_00, price_currency_type: "etb")
+        order = create(:order)
+        purchase = create(:purchase_in_progress, order:, link: product, seller:, price_cents: 100_00, charge_processor_id: "chapa")
+        tx = ChapaTransaction.create!(
+          tx_ref: "4FGFF4FFGD3",
+          chapa_reference: "AP634JFwEbxd",
+          order:,
+          purchase:,
+          amount_santims: 100_00,
+          amount_decimal: BigDecimal("100.00"),
+          currency: "ETB",
+          status: "pending"
+        )
+        payload = {
+          event: "charge.reversed",
+          status: "reversed",
+          reference: "AP634JFwEbxd",
+          tx_ref: "4FGFF4FFGD3"
+        }.to_json
+        sig = OpenSSL::HMAC.hexdigest("SHA256", webhook_secret, payload)
+
+        client = instance_double(Chapa::Client)
+        allow(Chapa::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:valid_signature?).and_return(true)
+        allow(client).to receive(:verify_transaction).with("4FGFF4FFGD3").and_return(
+          success: true,
+          status: "reversed",
+          reference: "AP634JFwEbxd"
+        )
+        allow(ErrorNotifier).to receive(:notify)
+
+        Sidekiq::Testing.inline! do
+          post "/webhooks/chapa",
+               params: payload,
+               headers: headers.merge("HTTP_X_CHAPA_SIGNATURE" => sig)
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(tx.reload.status).to eq("reversed")
+        expect(purchase.reload.stripe_refunded).to be true
+        expect(ErrorNotifier).to have_received(:notify).with(
+          "Chapa transaction reversed",
+          context: {
+            tx_ref: "4FGFF4FFGD3",
+            chapa_reference: "AP634JFwEbxd",
+            purchase_id: purchase.id,
+            order_id: tx.order_id
+          }
+        )
+      end
+
       it "accepts charge.failed/cancelled payload and enqueues job" do
         payload = {
           event: "charge.failed/cancelled",

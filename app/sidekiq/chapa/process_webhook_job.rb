@@ -69,13 +69,24 @@ module Chapa
         end
 
       when status == "reversed" || event_type.include?("reversed")
-        # Always re-verify via the API
         lookup_ref = tx_ref.presence || chapa_reference
         if lookup_ref.present?
           verification = client.verify_transaction(lookup_ref)
           tx = ChapaTransaction.find_by(tx_ref:) || ChapaTransaction.find_by(chapa_reference:)
           if tx.present? && verification[:success] && verification[:status].to_s.downcase == "reversed"
             tx.update!(status: "reversed")
+
+            purchase = tx.purchase || tx.order&.purchases&.first
+            if purchase.present? && !purchase.stripe_refunded
+              flow_of_funds = FlowOfFunds.build_simple_flow_of_funds(Currency::ETB, -purchase.amount_refundable_cents)
+              refund_obj = OpenStruct.new(id: "rev_#{tx.tx_ref}", status: "reversed")
+              purchase.refund_purchase!(flow_of_funds, nil, refund_obj, false, note: "Gateway reversal: Chapa charge reversed")
+            end
+
+            ErrorNotifier.notify(
+              "Chapa transaction reversed",
+              context: { tx_ref:, chapa_reference:, purchase_id: purchase&.id, order_id: tx.order_id }
+            )
           end
         end
 
