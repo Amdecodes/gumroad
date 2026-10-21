@@ -12,6 +12,8 @@ module Impersonate
 
   def impersonate_user(user)
     reset_impersonated_user
+    return unless can_impersonate?
+
     $redis.set(RedisKey.impersonated_user(current_user_from_api_or_web.id), user.id, ex: 7.days.to_i)
   end
 
@@ -53,7 +55,16 @@ module Impersonate
       current_api_user || current_user
     end
 
-    def can_impersonate? = current_user_from_api_or_web&.is_team_member?
+    def can_impersonate?
+      user = current_user_from_api_or_web
+      return false unless user&.is_team_member?
+
+      if Rails.env.production? || ActiveModel::Type::Boolean.new.cast(ENV["ADMIN_REQUIRE_2FA"])
+        return false unless user.two_factor_authentication_enabled?
+      end
+
+      true
+    end
 
     def reset_impersonated_user
       user = current_user_from_api_or_web

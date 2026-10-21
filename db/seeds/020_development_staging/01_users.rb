@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+def seed_log(msg)
+  puts msg unless Rails.env.test?
+end unless respond_to?(:seed_log)
+
 seller = User.find_by(email: "seller@gumroad.com")
 if seller.blank?
   seller = User.new
@@ -7,7 +11,6 @@ if seller.blank?
   seller.name = "Seller"
   seller.username = "seller"
   seller.confirmed_at = Time.current
-  seller.is_team_member = true
   seller.user_risk_state = "compliant"
   seller.password = SecureRandom.hex(24)
 
@@ -50,15 +53,30 @@ TeamMembership::ROLES.excluding(TeamMembership::ROLE_OWNER).each do |role|
   user.user_memberships.create!(user:, seller:, role:)
 end
 
-admin = User.find_by(email: "admin@gumroad.com")
-if admin.blank?
-  admin = User.new
-  admin.email = "admin@gumroad.com"
-  admin.name = "Gumroad Admin"
-  admin.username = "gumadmin"
-  admin.confirmed_at = Time.current
-  admin.is_team_member = true
-  admin.user_risk_state = "compliant"
-  admin.password = "password"
-  admin.save!(validate: false)
+dev_staff = User.find_by(email: "admin@arifdrop.test")
+if dev_staff.blank?
+  password_from_env = ENV["ADMIN_PASSWORD"].presence || ENV["ADMIN_DEV_PASSWORD"].presence
+  generated = password_from_env.blank?
+  staff_password = password_from_env || SecureRandom.hex(16)
+
+  dev_staff = User.new(
+    email: "admin@arifdrop.test",
+    name: "ArifDrop Dev Staff",
+    username: "admindev",
+    confirmed_at: Time.current,
+    is_team_member: true,
+    two_factor_authentication_enabled: true,
+    user_risk_state: "compliant",
+    password: staff_password
+  )
+  dev_staff.save!
+
+  if generated
+    seed_log "================================================================================"
+    seed_log "Created dev staff user: admin@arifdrop.test (is_team_member: true)"
+    seed_log "Generated staff password (printed once): #{staff_password}"
+    seed_log "================================================================================"
+  else
+    seed_log "Created dev staff user: admin@arifdrop.test with password configured from ENV."
+  end
 end

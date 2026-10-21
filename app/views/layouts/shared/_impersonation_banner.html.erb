@@ -1,0 +1,15 @@
+<% if impersonating? && impersonated_user.present? && impersonating_user.present? %>
+  <div id="impersonation-banner" class="sticky top-0 z-[9999] w-full bg-amber-400 text-black px-4 py-2 text-sm font-medium border-b border-amber-600 flex flex-wrap items-center justify-between gap-2 shadow-sm" role="alert">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-xs font-bold" aria-hidden="true">!</span>
+      <span>
+        <strong>Impersonating:</strong>
+        <%= impersonated_user.display_name.presence || impersonated_user.email %> (<%= impersonated_user.email %>)
+        <span class="opacity-80 text-xs ml-1 font-normal">as staff <%= impersonating_user.display_name.presence || impersonating_user.email %> (<%= impersonating_user.email %>)</span>
+      </span>
+    </div>
+    <div>
+      <%= button_to "Stop Impersonating", admin_unimpersonate_path, method: :delete, class: "inline-flex items-center px-3 py-1 text-xs font-semibold rounded bg-black text-white hover:bg-neutral-800 transition cursor-pointer border-0" %>
+    </div>
+  </div>
+<% end %>

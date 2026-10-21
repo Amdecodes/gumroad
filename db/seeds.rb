@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+raise "Refusing to run seeds in production environment!" if Rails.env.production?
+
 def seed_log(msg)
   puts msg unless Rails.env.test?
 end

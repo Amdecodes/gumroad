@@ -52,3 +52,45 @@ bin/doctor
 - `Chapa::ExpireAbandonedTransactionsJob`: Runs every 15 minutes (`*/15 * * * *`) to reconcile and expire abandoned transactions older than 60 minutes.
 - `Chapa::ProcessWebhookJob`: Asynchronously processes incoming Chapa webhook events stored in `chapa_webhook_events`.
 - `Chapa::PollRefundStatusJob`: Periodically checks status of pending Chapa refunds until terminal state (`refunded` or `reversed`).
+
+## Admin Access & Management
+
+### Creating the First Production Admin
+
+In production, database seeds refuse to run, and staff accounts must never be created with default passwords. To bootstrap or grant admin access:
+
+#### Method 1: Using the Rake Task (Recommended)
+
+Once a user account has registered and confirmed their email, grant staff access via:
+
+```bash
+bin/rails admin:grant EMAIL=admin@example.com
+```
+
+To revoke staff access:
+
+```bash
+bin/rails admin:revoke EMAIL=admin@example.com
+```
+
+Both tasks record an audit log with timestamp, operator, and target details.
+
+#### Method 2: Using the Rails Console
+
+From your production container or server shell:
+
+```bash
+bin/rails c
+```
+
+```ruby
+user = User.find_by!(email: "admin@example.com")
+user.update!(is_team_member: true)
+```
+
+### Production Security Hardening
+
+1. **Two-Factor Authentication (2FA)**: Staff members must have 2FA enabled on their account (`user.two_factor_authentication_enabled?`) before `/admin` routes and impersonation will function. In production, requests without 2FA are blocked and redirected to `/settings/password` (or return 403 Forbidden for JSON).
+2. **Impersonation Visibility**: A sticky banner is displayed across all pages whenever staff impersonation is active, identifying the target user identity, staff operator, and a direct button to terminate impersonation (`DELETE /admin/unimpersonate`).
+3. **Audit Logging**: All admin requests and impersonation events are logged to `Rails.logger` with the `[ADMIN_AUDIT]` structured JSON tag.
+4. **Optional IP Allowlist (`ADMIN_ALLOWED_IPS`)**: Set `ADMIN_ALLOWED_IPS` to a comma-separated list of individual IPs or CIDR subnets (e.g., `192.168.1.0/24,203.0.113.10`) to enforce network perimeter restrictions on `/admin`, Sidekiq Web, and Flipper UI. Requests from unlisted IPs receive a `403 Forbidden` response.

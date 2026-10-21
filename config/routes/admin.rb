@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "ipaddr"
+
 # The admin web UI was deleted; admin operations run through the internal
 # admin API (api/internal/admin) consumed by the gumroad-admin CLI. What
 # remains here: GET impersonate (Helper/CLI links), the Stripe dashboard
@@ -60,7 +62,22 @@ namespace :admin do
   get "marketing", to: "marketing#index"
   get "reports", to: "reports#index"
 
-  constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
+  constraints(lambda { |request|
+    warden = request.env["warden"]
+    next false unless warden&.authenticate? && warden.user&.is_team_member?
+
+    if Rails.env.production? || ActiveModel::Type::Boolean.new.cast(ENV["ADMIN_REQUIRE_2FA"])
+      next false unless warden.user.two_factor_authentication_enabled?
+    end
+
+    if ENV["ADMIN_ALLOWED_IPS"].present?
+      allowed_ips = ENV["ADMIN_ALLOWED_IPS"].to_s.split(",").map(&:strip).reject(&:blank?)
+      client_ip = (IPAddr.new(request.remote_ip) rescue nil)
+      next false unless client_ip && allowed_ips.any? { |range| (IPAddr.new(range).include?(client_ip) rescue false) }
+    end
+
+    true
+  }) do
     mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
     mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui
   end

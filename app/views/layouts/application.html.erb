@@ -6,6 +6,7 @@
   <% bclass.push(@body_class) if @body_class %>
   <% custom_context = RenderingExtension.custom_context(self) %>
   <body id="<%= @body_id %>" class="<%= bclass.join(" ") %>" style="<%= params[:as_embed] && "background: transparent" %>">
+    <%= render("layouts/shared/impersonation_banner") %>
     <div id="design-settings" data-settings="<%= custom_context[:design_settings].to_json %>" style="display: none;"></div>
     <%= render("layouts/shared/flash") %>
     <div class="flex flex-col lg:flex-row h-screen">
