@@ -117,53 +117,57 @@ const extractKeysFromFile = (filePath: string): KeyUsage[] => {
 // ── Test ───────────────────────────────────────────────────────────────────
 
 describe("Missing i18n keys", () => {
-  it("reports all translation keys used in source that are absent from en or am dictionaries", () => {
-    const repoRoot = path.resolve(process.cwd());
+  it(
+    "reports all translation keys used in source that are absent from en or am dictionaries",
+    { timeout: 60_000 },
+    () => {
+      const repoRoot = path.resolve(process.cwd());
 
-    const scanDirs = [
-      path.join(repoRoot, "app/javascript/components"),
-      path.join(repoRoot, "app/javascript/pages"),
-      path.join(repoRoot, "app/javascript/utils"),
-    ];
+      const scanDirs = [
+        path.join(repoRoot, "app/javascript/components"),
+        path.join(repoRoot, "app/javascript/pages"),
+        path.join(repoRoot, "app/javascript/utils"),
+      ];
 
-    const files = scanDirs.flatMap((d) => collectTsFiles(d));
-    const allUsages = files.flatMap((f) => extractKeysFromFile(f));
+      const files = scanDirs.flatMap((d) => collectTsFiles(d));
+      const allUsages = files.flatMap((f) => extractKeysFromFile(f));
 
-    // Deduplicate by key so the failure message is concise.
-    const uniqueKeys = new Map<string, KeyUsage>();
-    for (const usage of allUsages) {
-      if (!uniqueKeys.has(usage.key)) {
-        uniqueKeys.set(usage.key, usage);
+      // Deduplicate by key so the failure message is concise.
+      const uniqueKeys = new Map<string, KeyUsage>();
+      for (const usage of allUsages) {
+        if (!uniqueKeys.has(usage.key)) {
+          uniqueKeys.set(usage.key, usage);
+        }
       }
-    }
 
-    const missingFromEn: KeyUsage[] = [];
-    const missingFromAm: KeyUsage[] = [];
+      const missingFromEn: KeyUsage[] = [];
+      const missingFromAm: KeyUsage[] = [];
 
-    for (const [key, usage] of uniqueKeys) {
-      const inEn = getNestedValue(en, key);
-      const inAm = getNestedValue(am, key);
-      if (inEn === undefined) missingFromEn.push(usage);
-      if (inAm === undefined) missingFromAm.push(usage);
-    }
+      for (const [key, usage] of uniqueKeys) {
+        const inEn = getNestedValue(en, key);
+        const inAm = getNestedValue(am, key);
+        if (inEn === undefined) missingFromEn.push(usage);
+        if (inAm === undefined) missingFromAm.push(usage);
+      }
 
-    const formatMissing = (usages: KeyUsage[], dict: string): string =>
-      usages
-        .map((u) => `  • '${u.key}' used in ${path.relative(repoRoot, u.file)}:${u.line} — missing from ${dict}`)
-        .join("\n");
+      const formatMissing = (usages: KeyUsage[], dict: string): string =>
+        usages
+          .map((u) => `  • '${u.key}' used in ${path.relative(repoRoot, u.file)}:${u.line} — missing from ${dict}`)
+          .join("\n");
 
-    const messages: string[] = [];
-    if (missingFromEn.length > 0) {
-      messages.push(
-        `Keys missing from 'en' dictionary (${missingFromEn.length}):\n${formatMissing(missingFromEn, "en")}`,
-      );
-    }
-    if (missingFromAm.length > 0) {
-      messages.push(
-        `Keys missing from 'am' dictionary (${missingFromAm.length}):\n${formatMissing(missingFromAm, "am")}`,
-      );
-    }
+      const messages: string[] = [];
+      if (missingFromEn.length > 0) {
+        messages.push(
+          `Keys missing from 'en' dictionary (${missingFromEn.length}):\n${formatMissing(missingFromEn, "en")}`,
+        );
+      }
+      if (missingFromAm.length > 0) {
+        messages.push(
+          `Keys missing from 'am' dictionary (${missingFromAm.length}):\n${formatMissing(missingFromAm, "am")}`,
+        );
+      }
 
-    expect(messages, messages.join("\n\n")).toHaveLength(0);
-  });
+      expect(messages, messages.join("\n\n")).toHaveLength(0);
+    },
+  );
 });

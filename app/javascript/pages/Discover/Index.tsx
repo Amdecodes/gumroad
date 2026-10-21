@@ -456,7 +456,7 @@ function DiscoverIndex() {
             </div>
           </header>
         ) : (
-          <section className="relative overflow-hidden border-b border-navy-border/40 bg-navy py-12 px-6 text-center text-white lg:py-16 lg:px-12">
+          <section className="border-navy-border/40 relative overflow-hidden border-b bg-navy px-6 py-12 text-center text-white lg:px-12 lg:py-16">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 opacity-15"

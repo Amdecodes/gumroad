@@ -155,15 +155,7 @@ describe("Admin Marketing Index Page", () => {
   });
 
   it("renders empty state messages when lists are empty", () => {
-    render(
-      <Index
-        {...defaultProps}
-        offers={[]}
-        affiliates={[]}
-        audience_samples={[]}
-        workflows={[]}
-      />
-    );
+    render(<Index {...defaultProps} offers={[]} affiliates={[]} audience_samples={[]} workflows={[]} />);
 
     const discountsTab = screen.getByRole("button", { name: "Discounts (0)" });
     fireEvent.click(discountsTab);

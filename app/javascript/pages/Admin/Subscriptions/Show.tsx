@@ -39,14 +39,14 @@ export type SubscriptionDetail = {
   deactivated_at?: string | null;
   next_charge_date?: string | null;
   grace_period_deadline?: string | null;
-  charges: Array<{
+  charges: {
     id: string;
     amount_formatted: string;
     status: string;
     payment_processor: string;
     transaction_id?: string | null;
     created_at: string;
-  }>;
+  }[];
 };
 
 export type SubscriptionsShowProps = {

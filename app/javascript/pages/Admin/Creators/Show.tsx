@@ -3,6 +3,8 @@ import { Link, router } from "@inertiajs/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as React from "react";
 
+import { useTranslation, type TranslationFn } from "$app/utils/i18n";
+
 import { AdminLayout } from "$app/components/Admin/AdminLayout";
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -10,7 +12,6 @@ import { Card, CardContent } from "$app/components/ui/Card";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Textarea } from "$app/components/ui/Textarea";
-import { useTranslation } from "$app/utils/i18n";
 
 export type CreatorProfile = {
   external_id: string;
@@ -97,11 +98,8 @@ const formatDateTime = (isoString?: string | null) => {
   }
 };
 
-const renderCreatorStatusPill = (
-  status: string,
-  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
-) => {
-  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
+const renderCreatorStatusPill = (status: string, t?: TranslationFn) => {
+  const translate = t || ((_k: string, _v?: unknown, d?: string) => d || "");
   switch (status) {
     case "active":
       return (

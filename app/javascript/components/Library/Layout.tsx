@@ -15,10 +15,7 @@ export const Layout = ({
   children: React.ReactNode;
 }) => (
   <div className="library">
-    <PageHeader
-      title={t("library.title")}
-      actions={<LanguageToggle />}
-    >
+    <PageHeader title={t("library.title")} actions={<LanguageToggle />}>
       <Tabs>
         <Tab isSelected={selectedTab === "purchases"} asChild>
           <Link href={Routes.library_path()}>{t("library.purchases")}</Link>

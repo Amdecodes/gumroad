@@ -2,6 +2,8 @@ import { ArrowLeft, CheckCircle, User, XCircle } from "@boxicons/react";
 import { Link, router } from "@inertiajs/react";
 import * as React from "react";
 
+import { useTranslation, type TranslationFn } from "$app/utils/i18n";
+
 import { AdminLayout } from "$app/components/Admin/AdminLayout";
 import { Button } from "$app/components/Button";
 import { Modal } from "$app/components/Modal";
@@ -11,7 +13,6 @@ import { PageHeader } from "$app/components/ui/PageHeader";
 import { Pill } from "$app/components/ui/Pill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$app/components/ui/Table";
 import { Textarea } from "$app/components/ui/Textarea";
-import { useTranslation } from "$app/utils/i18n";
 
 export type PayoutDetailProps = {
   payout: {
@@ -88,11 +89,8 @@ const formatDate = (isoString?: string | null) => {
   }
 };
 
-const renderPayoutStatusPill = (
-  status: string,
-  t?: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
-) => {
-  const translate = t || ((_k: string, _v?: any, d?: string) => d || "");
+const renderPayoutStatusPill = (status: string, t?: TranslationFn) => {
+  const translate = t || ((_k: string, _v?: unknown, d?: string) => d || "");
   switch (status.toLowerCase()) {
     case "completed":
       return (

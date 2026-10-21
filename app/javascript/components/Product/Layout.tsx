@@ -291,7 +291,7 @@ const CtaBar = ({
         "bg-background/95 backdrop-blur-md transition-all duration-200",
         isDesktop
           ? "border-b border-border shadow-xs"
-          : "border-t border-border shadow-lg pb-[env(safe-area-inset-bottom)]",
+          : "border-t border-border pb-[env(safe-area-inset-bottom)] shadow-lg",
       )}
       style={{
         overflow: "hidden",
@@ -311,7 +311,7 @@ const CtaBar = ({
     >
       <div
         ref={ref}
-        className="mx-auto flex max-w-product-page items-center justify-between gap-3 p-3 sm:p-4 max-sm:flex-col max-sm:items-stretch lg:gap-4 lg:px-8"
+        className="mx-auto flex max-w-product-page items-center justify-between gap-3 p-3 max-sm:flex-col max-sm:items-stretch sm:p-4 lg:gap-4 lg:px-8"
         style={{
           transition: "var(--transition-duration)",
           marginTop: visible || !isDesktop ? undefined : -height,

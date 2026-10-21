@@ -88,6 +88,11 @@ describe "preview_qa rake tasks" do
   end
 
   describe "preview_qa:backdate_purchase" do
+    # Chapa blocks recurring products behind a flag; these specs test admin tooling
+    # unrelated to the payment gate, so activate globally for the describe block.
+    before { Feature.activate(:recurring_products) }
+    after { Feature.deactivate(:recurring_products) }
+
     it "backdates a subscription purchase by one billing period plus a day by default" do
       purchase = create(:membership_purchase)
 
@@ -230,6 +235,9 @@ describe "preview_qa rake tasks" do
   end
 
   describe "preview_qa:inspect_subscription" do
+    before { Feature.activate(:recurring_products) }
+    after { Feature.deactivate(:recurring_products) }
+
     def capture_stdout
       original = $stdout
       $stdout = StringIO.new

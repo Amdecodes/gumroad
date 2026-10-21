@@ -23,7 +23,10 @@ const UserActionButtons: React.FC = () => {
   if (currentSeller) {
     return (
       <>
-        <NavigationButton href={Routes.library_url()} className="border-white/20 text-white hover:bg-white/10 flex-1 lg:flex-none">
+        <NavigationButton
+          href={Routes.library_url()}
+          className="flex-1 border-white/20 text-white hover:bg-white/10 lg:flex-none"
+        >
           <BookmarkHeart pack="filled" className="size-4" /> {t("navigation.library")}
         </NavigationButton>
         {currentSeller.has_published_products ? null : (
@@ -37,7 +40,10 @@ const UserActionButtons: React.FC = () => {
 
   return (
     <>
-      <NavigationButton href={Routes.login_url()} className="border-white/20 text-white hover:bg-white/10 flex-1 lg:flex-none">
+      <NavigationButton
+        href={Routes.login_url()}
+        className="flex-1 border-white/20 text-white hover:bg-white/10 lg:flex-none"
+      >
         {t("auth.log_in")}
       </NavigationButton>
       <NavigationButton href={Routes.signup_url()} color="primary" className="flex-1 lg:flex-none">
@@ -65,7 +71,7 @@ const DesktopHeaderRows: React.FC<HeaderRowElementsProps> = ({
   avatarElement,
 }) => (
   <div className="flex w-full items-center justify-between gap-6">
-    <div className="flex items-center gap-6 flex-1 max-w-2xl">
+    <div className="flex max-w-2xl flex-1 items-center gap-6">
       {logoLink}
       {searchBar}
     </div>
@@ -139,7 +145,11 @@ export const Layout: React.FC<{
   const userActionButtons = <UserActionButtons />;
 
   const logoLink = (
-    <a href={Routes.discover_url({ host: discoverDomain })} className="flex shrink-0 items-center" aria-label={t("navigation.discover")}>
+    <a
+      href={Routes.discover_url({ host: discoverDomain })}
+      className="flex shrink-0 items-center"
+      aria-label={t("navigation.discover")}
+    >
       <Logo className="h-8 w-auto text-white" />
     </a>
   );
@@ -148,7 +158,7 @@ export const Layout: React.FC<{
       <Search query={query} setQuery={setQuery} />
     </div>
   );
-  const cartButton = <CartNavigationButton className="shrink-0 text-white border-white/20 hover:bg-white/10" />;
+  const cartButton = <CartNavigationButton className="shrink-0 border-white/20 text-white hover:bg-white/10" />;
   const avatarElement = currentSeller ? (
     <a href={Routes.dashboard_url({ host: appDomain })} aria-label={t("navigation.dashboard")} className="shrink-0">
       <Avatar src={currentSeller.avatarUrl} />
@@ -187,8 +197,8 @@ export const Layout: React.FC<{
 
   return (
     <div className={className}>
-      <header className="sticky top-0 z-40 border-b border-white/15 dark:border-white/20 bg-navy px-4 py-3 text-white shadow-xs lg:px-8">
-        <div className="mx-auto flex max-w-7xl w-full flex-col gap-3">
+      <header className="sticky top-0 z-40 border-b border-white/15 bg-navy px-4 py-3 text-white shadow-xs lg:px-8 dark:border-white/20">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
           {isDesktop ? (
             <DesktopHeaderRows {...headerRowElementsProps} />
           ) : (
@@ -198,9 +208,14 @@ export const Layout: React.FC<{
       </header>
 
       {/* Category navigation strip */}
-      <nav aria-label={t("discover.categories")} className="border-b border-border/80 bg-background/95 backdrop-blur-sm px-4 py-2 lg:px-8">
+      <nav
+        aria-label={t("discover.categories")}
+        className="border-b border-border/80 bg-background/95 px-4 py-2 backdrop-blur-sm lg:px-8"
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="grow overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{navElementNoFooter}</div>
+          <div className="grow overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {navElementNoFooter}
+          </div>
         </div>
       </nav>
 
@@ -237,12 +252,12 @@ const BuyerMobileTabBar: React.FC = () => {
   return (
     <nav
       aria-label={t("navigation.main")}
-      className="fixed bottom-0 inset-x-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] items-center justify-around border-t border-white/15 dark:border-white/20 bg-navy/95 backdrop-blur-md px-2 text-white md:hidden shadow-lg"
+      className="fixed inset-x-0 bottom-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-bottom))] items-center justify-around border-t border-white/15 bg-navy/95 px-2 pb-[env(safe-area-inset-bottom)] text-white shadow-lg backdrop-blur-md md:hidden dark:border-white/20"
     >
       <a
         href={Routes.discover_url({ host: discoverDomain })}
         aria-current="page"
-        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white font-semibold no-underline py-1 px-3"
+        className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 text-xs font-semibold text-white no-underline"
       >
         <SearchIcon className="size-5" />
         <span className="relative">
@@ -252,7 +267,7 @@ const BuyerMobileTabBar: React.FC = () => {
       </a>
       <a
         href={Routes.library_url()}
-        className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+        className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 text-xs text-white/70 no-underline hover:text-white"
       >
         <BookmarkHeart className="size-5" />
         <span>{t("navigation.library")}</span>
@@ -260,7 +275,7 @@ const BuyerMobileTabBar: React.FC = () => {
       {currentSeller ? (
         <a
           href={Routes.dashboard_url({ host: appDomain })}
-          className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 text-xs text-white/70 no-underline hover:text-white"
         >
           <User className="size-5" />
           <span>{t("navigation.dashboard")}</span>
@@ -268,7 +283,7 @@ const BuyerMobileTabBar: React.FC = () => {
       ) : (
         <a
           href={Routes.login_url()}
-          className="flex flex-col items-center justify-center gap-0.5 text-xs text-white/70 hover:text-white no-underline py-1 px-3"
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 text-xs text-white/70 no-underline hover:text-white"
         >
           <User className="size-5" />
           <span>{t("auth.log_in")}</span>

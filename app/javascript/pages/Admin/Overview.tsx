@@ -3,7 +3,7 @@ import { router } from "@inertiajs/react";
 import * as React from "react";
 import { Line, XAxis, YAxis } from "recharts";
 
-import { useTranslation } from "$app/utils/i18n";
+import { useTranslation, type TranslationFn } from "$app/utils/i18n";
 
 import { AdminLayout } from "$app/components/Admin/AdminLayout";
 import useChartTooltip from "$app/components/Analytics/useChartTooltip";
@@ -81,10 +81,7 @@ const formatOrderDate = (isoString: string) => {
   }
 };
 
-const renderOrderStatusPill = (
-  status: string,
-  t: (key: string, vars?: Record<string, any>, defaultVal?: string) => string,
-) => {
+const renderOrderStatusPill = (status: string, t: TranslationFn) => {
   switch (status) {
     case "successful":
       return (
@@ -121,13 +118,7 @@ const renderOrderStatusPill = (
   }
 };
 
-const TrendTooltip = ({
-  point,
-  t,
-}: {
-  point: TrendPoint;
-  t: (key: string, vars?: Record<string, any>, defaultVal?: string) => string;
-}) => (
+const TrendTooltip = ({ point, t }: { point: TrendPoint; t: TranslationFn }) => (
   <div className="space-y-1">
     <div className="text-xs font-bold text-muted">{point.date}</div>
     <div className="text-sm font-semibold">{point.revenue_formatted}</div>

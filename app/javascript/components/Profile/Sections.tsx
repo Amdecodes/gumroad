@@ -72,12 +72,14 @@ export const PostsView = ({ posts }: { posts: Post[] }) => {
           className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-5 no-underline transition-all hover:border-royal-blue/40 hover:shadow-xs"
         >
           <div>
-            <h3 className="font-heading font-semibold text-foreground group-hover:text-royal-blue transition-colors">
+            <h3 className="font-heading font-semibold text-foreground transition-colors group-hover:text-royal-blue">
               {post.name}
             </h3>
-            <time className="text-sm text-muted-foreground">{formatPostDate(post.published_at, userAgentInfo.locale)}</time>
+            <time className="text-muted-foreground text-sm">
+              {formatPostDate(post.published_at, userAgentInfo.locale)}
+            </time>
           </div>
-          <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-royal-blue transition-colors shrink-0" />
+          <ArrowUpRight className="text-muted-foreground size-5 shrink-0 transition-colors group-hover:text-royal-blue" />
         </a>
       ))}
     </div>

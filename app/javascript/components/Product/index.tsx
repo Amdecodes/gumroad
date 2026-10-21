@@ -404,7 +404,7 @@ export const Product = ({
             <h1
               itemProp="name"
               dir="auto"
-              className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl wrap-break-word"
+              className="font-heading text-2xl font-bold tracking-tight wrap-break-word text-foreground md:text-3xl"
             >
               {product.name}
             </h1>
@@ -498,7 +498,10 @@ export const Product = ({
                           </a>
                         </CartItemTitle>
                         {bundleProduct.ratings ? (
-                          <div className="line-clamp-1 flex shrink-0 items-center gap-1" aria-label={t("storefront.rating", "Rating")}>
+                          <div
+                            className="line-clamp-1 flex shrink-0 items-center gap-1"
+                            aria-label={t("storefront.rating", "Rating")}
+                          >
                             <Star pack="filled" className="size-5" />
                             {`${bundleProduct.ratings.average.toFixed(1)} (${bundleProduct.ratings.count})`}
                           </div>
@@ -552,8 +555,8 @@ export const Product = ({
       </div>
 
       {/* Right Column: Sticky Purchase Card on Desktop, natural order on Mobile */}
-      <aside className="flex flex-col gap-4 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
-        <div className="rounded-2xl border border-border bg-background p-6 shadow-md md:p-8 space-y-5">
+      <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <div className="space-y-5 rounded-2xl border border-border bg-background p-6 shadow-md md:p-8">
           {notForSaleMessage ? (
             <Alert role="status" variant="warning">
               {notForSaleMessage}
@@ -770,7 +773,9 @@ export const Product = ({
       {/* Reviews & Seller Reputation: Positioned under left content on desktop, after purchase on mobile */}
       {product.ratings || product.seller_reputation ? (
         <section className="overflow-hidden rounded-2xl border border-border bg-background shadow-xs lg:col-start-1 lg:row-start-2">
-          {product.ratings ? <Reviews ratings={product.ratings} productId={product.id} seller={product.seller} /> : null}
+          {product.ratings ? (
+            <Reviews ratings={product.ratings} productId={product.id} seller={product.seller} />
+          ) : null}
           {product.seller_reputation ? (
             <SellerReputationSection
               reputation={product.seller_reputation}
@@ -804,7 +809,7 @@ const Covers = ({
       activeCoverId={activeCoverId}
       setActiveCoverId={setActiveCoverId}
       productName={productName}
-      className={classNames("border-b-0 rounded-2xl", activeCoverId ? "" : "pb-[25%]")}
+      className={classNames("rounded-2xl border-b-0", activeCoverId ? "" : "pb-[25%]")}
     />
   );
 };

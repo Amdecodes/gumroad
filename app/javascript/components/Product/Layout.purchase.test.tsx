@@ -166,7 +166,7 @@ const renderLayout = (p: ProductData, discountCode: ProductDiscount = null, purc
       }}
     />,
   );
-  const bar = screen.getByRole("region", { name: /Product info(rmation)? bar/i });
+  const bar = screen.getByRole("region", { name: /Product info(rmation)? bar/iu });
   act(() => setInlineVisible(false));
   return { ...view, bar };
 };

@@ -130,7 +130,7 @@ module PlatformConfig
               "Please configure these via ENV or Rails credentials."
       end
 
-      prod_chapa_key = ENV["CHAPA_SECRET_KEY"].presence || Rails.application.credentials.dig(:chapa, :secret_key) || GlobalConfig.get("CHAPA_SECRET_KEY")
+      prod_chapa_key = GlobalConfig.get("CHAPA_SECRET_KEY").presence || ENV["CHAPA_SECRET_KEY"].presence || Rails.application.credentials.dig(:chapa, :secret_key)
       if prod_chapa_key.to_s.start_with?("CHASECK_TEST")
         raise "Security boot failure: Test mode key (CHASECK_TEST) is forbidden in production! Please provide a live Chapa secret key."
       end

@@ -316,7 +316,9 @@ export const SectionLayout = ({
             {menuItems}
             <CardContent asChild>
               <button className="cursor-pointer all-unset" onClick={copyLink} type="button">
-                <h5 className="grow font-bold">{linkCopied ? t("storefront.copy", "Copied!") : t("storefront.copy_link", "Copy link")}</h5>
+                <h5 className="grow font-bold">
+                  {linkCopied ? t("storefront.copy", "Copied!") : t("storefront.copy_link", "Copy link")}
+                </h5>
                 <Link className="size-5" />
               </button>
             </CardContent>

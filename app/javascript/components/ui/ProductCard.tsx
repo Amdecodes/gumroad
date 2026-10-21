@@ -10,7 +10,7 @@ type BaseProps = {
 export const ProductCard = ({ children, className, ...props }: BaseProps) => (
   <article
     className={classNames(
-      "relative flex flex-col rounded-xl border border-border bg-background transition-all duration-200 hover:shadow-md hover:border-royal-blue/30 overflow-hidden",
+      "relative flex flex-col overflow-hidden rounded-xl border border-border bg-background transition-all duration-200 hover:border-royal-blue/30 hover:shadow-md",
       className,
     )}
     {...props}

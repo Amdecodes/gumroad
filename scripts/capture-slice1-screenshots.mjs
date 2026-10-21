@@ -103,7 +103,7 @@ async function main() {
                 returnByValue: true,
               });
               if (res.result?.value) break;
-            } catch (_) {}
+            } catch {}
           }
           await new Promise((r) => setTimeout(r, 1000));
 

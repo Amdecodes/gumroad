@@ -8,7 +8,8 @@ const PORT = 3001;
 const outDir = path.resolve("docs/design/screenshots/slice2");
 fs.mkdirSync(outDir, { recursive: true });
 
-const artifactScreenshotsDir = "/home/amde/.gemini/antigravity-cli/brain/1f665419-62ae-4722-bbd2-fd07f8bb0a23/screenshots";
+const artifactScreenshotsDir =
+  "/home/amde/.gemini/antigravity-cli/brain/1f665419-62ae-4722-bbd2-fd07f8bb0a23/screenshots";
 fs.mkdirSync(artifactScreenshotsDir, { recursive: true });
 
 async function getCookiesForUser(email, password) {

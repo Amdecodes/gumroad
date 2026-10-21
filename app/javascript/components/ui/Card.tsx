@@ -60,17 +60,15 @@ type CardHeaderProps = React.PropsWithChildren<{
 }> &
   React.HTMLAttributes<HTMLDivElement>;
 
-export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className, children, ...rest }, ref) => (
-    <div
-      ref={ref}
-      className={classNames("flex items-center justify-between p-4 border-b border-border", className)}
-      {...rest}
-    >
-      {children}
-    </div>
-  ),
-);
+export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(({ className, children, ...rest }, ref) => (
+  <div
+    ref={ref}
+    className={classNames("flex items-center justify-between border-b border-border p-4", className)}
+    {...rest}
+  >
+    {children}
+  </div>
+));
 
 CardHeader.displayName = "CardHeader";
 
@@ -81,15 +79,10 @@ type CardTitleProps = React.PropsWithChildren<{
 
 export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, children, ...rest }, ref) => (
-    <h3
-      ref={ref}
-      className={classNames("text-base font-semibold leading-none tracking-tight", className)}
-      {...rest}
-    >
+    <h3 ref={ref} className={classNames("text-base leading-none font-semibold tracking-tight", className)} {...rest}>
       {children}
     </h3>
   ),
 );
 
 CardTitle.displayName = "CardTitle";
-

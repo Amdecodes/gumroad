@@ -142,7 +142,9 @@ export const DateRangePicker = ({
                 aria-invalid={to < from}
               />
               {to < from ? (
-                <FieldsetDescription>{t("common.must_be_after_from_date", "Must be after from date")}</FieldsetDescription>
+                <FieldsetDescription>
+                  {t("common.must_be_after_from_date", "Must be after from date")}
+                </FieldsetDescription>
               ) : null}
             </Fieldset>
           </div>

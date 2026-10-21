@@ -2,6 +2,7 @@ import { Link, usePage } from "@inertiajs/react";
 import * as React from "react";
 
 import { t } from "$app/utils/i18n";
+
 import logoG from "$assets/images/logo-g.svg";
 
 const FooterLink = ({
@@ -71,7 +72,7 @@ export const HomeFooter = ({
   const social = platform.social_links;
 
   return (
-    <div className="flex flex-col justify-between gap-16 border-t border-navy-border/40 bg-navy px-8 py-16 leading-relaxed text-white lg:flex-row lg:px-[4vw] lg:py-24">
+    <div className="border-navy-border/40 flex flex-col justify-between gap-16 border-t bg-navy px-8 py-16 leading-relaxed text-white lg:flex-row lg:px-[4vw] lg:py-24">
       <div className="flex w-full max-w-3xl flex-col gap-16">
         <div className="flex items-center gap-2">
           <img src={logoG} alt={`${appName} icon`} className="h-6 w-6" />

@@ -29,7 +29,7 @@ export const Modal = ({
       <Dialog.Content
         aria-modal={modal}
         className={classNames(
-          "fixed top-[50%] left-[50%] z-51 flex max-h-[90vh] max-w-175 min-w-80 translate-[-50%] flex-col gap-4 overflow-y-auto rounded-xl border border-border bg-background p-6 sm:p-8 shadow-2xl",
+          "fixed top-[50%] left-[50%] z-51 flex max-h-[90vh] max-w-175 min-w-80 translate-[-50%] flex-col gap-4 overflow-y-auto rounded-xl border border-border bg-background p-6 shadow-2xl sm:p-8",
           className,
         )}
         onOpenAutoFocus={(e) => {

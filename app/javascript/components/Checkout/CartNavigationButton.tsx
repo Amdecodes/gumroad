@@ -2,11 +2,11 @@ import { Cart } from "@boxicons/react";
 import * as React from "react";
 
 import { hasCartItems } from "$app/utils/cart";
+import { useTranslation } from "$app/utils/i18n";
 
 import { NavigationButton } from "$app/components/Button";
 import { useCartItemsCount } from "$app/components/Checkout/useCartItemsCount";
 import { useAppDomain } from "$app/components/DomainSettings";
-import { useTranslation } from "$app/utils/i18n";
 
 export const CartNavigationButton = ({ className }: { className?: string }) => {
   const appDomain = useAppDomain();

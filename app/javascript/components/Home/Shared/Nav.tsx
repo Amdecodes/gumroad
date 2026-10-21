@@ -32,9 +32,7 @@ const NavLink = ({
 }) => {
   const className = classNames(
     "flex w-full items-center justify-center p-3 text-sm text-white no-underline transition-colors lg:w-auto lg:rounded-full lg:py-1.5 lg:px-3.5 whitespace-nowrap",
-    isActive
-      ? "bg-white/15 text-white font-medium"
-      : "text-white/80 hover:text-white hover:bg-white/10",
+    isActive ? "bg-white/15 text-white font-medium" : "text-white/80 hover:text-white hover:bg-white/10",
   );
 
   // Implemented conditional rendering for links to use standard <a> tags for non-Inertia routes.
@@ -169,7 +167,7 @@ export const HomeNav = () => {
 
   return (
     <>
-      <div className="sticky top-0 right-0 left-0 z-50 flex h-16 items-center justify-between border-b border-navy-border/40 bg-navy px-4 text-white shadow-xs lg:px-8">
+      <div className="border-navy-border/40 sticky top-0 right-0 left-0 z-50 flex h-16 items-center justify-between border-b bg-navy px-4 text-white shadow-xs lg:px-8">
         <div className="flex items-center gap-3">
           <Link href={Routes.root_path()} className="flex items-center">
             <img src={logoSvg} loading="lazy" alt="" className="h-8 w-auto brightness-0 invert" />
@@ -227,16 +225,14 @@ export const HomeNav = () => {
             aria-label={t("navigation.toggle_navigation_menu", "Toggle navigation menu")}
           >
             <div
-              className={classNames(
-                "mb-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200",
-                { "translate-y-1.5 rotate-45": mobileMenuOpen },
-              )}
+              className={classNames("mb-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200", {
+                "translate-y-1.5 rotate-45": mobileMenuOpen,
+              })}
             />
             <div
-              className={classNames(
-                "mt-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200",
-                { "-translate-y-1.5 -rotate-45": mobileMenuOpen },
-              )}
+              className={classNames("mt-1 h-0.5 w-6 origin-center bg-white transition-transform duration-200", {
+                "-translate-y-1.5 -rotate-45": mobileMenuOpen,
+              })}
             />
           </button>
         </div>
@@ -244,7 +240,7 @@ export const HomeNav = () => {
 
       {mobileMenuOpen ? (
         <div
-          className="override fixed top-16 right-0 left-0 z-50 flex flex-col justify-between border-b border-navy-border/40 bg-navy p-4 text-white shadow-xl"
+          className="override border-navy-border/40 fixed top-16 right-0 left-0 z-50 flex flex-col justify-between border-b bg-navy p-4 text-white shadow-xl"
           id="mobile-menu"
         >
           <div className="flex flex-col items-center justify-center gap-1 py-2">
@@ -260,7 +256,7 @@ export const HomeNav = () => {
               </NavLink>
             ))}
           </div>
-          <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
+          <div className="flex flex-col gap-2 border-t border-white/10 pt-2">
             <AuthButtons user={user} onClick={closeMobileMenu} />
           </div>
         </div>

@@ -19,7 +19,8 @@ const tabsVariants = cva("", {
 const tabVariants = cva("", {
   variants: {
     variant: {
-      pills: "shrink-0 rounded-full border border-border/40 px-3.5 py-1.5 text-sm font-medium transition-all duration-150 hover:bg-active-bg",
+      pills:
+        "shrink-0 rounded-full border border-border/40 px-3.5 py-1.5 text-sm font-medium transition-all duration-150 hover:bg-active-bg",
       buttons:
         "flex items-start gap-3 rounded-lg border border-border px-4 py-3 text-left transition-all duration-150 not-active:hover:bg-active-bg",
     },

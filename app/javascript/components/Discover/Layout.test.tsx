@@ -4,9 +4,9 @@ import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CurrentSellerProvider } from "$app/components/CurrentSeller";
+import { Layout } from "$app/components/Discover/Layout";
 import { DomainSettingsProvider } from "$app/components/DomainSettings";
 import * as breakpointModule from "$app/components/useIsAboveBreakpoint";
-import { Layout } from "$app/components/Discover/Layout";
 
 vi.stubGlobal("Routes", {
   discover_url: () => "/discover",
@@ -63,7 +63,7 @@ describe("Discover Layout Header", () => {
       </CurrentSellerProvider>,
     );
 
-    const languageToggle = screen.getByRole("group", { name: /Language selection|ቋንቋ ምረጥ/i });
+    const languageToggle = screen.getByRole("group", { name: /Language selection|ቋንቋ ምረጥ/iu });
     expect(languageToggle).toBeTruthy();
     expect(screen.getByRole("button", { name: "EN" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "አማ" })).toBeTruthy();
@@ -82,7 +82,7 @@ describe("Discover Layout Header", () => {
       </CurrentSellerProvider>,
     );
 
-    const languageToggle = screen.getByRole("group", { name: /Language selection|ቋንቋ ምረጥ/i });
+    const languageToggle = screen.getByRole("group", { name: /Language selection|ቋንቋ ምረጥ/iu });
     expect(languageToggle).toBeTruthy();
     expect(screen.getByRole("button", { name: "EN" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "አማ" })).toBeTruthy();

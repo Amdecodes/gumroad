@@ -61,7 +61,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/95 backdrop-blur-md px-4 py-3 shadow-xs">
+      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/95 px-4 py-3 shadow-xs backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 lg:flex-nowrap">
           <div className="relative flex min-w-0 grow flex-wrap items-center gap-3 lg:flex-1 lg:flex-nowrap">
             {creatorProfile.avatar_url ? (
@@ -72,7 +72,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
               />
             ) : null}
             <a href={Routes.root_path()} className="flex max-w-full min-w-0 items-center gap-2 no-underline">
-              <span className="truncate font-heading text-lg font-bold tracking-tight text-foreground hover:text-royal-blue transition-colors">
+              <span className="truncate font-heading text-lg font-bold tracking-tight text-foreground transition-colors hover:text-royal-blue">
                 {creatorProfile.name}
               </span>
               {creatorProfile.is_verified ? (
@@ -83,7 +83,7 @@ export const Layout = ({ creatorProfile, hideFollowForm, currencySelector, shown
             </a>
             {creatorProfile.reputation ? (
               <div
-                className="flex min-w-0 flex-wrap items-center gap-1 rounded-full bg-muted/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                className="text-muted-foreground flex min-w-0 flex-wrap items-center gap-1 rounded-full bg-muted/40 px-2.5 py-0.5 text-xs font-medium"
                 aria-label={t("profile.creator_rating")}
               >
                 <Star pack="filled" className="size-3.5 text-yellow" />

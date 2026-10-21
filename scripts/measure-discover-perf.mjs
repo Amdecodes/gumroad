@@ -176,7 +176,9 @@ async function runAudit() {
 
       const res = layoutEval.result.value;
       const status = res.overflow ? "FAIL (Horizontal overflow)" : "PASS (No horizontal overflow)";
-      console.log(`Locale: ${loc.padEnd(8)} | ScrollWidth: ${res.scrollWidth}px (Client: ${res.clientWidth}px) | ${status}`);
+      console.log(
+        `Locale: ${loc.padEnd(8)} | ScrollWidth: ${res.scrollWidth}px (Client: ${res.clientWidth}px) | ${status}`,
+      );
     }
 
     browserWs.close();

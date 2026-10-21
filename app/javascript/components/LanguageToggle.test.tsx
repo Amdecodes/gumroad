@@ -3,8 +3,9 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LanguageToggle } from "$app/components/LanguageToggle";
 import { resetCurrentLocaleForTesting, setCurrentLocale, useTranslation } from "$app/utils/i18n";
+
+import { LanguageToggle } from "$app/components/LanguageToggle";
 
 describe("LanguageToggle", () => {
   beforeEach(() => {

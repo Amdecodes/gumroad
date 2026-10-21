@@ -95,7 +95,7 @@ const PostCard = ({
       <Link
         href={Routes.gumroad_blog_post_path(post.slug)}
         className={cx(
-          "override grid h-full overflow-hidden rounded-xl border border-border bg-background text-foreground no-underline transition-all duration-200 ease-in-out hover:shadow-md hover:border-royal-blue/30",
+          "override grid h-full overflow-hidden rounded-xl border border-border bg-background text-foreground no-underline transition-all duration-200 ease-in-out hover:border-royal-blue/30 hover:shadow-md",
           { "grid-rows-[auto_1fr]": !!featureImageUrl },
         )}
       >
@@ -149,7 +149,7 @@ const CompactPostItem = ({ post }: { post: Post }) => (
         <h4 className="mb-0.5 text-2xl font-normal">{post.subject}</h4>
         <p className="pb-0.5 text-base text-gray-500">{formatPostDate(post.published_at, "en-US")}</p>
       </div>
-      <div className="mr-1 ml-3 flex h-10 w-10 shrink-0 items-center justify-center self-end rounded-md border border-border p-2 transition-all duration-200 ease-in-out group-hover:shadow-xs group-hover:border-royal-blue/30">
+      <div className="mr-1 ml-3 flex h-10 w-10 shrink-0 items-center justify-center self-end rounded-md border border-border p-2 transition-all duration-200 ease-in-out group-hover:border-royal-blue/30 group-hover:shadow-xs">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>

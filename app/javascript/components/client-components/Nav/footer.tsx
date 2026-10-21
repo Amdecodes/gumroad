@@ -5,10 +5,10 @@ import React from "react";
 import { t } from "$app/utils/i18n";
 
 import { ClientNavLink } from "$app/components/client-components/Nav";
-import { LanguageToggle } from "$app/components/LanguageToggle";
 import { CreateBrandAccountModal } from "$app/components/CreateBrandAccountModal";
 import { useCurrentSeller } from "$app/components/CurrentSeller";
 import { useAppDomain } from "$app/components/DomainSettings";
+import { LanguageToggle } from "$app/components/LanguageToggle";
 import { useLoggedInUser } from "$app/components/LoggedInUser";
 import { NavLink, NavLinkDropdownItem, NavLinkDropdownMembershipItem } from "$app/components/Nav";
 import { DashboardNavProfilePopover } from "$app/components/ProfilePopover";

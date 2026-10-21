@@ -8,7 +8,7 @@ const APCA_TIE_BAND = 10;
 
 export const WHITE = "#ffffff";
 export const BLACK = "#000000";
-export const CONTRAST_WHITE: "#FFFFFF" = "#FFFFFF";
+export const CONTRAST_WHITE = "#FFFFFF" as const;
 
 // Expands a hex colour to [r, g, b] with each channel 0-255, or null if it isn't one.
 //

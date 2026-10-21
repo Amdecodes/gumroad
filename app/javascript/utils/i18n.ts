@@ -261,8 +261,8 @@ export const t: TFunction = (
 
 export const switchLocale = async (newLocale: string, domain?: string | null): Promise<void> => {
   // Allow 'pseudo' only in non-production environments.
-  const isAllowed = isSupportedLocale(newLocale) || isPseudoLocale(newLocale);
-  if (!isAllowed) return;
+  if (!isSupportedLocale(newLocale) && !isPseudoLocale(newLocale)) return;
+  const narrowed: ActiveLocale = isSupportedLocale(newLocale) ? newLocale : "pseudo";
 
   const resolvedDomain = domain !== undefined ? domain : getSharedCookieDomain();
 
@@ -275,7 +275,7 @@ export const switchLocale = async (newLocale: string, domain?: string | null): P
     document.documentElement.lang = newLocale;
   }
 
-  currentServerLocale = newLocale as ActiveLocale;
+  currentServerLocale = narrowed;
 
   // Only POST to server for real (server-persisted) locales; pseudo is client-only.
   if (isSupportedLocale(newLocale)) {
@@ -382,5 +382,11 @@ export const useTranslation = () => {
     switchLocale: boundSwitchLocale,
   };
 };
+
+export type TranslationFn = (
+  key: string,
+  params?: Record<string, string | number> | string,
+  fallback?: string | Record<string, string | number>,
+) => string;
 
 export const useTranslate = useTranslation;

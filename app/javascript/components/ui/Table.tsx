@@ -98,7 +98,7 @@ export const TableRow = ({
       className={classNames(
         "block rounded-lg border border-border lg:table-row",
         rowGroup === "body" && "bg-background",
-        selected != null && "cursor-pointer hover:bg-active-bg transition-colors",
+        selected != null && "cursor-pointer transition-colors hover:bg-active-bg",
         selected && "bg-active-bg",
         className,
       )}

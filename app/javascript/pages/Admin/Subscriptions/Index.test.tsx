@@ -84,12 +84,12 @@ describe("Admin Subscriptions Index Page", () => {
 
     const searchInput = screen.getByLabelText("Search subscriptions");
     fireEvent.change(searchInput, { target: { value: "subscriber@example.com" } });
-    fireEvent.submit(searchInput.closest("form")!);
+    fireEvent.submit(searchInput.closest("form") ?? document.createElement("form"));
 
     expect(router.get).toHaveBeenCalledWith(
       "/admin/subscriptions",
       { q: "subscriber@example.com" },
-      expect.objectContaining({ preserveState: true })
+      expect.objectContaining({ preserveState: true }),
     );
   });
 
@@ -102,7 +102,7 @@ describe("Admin Subscriptions Index Page", () => {
     expect(router.get).toHaveBeenCalledWith(
       "/admin/subscriptions",
       { status: "failing" },
-      expect.objectContaining({ preserveState: true })
+      expect.objectContaining({ preserveState: true }),
     );
   });
 
@@ -113,7 +113,7 @@ describe("Admin Subscriptions Index Page", () => {
         subscriptions={[]}
         pagination={{ page: 1, pages: 1, count: 0, has_more: false }}
         filters={{ q: "nonexistent" }}
-      />
+      />,
     );
 
     expect(screen.getByText("No subscriptions found")).toBeDefined();

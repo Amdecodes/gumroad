@@ -129,11 +129,13 @@ export const storefront = {
   show_cover: "Show cover {index}",
   qty: "Qty: {count}",
   price: "Price",
-  commission_deposit_notice: "Secure your order with a {percent} deposit today; the remaining balance will be charged upon completion.",
+  commission_deposit_notice:
+    "Secure your order with a {percent} deposit today; the remaining balance will be charged upon completion.",
   discount_first_payment_only: "This discount will only apply to the first payment of your subscription.",
   discount_min_spend: "This discount will apply when you spend {amount} or more.",
   discount_min_spend_seller: "This discount will apply when you spend {amount} or more in {seller} products.",
-  ppp_discount_notice: "This product supports purchasing power parity. Because you're located in {country}, the price has been discounted by {percent} to {price}.",
+  ppp_discount_notice:
+    "This product supports purchasing power parity. Because you're located in {country}, the price has been discounted by {percent} to {price}.",
   ppp_greater_discount: "This discount will be applied because it is greater than the offer code discount.",
   free_trial_notice: "All memberships include a {amount} {unit} free trial",
   membership_ends_one_month: "This membership will automatically end after one month",

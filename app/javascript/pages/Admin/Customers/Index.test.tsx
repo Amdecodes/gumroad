@@ -80,12 +80,12 @@ describe("Admin Customers Index Page", () => {
 
     const searchInput = screen.getByLabelText("Search customers");
     fireEvent.change(searchInput, { target: { value: "customer1" } });
-    fireEvent.submit(searchInput.closest("form")!);
+    fireEvent.submit(searchInput.closest("form") ?? document.createElement("form"));
 
     expect(router.get).toHaveBeenCalledWith(
       "/admin/customers",
       { q: "customer1" },
-      expect.objectContaining({ preserveState: true })
+      expect.objectContaining({ preserveState: true }),
     );
   });
 
@@ -96,7 +96,7 @@ describe("Admin Customers Index Page", () => {
         customers={[]}
         pagination={{ page: 1, pages: 1, count: 0, has_more: false }}
         filters={{ q: "notfound" }}
-      />
+      />,
     );
 
     expect(screen.getByText("No customers found")).toBeDefined();

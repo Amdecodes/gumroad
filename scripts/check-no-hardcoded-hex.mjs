@@ -45,30 +45,33 @@ function walk(dir) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       results = results.concat(walk(full));
-    } else if (/\.(tsx?|scss|css)$/.test(entry.name)) {
+    } else if (/\.(tsx?|scss|css)$/u.test(entry.name)) {
       results.push(full);
     }
   }
   return results;
 }
 
-const HEX_COLOR_REGEX = /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
+const HEX_COLOR_REGEX = /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/gu;
 
-let violations = [];
+const violations = [];
 const files = walk(appJsDir);
 
 for (const file of files) {
-  const relPath = path.relative(rootDir, file).replace(/\\/g, "/");
+  const relPath = path.relative(rootDir, file).replace(/\\/gu, "/");
   if (isAllowlisted(relPath)) continue;
 
   const content = fs.readFileSync(file, "utf8");
   // Strip block comments
-  const cleanContent = content.replace(/\/\*[\s\S]*?\*\//g, (match) => " ".repeat(match.length));
+  const cleanContent = content.replace(/\/\*[\s\S]*?\*\//gu, (match) => " ".repeat(match.length));
   const lines = cleanContent.split("\n");
 
   lines.forEach((line, index) => {
     // Strip inline comments and HTML entities
-    const codeOnly = line.split("//")[0].replace(/&#\d+;/g, "").replace(/&nbsp;/g, "");
+    const codeOnly = line
+      .split("//")[0]
+      .replace(/&#\d+;/gu, "")
+      .replace(/&nbsp;/gu, "");
 
     const matches = codeOnly.match(HEX_COLOR_REGEX);
     if (matches && matches.length > 0) {
